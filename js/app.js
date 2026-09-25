@@ -555,11 +555,13 @@ function shortName(n){ return n.replace("WeatherTech Championship","WeatherTech"
 function relTime(ms){ const m=Math.round(ms/60000); if(m<1) return "now"; if(m<60) return `in ${m} min`; const h=Math.floor(m/60), r=m%60; if(h<24) return `in ${h}h${r?" "+r+"m":""}`; const d=Math.round(h/24); return `in ${d} day${d>1?"s":""}`; }
 /* "Wed, Sep 30 · 9:05 AM" (adds the year when it is not this year) */
 function fmtWhen(date,tz){ tz=timesPref()==="mine"?undefined:tz; const y=new Date().getFullYear(); const d=date.toLocaleDateString("en-US",{timeZone:tz,weekday:"short",month:"short",day:"numeric"}); const yr=+date.toLocaleDateString("en-US",{timeZone:tz,year:"numeric"}); return `${d}${yr!==y?", "+yr:""} · ${fmtTime(date,tz)}`; }
+/* the session on track right now: sessions can overlap (a grid walk running into the race), so take the latest one that started and still has more than 10 minutes left; the last 10 minutes count as "next" */
+function currentSession(ss,now){ const l=ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000); return l.length?l[l.length-1]:null; }
 function renderNow(){
   const pill=document.getElementById("nowPill"); const ss=sessionsResolved(), cu=nextAny(); if(!ss.length||!cu||cu.t.id!==cur.id){ pill.hidden=true; return; }
-  const now=new Date(); const live=ss.find(s=>s.start<=now&&now<s.end); const next=ss.find(s=>s.start>now);
+  const now=new Date(); const live=currentSession(ss,now); const next=ss.find(s=>s.start>now);
   pill.hidden=false; pill.classList.toggle("live",!!live);
-  if(live&&live.end-now>10*60000){ document.getElementById("nowTag").textContent="ON TRACK"; document.getElementById("nowTxt").textContent=`${shortName(live.n)}${live.est?"":" · ends "+fmtTime(live.end,cur.tz)}`; }
+  if(live){ document.getElementById("nowTag").textContent="ON TRACK"; document.getElementById("nowTxt").textContent=`${shortName(live.n)}${live.est?"":" · ends "+fmtTime(live.end,cur.tz)}`; }
   else if(next){ pill.classList.remove("live"); const soon=next.start-now<36e5; document.getElementById("nowTag").textContent="NEXT"; document.getElementById("nowTxt").textContent=`${shortName(next.n)} · ${soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)}`; }
   else { document.getElementById("nowTag").textContent="DONE"; document.getElementById("nowTxt").textContent=`${cur.eventName||"Event"} weekend is over`; }
 }
@@ -597,9 +599,9 @@ function renderHub(){
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
   const body=document.getElementById("hubBody"); if(!body) return;
   const ss=sessionsResolved(), now=new Date();
-  const live=ss.find(s=>s.start<=now&&now<s.end), next=ss.find(s=>s.start>now);
+  const live=currentSession(ss,now), next=ss.find(s=>s.start>now);
   let sessionHtml;
-  if(live&&live.end-now>10*60000) sessionHtml=`<div class="hubCard"><h4>On track</h4><div class="hubSessionName">${esc(shortName(live.n))}</div><div class="hubSessionSub">${live.est?"In progress":"Ends "+fmtTime(live.end,cur.tz)}</div></div>`;
+  if(live) sessionHtml=`<div class="hubCard"><h4>On track</h4><div class="hubSessionName">${esc(shortName(live.n))}</div><div class="hubSessionSub">${live.est?"In progress":"Ends "+fmtTime(live.end,cur.tz)}</div></div>`;
   else if(next){ const soon=next.start-now<36e5; sessionHtml=`<div class="hubCard"><h4>Next on track</h4><div class="hubSessionName">${esc(shortName(next.n))}</div><div class="hubSessionSub">${soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)}</div></div>`; }
   else sessionHtml=`<div class="hubCard"><h4>${esc(cur.eventName||"This weekend")}</h4><div class="hubSessionSub">No more sessions today</div></div>`;
 
@@ -619,7 +621,7 @@ function renderHub(){
   const wAll=watchNow();
   let watchHtml="";
   if(wAll.length){
-    const cand=live&&live.end-now>10*60000?[live,...ss.filter(x=>x.start>now)]:ss.filter(x=>x.start>now);
+    const cand=live?[live,...ss.filter(x=>x.start>now)]:ss.filter(x=>x.start>now);
     let sid=null; for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
     const x=wAll.find(e=>e.s===sid)||wAll[0];
     watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeries">${esc(watchSeriesName(x))}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4 style="text-transform:none;color:var(--ink);font-size:14px">${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;

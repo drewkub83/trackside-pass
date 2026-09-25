@@ -3,7 +3,7 @@
    - After that: opens instantly from the phone, then quietly refreshes files in the background
      when there is a connection, so edits show up on the next launch.
    Bump VERSION to force a clean re-download of everything. */
-const VERSION = "v106";
+const VERSION = "v108";
 const CACHE = "paddock-" + VERSION;
 const FONT_CACHE = "paddock-fonts";
 const TRACKS = ["daytona","sebring","laguna-seca","watkins-glen","road-america","vir","indianapolis","road-atlanta","mid-ohio","long-beach","detroit","canadian-tire-motorsport-park","phoenix","barber","st-petersburg","arlington","cota","sonoma","indianapolis-oval"];

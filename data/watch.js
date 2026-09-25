@@ -18,6 +18,47 @@ const WATCH = [
         ["#67 Scuderia Corsa Ferrari (Mitchell Green, Jon Morley)", "Won Am at Road America on the team's series debut, after a drive-through penalty."]] }
     ],
     note:"Sources: GT World Challenge America's own standings pages (checked directly, Pro/Pro-Am/Am driver tables) plus RACER and Frontstretch race reports. Point totals above are confirmed current through Road America (Round 5)." },
+  { t:"barber", d:"2026-09-25", s:"gt4a", asOf:"Current after Road America (Aug 30). Barber is the second-to-last GT4 America weekend; Indianapolis (Oct 8-11) closes the season.",
+    groups:[
+      { h:"Silver", items:[
+        ["#028 RS1 Porsche 718 Cayman GT4 RS Clubsport (Spencer Pumpelly, Luca Mars)", "Lead Silver by 59 points and can clinch the title at Barber, according to Sportscar365's preview. RS1 also won the wet Race 2 at Road America."],
+        ["RAFA Racing Team Toyota GR Supra GT4 EVO2 (Westin Workman, Tyler Gonzalez)", "The nearest challengers to RS1 in the Silver standings."]] },
+      { h:"Pro-Am", items:[
+        ["#94 Random Vandals Racing BMW M4 GT4 (Sam Craven, Kenton Koch)", "Lead Pro-Am, but Blackdog Racing's McLaren has been closing in."],
+        ["#33 Blackdog Racing McLaren Artura GT4 (Michael Cooper, Tony Gaples)", "17 points behind Craven and Koch, on a four-race win streak."]] },
+      { h:"Am", items:[
+        ["#36 BimmerWorld BMW (James Clay, James Walker Jr.)", "Still lead Am, but lost ground at Road America."],
+        ["#30 TechSport Racing Ford Mustang GT4 (Frankie Muniz, Tyler Stone)", "12 points behind the BimmerWorld BMW after Road America."],
+        ["Random Vandals Racing BMW (Denny Stripling, Judson Holt)", "Third, nine points behind the Mustang."]] }
+    ],
+    note:"Sources: Sportscar365 (GT4 America Barber preview), BimmerLife's Road America report, Frontstretch and the series' team standings. Gaps are as those reports gave them after Road America." },
+  { t:"barber", d:"2026-09-25", s:"grcup", asOf:"Current after Road America (Aug 30). Barber is Rounds 11 and 12, with four races left in the season.",
+    groups:[
+      { h:"Championship", items:[
+        ["Spike Kohlbecker (TechSport Racing)", "Leads the standings by 13 points. A retirement in Race 2 at Road America trimmed his lead."],
+        ["Jeremy Fletcher (Copeland Motorsports)", "Swept both Road America races, with his team rebuilding the car after a fire in testing. He is the closest title rival."],
+        ["Will Robusto and Max Schwid", "Separated by 5 points in the fight for third."]] }
+    ],
+    note:"Source: Sportscar365's Barber preview, published Sep 23. The exact points totals were not in the article, so they are left out." },
+  { t:"barber", d:"2026-09-25", s:"gta", asOf:"Current after Road America (Aug 30).",
+    groups:[
+      { h:"SRO3 (GT3 cars)", items:[
+        ["#56 SKI Autosports Audi R8 LMS GT3 Evo II (Memo Gidley)", "Swept Road America for his eighth win of the season, extending his points lead. He won Race 1 by 2.351 seconds over Tony Davis."]] },
+      { h:"GT2", items:[
+        ["#62 Team LNT Ginetta G56 GT2 (Lawrence Tomlinson)", "Won GT2 in Race 1 at Road America."]] },
+      { h:"GT4", items:[
+        ["#610 Colorado Motorsport with Flying Lizard BMW M4 GT4 (Craig Lumsden)", "Won GT4 in Race 1 at Road America and said the result could help lock in the class title."]] },
+      { h:"Cup", items:[
+        ["#89 RacingSupport Ginetta GTP8 (David Lecko)", "Won the Cup class in Race 1 at Road America."]] }
+    ],
+    note:"Sources: GT America's own Road America race report and RACER and Sportscar365 reports. Points totals were not in those reports, so they are left out." },
+  { t:"barber", d:"2026-09-25", s:"tca", asOf:"Standings after Road America were not confirmed; this is what the season's race reports established.",
+    groups:[
+      { h:"Championship", items:[
+        ["Braydon Arthur (#4 JMF Motorsports Toyota GR Corolla TC)", "Swept the Circuit of the Americas weekend and then Road Atlanta, where he turned pole into victory to cut Andre Castro's lead."],
+        ["Andre Castro (#77 Ricca Autosport Hyundai Elantra N TC)", "Led the standings before Road Atlanta by 30 points. He and Arthur were tied at the top after Friday's opener at Road America."]] }
+    ],
+    note:"Sources: RACER's reports from Circuit of The Americas and Road Atlanta, and a Road America race report. Points after Road America were not available, so no totals are shown." },
   { t:"road-atlanta", d:"2026-09-30", s:"weathertech", asOf:"Current after Indianapolis (Sep 20). Petit Le Mans is the season finale.",
     groups:[
       { h:"GTP", items:[

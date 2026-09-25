@@ -1,0 +1,14 @@
+<body style="margin:0;background:#fff;display:flex;gap:12px;padding:12px;flex-wrap:wrap">
+<script>
+const pin='<path d="M60 110C60 110 26 78 26 50A34 34 0 0 1 94 50C94 78 60 110 60 110Z" fill="#E39B7B"/>';
+function chaikin(p,n){ for(let k=0;k<n;k++){ const q=[]; for(let i=0;i<p.length;i++){ const a=p[i], b=p[(i+1)%p.length]; q.push([.75*a[0]+.25*b[0],.75*a[1]+.25*b[1]],[.25*a[0]+.75*b[0],.25*a[1]+.75*b[1]]); } p=q; } return p; }
+const P={
+ E2:[[14,74],[14,32],[28,14],[70,14],[86,28],[86,44],[64,56],[86,68],[86,82],[72,90],[44,90],[34,76],[22,90]],
+ F2:[[12,72],[12,30],[26,14],[60,14],[74,24],[74,38],[56,48],[62,60],[88,62],[88,82],[70,90],[40,90],[26,82]],
+ G2:[[14,80],[14,24],[24,14],[54,14],[70,30],[86,40],[86,58],[66,66],[50,60],[36,66],[36,80],[48,90],[70,90],[80,82]]
+};
+Object.entries(P).forEach(([k,pts])=>{ const s=chaikin(pts,3), d='M'+s.map(p=>p.map(v=>v.toFixed(1)).join(' ')).join('L')+'Z';
+ document.body.insertAdjacentHTML('beforeend',`<svg width="330" height="330" viewBox="0 0 120 120"><rect width="120" height="120" rx="27" fill="#DCE8E0"/>${pin}
+ <g transform="translate(32,23) scale(0.56)"><path d="${d}" fill="none" stroke="#FBF8F0" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M6 50H22" stroke="#3F6B7D" stroke-width="4.5"/></g></svg>`); });
+</script></body>

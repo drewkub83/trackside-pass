@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Track Builder · Trackside Pass</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;color:#26302c;display:flex;height:100vh;background:#f3f1ec}
+#side{width:380px;min-width:380px;overflow:auto;padding:12px 14px 40px;background:#f3f1ec;border-right:1px solid #d9d5cb}
+#map{flex:1;background:#dfe6dc}
+h1{font-size:19px;margin:0 0 2px;font-weight:600}
+h2{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:#69736e;margin:18px 0 6px;font-weight:600}
+p.hint{margin:2px 0 6px;color:#69736e;font-size:12.5px}
+button,select,input,textarea{font:inherit}
+button{padding:6px 10px;border:1px solid #c9c4b8;border-radius:8px;background:#fff;cursor:pointer;color:#26302c}
+button:hover{background:#f8f7f3}
+button.on{background:#4F7F94;color:#fff;border-color:#4F7F94}
+button.danger{color:#b03a2e}
+button.primary{background:#4F7F94;color:#fff;border-color:#4F7F94}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:5px 0;align-items:center}
+.tool{flex:1 1 28%;text-align:center}
+label.f{display:block;margin:7px 0 2px;font-size:12px;color:#69736e}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;padding:6px 8px;border:1px solid #c9c4b8;border-radius:8px;background:#fff}
+textarea{min-height:64px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#status{font-size:12.5px;color:#69736e;margin:6px 0 0;min-height:18px}
+.ok{color:#2e7d55;font-weight:600}.bad{color:#b03a2e;font-weight:600}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:4px 0;font-size:13px}
+.pin{width:24px;height:24px;border-radius:50%;color:#fff;font:600 11px/20px system-ui;text-align:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45)}
+.vtx{width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid #26302c;margin:2px}
+.vtx.first{background:#4FA37A;border-color:#1f6b4a;width:14px;height:14px;margin:0}
+.lvtx{width:10px;height:10px;background:#fff;border:2px solid #26302c;margin:1px;border-radius:2px}
+.lmid{width:8px;height:8px;background:rgba(255,255,255,.55);border:1.5px solid #26302c;border-radius:50%;margin:1px}
+.lmove{width:22px;height:22px;border-radius:50%;background:#26302c;color:#fff;font:14px/22px system-ui;text-align:center;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45)}
+.vtx.pit{border-color:#8a93a0;background:#e8ebef}
+.turnpin{background:#26302c;color:#fff;border-radius:12px;min-width:24px;height:24px;font:600 11px/20px system-ui;text-align:center;border:2px solid #fff;padding:0 4px}
+.hnd{background:#fff;border:2px solid #d0582b;color:#d0582b;font:700 10px/16px system-ui;text-align:center;width:22px;height:22px;border-radius:4px;line-height:18px}
+.sfpin{font-size:22px;line-height:22px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.leaflet-container.crosshair{cursor:crosshair}
+.run{display:flex;gap:6px;align-items:center;margin:3px 0;font-size:12.5px}
+.run input{width:64px}
+::placeholder{color:#b3b6ae}
+.small{font-size:12px;color:#69736e}
+.popup label{display:block;margin:5px 0 2px;font-size:12px;color:#69736e}
+.popup input,.popup select{width:210px}
+</style>
+</head>
+<body>
+<div id="side">
+  <h1>Track Builder</h1>
+  <div id="filewarn" style="display:none;background:#fdecea;border:1px solid #e3b0aa;border-radius:8px;padding:8px 10px;margin:6px 0;font-size:12.5px"><b>Map tiles will be blocked.</b> Open this page with <b>start.command</b> (double-click it in the tools/track-builder folder) so it loads from http://localhost.</div>
+  <p class="hint">Trace a circuit over OpenStreetMap, place badges, then export a file for Trackside Pass.</p>
+
+  <h2>1 · Go to</h2>
+  <div class="row">
+    <select id="jump" style="flex:1"><option value="">Quick places…</option><option value="33.7645,-118.1895,16">Long Beach</option><option value="42.3303,-83.0394,16">Detroit</option><option value="44.0485,-78.6770,15">Mosport</option><option value="34.0522,-118.2437,15">Los Angeles</option></select>
+    <input id="q" type="text" placeholder="Search a place or lat,lon" style="flex:2"><button id="go">Go</button>
+  </div>
+
+  <h2>2 · Official map overlay</h2>
+  <p class="hint">Load the official track map image, then drag its three orange corners onto the real streets. Lower the opacity to see the streets through it.</p>
+  <div class="row"><input id="imgfile" type="file" accept="image/*"></div>
+  <div class="row"><span class="small">Opacity</span><input id="op" type="range" min="0" max="1" step="0.05" value="0.6" style="flex:1"><button id="ovhide">Hide</button><button id="ovfit">Reset</button></div>
+
+  <h2>3 · Draw</h2>
+  <div class="row" id="tools">
+    <button class="tool on" data-t="select">Select / edit</button>
+    <button class="tool" data-t="circuit">Circuit</button>
+    <button class="tool" data-t="sf">Start/finish</button>
+    <button class="tool" data-t="turn">Turn</button>
+    <button class="tool" data-t="pit">Pit lane</button>
+    <button class="tool" data-t="poi">Badge</button>
+    <button class="tool" data-t="lot">Parking</button>
+  </div>
+  <div id="toolhint" class="hint"></div>
+  <div class="chk"><input type="checkbox" id="follow" checked><label for="follow"><b>Follow roads</b> while drawing the circuit: two clicks on the same street fill in the street between them.</label></div>
+  <div class="row"><button id="loadroads">Load roads for this view</button><span id="roadstat" class="small"></span></div>
+  <div id="badgebox" style="display:none">
+    <label class="f">Badge kind</label><select id="kind"></select>
+    <label class="f">Badge name (before clicking the map)</label><input id="bname" type="text" placeholder="e.g. Grandstand 24">
+    <label class="f">Description (optional)</label><input id="bdesc" type="text">
+    <div class="chk" id="showerrow" style="display:none"><input type="checkbox" id="bshower"><label for="bshower">Has showers</label></div>
+  </div>
+  <div class="row"><button id="undo">Undo</button><button id="closeloop">Close loop</button><button id="clearcircuit" class="danger">Clear circuit</button></div>
+
+  <h2>4 · Track details</h2>
+  <div class="two"><div><label class="f">Track id (no spaces)</label><input id="m_id" type="text" placeholder="long-beach"></div><div><label class="f">Short name</label><input id="m_short" type="text" placeholder="Long Beach"></div></div>
+  <label class="f">Full name</label><input id="m_name" type="text" placeholder="Long Beach Street Circuit">
+  <div class="two"><div><label class="f">Place</label><input id="m_place" type="text" placeholder="Long Beach, California"></div><div><label class="f">Time zone</label><input id="m_tz" type="text" placeholder="America/Los_Angeles"></div></div>
+  <div class="two"><div><label class="f">Length text</label><input id="m_length" type="text" placeholder="1.97 mi"></div><div><label class="f">Year opened</label><input id="m_opened" type="number"></div></div>
+  <div class="two"><div><label class="f">Official lap (miles)</label><input id="m_official" type="number" step="0.001"></div><div><label class="f">Number of turns</label><input id="m_nturns" type="number"></div></div>
+  <label class="f">Description</label><textarea id="m_blurb"></textarea>
+  <label class="f">Facts (one per line, "Label: text")</label><textarea id="m_facts" placeholder="Signature sections: Shoreline Drive front straight"></textarea>
+  <label class="f">Events (one per line: date | name | series | days)</label><textarea id="m_events" placeholder="2027-04-16 | Acura Grand Prix of Long Beach | IMSA WeatherTech | 2"></textarea>
+  <div class="chk"><input type="checkbox" id="m_river"><label for="m_river">A river/harbor runs along the south side (close its shape below the map)</label></div>
+
+  <h2>5 · Checks</h2>
+  <div id="checks" class="small"></div>
+  <div class="row"><button id="finddb">Find roads the circuit doubles back on</button></div>
+  <div id="dbruns"></div>
+
+  <h2>6 · Save / export</h2>
+  <div class="row"><button id="export" class="primary">Download track file</button><button id="copy">Copy</button><button id="importbtn">Import…</button><button id="newp" class="danger">New</button></div>
+  <input id="importfile" type="file" accept=".json,application/json" style="display:none">
+  <div id="status"></div>
+  <p class="small">Your work is saved automatically in this browser. Send the downloaded file to Claude to turn it into a finished track.</p>
+</div>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+"use strict";
+/* ---------------- model ---------------- */
+const KINDS = { gate:["Gate / entrance","#4F7DB5","G"], stand:["Grandstand / viewing","#8C79C9","S"], food:["Food","#DE7F55","F"], rest:["Restroom","#3F9E96","R"], med:["First aid","#D2564F","+"],
+  screen:["Big screen","#C29A2E","TV"], camp:["Camping","#5E9A62","C"], cross:["Pedestrian bridge / crossing","#6F8EAB","X"], info:["Landmark / info","#A48A5E","i"], merch:["Merchandise","#B85C8A","M"], view:["Best view","#3FA9C9","V"] };
+const LOTCOL = ["#EC407A","#F28C28","#29B6F6","#66BB6A","#AB47BC","#8D6E63","#26A69A","#F2C300","#7CB342","#5C6BC0"];
+const META = ["id","short","name","place","tz","length","opened","official","nturns","blurb","facts","events"];
+function blank(){ const m={}; META.forEach(k=>m[k]=""); return { meta:m, river:false, circuit:[], closed:false, sf:null, turns:[], pit:[], pois:[], lots:[], overlay:null }; }
+let S = blank(), tool = "select", IMG = null, IMGNAME = "", tmp = [];
+const hist = [];
+const $ = id => document.getElementById(id);
+const r6 = v => Math.round(v*1e6)/1e6;
+const ll = a => L.latLng(a[0], a[1]);
+
+/* ---------------- map ---------------- */
+const map = L.map("map", { doubleClickZoom:false }).setView([33.7645,-118.1895],16);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom:19, attribution:"&copy; OpenStreetMap contributors" }).addTo(map);
+const imgPane = map.createPane("imgpane"); imgPane.style.zIndex = 250; imgPane.style.pointerEvents = "none";
+const cv = document.createElement("canvas"); imgPane.appendChild(cv);
+const gCircuit = L.layerGroup().addTo(map), gVtx = L.layerGroup().addTo(map), gPit = L.layerGroup().addTo(map), gTurn = L.layerGroup().addTo(map),
+      gPoi = L.layerGroup().addTo(map), gLot = L.layerGroup().addTo(map), gTmp = L.layerGroup().addTo(map), gHnd = L.layerGroup().addTo(map), gDb = L.layerGroup().addTo(map);
+const circuitLine = L.polyline([], { color:"#26302c", weight:5, opacity:.85 }).addTo(gCircuit);
+const pitLine = L.polyline([], { color:"#7d8794", weight:5, opacity:.9, dashArray:"6 6" }).addTo(gPit);
+const tmpLine = L.polyline([], { color:"#4F7F94", weight:3, dashArray:"4 4" }).addTo(gTmp);
+
+/* ---------------- history + autosave ---------------- */
+function snapshot(){ hist.push(JSON.stringify(S)); if (hist.length > 120) hist.shift(); localStorage.setItem("tb:current", JSON.stringify(S)); }
+function undo(){ if (hist.length < 2) return; hist.pop(); S = JSON.parse(hist[hist.length-1]); localStorage.setItem("tb:current", JSON.stringify(S)); renderAll(); fillMeta(); }
+function say(msg, cls){ const s = $("status"); s.textContent = msg; s.className = cls || ""; }
+
+/* ---------------- geometry helpers ---------------- */
+const MLAT = 110900;
+const mlon = lat => 111320*Math.cos(lat*Math.PI/180);
+function dist(a,b){ return Math.hypot((a[0]-b[0])*MLAT, (a[1]-b[1])*mlon((a[0]+b[0])/2)); }
+function plen(pts){ let s=0; for (let i=1;i<pts.length;i++) s += dist(pts[i-1],pts[i]); return s; }
+function lapMeters(){ const c = S.circuit; return c.length < 2 ? 0 : plen(c) + (S.closed ? dist(c[c.length-1], c[0]) : 0); }
+function nearestSeg(pts, p, closed){
+  let best = { d:1e12, i:0, q:null }; const n = closed ? pts.length : pts.length-1;
+  for (let i=0;i<n;i++){ const a = pts[i], b = pts[(i+1)%pts.length]; const k = mlon(a[0]);
+    const ax=a[1]*k, ay=a[0]*MLAT, bx=b[1]*k, by=b[0]*MLAT, px=p[1]*k, py=p[0]*MLAT; const dx=bx-ax, dy=by-ay, l2=dx*dx+dy*dy;
+    const t = l2 ? Math.max(0, Math.min(1, ((px-ax)*dx+(py-ay)*dy)/l2)) : 0; const qx=ax+dx*t, qy=ay+dy*t; const d = Math.hypot(px-qx, py-qy);
+    if (d < best.d) best = { d, i, q:[qy/MLAT, qx/k] }; }
+  return best;
+}
+
+/* ---------------- overlay (official map image) ---------------- */
+function drawOverlay(){
+  const sz = map.getSize(); cv.width = sz.x; cv.height = sz.y; L.DomUtil.setPosition(cv, map.containerPointToLayerPoint([0,0]));
+  const ctx = cv.getContext("2d"); ctx.clearRect(0,0,sz.x,sz.y);
+  const o = S.overlay; if (!IMG || !o || o.hidden) return;
+  const p0 = map.latLngToContainerPoint(ll(o.c[0])), p1 = map.latLngToContainerPoint(ll(o.c[1])), p2 = map.latLngToContainerPoint(ll(o.c[2]));
+  const w = IMG.naturalWidth, h = IMG.naturalHeight;
+  ctx.globalAlpha = o.op; ctx.setTransform((p1.x-p0.x)/w, (p1.y-p0.y)/w, (p2.x-p0.x)/h, (p2.y-p0.y)/h, p0.x, p0.y); ctx.drawImage(IMG,0,0); ctx.setTransform(1,0,0,1,0,0);
+}
+map.on("move zoom resize", drawOverlay);
+function defaultOverlay(){
+  const b = map.getBounds(), c = b.getCenter(), aspect = IMG.naturalHeight/IMG.naturalWidth, wDeg = (b.getEast()-b.getWest())*0.7, hDeg = wDeg*aspect*mlon(c.lat)/MLAT;
+  S.overlay = { op:+$("op").value, hidden:false, c:[[c.lat+hDeg/2, c.lng-wDeg/2],[c.lat+hDeg/2, c.lng+wDeg/2],[c.lat-hDeg/2, c.lng-wDeg/2]] };
+}
+function makeHandles(){
+  gHnd.clearLayers(); const o = S.overlay; if (!IMG || !o || o.hidden) return;
+  const mk = (i, label) => { const m = L.marker(ll(o.c[i]), { draggable:true, zIndexOffset:900, icon:L.divIcon({ className:"", html:'<div class="hnd">'+label+'</div>', iconSize:[22,22], iconAnchor:[11,11] }) });
+    m.on("drag", e => { o.c[i] = [e.latlng.lat, e.latlng.lng]; drawOverlay(); }); m.on("dragend", () => { snapshot(); makeHandles(); }); gHnd.addLayer(m); };
+  mk(0,"TL"); mk(1,"TR"); mk(2,"BL");
+  const cen = () => [(o.c[1][0]+o.c[2][0])/2, (o.c[1][1]+o.c[2][1])/2];
+  const mv = L.marker(ll(cen()), { draggable:true, zIndexOffset:900, icon:L.divIcon({ className:"", html:'<div class="hnd" style="border-radius:50%">↔</div>', iconSize:[22,22], iconAnchor:[11,11] }) });
+  let last = null;
+  mv.on("dragstart", e => { last = e.target.getLatLng(); });
+  mv.on("drag", e => { const p = e.latlng, dla = p.lat-last.lat, dlo = p.lng-last.lng; last = p; o.c = o.c.map(q => [q[0]+dla, q[1]+dlo]); drawOverlay(); gHnd.eachLayer(l => { if (l !== mv) { const i = l._hi; if (i !== undefined) l.setLatLng(ll(o.c[i])); } }); });
+  mv.on("dragend", () => { snapshot(); makeHandles(); });
+  gHnd.addLayer(mv);
+  gHnd.eachLayer(l => {}); let k = 0; gHnd.eachLayer(l => { if (l !== mv && k < 3) { l._hi = k++; } });
+}
+$("imgfile").onchange = e => {
+  const f = e.target.files[0]; if (!f) return; const url = URL.createObjectURL(f); const im = new Image();
+  im.onload = () => { IMG = im; IMGNAME = f.name; if (!S.overlay) defaultOverlay(); S.overlay.hidden = false; drawOverlay(); makeHandles(); snapshot(); say("Overlay loaded. Drag the orange corners onto the streets.", "ok"); };
+  im.src = url;
+};
+$("op").oninput = () => { if (S.overlay) { S.overlay.op = +$("op").value; drawOverlay(); localStorage.setItem("tb:current", JSON.stringify(S)); } };
+$("ovhide").onclick = () => { if (!S.overlay) return; S.overlay.hidden = !S.overlay.hidden; $("ovhide").textContent = S.overlay.hidden ? "Show" : "Hide"; drawOverlay(); makeHandles(); };
+$("ovfit").onclick = () => { if (!IMG) return; defaultOverlay(); drawOverlay(); makeHandles(); snapshot(); };
+
+/* ---------------- roads for "follow roads" ---------------- */
+let G = null;
+async function loadRoads(){
+  const b = map.getBounds().pad(0.4); $("roadstat").textContent = "Loading…";
+  const q = '[out:json][timeout:60];way["highway"~"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|service|motorway_link|trunk_link|primary_link|secondary_link|tertiary_link)$"]('+[b.getSouth(),b.getWest(),b.getNorth(),b.getEast()].join(",")+');out geom;';
+  try {
+    const res = await fetch("https://overpass-api.de/api/interpreter", { method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded" }, body:"data="+encodeURIComponent(q) });
+    const j = await res.json(); const pos = new Map(), adj = new Map();
+    const add = (a,b2,l) => { if (!adj.has(a)) adj.set(a,[]); adj.get(a).push([b2,l]); };
+    j.elements.forEach(w => { if (!w.nodes || !w.geometry) return; w.nodes.forEach((id,i) => pos.set(id,[w.geometry[i].lat, w.geometry[i].lon]));
+      for (let i=1;i<w.nodes.length;i++){ const l = dist(pos.get(w.nodes[i-1]), pos.get(w.nodes[i])); add(w.nodes[i-1], w.nodes[i], l); add(w.nodes[i], w.nodes[i-1], l); } });
+    G = { pos, adj }; $("roadstat").textContent = j.elements.length + " road pieces loaded";
+  } catch (e) { $("roadstat").textContent = "Could not load roads (" + e.message + ")"; }
+}
+function nearNode(p, maxM){ let best = null, bd = maxM; G.pos.forEach((q,id) => { const d = dist(p,q); if (d < bd) { bd = d; best = id; } }); return best; }
+function routeRoads(a, b){
+  if (!G) return null; const na = nearNode(a, 30), nb = nearNode(b, 30); if (na === null || nb === null || na === nb) return null;
+  const direct = dist(a,b), limit = direct*1.3 + 30, D = new Map([[na,0]]), P = new Map(), H = [[0,na]], done = new Set();
+  const push = it => { H.push(it); let i = H.length-1; while (i > 0) { const p = (i-1)>>1; if (H[p][0] <= H[i][0]) break; [H[p],H[i]] = [H[i],H[p]]; i = p; } };
+  const pop = () => { const t = H[0], l = H.pop(); if (H.length) { H[0] = l; let i = 0; for (;;) { const a2 = 2*i+1, b2 = a2+1; let m = i; if (a2 < H.length && H[a2][0] < H[m][0]) m = a2; if (b2 < H.length && H[b2][0] < H[m][0]) m = b2; if (m === i) break; [H[m],H[i]] = [H[i],H[m]]; i = m; } } return t; };
+  while (H.length) { const [d,u] = pop(); if (done.has(u)) continue; done.add(u); if (u === nb || d > limit) break;
+    (G.adj.get(u) || []).forEach(([v,l]) => { const nd = d+l; if (!D.has(v) || nd < D.get(v)) { D.set(v,nd); P.set(v,u); push([nd,v]); } }); }
+  if (!D.has(nb) || D.get(nb) > limit) return null;
+  const path = [nb]; while (P.has(path[0])) path.unshift(P.get(path[0])); return path.map(id => G.pos.get(id));
+}
+
+/* ---------------- rendering ---------------- */
+function icon(html, cls, size){ return L.divIcon({ className:"", html:'<div class="'+cls+'">'+html+'</div>', iconSize:size, iconAnchor:[size[0]/2,size[1]/2] }); }
+function renderCircuit(){
+  circuitLine.setLatLngs(S.circuit.length ? (S.closed ? [...S.circuit, S.circuit[0]] : S.circuit) : []);
+  gVtx.clearLayers();
+  S.circuit.forEach((p,i) => {
+    const m = L.marker(ll(p), { draggable:true, icon:icon("", "vtx"+(i===0?" first":""), i===0?[14,14]:[14,14]) });
+    m.on("drag", e => { S.circuit[i] = [e.latlng.lat, e.latlng.lng]; circuitLine.setLatLngs(S.closed ? [...S.circuit, S.circuit[0]] : S.circuit); });
+    m.on("dragend", () => { snapshot(); updateChecks(); });
+    m.on("dblclick", e => { L.DomEvent.stop(e); if (S.circuit.length > 3) { S.circuit.splice(i,1); snapshot(); renderAll(); } });
+    m.on("click", e => { if (tool === "circuit" && i === 0 && S.circuit.length > 2 && !S.closed) { L.DomEvent.stop(e); S.closed = true; snapshot(); renderAll(); say("Loop closed.", "ok"); } });
+    gVtx.addLayer(m);
+  });
+  pitLine.setLatLngs(S.pit); gPit.clearLayers(); gPit.addLayer(pitLine);
+  S.pit.forEach((p,i) => { const m = L.marker(ll(p), { draggable:true, icon:icon("", "vtx pit", [14,14]) });
+    m.on("drag", e => { S.pit[i] = [e.latlng.lat, e.latlng.lng]; pitLine.setLatLngs(S.pit); }); m.on("dragend", snapshot); m.on("dblclick", e => { L.DomEvent.stop(e); S.pit.splice(i,1); snapshot(); renderAll(); }); gPit.addLayer(m); });
+}
+function renderMarks(){
+  gTurn.clearLayers();
+  S.turns.forEach((t,i) => { const m = L.marker(ll(t.ll), { draggable:true, icon:icon("T"+t.n, "turnpin", [30,24]) });
+    m.on("dragend", e => { t.ll = [e.target.getLatLng().lat, e.target.getLatLng().lng]; snapshot(); }); m.on("dblclick", e => { L.DomEvent.stop(e); S.turns.splice(i,1); snapshot(); renderAll(); }); gTurn.addLayer(m); });
+  if (S.sf) { const m = L.marker(ll(S.sf), { draggable:true, zIndexOffset:500, icon:icon("🏁", "sfpin", [26,24]) }); m.on("dragend", e => { S.sf = [e.target.getLatLng().lat, e.target.getLatLng().lng]; snapshot(); }); gTurn.addLayer(m); }
+  gPoi.clearLayers();
+  S.pois.forEach((p,i) => {
+    const k = KINDS[p.k] || KINDS.info; const m = L.marker(ll(p.ll), { draggable:true, icon:icon(k[2], "pin", [24,24]), title:p.n });
+    m.setIcon(L.divIcon({ className:"", html:'<div class="pin" style="background:'+k[1]+'">'+k[2]+'</div>', iconSize:[24,24], iconAnchor:[12,12] }));
+    m.on("dragend", e => { p.ll = [e.target.getLatLng().lat, e.target.getLatLng().lng]; snapshot(); });
+    m.bindPopup(() => poiForm(p, i)); gPoi.addLayer(m);
+  });
+  gLot.clearLayers();
+  S.lots.forEach((l,i) => {
+    const pg = L.polygon(l.poly.map(ll), { color:l.c, weight:2, fillOpacity:.35 }); pg.bindPopup(() => lotForm(l, i)); gLot.addLayer(pg);
+    if (tool !== "select") return;
+    const redraw = () => pg.setLatLngs(l.poly.map(ll));
+    const cen = () => [l.poly.reduce((a,p) => a + p[0], 0) / l.poly.length, l.poly.reduce((a,p) => a + p[1], 0) / l.poly.length];
+    l.poly.forEach((p,k) => {          // corners: drag to move, double-click to delete
+      const m = L.marker(ll(p), { draggable:true, zIndexOffset:400, icon:icon("", "lvtx", [12,12]) });
+      m.on("drag", e => { l.poly[k] = [e.latlng.lat, e.latlng.lng]; redraw(); });
+      m.on("dragend", () => { snapshot(); renderMarks(); });
+      m.on("dblclick", e => { L.DomEvent.stop(e); if (l.poly.length > 3) { l.poly.splice(k,1); snapshot(); renderMarks(); } else say("A parking area needs at least 3 corners.", "bad"); });
+      gLot.addLayer(m);
+    });
+    l.poly.forEach((p,k) => {          // small hollow dots on each edge: drag one out to add a corner there
+      const q = l.poly[(k+1) % l.poly.length];
+      const m = L.marker(ll([(p[0]+q[0])/2, (p[1]+q[1])/2]), { draggable:true, zIndexOffset:300, icon:icon("", "lmid", [10,10]) });
+      m.on("dragend", e => { l.poly.splice(k+1, 0, [e.target.getLatLng().lat, e.target.getLatLng().lng]); snapshot(); renderMarks(); });
+      gLot.addLayer(m);
+    });
+    let c0 = null, p0 = null;          // the centre handle moves the whole area
+    const mv = L.marker(ll(cen()), { draggable:true, zIndexOffset:450, icon:icon("✥", "lmove", [22,22]) });
+    mv.on("dragstart", e => { c0 = cen(); p0 = l.poly.map(p => p.slice()); });
+    mv.on("drag", e => { const d0 = e.latlng.lat - c0[0], d1 = e.latlng.lng - c0[1]; l.poly = p0.map(p => [p[0] + d0, p[1] + d1]); redraw(); });
+    mv.on("dragend", () => { snapshot(); renderMarks(); });
+    gLot.addLayer(mv);
+  });
+}
+function renderAll(){ renderCircuit(); renderMarks(); updateChecks(); }
+
+function poiForm(p, i){
+  const d = document.createElement("div"); d.className = "popup";
+  d.innerHTML = '<label>Name</label><input class="n" type="text"><label>Kind</label><select class="k"></select><label>Description</label><input class="d" type="text"><div class="sh" style="margin-top:6px"><label style="display:inline"><input class="s" type="checkbox" style="width:auto"> Has showers</label></div><div class="row"><button class="ok">Save</button><button class="del danger">Delete</button></div>';
+  const $q = s => d.querySelector(s); $q(".n").value = p.n; $q(".d").value = p.d || ""; $q(".s").checked = !!p.shower;
+  Object.keys(KINDS).forEach(k => { const o = document.createElement("option"); o.value = k; o.textContent = KINDS[k][0]; $q(".k").appendChild(o); }); $q(".k").value = p.k;
+  const sync = () => { $q(".sh").style.display = $q(".k").value === "rest" ? "" : "none"; }; $q(".k").onchange = sync; sync();
+  $q(".ok").onclick = () => { p.n = $q(".n").value.trim() || p.n; p.k = $q(".k").value; p.d = $q(".d").value.trim(); p.shower = p.k === "rest" ? $q(".s").checked : false; snapshot(); map.closePopup(); renderMarks(); updateChecks(); };
+  $q(".del").onclick = () => { S.pois.splice(i,1); snapshot(); map.closePopup(); renderMarks(); updateChecks(); };
+  return d;
+}
+function lotForm(l, i){
+  const d = document.createElement("div"); d.className = "popup";
+  d.innerHTML = '<label>Name</label><input class="n" type="text"><label>Colour</label><input class="c" type="color" style="width:60px"><div class="row"><button class="ok">Save</button><button class="del danger">Delete</button></div>';
+  d.querySelector(".n").value = l.n; d.querySelector(".c").value = l.c;
+  d.querySelector(".ok").onclick = () => { l.n = d.querySelector(".n").value.trim() || l.n; l.c = d.querySelector(".c").value; snapshot(); map.closePopup(); renderMarks(); };
+  d.querySelector(".del").onclick = () => { S.lots.splice(i,1); snapshot(); map.closePopup(); renderMarks(); updateChecks(); };
+  return d;
+}
+
+/* ---------------- tools ---------------- */
+const HINTS = {
+  select: "Drag any point to move it. Parking areas have square corners (drag to move, double-click to delete), hollow dots on each edge (drag out to add a corner) and a centre handle to move the whole area. Click a badge or parking area to rename it. Double-click a point to delete it. Click the circuit line to add a point.",
+  circuit: "Click along the track in the direction the cars travel, starting at the start/finish line. Click the green first point to close the loop.",
+  sf: "Click where the start/finish line is.",
+  turn: "Click each turn in order. They are numbered automatically (double-click one to delete it).",
+  pit: "Click along the pit lane. Double-click a point to remove it.",
+  poi: "Choose a kind and name below, then click the map. Bridges and crossings use kind “Pedestrian bridge / crossing”: walking routes cross the track only there.",
+  lot: "Click the corners of a parking area, then press Enter (or double-click) to finish."
+};
+function setTool(t){
+  tool = t; tmp = []; tmpLine.setLatLngs([]); document.querySelectorAll("#tools .tool").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  $("toolhint").textContent = HINTS[t]; $("badgebox").style.display = t === "poi" ? "" : "none";
+  map.getContainer().classList.toggle("crosshair", t !== "select"); renderMarks();
+}
+document.querySelectorAll("#tools .tool").forEach(b => b.onclick = () => setTool(b.dataset.t));
+function addCircuitPoint(p){
+  const c = S.circuit; if (S.closed) { say("The loop is closed. Use Select to edit it, or Clear circuit to start over.", "bad"); return; }
+  if (!c.length) { c.push(p); return; }
+  if ($("follow").checked && G) { const path = routeRoads(c[c.length-1], p); if (path && path.length > 1) { path.slice(1).forEach(q => c.push(q)); return; } }
+  c.push(p);
+}
+map.on("click", e => {
+  const p = [r6(e.latlng.lat), r6(e.latlng.lng)];
+  if (tool === "circuit") { addCircuitPoint(p); snapshot(); renderAll(); }
+  else if (tool === "sf") { S.sf = p; snapshot(); renderMarks(); }
+  else if (tool === "turn") { S.turns.push({ n:(S.turns.reduce((m,t) => Math.max(m,t.n), 0) + 1), ll:p }); snapshot(); renderMarks(); }
+  else if (tool === "pit") { S.pit.push(p); snapshot(); renderCircuit(); }
+  else if (tool === "poi") {
+    const k = $("kind").value; const n = $("bname").value.trim() || KINDS[k][0];
+    S.pois.push({ n, k, d:$("bdesc").value.trim(), shower:k === "rest" && $("bshower").checked, ll:p }); $("bname").value = ""; snapshot(); renderMarks(); updateChecks();
+  }
+  else if (tool === "lot") { tmp.push(p); tmpLine.setLatLngs(tmp); }
+  else if (tool === "select" && false) {}
+});
+function finishLot(){
+  if (tmp.length < 3) { tmp = []; tmpLine.setLatLngs([]); return; }
+  const n = prompt("Name of this parking area:", "Parking " + (S.lots.length + 1)); if (n === null) { tmp = []; tmpLine.setLatLngs([]); return; }
+  S.lots.push({ n:n.trim() || "Parking " + (S.lots.length + 1), c:LOTCOL[S.lots.length % LOTCOL.length], poly:tmp.slice() }); tmp = []; tmpLine.setLatLngs([]); snapshot(); renderMarks(); updateChecks();
+}
+map.on("dblclick", e => { if (tool === "lot") { tmp.pop(); finishLot(); } });
+circuitLine.on("click", e => {
+  if (tool !== "select" || !S.circuit.length) return; L.DomEvent.stop(e);
+  const p = [r6(e.latlng.lat), r6(e.latlng.lng)], b = nearestSeg(S.circuit, p, S.closed); S.circuit.splice(b.i+1, 0, p); snapshot(); renderAll();
+});
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if ((e.metaKey || e.ctrlKey) && e.key === "z") { e.preventDefault(); undo(); }
+  else if (e.key === "Enter" && tool === "lot") finishLot();
+  else if (e.key === "Escape") setTool("select");
+});
+$("undo").onclick = undo;
+$("closeloop").onclick = () => { if (S.circuit.length > 2) { S.closed = true; snapshot(); renderAll(); say("Loop closed.", "ok"); } };
+$("clearcircuit").onclick = () => { if (S.circuit.length && !confirm("Delete the whole circuit line?")) return; S.circuit = []; S.closed = false; snapshot(); renderAll(); };
+$("loadroads").onclick = loadRoads;
+Object.keys(KINDS).forEach(k => { const o = document.createElement("option"); o.value = k; o.textContent = KINDS[k][0]; $("kind").appendChild(o); });
+$("kind").onchange = () => { $("showerrow").style.display = $("kind").value === "rest" ? "" : "none"; };
+
+/* ---------------- go to ---------------- */
+$("jump").onchange = () => { const v = $("jump").value; if (v) { const [a,b,z] = v.split(",").map(Number); map.setView([a,b], z); } };
+$("go").onclick = async () => {
+  const q = $("q").value.trim(); if (!q) return; const m = q.match(/^\s*(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)\s*$/);
+  if (m) { map.setView([+m[1], +m[2]], 16); return; }
+  try { const r = await (await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q))).json(); if (r[0]) map.setView([+r[0].lat, +r[0].lon], 16); else say("Nothing found for that search.", "bad"); } catch (e) { say("Search failed: " + e.message, "bad"); }
+};
+$("q").addEventListener("keydown", e => { if (e.key === "Enter") $("go").click(); });
+
+/* ---------------- checks and double-backs ---------------- */
+function updateChecks(){
+  const m = lapMeters(), mi = m/1609.34, off = parseFloat(S.meta.official), c = [];
+  c.push(S.circuit.length + " circuit points, " + (S.closed ? '<span class="ok">loop closed</span>' : '<span class="bad">loop not closed</span>'));
+  c.push("Lap length: <b>" + mi.toFixed(3) + " mi</b> (" + Math.round(m) + " m)" + (off ? " · official " + off + " mi → " + (((mi-off)/off*100)>=0?"+":"") + ((mi-off)/off*100).toFixed(1) + "%" : ""));
+  c.push("Turns placed: <b>" + S.turns.length + "</b>" + (S.meta.nturns ? " of " + S.meta.nturns : ""));
+  c.push("Start/finish: " + (S.sf ? '<span class="ok">set</span>' : '<span class="bad">not set</span>') + " · pit lane: " + (S.pit.length > 1 ? "yes" : "no"));
+  c.push(S.pois.length + " badges (" + S.pois.filter(p => p.k === "cross").length + " crossings), " + S.lots.length + " parking areas");
+  $("checks").innerHTML = c.join("<br>");
+}
+function resample(c, closed, step){          // points every ~step m, each remembering its original segment
+  const out = [], n = closed ? c.length : c.length-1;
+  for (let i=0;i<n;i++){ const a = c[i], b = c[(i+1)%c.length], l = dist(a,b), m = Math.max(1, Math.round(l/step));
+    for (let k=0;k<m;k++){ const t = k/m; out.push({ p:[a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t], seg:i }); } }
+  return out;
+}
+function findDoubleBacks(){
+  gDb.clearLayers(); const c = S.circuit; $("dbruns").innerHTML = ""; if (c.length < 8) return;
+  const STEP = 10, R = resample(c, S.closed, STEP), N = R.length, flag = new Array(N).fill(false);
+  const hd = i => { const a = R[Math.max(i-2,0)].p, b = R[Math.min(i+2,N-1)].p, k = mlon(a[0]); const e = (b[1]-a[1])*k, n2 = (b[0]-a[0])*MLAT, l = Math.hypot(e,n2) || 1; return [e/l, n2/l]; };
+  const H = R.map((_,i) => hd(i));
+  for (let i=0;i<N;i++) for (let j=0;j<N;j++){
+    const gap = S.closed ? Math.min(Math.abs(i-j), N-Math.abs(i-j)) : Math.abs(i-j); if (gap*STEP < 150) continue;
+    if (dist(R[i].p, R[j].p) < 45 && H[i][0]*H[j][0] + H[i][1]*H[j][1] < -0.6) { flag[i] = true; break; } }
+  const runs = []; let s = null, lastOn = -99;
+  for (let i=0;i<=N;i++){
+    if (i < N && flag[i]) { if (s === null) s = i; lastOn = i; }
+    else if (s !== null && (i === N || i - lastOn > 3)) { const e = lastOn; if ((e-s)*STEP > 60) runs.push({ s:R[s].seg, e:R[e].seg, len:(e-s)*STEP }); s = null; } }
+  if (!runs.length) { $("dbruns").innerHTML = '<p class="small">No places found where the circuit runs beside itself in the opposite direction.</p>'; return; }
+  runs.forEach((r,idx) => {
+    L.polyline(c.slice(r.s, r.e+2), { color:"#d0582b", weight:8, opacity:.5 }).addTo(gDb);
+    const d = document.createElement("div"); d.className = "run";
+    d.innerHTML = '<span>Run ' + (idx+1) + ' (' + Math.round(r.len) + ' m)</span><input type="number" value="15" step="1"><span class="small">m left</span><button>Move</button><button class="show">Show</button>';
+    d.querySelector("button").onclick = () => { taperOffset(r.s, r.e+1, +d.querySelector("input").value); snapshot(); renderAll(); findDoubleBacks(); };
+    d.querySelector(".show").onclick = () => map.fitBounds(L.latLngBounds(c.slice(r.s, r.e+2).map(ll)).pad(.5));
+    $("dbruns").appendChild(d);
+  });
+  $("dbruns").insertAdjacentHTML("afterbegin", '<p class="small">Orange runs travel beside another part of the circuit in the opposite direction. On the official map these are drawn as two separate roads. Move one run sideways (negative = to the right of travel) so the two roads read clearly apart. Do it on one of the pair only. Runs stay listed after a move because the roads are still close; check the orange line on the map instead.</p>');
+}
+function taperOffset(i0, i1, meters){          // shift vertices i0..i1 sideways (left of travel), easing to zero at both ends
+  const c = S.circuit; let seg = c.slice(i0, i1+1), dense = [seg[0]];
+  for (let k=1;k<seg.length;k++){ const a = seg[k-1], b = seg[k], m = Math.max(1, Math.ceil(dist(a,b)/12)); for (let q=1;q<=m;q++) dense.push([a[0]+(b[0]-a[0])*q/m, a[1]+(b[1]-a[1])*q/m]); }
+  const total = plen(dense); let acc = 0;
+  const moved = dense.map((p,k) => { if (k > 0) acc += dist(dense[k-1], p); const m = meters*Math.sin(Math.PI*(total ? acc/total : 0));
+    const a = dense[Math.max(k-1,0)], b = dense[Math.min(k+1, dense.length-1)], te = (b[1]-a[1])*mlon(p[0]), tn = (b[0]-a[0])*MLAT, l = Math.hypot(te,tn) || 1;
+    return [r6(p[0] + (te/l)*m/MLAT), r6(p[1] + (-tn/l)*m/mlon(p[0]))]; });
+  S.circuit = c.slice(0, i0).concat(moved, c.slice(i1+1));
+}
+$("finddb").onclick = findDoubleBacks;
+
+/* ---------------- details form ---------------- */
+function fillMeta(){ META.forEach(k => { const el = $("m_" + k); if (el) el.value = S.meta[k] || ""; }); $("m_river").checked = !!S.river; }
+META.forEach(k => { const el = $("m_" + k); if (el) el.oninput = () => { S.meta[k] = el.value; localStorage.setItem("tb:current", JSON.stringify(S)); if (k === "official" || k === "nturns") updateChecks(); }; });
+$("m_river").onchange = () => { S.river = $("m_river").checked; localStorage.setItem("tb:current", JSON.stringify(S)); };
+
+/* ---------------- export / import ---------------- */
+function toSpec(){
+  const m = S.meta, facts = {}, events = [];
+  (m.facts || "").split("\n").forEach(l => { const i = l.indexOf(":"); if (i > 0) facts[l.slice(0,i).trim()] = l.slice(i+1).trim(); });
+  (m.events || "").split("\n").forEach(l => { const p = l.split("|").map(s => s.trim()); if (p[0] && p[1]) events.push({ d:p[0], e:p[1], s:p[2] || "", t:parseInt(p[3]) || 1 }); });
+  return { version:1, id:m.id, name:m.name, short:m.short || m.name, place:m.place, tz:m.tz, length:m.length, opened:parseInt(m.opened) || null, blurb:m.blurb, facts, events,
+    nturns:parseInt(m.nturns) || S.turns.length, officialMiles:parseFloat(m.official) || null, riverSouth:!!S.river,
+    circuit:{ closed:S.closed, path:S.circuit.map(p => [r6(p[0]), r6(p[1])]), sf:S.sf, turns:S.turns.map(t => ({ n:t.n, lat:r6(t.ll[0]), lon:r6(t.ll[1]) })), pit:S.pit },
+    pois:S.pois.map(p => { const o = { n:p.n, k:p.k, d:p.d || "", lat:r6(p.ll[0]), lon:r6(p.ll[1]) }; if (p.k === "rest" && p.shower) o.shower = true; return o; }),
+    lots:S.lots.map(l => ({ n:l.n, c:l.c, poly:l.poly })) };
+}
+function fromSpec(sp){
+  const s = blank(); const m = s.meta; m.id = sp.id || ""; m.short = sp.short || ""; m.name = sp.name || ""; m.place = sp.place || ""; m.tz = sp.tz || ""; m.length = sp.length || ""; m.opened = sp.opened || ""; m.official = sp.officialMiles || "";
+  m.nturns = sp.nturns || ""; m.blurb = sp.blurb || ""; m.facts = Object.entries(sp.facts || {}).map(([k,v]) => k + ": " + v).join("\n"); m.events = (sp.events || []).map(e => [e.d, e.e, e.s, e.t].join(" | ")).join("\n");
+  s.river = !!sp.riverSouth; const c = sp.circuit || {}; s.circuit = c.path || []; s.closed = !!c.closed; s.sf = c.sf || null; s.turns = (c.turns || []).map(t => ({ n:t.n, ll:[t.lat, t.lon] })); s.pit = c.pit || [];
+  s.pois = (sp.pois || []).map(p => ({ n:p.n, k:p.k, d:p.d || "", shower:!!p.shower, ll:[p.lat, p.lon] })); s.lots = sp.lots || []; return s;
+}
+function download(name, text){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type:"application/json" })); a.download = name; a.click(); }
+$("export").onclick = () => {
+  const sp = toSpec(), problems = [];
+  if (!sp.id) problems.push("Track id is empty"); if (sp.circuit.path.length < 8) problems.push("The circuit has too few points"); if (!sp.circuit.closed) problems.push("The loop is not closed"); if (!sp.circuit.sf) problems.push("Start/finish is not set");
+  if (problems.length && !confirm("Before you export:\n\n• " + problems.join("\n• ") + "\n\nExport anyway?")) return;
+  download((sp.id || "track") + ".spec.json", JSON.stringify(sp, null, 1)); say("Downloaded " + (sp.id || "track") + ".spec.json. Send it to Claude.", "ok");
+};
+$("copy").onclick = async () => { try { await navigator.clipboard.writeText(JSON.stringify(toSpec())); say("Copied. Paste it into the chat.", "ok"); } catch (e) { say("Copy failed: " + e.message, "bad"); } };
+$("importbtn").onclick = () => $("importfile").click();
+$("importfile").onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { const j = JSON.parse(r.result); S = j.circuit && j.circuit.path ? fromSpec(j) : (j.features ? fromGeoJSON(j) : fromSpec(j)); snapshot(); fillMeta(); renderAll(); fit(); say("Imported.", "ok"); } catch (err) { say("Could not read that file: " + err.message, "bad"); } }; r.readAsText(f); };
+function fromGeoJSON(g){          // accepts a geojson.io trace: lines -> circuit, first point -> start/finish
+  const s = blank(), ls = g.features.filter(f => f.geometry.type === "LineString").map(f => f.geometry.coordinates.map(([x,y]) => [y,x])); let c = ls.shift() || [];
+  while (ls.length) { let bi = 0, bd = 1e12; ls.forEach((l,i) => { const d = Math.min(dist(c[c.length-1], l[0]), dist(c[c.length-1], l[l.length-1])); if (d < bd) { bd = d; bi = i; } }); let l = ls.splice(bi,1)[0]; if (dist(c[c.length-1], l[l.length-1]) < dist(c[c.length-1], l[0])) l.reverse(); c = c.concat(l); }
+  if (c.length > 2 && dist(c[0], c[c.length-1]) < 12) { c.pop(); s.closed = true; } s.circuit = c; const pt = g.features.find(f => f.geometry.type === "Point"); if (pt) s.sf = [pt.geometry.coordinates[1], pt.geometry.coordinates[0]]; return s;
+}
+$("newp").onclick = () => { if (!confirm("Start a new track? This clears everything in the builder (export first if you need it).")) return; S = blank(); hist.length = 0; snapshot(); fillMeta(); renderAll(); };
+function fit(){ const pts = S.circuit.concat(S.pois.map(p => p.ll)); if (pts.length > 1) map.fitBounds(L.latLngBounds(pts.map(ll)).pad(.15)); }
+
+/* ---------------- start ---------------- */
+if (location.protocol === "file:") $("filewarn").style.display = "";
+try { const saved = localStorage.getItem("tb:current"); if (saved) { S = JSON.parse(saved); if (!S.meta) S = blank(); } } catch (e) { S = blank(); }
+hist.push(JSON.stringify(S)); fillMeta(); renderAll(); setTool("select"); if (S.overlay) { $("op").value = S.overlay.op; say("Reload your official map image to restore the overlay (its position is remembered)."); } if (S.circuit.length) fit();
+drawOverlay();
+</script>
+</body>
+</html>

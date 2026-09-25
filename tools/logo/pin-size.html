@@ -1,0 +1,9 @@
+<body style="margin:0;background:#fff;display:flex;gap:10px;padding:10px;flex-wrap:wrap;font:12px system-ui">
+<script>
+let uid=0;
+function chk(r,n,cy){ const id='c'+(++uid), cell=2*r/n, cx=60; let s=`<clipPath id="${id}"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath><g clip-path="url(#${id})"><rect x="${cx-r}" y="${cy-r}" width="${2*r}" height="${2*r}" fill="#fff"/><g fill="#14171A">`;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++) if((i+j)%2===0) s+=`<rect x="${(cx-r+i*cell).toFixed(2)}" y="${(cy-r+j*cell).toFixed(2)}" width="${cell.toFixed(2)}" height="${cell.toFixed(2)}"/>`;
+ return s+`</g></g><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#14171A" stroke-width="1.6"/>`; }
+const pal=[['#3F6B7D','#FBF8F0','4'],['#DCE8E0','#3F6B7D','5']];
+pal.forEach(([bg,pin,k])=>[19,22,24,26].forEach(r=>{ document.body.insertAdjacentHTML('beforeend',`<div style="text-align:center"><svg width="170" height="170" viewBox="0 0 120 120"><rect width="120" height="120" rx="27" fill="${bg}"/><path d="M60 110C60 110 26 78 26 50A34 34 0 0 1 94 50C94 78 60 110 60 110Z" fill="${pin}"/>${chk(r,4,50)}</svg><div>${k} r=${r}</div></div>`); }));
+</script></body>

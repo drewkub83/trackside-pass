@@ -1,0 +1,7 @@
+tools/.netlify-token
+tools/.netlify-site
+dist/
+.DS_Store
+.claude/
+.netlify/
+tools/street-circuits/

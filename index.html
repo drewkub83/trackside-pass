@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trackside Pass — race track companion (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#F0EEE8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Trackside Pass">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+
+<!-- HOME: hero + series -->
+<section class="screen on" id="home">
+  <header class="mast">
+    <button class="fab gear" aria-label="Settings" onclick="openSettings()"><svg viewBox="0 0 24 24"><path d="M4 7h8M18 7h2M4 12h2M12 12h8M4 17h9M19 17h1"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="12" r="2.2"/><circle cx="16" cy="17" r="2.2"/></svg></button>
+    <h1><img class="logo" src="icons/pin.svg" alt="" width="26" height="35">Trackside Pass</h1>
+    <p>Every race track in one place. Find your gate, your seat, and the nearest brisket.</p>
+  </header>
+  <div id="hero"></div>
+  <div class="sect">Series</div>
+  <ul class="list" id="champList"></ul>
+  <div class="soon">More series coming soon.</div>
+  <div class="sect">Your passport</div>
+  <ul class="list">
+    <li><button class="track-row series" onclick="openPassport()"><span class="tile pp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span>
+      <div><h2>Passport</h2><div class="meta" id="ppMeta">Stamps and badges from race weekends</div></div>
+      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>
+  </ul>
+  <div class="soon"></div>
+</section>
+
+<!-- PASSPORT -->
+<section class="screen" id="passport">
+  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Passport</h2></div>
+  <div class="ppsum" id="ppSum"></div>
+  <div class="ppcheck"><button class="btn primary" onclick="passportManual()">Check in here</button><small id="ppStatus"></small><small>Stamps only count at a track, during a race weekend.</small></div>
+  <div class="sect">Tracks</div>
+  <div class="pgrid" id="ppTracks"></div>
+  <div class="sect">Badges</div>
+  <div class="bgrid" id="ppBadges"></div>
+  <div class="ppfoot"><button class="btn quiet" onclick="ppBackup()">Copy backup code</button><button class="btn quiet" onclick="ppRestore()">Restore</button></div>
+  <div class="soon">Your passport is kept on this phone. A backup code lets you move it to a new phone.</div>
+</section>
+
+<!-- SETTINGS -->
+<section class="screen" id="settings">
+  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Settings</h2></div>
+  <div class="sect">Display</div>
+  <div class="appear"><b>Day and night</b><div class="seg themeSeg"></div><small class="themeNote"></small></div>
+  <div class="appear"><b>Weather units</b><div class="seg wxUnitSeg"></div><small>Temperature and wind speed.</small></div>
+  <div class="appear"><b>Distance units</b><div class="seg distUnitSeg"></div><small>Walking distances and elevation on the map.</small></div>
+  <div class="appear"><b>Accessible routes</b><div class="seg accessSeg"></div><small>Favors flatter paths over hills and steps when giving directions.</small></div>
+  <div class="appear"><b>Session times</b><div class="seg timeSeg"></div><small>Track time is what the clocks at the venue show. My time converts to your phone's time zone.</small></div>
+  <div class="sect">My races</div>
+  <div class="appear"><b>Races I'm going to</b><div id="myRaces"></div></div>
+  <div class="appear"><b>Home tile</b><div class="seg goSeg"></div><small>How long before a race you're going to that it takes over the home screen tile and the cars and drivers to watch list.</small></div>
+  <div class="sect">Series I follow</div>
+  <div class="appear"><div id="followList"></div><small>Drag &#9776; to set the order. Hidden series leave the home screen and the "next up" tile; races you mark as going always show. Support series (like Pilot Challenge) are off until you turn them on.</small></div>
+  <div class="sect">Location</div>
+  <div class="auto"><div><b>Open at the track</b><small>When you open the app at a venue, go straight to its map.</small></div>
+    <button class="sw" id="autoSw" role="switch" aria-checked="false" aria-label="Open at the track" onclick="toggleAuto()"><i></i></button></div>
+  <div class="auto"><div><b>Passport check-in</b><small>When you open the app at a track during a race weekend, stamp your passport.</small></div>
+    <button class="sw" id="ppSw" role="switch" aria-checked="false" aria-label="Passport check-in" onclick="togglePassportAuto()"><i></i></button></div>
+  <div class="auto"><div><b>On-track alerts</b><small>While you're at a track with the app open, a card pops up when a session goes on track.</small></div>
+    <button class="sw" id="alertSw" role="switch" aria-checked="false" aria-label="On-track alerts" onclick="toggleAlerts()"><i></i></button></div>
+  <div class="sect">At the track</div>
+  <div class="auto"><div><b>Keep the screen on</b><small>Stops the phone from dimming while the map is open. Uses more battery.</small></div>
+    <button class="sw" id="awakeSw" role="switch" aria-checked="false" aria-label="Keep the screen on" onclick="toggleAwake()"><i></i></button></div>
+  <div class="auto"><div><b>Stamp vibration</b><small>A small buzz when a stamp lands (Android phones; iPhones do not allow it).</small></div>
+    <button class="sw" id="hapSw" role="switch" aria-checked="true" aria-label="Stamp vibration" onclick="toggleHaptics()"><i></i></button></div>
+  <div class="sect">Passport</div>
+  <div class="appear"><b>Badge animation</b><small style="margin:0 0 10px">See what unlocking a badge looks like.</small><button class="btn quiet" onclick="previewUnlock()">Preview animation</button> <button class="btn quiet" onclick="openStampSheet()">Sticker sheet: every stamp</button></div>
+  <div class="sect">Your data</div>
+  <div class="appear"><b>Back up and restore</b><small style="margin:0 0 10px">Your stamps and the races you are going to live only on this phone. Copy a backup code before you delete the app or get a new phone, and paste it here to bring them back.</small><div style="display:flex;gap:10px"><button class="btn quiet" onclick="ppBackup()">Copy backup code</button><button class="btn quiet" onclick="ppRestore()">Restore</button></div></div>
+  <div class="sect">About</div>
+  <div class="appear"><b>Trackside Pass</b><small style="margin:0 0 4px">Version: <span id="abVer">…</span></small><small style="margin:0 0 12px">Schedules and watch lists checked: <span id="abData">…</span></small><button class="btn quiet" onclick="refreshApp()">Refresh the app</button><small>Downloads the newest version. Your stamps and races stay.</small></div>
+  <div class="sect">Screen check</div>
+  <div class="appear"><b>Screen</b><small class="scrinfo" id="scrInfo" style="margin:0 0 12px;white-space:pre-line;font-variant-numeric:tabular-nums"></small></div>
+  <div class="soon">More settings will appear here as the app grows.</div>
+</section>
+
+<!-- SERIES: tracks in order of that series' next race -->
+<section class="screen" id="series">
+  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2" id="serTitle"></h2></div>
+  <div class="sect">Ordered by next race</div>
+  <ul class="list" id="trackList"></ul>
+  <div class="soon" id="serNote"></div>
+  <div class="sect">About this series</div>
+  <div id="serAbout"></div>
+</section>
+
+<!-- DETAIL -->
+<section class="screen" id="detail">
+  <div class="panel on" id="pMap">
+    <div class="hubView" id="hubView" hidden>
+      <div class="bar"><button class="fab" aria-label="Back to track list" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2" id="hubTrackName"></h2></div>
+      <div id="hubBody"></div>
+    </div>
+    <div class="map-wrap" id="mapWrap"><div id="mapHolder"></div></div>
+
+    <div class="fl fl-tl"><button class="fab" aria-label="Back to track list" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div class="fl fl-tc"><button class="nowpill" id="nowPill" hidden onclick="showNowSession()"><span class="tag" id="nowTag"></span><span class="txt" id="nowTxt"></span></button></div>
+    <div class="fl fl-r">
+      <button class="fab wx" id="wxBtn" hidden onclick="openWeather()"></button>
+      <button class="fab" id="gpsBtn" aria-label="Locate me" onclick="startGps()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+      <button class="fab" aria-label="Zoom in" onclick="zoom(1.5)"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></button>
+      <button class="fab" aria-label="Zoom out" onclick="zoom(1/1.5)"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+      <button class="fab" aria-label="Layers and settings" onclick="openLayers()"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5M3 17l9 5 9-5"/></svg></button>
+    </div>
+    <div class="fl fl-bc" id="nearBar">
+      <button class="pill ico" id="parkBtn" aria-label="Parking" onclick="toggleParking()"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg></button>
+      <button class="pill ico" id="restBtn" aria-label="Restrooms" onclick="toggleMode('rest')"><svg viewBox="0 0 24 24" class="wc"><circle cx="7" cy="4.5" r="2"/><path d="M4.5 8h5v6H8.4v6H5.6v-6H4.5z"/><circle cx="17" cy="4.5" r="2"/><path d="M15 8h4l2 6h-1.7l.3 6h-5.2l.3-6H13z"/><path d="M12 3v18" stroke-width="1"/></svg></button>
+      <button class="pill ico" id="foodBtn" aria-label="Concessions" onclick="toggleMode('food')"><svg viewBox="0 0 24 24"><path d="M4 11h16M5 11a7 7 0 0 1 14 0M3 15h18M6 15v3h12v-3"/></svg></button>
+    </div>
+    <div class="fl fl-bl"><button class="fab pin" id="spotBtn" aria-label="Save my spot" onclick="saveSpot()"><svg viewBox="0 0 24 24"><path d="M6 21V4M6 5h11l-2.6 4 2.6 4H6"/></svg></button></div>
+
+    <div class="sheet" id="sheet" hidden>
+      <div class="handle"></div>
+      <button class="sclose" onclick="closeSheetBtn()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="sv" id="shPoi" hidden>
+        <div class="ptitle"><span class="dot" id="pcDot"></span><strong id="pcName"></strong></div>
+        <small id="pcDesc"></small>
+        <div class="pmeta" id="pcMeta"></div>
+        <div class="pgo" id="pcGo"><button class="btn primary" onclick="startDirections()">Directions</button></div>
+        <div class="pgo two" id="pcMaps" hidden><button class="btn quiet" onclick="openPoiInMaps('apple')">Apple Maps</button><button class="btn quiet" onclick="openPoiInMaps('google')">Google Maps</button></div>
+        <div class="pedit" id="pcEdit" hidden><input id="peName" maxlength="48" placeholder="Name"><select id="peKind" aria-label="Icon" onchange="syncShowerRow()"></select><label class="pechk" id="peShowerRow" hidden><input type="checkbox" id="peShower"> Has showers</label><textarea id="peDesc" maxlength="240" rows="3" placeholder="Description"></textarea><div class="peactions"><button class="btn primary" onclick="savePoiEdit()">Save</button><button class="btn quiet" onclick="revertPoiEdit()">Revert</button><button class="btn danger" onclick="deletePoi()">Delete badge</button></div></div>
+      </div>
+      <div class="sv" id="shDir" hidden>
+        <div class="ptitle"><strong id="dirTo">Directions</strong></div>
+        <div class="drow"><small>From</small><select id="dirFrom" onchange="computeRoute()"></select></div>
+        <div class="drow"><span class="stat" id="dirStat"></span></div>
+        <small id="dirNote"></small>
+        <div class="pgo two"><button class="btn primary" id="dirWalk" onclick="toggleWalking()">Start walking</button><button class="btn quiet" onclick="endDirections()">End directions</button></div>
+      </div>
+      <div class="sv" id="shSpot" hidden>
+        <div class="ptitle"><span class="dot" style="--c:var(--accent)"></span><strong>My spot</strong></div>
+        <small id="spotText"></small>
+        <div class="pgo two"><button class="btn primary" onclick="routeToSpot()">Take me back</button><button class="btn quiet" onclick="forgetSpot()">Forget</button></div>
+      </div>
+      <div class="sv" id="shMode" hidden>
+        <div class="ptitle"><span class="dot" id="modeDot"></span><strong id="modeTitle"></strong></div>
+        <small id="modeNote"></small>
+        <div class="pgo" id="modeGo" hidden><button class="btn primary" id="modeBtn"></button></div>
+        <div class="lotlist" id="modeList"></div>
+      </div>
+      <div class="sv" id="shPark" hidden>
+        <div class="ptitle"><strong>Parking</strong></div>
+        <small>Each lot is shaded on the map. Tap one for details and directions.</small>
+        <div class="lotlist" id="lotList"></div>
+      </div>
+      <div class="sv" id="shGps" hidden>
+        <div class="ptitle"><strong id="gpsTitle">Where am I?</strong></div>
+        <small id="gpsText">Turn on location to see yourself on the map.</small>
+      </div>
+      <div class="sv" id="shWx" hidden></div>
+      <div class="sv" id="shLayers" hidden>
+        <div class="ptitle"><strong onclick="devTap()">Show on map</strong></div>
+        <div class="layers" id="layerList"></div>
+        <div class="srow"><button class="btn quiet" onclick="resetView()">Fit whole track</button><button class="btn quiet" id="editBtn" onclick="toggleEdit()" hidden>Edit badges</button></div>
+        <div class="srow"><button class="btn quiet" id="hubPreviewBtn" onclick="closeSheet();enterHub()" hidden>Preview Race Day hub</button></div>
+        <div class="editbar" id="editBar" hidden><small>Edit mode: drag a badge to move it, tap one to rename it, or tap Add badge and then tap the map to create a new one. With Parking on, drag a lot to move it, drag its corners to reshape, tap a small dot to add a corner, double-tap a corner to remove it.</small><div class="srow"><button class="btn quiet" id="addBadgeBtn" onclick="startAddBadge()">Add badge</button><button class="btn quiet" onclick="exportLayout()">Copy layout</button><button class="btn quiet" onclick="resetLayout()">Reset badges</button></div><textarea id="layoutOut" hidden readonly></textarea></div>
+        <small class="fine">North is up. Names appear as you zoom in, most important first. Circuit and site data © OpenStreetMap contributors.</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="pFood">
+    <div class="bar"><button class="fab" aria-label="Back to track list" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2 dn"></h2></div>
+    <div class="section"><h3>Food and drink on site</h3><div id="foodList"></div></div>
+    <div class="form" id="addForm">
+      <h4>Add a stand you found</h4>
+      <input id="fName" placeholder="Stand name (e.g. Turn 5 Smokehouse)" maxlength="40">
+      <div class="row">
+        <input id="fWhat" placeholder="What they sell" maxlength="40">
+        <select id="fPrice"><option value="$">$ under 10</option><option value="$$" selected>$$ 10–20</option><option value="$$$">$$$ over 20</option></select>
+      </div>
+      <input id="fWhere" placeholder="Where (near Turn 5, paddock, main gate…)" maxlength="60">
+      <div class="actions"><button class="btn primary" onclick="addStand()">Add stand</button></div>
+    </div>
+  </div>
+
+  <div class="panel" id="pEvents">
+    <div class="bar"><button class="fab" aria-label="Back to track list" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2 dn"></h2></div>
+    <div class="section" id="schedSection" hidden><h3 id="schedTitle">This weekend</h3><p class="fine tznote" id="schedNote" hidden></p><div class="days" id="schedDays"></div><div id="schedList"></div></div>
+    <div class="section"><h3>Season</h3><div id="eventList"></div></div>
+    <p class="map-note">Sample schedule for the prototype. The real app pulls official dates and lets you add a weekend to your calendar.</p>
+  </div>
+
+  <div class="panel info" id="pInfo">
+    <div class="bar"><button class="fab" aria-label="Back to track list" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2 dn"></h2></div>
+    <div class="section" id="watchSection" hidden><h3 id="watchTitle">Cars and drivers to watch</h3><div id="watchList"></div></div>
+    <div class="section"><h3>About the circuit</h3></div>
+    <p id="iBlurb"></p>
+    <div class="ivenue"><dl id="iVenue"></dl></div>
+    <div class="section moreSect hideSect"><h3>More</h3></div>
+    <dl id="iFacts" class="more"></dl>
+    <p style="font-size:13px">Circuit geometry © OpenStreetMap contributors, ODbL.</p>
+  </div>
+
+  <nav class="tabs">
+    <button class="on" data-p="pMap" onclick="tab(this)"><svg viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Map</button>
+    <button data-p="pEvents" onclick="tab(this)"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Events</button>
+    <button data-p="pInfo" onclick="tab(this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>Info</button>
+  </nav>
+</section>
+
+<div class="alertCard" id="alertCard" hidden><span class="acDot"></span><button class="acBody" onclick="openAlertTarget()"><span class="acTag">ON TRACK</span><span class="acTrack" id="acTrack"></span><span class="acTxt" id="acTxt"></span></button><button class="acClose" aria-label="Dismiss" onclick="dismissAlert()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="infoModal" hidden onclick="if(event.target===this)closeInfo()">
+  <div class="mcard" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <div class="handle"></div>
+    <button class="sclose" aria-label="Close" onclick="closeInfo()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div id="infoBody"></div>
+  </div>
+</div>
+<div class="modal center" id="raceWeekModal" hidden onclick="if(event.target===this)closeRaceWeek()">
+  <div class="mcard rwCard" role="dialog" aria-modal="true" aria-labelledby="rwTitle">
+    <button class="sclose" aria-label="Close" onclick="closeRaceWeek()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="rwConfetti" id="rwConfetti"></div>
+    <div class="rwChecker"></div>
+    <div class="rwFlag"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 5h13l-3 4.5L18 14H5"/></svg></div>
+    <h3 id="rwTitle">It's race week!</h3>
+    <p class="rwText" id="rwText"></p>
+    <button class="btn primary" onclick="closeRaceWeek()">Let's go</button>
+  </div>
+</div>
+</div>
+
+<script>const TRACKS = [];</script>
+<script src="data/daytona.js"></script>
+<script src="data/sebring.js"></script>
+<script src="data/laguna-seca.js"></script>
+<script src="data/watkins-glen.js"></script>
+<script src="data/road-america.js"></script>
+<script src="data/vir.js"></script>
+<script src="data/indianapolis.js"></script>
+<script src="data/road-atlanta.js"></script>
+<script src="data/mid-ohio.js"></script>
+<script src="data/long-beach.js"></script>
+<script src="data/detroit.js"></script>
+<script src="data/canadian-tire-motorsport-park.js"></script>
+<script src="data/phoenix.js"></script>
+<script src="data/barber.js"></script>
+<script src="data/st-petersburg.js"></script>
+<script src="data/arlington.js"></script>
+<script src="data/cota.js"></script>
+<script src="data/sonoma.js"></script>
+<script src="data/indianapolis-oval.js"></script>
+<script src="data/series.js"></script>
+<script src="data/watch.js"></script>
+<script src="data/results.js"></script>
+<script src="data/champs.js"></script>
+<div class="unlock" id="unlock" hidden role="dialog" aria-modal="true" aria-label="New stamp" onclick="if(event.target===this)closeUnlock()">
+  <div class="ul-card"><div class="ul-stage"><div class="ul-imp" id="ulMedal"></div><div class="ul-flash"></div><div class="ul-tool"><i></i></div><div class="ul-burst" id="ulBurst"></div></div>
+    <div class="ul-kick">New stamp</div><h3 id="ulName"></h3><p id="ulDesc"></p><button class="btn primary" id="ulBtn" onclick="ppNext()">Nice</button></div>
+</div>
+<script src="js/app.js"></script>
+<script src="js/passport.js"></script>
+</body>
+</html>

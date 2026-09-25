@@ -1,0 +1,18 @@
+<body style="margin:0;background:#fff;display:flex;gap:10px;padding:10px;flex-wrap:wrap;font:12px system-ui">
+<script>
+const W='#FBF8F0', T='#3F6B7D', C='#E39B7B';
+const pinP=(fill)=>`<path d="M60 110C60 110 26 78 26 50A34 34 0 0 1 94 50C94 78 60 110 60 110Z" fill="${fill}"/>`;
+let uid=0;
+function disc(cx,cy,r,n,c1,c2,rot,ring){ const id='cl'+(++uid), cell=2*r/n; let s=`<clipPath id="${id}"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath><g clip-path="url(#${id})"><g transform="rotate(${rot} ${cx} ${cy})"><rect x="${cx-r-2}" y="${cy-r-2}" width="${2*r+4}" height="${2*r+4}" fill="${c1}"/>`;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++) if((i+j)%2===0) s+=`<rect x="${(cx-r+i*cell).toFixed(2)}" y="${(cy-r+j*cell).toFixed(2)}" width="${cell.toFixed(2)}" height="${cell.toFixed(2)}" fill="${c2}"/>`;
+ s+='</g></g>'; if(ring) s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${ring[0]}" stroke-width="${ring[1]}"/>`; return s; }
+const items={
+ K1:{bg:'#DCE8E0',pin:C,g:disc(60,50,19,4,W,T,0,null)},
+ K2:{bg:'#DCE8E0',pin:C,g:disc(60,50,19,4,W,T,45,null)},
+ K3:{bg:'#DCE8E0',pin:C,g:disc(60,50,19,6,W,T,0,[W,3])},
+ K4:{bg:'#DCE8E0',pin:C,g:disc(60,50,20,4,W,'#2B3A42',0,null)},
+ K5:{bg:'#16191D',pin:C,g:disc(60,50,19,4,W,'#16191D',0,null)},
+ K6:{bg:'#EAEFE9',pin:'#3F6B7D',g:disc(60,50,19,4,W,C,0,null)}
+};
+Object.entries(items).forEach(([k,o])=>{ document.body.insertAdjacentHTML('beforeend',`<div style="text-align:center"><svg width="190" height="190" viewBox="0 0 120 120"><rect width="120" height="120" rx="27" fill="${o.bg}"/>${pinP(o.pin)}${o.g}</svg><div>${k}</div></div>`); });
+</script></body>

@@ -1,0 +1,13 @@
+<body style="margin:0;background:#fff;display:flex;gap:12px;padding:12px;flex-wrap:wrap">
+<script>
+const pin='<path d="M60 110C60 110 26 78 26 50A34 34 0 0 1 94 50C94 78 60 110 60 110Z" fill="#E39B7B"/>';
+const T={
+ E:{d:"M18 62L18 38C18 22 30 14 46 14L62 14C72 14 80 20 80 30C80 40 70 42 66 48C62 54 70 58 78 62C86 66 84 82 70 84C60 86 54 78 50 72C46 66 36 66 30 72C24 78 18 74 18 62Z",sf:[18,50,'v']},
+ F:{d:"M14 66L14 36C14 22 24 14 38 14L58 14C70 14 78 22 74 32C71 40 60 40 58 47C56 54 66 56 76 56C88 56 90 72 78 80C68 87 58 82 54 74C50 66 40 68 34 76C28 84 14 80 14 66Z",sf:[14,52,'v']},
+ G:{d:"M16 60C16 36 30 16 52 16C66 16 74 24 72 34C70 44 58 46 58 54C58 62 68 62 76 60C88 58 92 70 86 78C80 86 66 86 58 80C50 74 42 74 36 80C28 88 16 78 16 60Z",sf:[16,40,'v']}
+};
+Object.entries(T).forEach(([k,t])=>{ const [sx,sy]=t.sf;
+ document.body.insertAdjacentHTML('beforeend',`<svg width="330" height="330" viewBox="0 0 120 120"><rect width="120" height="120" rx="27" fill="#DCE8E0"/>${pin}
+ <g transform="translate(31,22) scale(0.58)"><path d="${t.d}" fill="none" stroke="#FBF8F0" stroke-width="8.5" stroke-linejoin="round" stroke-linecap="round"/>
+ <path d="M${sx-8} ${sy}H${sx+8}" stroke="#3F6B7D" stroke-width="4"/></g></svg>`); });
+</script></body>

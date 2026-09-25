@@ -1,0 +1,16 @@
+<body style="margin:0;background:#fff;display:flex;gap:10px;padding:10px;flex-wrap:wrap;font:12px system-ui">
+<script>
+const pin='<path d="M60 110C60 110 26 78 26 50A34 34 0 0 1 94 50C94 78 60 110 60 110Z" fill="#E39B7B"/>';
+const W='#FBF8F0', T='#3F6B7D';
+const items={
+ B0:`<path d="M42 55C42 44 50 37 60 39C68 41 68 46 74 47C81 48 82 56 75 60C68 64 63 60 58 64C52 68 43 66 42 55Z" fill="none" stroke="${W}" stroke-width="4.6" stroke-linejoin="round"/><circle cx="62" cy="39.3" r="3.2" fill="${T}"/>`,
+ B1:`<path d="M39 56C39 46 45 40 54 40L68 40C77 40 82 46 79 52C76 58 68 56 64 58C60 60 62 65 68 66C75 67 77 73 71 77C65 81 52 80 45 74C40 70 39 63 39 56Z" fill="none" stroke="${W}" stroke-width="4.6" stroke-linejoin="round"/><circle cx="56" cy="40" r="3.2" fill="${T}"/>`,
+ B2:`<path d="M40 60C38 50 42 42 51 40C58 38 64 41 70 41C78 41 83 47 80 54C77 60 69 59 66 63C63 67 70 70 72 74C74 79 66 82 58 80C48 78 42 70 40 60Z" fill="none" stroke="${W}" stroke-width="4.6" stroke-linejoin="round"/><circle cx="60" cy="39.6" r="3.2" fill="${T}"/>`,
+ B3:`<path d="M41 52C41 43 48 38 57 38H69C77 38 82 43 81 49C80 55 72 55 67 56C62 57 58 59 59 64C60 69 68 68 71 72C74 77 68 81 60 81C50 81 41 75 41 65Z" fill="none" stroke="${W}" stroke-width="4.6" stroke-linejoin="round"/><circle cx="52" cy="38.2" r="3.2" fill="${T}"/>`,
+ P:`<path d="M46 76V46C46 40 50 37 56 37H66C74 37 79 42 79 49C79 56 74 60 66 60H46" fill="none" stroke="${W}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="46" cy="66" r="3.4" fill="${T}"/>`,
+ F:`<g transform="translate(37,34)"><path d="M3 0V34" stroke="${W}" stroke-width="4.6" stroke-linecap="round"/><path d="M3 2H36V22H3" fill="${W}"/><g fill="${'#E39B7B'}"><rect x="9" y="2" width="6.5" height="6.5"/><rect x="22" y="2" width="6.5" height="6.5"/><rect x="15.5" y="8.5" width="6.5" height="6.5"/><rect x="28.5" y="8.5" width="6.5" height="6.5"/><rect x="9" y="15" width="6.5" height="6.5"/><rect x="22" y="15" width="6.5" height="6.5"/></g></g>`,
+ S:`<path d="M40 62C40 50 48 44 58 46C66 48 66 54 72 54C78 54 80 48 78 42" fill="none" stroke="${W}" stroke-width="5" stroke-linecap="round"/><circle cx="41" cy="66" r="3.6" fill="${T}"/>`,
+ R:`<circle cx="60" cy="50" r="19" fill="none" stroke="${W}" stroke-width="4.6"/><path d="M60 31V38M60 62V69M41 50H48M72 50H79" stroke="${W}" stroke-width="3" stroke-linecap="round"/><path d="M50 58C52 50 58 46 66 47" fill="none" stroke="${T}" stroke-width="4" stroke-linecap="round"/>`
+};
+Object.entries(items).forEach(([k,g])=>{ document.body.insertAdjacentHTML('beforeend',`<div style="text-align:center"><svg width="190" height="190" viewBox="0 0 120 120"><rect width="120" height="120" rx="27" fill="#DCE8E0"/>${pin}${g}</svg><div>${k}</div></div>`); });
+</script></body>

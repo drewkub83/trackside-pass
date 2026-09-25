@@ -1,0 +1,4 @@
+# Netlify builds the app from the repo on every push: build.sh copies the live app files into dist/.
+[build]
+  command = "bash build.sh"
+  publish = "dist"

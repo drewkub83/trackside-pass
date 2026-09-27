@@ -18,6 +18,22 @@ const WATCH = [
         ["#67 Scuderia Corsa Ferrari (Mitchell Green, Jon Morley)", "Won Am at Road America on the team's series debut, after a drive-through penalty."]] }
     ],
     note:"Sources: GT World Challenge America's own standings pages (checked directly, Pro/Pro-Am/Am driver tables) plus RACER and Frontstretch race reports. Point totals above are confirmed current through Road America (Round 5)." },
+  { t:"barber", d:"2026-09-25", s:"gtwca", from:"2026-09-27",
+    asOf:"Current after Sunday morning qualifying (Qualifying 1 and 2). The race starts at 12:30 PM CT.",
+    groups:[
+      { h:"GT World Challenge America: Pro", items:[
+        ["#12 AF Corse USA Ferrari (Frederik Schandorff, Matias Perez Companc)", "Took overall pole for the race, edging the Pro points leaders by just 0.027 seconds on a two-session average of 1:20.868."],
+        ["#34 JMF Motorsports Mercedes-AMG (Michai Stephens, Mikael Grenier)", "Start second and still lead the Pro standings by 4 points, 96 to 92, over Turner Motorsport's Rothberg and Foley entering the race."],
+        ["#29 Turner Motorsport BMW (Justin Rothberg, Robby Foley)", "Trail JMF by 4 points with one round left after Barber; won at Road America and need another strong result to keep the title fight open for the finale."]] },
+      { h:"Pro-Am", items:[
+        ["#28 RS1 Porsche (Jan Heylen, Danny Dyszelski)", "Took Pro-Am pole, 4th overall, with Heylen arriving at Barber 14 points behind the Pro-Am points leaders."],
+        ["#31 Wright Motorsports Porsche (Dave Musial Jr., Ryan Yardley)", "Lead Pro-Am by 3 points over GMG Racing's Washington and Sargent entering the race."],
+        ["#32 GMG Racing Porsche (Kyle Washington, Tom Sargent)", "Qualified 12th overall despite Sargent turning the fastest single lap of the weekend; Sargent says they \"have to win\" at Barber to stay in the Pro-Am fight."]] },
+      { h:"Am", items:[
+        ["Jay Schreibman (AF Corse USA)", "The Am points leader's #163 Ferrari is the only Am entry at Barber; he only needs to complete his minimum drive time in the final two races to clinch the title."],
+        ["#163 AF Corse USA Ferrari (Jay Schreibman, Oswaldo Negri)", "Negri returns to the car at Barber after missing the previous two rounds while recovering from Achilles tendon surgery."]] }
+    ],
+    note:"Sources: Sportscar365 and Daily Sportscar (Barber qualifying reports and practice notebooks), GT REPORT (Friday and Saturday on-track notebooks), and Pit Debrief (Barber preview and standings), checked Sunday morning Sept 27 after Qualifying 1 and 2." },
   { t:"barber", d:"2026-09-25", s:"gt4a", asOf:"Current after Road America (Aug 30). Barber is the second-to-last GT4 America weekend; Indianapolis (Oct 8-11) closes the season.",
     groups:[
       { h:"Silver", items:[

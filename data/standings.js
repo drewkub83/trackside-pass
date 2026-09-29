@@ -32,7 +32,7 @@ const STANDINGS = [
         { pos:2, who:"Robby Foley, Patrick Gallagher (#96 Turner Motorsport)", gap:"6 points back" }
       ] }
     ],
-    note:"Sources: IMSA's own \"Tale of the Tape\" championship preview (Sep 24) plus Sportscar365 and RACER standings reports after Indianapolis." },
+    note:"GTP is a genuine two-driver fight -- IMSA's own preview names only Aitken and Heinrich as mathematically able to win it, so no 3rd-5th is shown. GTD PRO has 7 of 9 full-season cars still mathematically alive per that same preview, but only the top 3's exact gaps were confirmed; the others weren't named precisely enough to add without guessing. Sources: IMSA's own \"Tale of the Tape\" championship preview (Sep 24) plus Sportscar365 and RACER standings reports after Indianapolis." },
   { s:"pilot", asOf:"Current after Indianapolis (Sep 20). The FOX Factory 120 on Oct 2 is the season finale.",
     classes:[
       { h:"GS", rows:[
@@ -52,7 +52,9 @@ const STANDINGS = [
     classes:[
       { h:"LMP3", rows:[
         { pos:1, who:"Oscar Tunjo (#1 Gebhardt Intralogistics Motorsports)", gap:"Leads by 390 points (270 in sprint points) over his own teammate. Can clinch the title by starting Race 1 at Road Atlanta." },
-        { pos:2, who:"Danny Soufi (Gebhardt Intralogistics Motorsports)", gap:"Tunjo's closest challenger, and teammate" }
+        { pos:2, who:"Danny Soufi (Gebhardt Intralogistics Motorsports)", gap:"Tunjo's closest challenger, and teammate" },
+        { pos:3, who:"Travis Hill (#2 Shopify Racing)", gap:"Tied for 3rd in the Bronze Cup standings" },
+        { pos:4, who:"Brian Thienes (#77 Forte Racing)", gap:"Tied for 3rd in the Bronze Cup standings" }
       ] },
       { h:"GSX", rows:[
         { pos:1, who:"Westin Workman (#8 RAFA Racing)", pts:2680, gap:"Can clinch the title by starting Race 1 at Road Atlanta" },
@@ -73,15 +75,20 @@ const STANDINGS = [
     classes:[
       { h:"Pro", rows:[
         { pos:1, who:"Tyler Maxson (TOPP Racing)", gap:"Leads by 11 points" },
-        { pos:2, who:"Aaron Jeansonne (Kellymoss)", gap:"11 points back" }
+        { pos:2, who:"Aaron Jeansonne (Kellymoss)", gap:"11 points back" },
+        { pos:3, who:"Callum Hedge (JDX Racing)", gap:"Closest of the chasing pack" },
+        { pos:4, who:"Jared Thomas (JTR Motorsports Engineering)", gap:"In the chasing pack" },
+        { pos:5, who:"Janne Stiak (ACI Motorsports)", gap:"In the chasing pack, with 5 podiums in 6 races at Indianapolis" }
       ] },
       { h:"Pro-Am", rows:[
         { pos:1, who:"Patrick Mulcahy (ACI Motorsports)", gap:"Clinched the Pro-Am title at Indianapolis" }
       ] },
       { h:"Masters", rows:[
         { pos:1, who:"Marco Cirone (ACI Motorsports)", gap:"Leads by 52 points" },
-        { pos:2, who:"Scott Blind (Ruckus Racing)", gap:"52 points back, the defending champion" }
+        { pos:2, who:"Scott Blind (Ruckus Racing)", gap:"52 points back, the defending champion" },
+        { pos:3, who:"Rob Walker (JTR Motorsports Engineering)" },
+        { pos:4, who:"Richard Edge (ACI Motorsports)" }
       ] }
     ],
-    note:"Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America and Sportscar365 race reports from Indianapolis." }
+    note:"Pro positions 3-5 are named from recent race reports, not an official points table -- their order past Maxson/Jeansonne isn't confirmed, and no points figures are shown for them since none were published. Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America and Sportscar365 race reports from Indianapolis." }
 ];

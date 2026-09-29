@@ -687,7 +687,7 @@ function renderHub(){
   let standingsHtml="";
   const std=sid?standingsFor(sid):null;
   if(std){
-    standingsHtml=`<div class="hubCard hubTap" role="button" onclick="openStandings('${std.s}')"><div class="hubCardRow"><h4>Standings</h4>${chev}</div><p class="asof hubAsof">${esc(std.asOf)}</p>${std.classes.map(c=>`<div class="wgroup"><h4>${esc(c.h)}</h4>${standingsRowHtml(c.rows[0])}</div>`).join("")}</div>`;
+    standingsHtml=`<div class="hubCard hubTap" role="button" onclick="openStandings('${std.s}')"><div class="hubCardRow"><h4>Standings</h4>${chev}</div><p class="asof hubAsof">${esc(std.asOf)}</p>${std.classes.map(c=>`<div class="wgroup"><h4>${esc(c.h)}</h4>${c.rows.slice(0,5).map(standingsRowHtml).join("")}</div>`).join("")}</div>`;
   }
 
   /* "how it finished": the most recently completed race (any series, within the last 6 hours) gets its own

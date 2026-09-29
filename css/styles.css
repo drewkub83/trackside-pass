@@ -104,8 +104,22 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .hubWxRow .wbig svg{width:40px;height:40px;stroke:var(--accent);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .hubWxTemp{font-size:26px;font-weight:600;line-height:1.2}
 .hubWxDesc{font-size:14px;color:var(--ink-2)}
-.hubActions{display:flex;gap:10px;margin-bottom:14px}
-.hubActions button{flex:1;padding:14px 10px;border-radius:18px;background:var(--card);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--ink)}
+.hubWxAlert{font-size:13.5px;font-weight:600;color:var(--accent);margin-top:3px}
+.hubStripSub{font-size:13px;color:var(--ink-2);margin:-2px 0 10px}
+.hubStrip{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -2px}
+.hubChip{flex:none;min-width:76px;max-width:108px;padding:8px 10px;border-radius:14px;background:var(--tint-2)}
+.hubChip b{display:block;font-size:12.5px;font-weight:600}
+.hubChip span{display:block;font-size:11px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.hubChip.live{background:var(--accent)}
+.hubChip.live b,.hubChip.live span{color:#fff}
+.hubChip.live span{opacity:.85}
+.hubChip.past{opacity:.42}
+.hubSeriesRow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hubStar{padding:2px;line-height:0}
+.hubStar svg{width:20px;height:20px;stroke:var(--ink-2);fill:none;stroke-width:1.6;stroke-linejoin:round}
+.hubStar.on svg{stroke:var(--coral);fill:var(--coral)}
+.hubActions{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:10px;margin-bottom:14px}
+.hubActions button{padding:14px 10px;border-radius:18px;background:var(--card);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--ink)}
 .hubActions svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .hubViewList button{display:block;width:100%;text-align:left;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--ink)}
 .hubViewList button:last-child{border-bottom:none}

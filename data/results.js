@@ -1,10 +1,12 @@
-/* How it finished, one entry per completed race weekend. Written after official results are posted.
-   t = track id, d = first day of the event that just finished, event = its name, groups = [{h: class or
-   series, winner: "car/team, drivers", gap: margin or note, podium: ["2nd", "3rd", ...]}].
-   Shown in place of the pre-race "cars to watch" list once an event is over. Facts are only what
+/* How it finished, one entry per completed race per series (like data/watch.js). Written after official
+   results are posted. t = track id, d = event start day, s = series id (SERIES in data/series.js, so a
+   weekend with several series -- Barber, Road Atlanta -- gets one entry per race, not one for the whole
+   weekend), event = the race's name, groups = [{h: class, winner: "car/team, drivers", gap: margin or
+   note, podium: ["2nd", "3rd", ...]}]. Shown in place of the pre-race "cars to watch" list (Info tab) and
+   as a "How it finished" card in the Race Day hub right after that series' race ends. Facts are only what
    published race reports said -- never guessed or inferred from standings. */
 const RESULTS = [
-  { t:"indianapolis", d:"2026-09-18", event:"TireRack.com Battle on the Bricks",
+  { t:"indianapolis", d:"2026-09-18", s:"weathertech", event:"TireRack.com Battle on the Bricks",
     groups:[
       { h:"GTP", winner:"#24 BMW M Team WRT BMW M Hybrid V8 — Sheldon van der Linde, Dries Vanthoor",
         gap:"Won with a late pass of the #31, by 2.926 seconds at the line — the team's first IMSA win.",

@@ -320,6 +320,9 @@ function watchNow(){
   return Object.values(best);
 }
 function watchSeriesName(x){ const sr=SERIES.find(r=>r.id===x.s); return sr?sr.name:""; }
+/* the series you've starred in the Race Day hub, when more than one shares a weekend -- global, not per track */
+function favSeries(){ try{ return localStorage.getItem("paddock:favSeries")||null; }catch(e){ return null; } }
+function toggleFavSeries(id){ try{ localStorage.setItem("paddock:favSeries",favSeries()===id?"":id); }catch(e){} renderHub(); }
 function renderWatch(){
   const sec=document.getElementById("watchSection"); if(!sec) return; const fo=focusAt(cur), title=document.getElementById("watchTitle");
   const w=watchNow();
@@ -330,11 +333,11 @@ function renderWatch(){
   }
   /* no upcoming preview due -- show how the last race here actually finished, once results are in */
   const lastDone=(cur.events||[]).filter(e=>eventDone(cur,e)).sort((a,b)=>b.d.localeCompare(a.d))[0];
-  const res=lastDone&&typeof RESULTS!=="undefined"?RESULTS.find(x=>x.t===cur.id&&x.d===lastDone.d):null;
-  if(!res){ sec.hidden=true; return; }
-  sec.hidden=false; if(title) title.textContent=`How ${res.event} finished`;
-  document.getElementById("watchList").innerHTML=res.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4><div class="witem"><b>${esc(g.winner)}</b>${g.gap?`<span>${esc(g.gap)}</span>`:""}</div>${(g.podium||[]).map(p=>`<div class="witem sub"><span>${esc(p)}</span></div>`).join("")}</div>`).join("")
-    +(res.note?`<p class="wnote">${esc(res.note)}</p>`:"");
+  const results=lastDone&&typeof RESULTS!=="undefined"?RESULTS.filter(x=>x.t===cur.id&&x.d===lastDone.d):[];
+  if(!results.length){ sec.hidden=true; return; }
+  sec.hidden=false; if(title) title.textContent=results.length>1?`How ${lastDone.e} finished`:`How ${results[0].event} finished`;
+  document.getElementById("watchList").innerHTML=results.map(res=>(results.length>1?`<h4 class="wseries">${esc(res.event)}</h4>`:"")+res.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4><div class="witem"><b>${esc(g.winner)}</b>${g.gap?`<span>${esc(g.gap)}</span>`:""}</div>${(g.podium||[]).map(p=>`<div class="witem sub"><span>${esc(p)}</span></div>`).join("")}</div>`).join("")
+    +(res.note?`<p class="wnote">${esc(res.note)}</p>`:"")).join("");
 }
 let evRows=[];
 function renderEvents(){
@@ -607,32 +610,68 @@ function renderHub(){
   else if(next){ const soon=next.start-now<36e5; sessionHtml=sessCard("Next on track",shortName(next.n),soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)); }
   else sessionHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${esc(cur.eventName||"This weekend")}</h4><div class="hubSessionSub">No more sessions today</div></div>${chev}</div></div>`;
 
-  let wxHtml="";
-  if(wx&&wx.data&&wx.data.current){
-    const c=wx.data.current, ro=rainOutlook();
-    wxHtml=`<div class="hubCard hubWxRow" role="button" onclick="openWeather()"><span class="wbig">${wxIcon(c.weather_code,c.is_day)}</span><div><div class="hubWxTemp">${tv(c.temperature_2m)}°</div><div class="hubWxDesc">${esc(wxInfo(c.weather_code)[0])}${ro&&ro.state!=="clear"?" · "+esc(ro.text||""):""}</div></div></div>`;
+  /* today at a glance: every session today as a small strip, so overlapping series (a common-round weekend
+     like Barber or Road Atlanta) are visible without opening the schedule. Tapping it opens the schedule,
+     same as the session card above. */
+  const today=ss.filter(s=>s.d===localToday());
+  let stripHtml="";
+  if(today.length){
+    const doneCount=today.filter(s=>s.end<=now).length;
+    const chips=today.map(s=>{ const isLive=s.start<=now&&now<s.end, past=s.end<=now;
+      return `<div class="hubChip${isLive?" live":past?" past":""}"><b>${fmtTime(s.start,cur.tz)}</b><span>${esc(shortName(s.n))}</span></div>`; }).join("");
+    stripHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><h4>Today</h4><div class="hubStripSub">${today.length} session${today.length>1?"s":""} today${doneCount?` · ${doneCount} done`:""}</div><div class="hubStrip">${chips}</div></div>`;
   }
 
+  let wxHtml="";
+  if(wx&&wx.data&&wx.data.current){
+    const c=wx.data.current, ro=rainOutlook(), wet=ro&&(ro.state==="now"||(ro.state==="soon"&&ro.mins<=60));
+    wxHtml=`<div class="hubCard hubWxRow" role="button" onclick="openWeather()"><span class="wbig">${wxIcon(c.weather_code,c.is_day)}</span><div><div class="hubWxTemp">${tv(c.temperature_2m)}°</div><div class="hubWxDesc">${esc(wxInfo(c.weather_code)[0])}${!wet&&ro?" · "+esc(ro.text||""):""}</div>${wet?`<div class="hubWxAlert">☔ ${esc(ro.text)}</div>`:""}</div></div>`;
+  }
+
+  const spot=getSpot();
   const actionsHtml=`<div class="hubActions">
     <button onclick="leaveHub();toggleMode('rest')"><svg viewBox="0 0 24 24" class="wc"><circle cx="7" cy="4.5" r="2"/><path d="M4.5 8h5v6H8.4v6H5.6v-6H4.5z"/><circle cx="17" cy="4.5" r="2"/><path d="M15 8h4l2 6h-1.7l.3 6h-5.2l.3-6H13z"/><path d="M12 3v18" stroke-width="1"/></svg>Restrooms</button>
+    <button onclick="leaveHub();toggleMode('food')"><svg viewBox="0 0 24 24"><path d="M4 11h16M5 11a7 7 0 0 1 14 0M3 15h18M6 15v3h12v-3"/></svg>Food</button>
+    ${spot?`<button onclick="leaveHub();routeToSpot()"><svg viewBox="0 0 24 24"><path d="M6 21V4M6 5h11l-2.6 4 2.6 4H6"/></svg>My spot</button>`:""}
     <button onclick="leaveHub()"><svg viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>Full map</button>
   </div>`;
 
   /* "what to watch" follows the series on track (or next on track): when MX-5 Cup takes the track, its storylines are what shows.
+     Starring a series (when more than one runs the same weekend) keeps that series showing even while another is on track.
      It swaps to a live running order once that data source exists and a session is live. */
   const wAll=watchNow();
   let watchHtml="";
   if(wAll.length){
     const cand=live?[live,...ss.filter(x=>x.start>now)]:ss.filter(x=>x.start>now);
-    let sid=null; for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
-    const x=wAll.find(e=>e.s===sid)||wAll[0];
-    watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeries">${esc(watchSeriesName(x))}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4 style="text-transform:none;color:var(--ink);font-size:14px">${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;
+    const fav=favSeries();
+    let sid=null;
+    if(fav&&wAll.some(e=>e.s===fav)&&cand.some(c=>{ const sr=seriesFor(c.n); return sr&&sr.id===fav; })) sid=fav;
+    else for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
+    const x=wAll.find(e=>e.s===sid)||wAll[0], isFav=fav===x.s, star=wAll.length>1?`<button class="hubStar${isFav?" on":""}" aria-label="${isFav?"Unstar":"Star"} ${esc(watchSeriesName(x))}" onclick="toggleFavSeries('${x.s}')"><svg viewBox="0 0 24 24"><path d="M12 3l2.9 6.2 6.6.8-5 4.6 1.4 6.6L12 18l-5.9 3.2L7.5 14.6l-5-4.6 6.6-.8z"/></svg></button>`:"";
+    watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4 style="text-transform:none;color:var(--ink);font-size:14px">${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;
+  }
+
+  /* "how it finished": the most recently completed race (any series, within the last 6 hours) gets its own
+     card right away -- before official results are added it says so plainly, and upgrades to the real
+     summary automatically once a RESULTS entry (data/results.js) exists for that race. */
+  let resultsHtml="";
+  /* uses every session ever listed for this track, not sessionsResolved() -- the instant the weekend's
+     last session ends, focusAt(cur) flips to the track's NEXT event (possibly months away), which would
+     make sessionsResolved() (and its date) empty right at the exact moment this card matters most. */
+  const doneRaces=sessionsOf(cur).filter(s=>kindOf(s.n)==="race"&&s.end<=now&&now-s.end<=6*3600000).sort((a,b)=>b.end-a.end);
+  if(doneRaces.length){
+    const jr=doneRaces[0], sr=seriesFor(jr.n);
+    if(sr){
+      const evt=(cur.events||[]).find(e=>jr.d>=e.d&&jr.d<=eventEnd(e));
+      const res=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===evt.d&&r.s===sr.id).pop():null;
+      resultsHtml=`<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${esc(sr.name)}</div>${res?res.groups.map(g=>`<div class="wgroup"><h4 style="text-transform:none;color:var(--ink);font-size:14px">${esc(g.h)}</h4><div class="witem"><b>${esc(g.winner)}</b>${g.gap?`<span>${esc(g.gap)}</span>`:""}</div></div>`).join(""):`<div class="hubSessionSub">The race just ended -- results will show here once they're posted.</div>`}</div>`;
+    }
   }
 
   const ov=layoutOverrides(), views=cur.pois.map(p=>applyOv(p,ov[pid(p)])).map((p,i)=>({p,i})).filter(c=>c.p.k==="view"&&!c.p.del);
   const viewsHtml=views.length?`<div class="hubCard"><h4>Best views</h4><div class="hubViewList">${views.map(c=>`<button onclick="hubGoView(${c.i})">${esc(c.p.n)}</button>`).join("")}</div></div>`:"";
 
-  body.innerHTML=sessionHtml+wxHtml+actionsHtml+watchHtml+viewsHtml;
+  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+viewsHtml;
 }
 function renderSchedule(){
   tzNote();

@@ -175,7 +175,16 @@ function openTrack(id,from){
   limits=null; view=fitted=fitView(); applyView(); { const w=document.getElementById("mapWrap"); lastSize=w.clientWidth+"x"+w.clientHeight; }
   hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); checkHubEntry();
 }
-function goHome(){ if(hubBack()) return; renderHome(); stopGps(); showScreen(backTo); }
+function goHome(){
+  /* while the hub is active (hub-mode never turned off, just another tab on top -- e.g. tapped through
+     from "On track" or the Today strip), the visible back arrow should surface the hub again, same as
+     swiping back already does -- not exit the track entirely. Only intercepts when we're not already
+     looking at the hub itself, so the hub's own back arrow still exits to the track list as before. */
+  if(hubMode){ const sc=document.querySelector(".screen.on"); const pn=sc&&sc.id==="detail"&&sc.querySelector(".panel.on");
+    if(pn&&pn.id!=="pMap"){ const mapBtn=sc.querySelector('.tabs button[data-p="pMap"]'); if(mapBtn){ mapBtn.click(); return; } } }
+  if(hubBack()) return;
+  renderHome(); stopGps(); showScreen(backTo);
+}
 function tab(btn){
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b===btn));
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id===btn.dataset.p));
@@ -320,6 +329,25 @@ function watchNow(){
   return Object.values(best);
 }
 function watchSeriesName(x){ const sr=SERIES.find(r=>r.id===x.s); return sr?sr.name:""; }
+/* one result class, as the finishing order (as many places as the source gave, or a cap for the compact hub
+   card) when there is one, else the older winner/gap/podium shape. Shared by the Info tab and the hub so
+   the two never drift out of sync. */
+function resultGroupHtml(g,cap){
+  if(g.order&&g.order.length){ const list=cap?g.order.slice(0,cap):g.order;
+    return `<div class="wgroup"><h4>${esc(g.h)}</h4>${list.map(line=>`<div class="witem sub"><span>${esc(line)}</span></div>`).join("")}</div>`; }
+  return `<div class="wgroup"><h4>${esc(g.h)}</h4><div class="witem"><b>${esc(g.winner)}</b>${g.gap?`<span>${esc(g.gap)}</span>`:""}</div>${(g.podium||[]).map(p=>`<div class="witem sub"><span>${esc(p)}</span></div>`).join("")}</div>`;
+}
+/* championship standings (data/standings.js), one entry per series. Card in the Race Day hub follows the
+   same series as What to watch and shows only the leader of each class; the sheet shows every row. */
+function standingsFor(sid){ return typeof STANDINGS!=="undefined"?STANDINGS.find(s=>s.s===sid):null; }
+function standingsRowHtml(r){ return `<div class="witem"><b>${r.pos}. ${esc(r.who)}</b>${r.pts?`<span>${r.pts} pts</span>`:(r.gap?`<span>${esc(r.gap)}</span>`:"")}</div>`; }
+function openStandings(sid){
+  const std=standingsFor(sid); if(!std) return;
+  document.getElementById("stName").textContent=watchSeriesName({s:sid})+" standings";
+  document.getElementById("stAsOf").textContent=std.asOf;
+  document.getElementById("stBody").innerHTML=std.classes.map(c=>`<div class="wgroup"><h4>${esc(c.h)}</h4>${c.rows.map(standingsRowHtml).join("")}</div>`).join("")+(std.note?`<p class="wnote">${esc(std.note)}</p>`:"");
+  showSheet("shStandings");
+}
 /* the series you've starred in the Race Day hub, when more than one shares a weekend -- global, not per track */
 function favSeries(){ try{ return localStorage.getItem("paddock:favSeries")||null; }catch(e){ return null; } }
 function toggleFavSeries(id){ try{ localStorage.setItem("paddock:favSeries",favSeries()===id?"":id); }catch(e){} renderHub(); }
@@ -336,7 +364,7 @@ function renderWatch(){
   const results=lastDone&&typeof RESULTS!=="undefined"?RESULTS.filter(x=>x.t===cur.id&&x.d===lastDone.d):[];
   if(!results.length){ sec.hidden=true; return; }
   sec.hidden=false; if(title) title.textContent=results.length>1?`How ${lastDone.e} finished`:`How ${results[0].event} finished`;
-  document.getElementById("watchList").innerHTML=results.map(res=>(results.length>1?`<h4 class="wseries">${esc(res.event)}</h4>`:"")+res.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4><div class="witem"><b>${esc(g.winner)}</b>${g.gap?`<span>${esc(g.gap)}</span>`:""}</div>${(g.podium||[]).map(p=>`<div class="witem sub"><span>${esc(p)}</span></div>`).join("")}</div>`).join("")
+  document.getElementById("watchList").innerHTML=results.map(res=>(results.length>1?`<h4 class="wseries">${esc(res.event)}</h4>`:"")+res.groups.map(g=>resultGroupHtml(g)).join("")
     +(res.note?`<p class="wnote">${esc(res.note)}</p>`:"")).join("");
 }
 let evRows=[];
@@ -639,16 +667,27 @@ function renderHub(){
   /* "what to watch" follows the series on track (or next on track): when MX-5 Cup takes the track, its storylines are what shows.
      Starring a series (when more than one runs the same weekend) keeps that series showing even while another is on track.
      It swaps to a live running order once that data source exists and a session is live. */
+  /* the series in focus: the one live now, else the next one up today or later -- shared by What to watch
+     and Standings below, so they always agree on which series they're talking about. Starring a series
+     (when more than one shares the weekend) keeps it in focus even while another is actually on track. */
+  const cand=live?[live,...ss.filter(x=>x.start>now)]:ss.filter(x=>x.start>now);
+  const fav=favSeries();
+  let sid=null;
+  if(fav&&cand.some(c=>{ const sr=seriesFor(c.n); return sr&&sr.id===fav; })) sid=fav;
+  else for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
+
   const wAll=watchNow();
   let watchHtml="";
   if(wAll.length){
-    const cand=live?[live,...ss.filter(x=>x.start>now)]:ss.filter(x=>x.start>now);
-    const fav=favSeries();
-    let sid=null;
-    if(fav&&wAll.some(e=>e.s===fav)&&cand.some(c=>{ const sr=seriesFor(c.n); return sr&&sr.id===fav; })) sid=fav;
-    else for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
     const x=wAll.find(e=>e.s===sid)||wAll[0], isFav=fav===x.s, star=wAll.length>1?`<button class="hubStar${isFav?" on":""}" aria-label="${isFav?"Unstar":"Star"} ${esc(watchSeriesName(x))}" onclick="toggleFavSeries('${x.s}')"><svg viewBox="0 0 24 24"><path d="M12 3l2.9 6.2 6.6.8-5 4.6 1.4 6.6L12 18l-5.9 3.2L7.5 14.6l-5-4.6 6.6-.8z"/></svg></button>`:"";
-    watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4 style="text-transform:none;color:var(--ink);font-size:14px">${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;
+    watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;
+  }
+
+  /* championship standings for that same series -- top of each class only; tap for the full table. */
+  let standingsHtml="";
+  const std=sid?standingsFor(sid):null;
+  if(std){
+    standingsHtml=`<div class="hubCard hubTap" role="button" onclick="openStandings('${std.s}')"><div class="hubCardRow"><h4>Standings</h4>${chev}</div><p class="asof hubAsof">${esc(std.asOf)}</p>${std.classes.map(c=>`<div class="wgroup"><h4>${esc(c.h)}</h4>${standingsRowHtml(c.rows[0])}</div>`).join("")}</div>`;
   }
 
   /* "how it finished": the most recently completed race (any series, within the last 6 hours) gets its own
@@ -664,14 +703,14 @@ function renderHub(){
     if(sr){
       const evt=(cur.events||[]).find(e=>jr.d>=e.d&&jr.d<=eventEnd(e));
       const res=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===evt.d&&r.s===sr.id).pop():null;
-      resultsHtml=`<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${esc(sr.name)}</div>${res?res.groups.map(g=>`<div class="wgroup"><h4 style="text-transform:none;color:var(--ink);font-size:14px">${esc(g.h)}</h4><div class="witem"><b>${esc(g.winner)}</b>${g.gap?`<span>${esc(g.gap)}</span>`:""}</div></div>`).join(""):`<div class="hubSessionSub">The race just ended -- results will show here once they're posted.</div>`}</div>`;
+      resultsHtml=`<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${esc(sr.name)}</div>${res?res.groups.map(g=>resultGroupHtml(g,5)).join(""):`<div class="hubSessionSub">The race just ended -- results will show here once they're posted.</div>`}</div>`;
     }
   }
 
   const ov=layoutOverrides(), views=cur.pois.map(p=>applyOv(p,ov[pid(p)])).map((p,i)=>({p,i})).filter(c=>c.p.k==="view"&&!c.p.del);
   const viewsHtml=views.length?`<div class="hubCard"><h4>Best views</h4><div class="hubViewList">${views.map(c=>`<button onclick="hubGoView(${c.i})">${esc(c.p.n)}</button>`).join("")}</div></div>`:"";
 
-  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+viewsHtml;
+  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+standingsHtml+viewsHtml;
 }
 function renderSchedule(){
   tzNote();

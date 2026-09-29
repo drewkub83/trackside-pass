@@ -154,6 +154,11 @@
         <div class="pgo" id="modeGo" hidden><button class="btn primary" id="modeBtn"></button></div>
         <div class="lotlist" id="modeList"></div>
       </div>
+      <div class="sv" id="shStandings" hidden>
+        <div class="ptitle"><strong id="stName">Standings</strong></div>
+        <small id="stAsOf"></small>
+        <div id="stBody"></div>
+      </div>
       <div class="sv" id="shPark" hidden>
         <div class="ptitle"><strong>Parking</strong></div>
         <small>Each lot is shaded on the map. Tap one for details and directions.</small>
@@ -260,6 +265,7 @@
 <script src="data/series.js"></script>
 <script src="data/watch.js"></script>
 <script src="data/results.js"></script>
+<script src="data/standings.js"></script>
 <script src="data/champs.js"></script>
 <div class="unlock" id="unlock" hidden role="dialog" aria-modal="true" aria-label="New stamp" onclick="if(event.target===this)closeUnlock()">
   <div class="ul-card"><div class="ul-stage"><div class="ul-imp" id="ulMedal"></div><div class="ul-flash"></div><div class="ul-tool"><i></i></div><div class="ul-burst" id="ulBurst"></div></div>

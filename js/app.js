@@ -600,10 +600,12 @@ function renderHub(){
   const body=document.getElementById("hubBody"); if(!body) return;
   const ss=sessionsResolved(), now=new Date();
   const live=currentSession(ss,now), next=ss.find(s=>s.start>now);
+  const chev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
+  const sessCard=(tag,name,sub)=>`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${tag}</h4><div class="hubSessionName">${esc(name)}</div><div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
   let sessionHtml;
-  if(live) sessionHtml=`<div class="hubCard"><h4>On track</h4><div class="hubSessionName">${esc(shortName(live.n))}</div><div class="hubSessionSub">${live.est?"In progress":"Ends "+fmtTime(live.end,cur.tz)}</div></div>`;
-  else if(next){ const soon=next.start-now<36e5; sessionHtml=`<div class="hubCard"><h4>Next on track</h4><div class="hubSessionName">${esc(shortName(next.n))}</div><div class="hubSessionSub">${soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)}</div></div>`; }
-  else sessionHtml=`<div class="hubCard"><h4>${esc(cur.eventName||"This weekend")}</h4><div class="hubSessionSub">No more sessions today</div></div>`;
+  if(live) sessionHtml=sessCard("On track",shortName(live.n),live.est?"In progress":"Ends "+fmtTime(live.end,cur.tz));
+  else if(next){ const soon=next.start-now<36e5; sessionHtml=sessCard("Next on track",shortName(next.n),soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)); }
+  else sessionHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${esc(cur.eventName||"This weekend")}</h4><div class="hubSessionSub">No more sessions today</div></div>${chev}</div></div>`;
 
   let wxHtml="";
   if(wx&&wx.data&&wx.data.current){

@@ -97,6 +97,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .hubCard h4{margin:0 0 6px;font-size:12.5px;color:var(--ink-2);font-weight:500;text-transform:uppercase;letter-spacing:.4px}
 .hubSessionName{font-size:19px;font-weight:600;margin:2px 0 2px}
 .hubSessionSub{font-size:14px;color:var(--ink-2)}
+.hubTap{cursor:pointer}
+.hubCardRow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hubCardRow .chev{width:20px;height:20px;flex:none;stroke:var(--ink-2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .hubWxRow{display:flex;align-items:center;gap:14px;cursor:pointer}
 .hubWxRow .wbig svg{width:40px;height:40px;stroke:var(--accent);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .hubWxTemp{font-size:26px;font-weight:600;line-height:1.2}

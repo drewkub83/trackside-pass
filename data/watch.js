@@ -137,5 +137,20 @@ const WATCH = [
       { h:"Masters", items:[
         ["Marco Cirone", "Leads Masters and extended his advantage with his win at Indianapolis."]] }
     ],
-    note:"Sources: Porsche Motorsport North America and Sportscar365 race reports from Indianapolis. Four races remain: two at Road Atlanta and two at Circuit of the Americas." }
+    note:"Sources: Porsche Motorsport North America and Sportscar365 race reports from Indianapolis. Four races remain: two at Road Atlanta and two at Circuit of the Americas." },
+  { t:"road-atlanta", d:"2026-09-30", s:"carrera", from:"2026-10-01",
+    asOf:"Current after Wednesday practice at Road Atlanta (Sep 30). Two Carrera Cup races remain this weekend.",
+    groups:[
+      { h:"Pro", items:[
+        ["Tyler Maxson (TOPP Racing)", "Topped combined Wednesday practice with a 1:20.824 in the second session, edging Practice 1 pace-setter Jared Thomas by 0.051 seconds. Leads the Pro standings by 11 points into the weekend."],
+        ["Jared Thomas (JTR Motorsports Engineering)", "Set the pace in Practice 1 before Maxson's second-session lap went 0.051 seconds quicker."],
+        ["Aaron Jeansonne (Kellymoss)", "Fourth on combined practice times, 11 points behind Maxson in the Pro standings after winning Race 2 at Indianapolis."],
+        ["Cole Kleck (TOPP Racing)", "Maxson's teammate was third on the combined practice times."]] },
+      { h:"Pro-Am", items:[
+        ["Patrick Mulcahy", "Clinched the Pro-Am title at Indianapolis with two rounds still to run, extending his winning streak to 12 straight races."]] },
+      { h:"Masters", items:[
+        ["Marco Cirone", "Leads Masters and extended his advantage with his win at Indianapolis."],
+        ["Joel Johnson", "A series debutant, led both practice sessions in Masters, with a 1:22.925 from the first session good for 10th quickest overall."]] }
+    ],
+    note:"Sources: Sportscar365 (\"Maxson Tops Wednesday Practice at Road Atlanta,\" Sep 30) for Wednesday's combined practice times; Porsche Motorsport North America and Sportscar365 Indianapolis race reports for points-standings context." }
 ];

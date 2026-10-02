@@ -152,5 +152,28 @@ const WATCH = [
         ["Marco Cirone", "Leads Masters and extended his advantage with his win at Indianapolis."],
         ["Joel Johnson", "A series debutant, led both practice sessions in Masters, with a 1:22.925 from the first session good for 10th quickest overall."]] }
     ],
-    note:"Sources: Sportscar365 (\"Maxson Tops Wednesday Practice at Road Atlanta,\" Sep 30) for Wednesday's combined practice times; Porsche Motorsport North America and Sportscar365 Indianapolis race reports for points-standings context." }
+    note:"Sources: Sportscar365 (\"Maxson Tops Wednesday Practice at Road Atlanta,\" Sep 30) for Wednesday's combined practice times; Porsche Motorsport North America and Sportscar365 Indianapolis race reports for points-standings context." },
+  { t:"road-atlanta", d:"2026-09-30", s:"weathertech", from:"2026-10-02",
+    asOf:"Current after Thursday practice (Oct 1) at Road Atlanta. Qualifying and the start of the 10-hour race are still to come.",
+    groups:[
+      { h:"GTP", items:[
+        ["#7 Porsche Penske Motorsport Porsche 963", "Topped both of Thursday's long-run sessions, the afternoon practice (1:10.639) and the night session, after Meyer Shank Racing's Acuras went 1-2 in the morning session (#93 Nick Yelloly 1:11.506, just 0.003 seconds ahead of #60 Tom Blomqvist)."],
+        ["#31 Whelen Cadillac V-Series.R (Earl Bamber, Jack Aitken)", "Aitken leads the GTP standings with 147 points and needs roughly a 9th-place finish or better here to clinch the title; was fourth-fastest in Thursday morning practice."],
+        ["#6 Porsche Penske Porsche 963 (Laurin Heinrich)", "The other Penske entry ran second-fastest behind its sister car in Thursday afternoon practice; Heinrich is the closest championship challenger to Aitken."]
+      ] },
+      { h:"LMP2", items:[
+        ["#43 Inter Europol Competition ORECA (Tom Dillmann, Jeremy Clarke)", "Clarke topped Thursday afternoon LMP2 practice; the team leads the class by 4 points over CrowdStrike Racing by APR entering the weekend."],
+        ["#22 United Autosports ORECA (Daniel Goldburg)", "Had a rough Thursday: hit the Turn 5 tire barrier nose-first in afternoon practice, then was sideswiped by the #23 Aston Martin Valkyrie at Turn 10A after returning for night practice."]
+      ] },
+      { h:"GTD PRO", items:[
+        ["#62 Risi Competizione Ferrari 296 GT3 Evo (Daniel Serra)", "Fastest in Thursday afternoon practice, just ahead of points leader Nicky Catsburg's #4 Corvette."],
+        ["#4 Corvette Racing Corvette Z06 GT3.R (Nicky Catsburg, Tommy Milner)", "Leads GTD PRO by 47 points over Paul Miller Racing's BMW; third driver Nico Varrone was fastest in Thursday night practice in the car."],
+        ["#1 Paul Miller Racing BMW M4 GT3 EVO (Connor De Phillippi, Neil Verhagen)", "47 points behind the Corvette; Verhagen was second-fastest in Thursday morning practice."]
+      ] },
+      { h:"GTD", items:[
+        ["#57 Winward Racing Mercedes-AMG GT3 EVO (Philip Ellis, Russell Ward)", "Leads GTD by 6 points but managed only nine laps in Thursday afternoon practice while chasing a mechanical issue."],
+        ["Turner Motorsport BMW M4 GT3 EVO (Robby Foley, Patrick Gallagher)", "6 points back of Winward; a Turner BMW was fastest in Thursday night GTD practice."]
+      ] }
+    ],
+    note:"Sources: Sportscar365, RACER, Daily Sportscar and GT-Report Thursday practice reports, Oct 1-2, 2026 (via web search; several of these sites blocked direct fetches in this environment). Driver attribution on the fastest Thursday-afternoon GTP lap was reported inconsistently between sources (Heinrich vs. Andlauer in the #7 car), so no individual driver is credited for that lap above; the GTD car number for Thursday night's fastest time was also inconsistently reported, so none is given." }
 ];

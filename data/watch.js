@@ -175,5 +175,28 @@ const WATCH = [
         ["Turner Motorsport BMW M4 GT3 EVO (Robby Foley, Patrick Gallagher)", "6 points back of Winward; a Turner BMW was fastest in Thursday night GTD practice."]
       ] }
     ],
-    note:"Sources: Sportscar365, RACER, Daily Sportscar and GT-Report Thursday practice reports, Oct 1-2, 2026 (via web search; several of these sites blocked direct fetches in this environment). Driver attribution on the fastest Thursday-afternoon GTP lap was reported inconsistently between sources (Heinrich vs. Andlauer in the #7 car), so no individual driver is credited for that lap above; the GTD car number for Thursday night's fastest time was also inconsistently reported, so none is given." }
+    note:"Sources: Sportscar365, RACER, Daily Sportscar and GT-Report Thursday practice reports, Oct 1-2, 2026 (via web search; several of these sites blocked direct fetches in this environment). Driver attribution on the fastest Thursday-afternoon GTP lap was reported inconsistently between sources (Heinrich vs. Andlauer in the #7 car), so no individual driver is credited for that lap above; the GTD car number for Thursday night's fastest time was also inconsistently reported, so none is given." },
+  { t:"road-atlanta", d:"2026-09-30", s:"weathertech", from:"2026-10-03",
+    asOf:"Current after Friday qualifying (Oct 2) for the Motul Petit Le Mans. The 10-hour race starts at 12:10 PM ET Saturday.",
+    groups:[
+      { h:"GTP", items:[
+        ["#60 Meyer Shank Racing Acura ARX-06 (Tom Blomqvist)", "Took pole at 1:09.703, leading a front-row sweep for Acura in what multiple reports called the program's final GTP race; teammate Nick Yelloly's #93 Acura starts second, 0.222 seconds back."],
+        ["#31 Whelen Cadillac V-Series.R (Jack Aitken)", "Qualified fourth. Leads the GTP standings and can clinch the 2026 drivers' title simply by starting the race."],
+        ["#7 Porsche Penske Motorsport Porsche 963 (Laurin Heinrich)", "Qualified seventh. The only other driver still mathematically able to win the GTP title."],
+        ["#24 BMW M Team WRT BMW M Hybrid V8 (Sheldon van der Linde, Dries Vanthoor)", "Qualified third, the top non-Acura, non-championship-contending GTP car."]
+      ] },
+      { h:"LMP2", items:[
+        ["#99 AO Racing ORECA 07 (PJ Hyett)", "Took LMP2 pole, his first pole in more than a year."],
+        ["#43 Inter Europol Competition ORECA (Tom Dillmann, Jeremy Clarke)", "Leads the LMP2 standings by 4 points over CrowdStrike Racing by APR entering the race."]
+      ] },
+      { h:"GTD PRO", items:[
+        ["#1 Paul Miller Racing BMW M4 GT3 EVO (Neil Verhagen, Connor De Phillippi)", "Verhagen took GTD PRO pole at 1:18.194 in the closing moments of qualifying. The team trails the points lead by 47."],
+        ["#4 Corvette Racing Corvette Z06 GT3.R (Nicky Catsburg, Tommy Milner)", "Leads GTD PRO by 47 points entering the season finale."]
+      ] },
+      { h:"GTD", items:[
+        ["#57 Winward Racing Mercedes-AMG GT3 EVO (Philip Ellis, Russell Ward)", "Ellis took GTD pole at 1:18.674. The team leads the class by 6 points chasing a third straight GTD title."],
+        ["#96 Turner Motorsport BMW M4 GT3 EVO (Robby Foley, Patrick Gallagher)", "6 points back of Winward entering the race."]
+      ] }
+    ],
+    note:"Sources: NBC Sports, RACER (\"Blomqvist puts Acura on pole for Petit Le Mans, its final GTP race\"), IMSA.com (\"Blomqvist Lands on Motul Petit Le Mans Pole\"), Sportscar365 (\"Blomqvist Leads Acura Front Row Lockout for Petit Le Mans\") and GT-Report Friday qualifying reports, Oct 2, 2026 (via web search; several of these sites blocked direct fetches in this environment)." }
 ];

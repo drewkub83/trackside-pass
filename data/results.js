@@ -63,5 +63,64 @@ const RESULTS = [
         "2. Richard Edge"
       ] }
     ],
-    note:"Sources: Porsche Motorsport North America (\"Maxson, Cirone strengthen championship leads at Road Atlanta\") and Sportscar365 (\"Maxson Takes Race 1 Win at Road Atlanta\"), Oct 1, 2026 (via web search; direct fetch of racing.porsche.com/sportscar365.com was blocked in this environment). Maxson passed Jeansonne for the lead with about 10 minutes left; contact between the two at Turn 7 during the move was reported under stewards' review, with no decision confirmed in sources found. Cole Kleck's car number for this race wasn't independently confirmed, so none is given. No finishers beyond 4th (Pro) or the named class winners (Pro-Am, Masters) could be confirmed." }
+    note:"Sources: Porsche Motorsport North America (\"Maxson, Cirone strengthen championship leads at Road Atlanta\") and Sportscar365 (\"Maxson Takes Race 1 Win at Road Atlanta\"), Oct 1, 2026 (via web search; direct fetch of racing.porsche.com/sportscar365.com was blocked in this environment). Maxson passed Jeansonne for the lead with about 10 minutes left; contact between the two at Turn 7 during the move was reported under stewards' review, with no decision confirmed in sources found. Cole Kleck's car number for this race wasn't independently confirmed, so none is given. No finishers beyond 4th (Pro) or the named class winners (Pro-Am, Masters) could be confirmed." },
+  { t:"road-atlanta", d:"2026-09-30", s:"vp", event:"Race 2 of 2",
+    groups:[
+      { h:"LMP3", order:[
+        "1. #18 Forbush Performance — Jules Caranta",
+        "2. #1 Gebhardt Intralogistics Motorsports — Oscar Tunjo",
+        "3. Danny Soufi",
+        "4. #2 Shopify Racing — Travis Hill",
+        "5. #77 Forte Racing — Brian Thienes"
+      ] },
+      { h:"GSX", order:[
+        "1. #8 RAFA Racing Toyota GR Supra GT4 EVO2 — Westin Workman",
+        "2. #35 CarBahn Motorsports BMW M4 GT4 EVO — Courtney Crone",
+        "3. #5 KMW Motorsports with TMR Engineering Porsche 718 GT4 RS Clubsport — Angus Rogers"
+      ] }
+    ],
+    note:"Sources: Sportscar365 (\"Caranta, Workman Double Up to Conclude VPRC Season\") and SPEED SPORT (\"Caranta & Workman Complete Weekend Sweeps\"), Oct 2, 2026 (via web search; direct fetch was blocked in this environment). Caranta beat Tunjo by 2.031 seconds for his second straight win, a weekend sweep; both the LMP3 (Tunjo) and GSX (Workman) titles were already clinched in Race 1. Workman beat Crone by 9.424 seconds. Hill passed Thienes in Turn 1 after a restart to take 4th overall and the LMP3 Bronze Cup class win, capping their season-long fight. Soufi's car number/team for this race wasn't independently confirmed, so none is given. No finishers beyond 5th (LMP3) or 3rd (GSX) could be confirmed." },
+  { t:"road-atlanta", d:"2026-09-30", s:"mx5", event:"Race 2 of 2",
+    groups:[
+      { h:"Championship", order:[
+        "1. #42 PDR Racing — Parker DeLong",
+        "2. Jeremy Fletcher"
+      ] }
+    ],
+    note:"Sources: IMSA.com (\"DeLong Scores Win, Gossett Takes Mazda MX-5 Cup Championship at Michelin Raceway Road Atlanta\") and SPEED SPORT (\"DeLong Wins Dash, Gossett Wears Crown\" and \"Parker DeLong Claims Atlanta MX-5 Cup Glory\"), Oct 2, 2026 (via web search; direct fetch was blocked in this environment). DeLong passed Fletcher in Turn 1 on the final lap and won by 0.164 seconds. Bobby Gossett (#44 BSI Racing) finished 9th, enough to clinch the 2026 Whelen Mazda MX-5 Cup championship. Finishing positions 3rd-8th weren't confirmed in sources found, so they're left out." },
+  { t:"road-atlanta", d:"2026-09-30", s:"carrera", event:"Race 2 of 2",
+    groups:[
+      { h:"Pro", order:[
+        "1. #77 TOPP Racing — Tyler Maxson",
+        "2. #24 Kellymoss — Aaron Jeansonne",
+        "3. JDX Racing — Callum Hedge",
+        "4. ACI Motorsports — Janne Stiak",
+        "5. JTR Motorsports Engineering — Jared Thomas"
+      ] },
+      { h:"Pro-Am", order:[
+        "1. Patrick Mulcahy"
+      ] },
+      { h:"Masters", order:[
+        "1. #88 ACI Motorsports — Marco Cirone",
+        "2. #53 JTR Motorsports Engineering — Rob Walker",
+        "3. #45 Ruckus Racing — Scott Blind"
+      ] }
+    ],
+    note:"Sources: GT REPORT (\"Porsche Carrera Cup NA Road Atlanta Race 2: Maxson Drives Away to Weekend Sweep\") and Sportscar365 (\"Maxson Sweeps Weekend; Cirone Clinches Masters Title\"), Oct 2, 2026 (via web search; direct fetch was blocked in this environment). Maxson led flag-to-flag for a weekend sweep, his eighth win of the season, 5.020 seconds ahead of Jeansonne. Mulcahy again raced unopposed in Pro-Am. Cirone beat Walker by 1.452 seconds in Masters; Blind completed that podium after an off-course excursion. No finishers beyond 5th (Pro) or 3rd (Masters) could be confirmed." },
+  { t:"road-atlanta", d:"2026-09-30", s:"pilot", event:"FOX Factory 120",
+    groups:[
+      { h:"GS", order:[
+        "1. #14 Circle H Racing Aston Martin Vantage AMR GT4 EVO — Thomas Merrill, Martin Sarukhanyan",
+        "2. #46 TeamTGM Ford Mustang GT4 — Paul Holton, Matt Plumb",
+        "3. #27 AutoTechnic Racing BMW M4 GT4 EVO — Austin Krainz, Stevan McAleer",
+        "4. #95 Turner Motorsport BMW M4 GT4 EVO — Dillon Machavern, Luca Mars",
+        "5. CarBahn Motorsports with Peregrine Racing — Cameron Shields, Steven Wetterau"
+      ] },
+      { h:"TCR", order:[
+        "1. #33 Bryan Herta Autosport Hyundai Elantra N TCR — Mason Filippi, Bryson Morris",
+        "2. #21 Victor Gonzalez Racing CUPRA Leon VZ TCR — William Tally, Caleb Bacon",
+        "3. #56 Baker Racing Audi RS3 LMS TCR — Dean Baker, Kenny Riedmann"
+      ] }
+    ],
+    note:"Sources: RACER (\"First-time winners wrap Michelin Pilot Challenge season at Road Atlanta\"), Frontstretch (\"Thomas Merrill, Martin Sarukhanyan Win FOX Factory 120\" and \"Consistency Brings The Grand Sport Title To AutoTechnic Racing\") and Sportscar365 (\"Circle H Wins, AutoTechnic Takes GS Title at Road Atlanta\"), Oct 2, 2026 (via web search; direct fetch was blocked in this environment). This is the season finale and runs GS and TCR together on one grid; the order above is each class's own running order, not the combined overall order. Merrill/Sarukhanyan passed Filippi's TCR-class Hyundai for the race lead with 13 minutes left and won their first Pilot Challenge race by 2.339 seconds. Krainz/McAleer clinched the 2026 GS title without winning a race this season; Filippi/Morris clinched the TCR title." }
 ];

@@ -33,63 +33,63 @@ const STANDINGS = [
       ] }
     ],
     note:"GTP is a genuine two-driver fight -- IMSA's own preview names only Aitken and Heinrich as mathematically able to win it, so no 3rd-5th is shown. GTD PRO has 7 of 9 full-season cars still mathematically alive per that same preview, but only the top 3's exact gaps were confirmed; the others weren't named precisely enough to add without guessing. Sources: IMSA's own \"Tale of the Tape\" championship preview (Sep 24) plus Sportscar365 and RACER standings reports after Indianapolis." },
-  { s:"pilot", asOf:"Current after Indianapolis (Sep 20). The FOX Factory 120 on Oct 2 is the season finale.",
+  { s:"pilot", asOf:"Current after the FOX Factory 120 season finale at Road Atlanta (Oct 2); the 2026 season is complete.",
     classes:[
       { h:"GS", rows:[
-        { pos:1, who:"Austin Krainz, Stevan McAleer (#27 AutoTechnic Racing)", gap:"Leads by 30 points" },
-        { pos:2, who:"Dillon Machavern, Luca Mars (#95 Turner Motorsport)", gap:"30 points back, after leading most of the season" },
-        { pos:3, who:"Robert Noaker, Finn Wiebelhaus (#13 McCumbee McAleer Racing)", gap:"40 points back" },
-        { pos:4, who:"Michael Cooper, Moisey Uretsky (#44 Ibiza Farm Motorsport)", gap:"120 points back, mathematically alive" },
-        { pos:5, who:"Bryce Ward (#57 Winward Racing)", gap:"130 points back, mathematically alive" }
+        { pos:1, who:"Austin Krainz, Stevan McAleer (#27 AutoTechnic Racing)", gap:"Clinched the 2026 GS title without winning a race all season, capped by a 3rd-place finish in the FOX Factory 120 at Road Atlanta." },
+        { pos:2, who:"Dillon Machavern, Luca Mars (#95 Turner Motorsport)", gap:"Runner-up in the 2026 GS championship after leading most of the season; finished 4th in the FOX Factory 120." },
+        { pos:3, who:"Robert Noaker, Finn Wiebelhaus (#13 McCumbee McAleer Racing)", gap:"40 points back entering Road Atlanta; final standing not confirmed in sources found." },
+        { pos:4, who:"Michael Cooper, Moisey Uretsky (#44 Ibiza Farm Motorsport)", gap:"120 points back entering Road Atlanta; final standing not confirmed in sources found." },
+        { pos:5, who:"Bryce Ward (#57 Winward Racing)", gap:"130 points back entering Road Atlanta; final standing not confirmed in sources found." }
       ] },
       { h:"TCR", rows:[
-        { pos:1, who:"Mason Filippi, Bryson Morris (#33 Bryan Herta Autosport)", gap:"Leads by 200 points over their own teammates" },
-        { pos:2, who:"Denis Dupont, Preston Brown (#76 Bryan Herta Autosport)", gap:"200 points back" }
+        { pos:1, who:"Mason Filippi, Bryson Morris (#33 Bryan Herta Autosport)", gap:"Clinched the 2026 TCR title by winning the FOX Factory 120 at Road Atlanta, their own teammates' closest challengers." },
+        { pos:2, who:"Denis Dupont, Preston Brown (#76 Bryan Herta Autosport)", gap:"Entered Road Atlanta 200 points back; final standing not confirmed in sources found." }
       ] }
     ],
-    note:"Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24)." },
-  { s:"vp", asOf:"LMP3 and GSX point totals below predate Road Atlanta (last updated after Canadian Tire Motorsport Park and VIR); both 2026 titles were clinched in Race 1 at Road Atlanta (Oct 1) as described below, though updated post-race point totals weren't published in sources found.",
+    note:"Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24) plus RACER, Frontstretch and Sportscar365 FOX Factory 120 race reports, Oct 2, 2026 (via web search; direct fetch was blocked in this environment). Exact final point totals for the season weren't found, so gaps above describe what the race reports confirmed rather than a new points table." },
+  { s:"vp", asOf:"Current after Race 2 of 2, the 2026 season finale, at Road Atlanta (Oct 2); both titles were already clinched in Race 1. Point totals below predate Road Atlanta (last updated after Canadian Tire Motorsport Park and VIR) since updated post-race totals weren't published in sources found.",
     classes:[
       { h:"LMP3", rows:[
-        { pos:1, who:"Oscar Tunjo (#1 Gebhardt Intralogistics Motorsports)", gap:"Clinched the 2026 LMP3 title by finishing 2nd in Race 1 at Road Atlanta, one round early." },
-        { pos:2, who:"Danny Soufi (Gebhardt Intralogistics Motorsports)", gap:"Tunjo's closest challenger and teammate; his own title hopes ended when his car slowed late in Race 1 at Road Atlanta, triggering the race's only caution (his finishing position wasn't confirmed by available sources)." },
-        { pos:3, who:"Travis Hill (#2 Shopify Racing)", gap:"Tied for 3rd in the Bronze Cup standings" },
-        { pos:4, who:"Brian Thienes (#77 Forte Racing)", gap:"Tied for 3rd in the Bronze Cup standings" }
+        { pos:1, who:"Oscar Tunjo (#1 Gebhardt Intralogistics Motorsports)", gap:"Clinched the 2026 LMP3 title by finishing 2nd in Race 1 at Road Atlanta, one round early, then finished 2nd again in Race 2." },
+        { pos:2, who:"Danny Soufi (Gebhardt Intralogistics Motorsports)", gap:"Tunjo's closest challenger and teammate; finished 3rd in Race 2 at Road Atlanta after his car slowed late in Race 1, triggering that race's only caution." },
+        { pos:3, who:"Travis Hill (#2 Shopify Racing)", gap:"Beat Brian Thienes to the LMP3 Bronze Cup class win in Race 2 at Road Atlanta (4th overall) with a Turn 1 move after a restart, capping their season-long fight." },
+        { pos:4, who:"Brian Thienes (#77 Forte Racing)", gap:"Finished 5th overall in Race 2 at Road Atlanta, denied the Bronze Cup class win by Hill's late move." }
       ] },
       { h:"GSX", rows:[
-        { pos:1, who:"Westin Workman (#8 RAFA Racing)", pts:2680, gap:"Clinched the 2026 GSX title by winning Race 1 at Road Atlanta, his 10th win in 11 races this season." },
-        { pos:2, who:"Courtney Crone", pts:2280 },
+        { pos:1, who:"Westin Workman (#8 RAFA Racing)", pts:2680, gap:"Clinched the 2026 GSX title by winning Race 1 at Road Atlanta, then swept the weekend by winning Race 2 as well, beating Courtney Crone by 9.424 seconds." },
+        { pos:2, who:"Courtney Crone (#35 CarBahn Motorsports)", pts:2280 },
         { pos:3, who:"Rafa Martinez", pts:1990 }
       ] }
     ],
-    note:"Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), IMSA.com race reports from Canadian Tire Motorsport Park and VIR, and Sportscar365/Daily Sportscar Race 1 reports from Road Atlanta, Oct 1, 2026 (via web search; direct site fetches were blocked in this environment). Point totals above predate Road Atlanta Race 1." },
-  { s:"mx5", asOf:"Current after Race 1 of 2 at Road Atlanta (Oct 1); Race 2 on Oct 2 decides the 2026 champion.",
+    note:"Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), IMSA.com race reports from Canadian Tire Motorsport Park and VIR, and Sportscar365/SPEED SPORT Race 1 and Race 2 reports from Road Atlanta, Oct 1-2, 2026 (via web search; direct site fetches were blocked in this environment). Point totals above predate Road Atlanta." },
+  { s:"mx5", asOf:"Current after the season finale (Race 2 of 2) at Road Atlanta (Oct 2). Bobby Gossett is the 2026 Whelen Mazda MX-5 Cup champion.",
     classes:[
       { h:"Championship", rows:[
-        { pos:1, who:"Bobby Gossett", pts:2990, gap:"Won Race 1 at Road Atlanta from 22nd on the grid, extending his points lead over Adakonis." },
-        { pos:2, who:"Justin Adakonis", pts:2890, gap:"100 points back after finishing 2nd in Race 1 at Road Atlanta." },
-        { pos:3, who:"Jared Thomas", gap:"Finished 3rd in Race 1 at Road Atlanta; among the drivers still mathematically alive for the title." }
+        { pos:1, who:"Bobby Gossett (#44 BSI Racing)", gap:"2026 champion. Won Race 1 at Road Atlanta from 22nd on the grid, then finished 9th in Race 2, enough to clinch the title." },
+        { pos:2, who:"Justin Adakonis (#23 McCumbee McAleer Racing)", gap:"Entered the Race 2 finale needing to overcome a points gap to Gossett; his own Race 2 finish and final championship position weren't confirmed in sources found." },
+        { pos:3, who:"Jared Thomas (#96 JTR Motorsports Engineering)", gap:"One of the three drivers still mathematically alive for the title entering the Race 2 finale; his final championship position wasn't confirmed in sources found." }
       ] }
     ],
-    note:"Sources: RACER (\"Gossett builds MX-5 Cup point lead with Road Atlanta win\") and SPEED SPORT, Oct 2, 2026 (via web search; direct site fetches were blocked in this environment). The cited point totals show an unchanged 100-point gap despite the article describing Gossett as having grown his lead with the win -- reported as published rather than adjusted, since the underlying math couldn't be independently verified." },
-  { s:"carrera", asOf:"Current after Race 1 of 2 at Road Atlanta (Oct 1); Race 2 and the Circuit of the Americas round remain this season.",
+    note:"Sources: IMSA.com (\"DeLong Scores Win, Gossett Takes Mazda MX-5 Cup Championship at Michelin Raceway Road Atlanta\"), RACER (\"Gossett builds MX-5 Cup point lead with Road Atlanta win\") and SPEED SPORT, Oct 1-2, 2026 (via web search; direct site fetches were blocked in this environment). Final championship point totals weren't published in sources found, so positions 2-3 reflect who entered the finale in the title fight rather than a confirmed final order." },
+  { s:"carrera", asOf:"Current after Race 2 of 2 at Road Atlanta (Oct 2), a weekend sweep for Maxson; the Circuit of the Americas round closes the season.",
     classes:[
       { h:"Pro", rows:[
-        { pos:1, who:"Tyler Maxson (TOPP Racing)", gap:"Leads by 19 points after winning Race 1 at Road Atlanta, passing Jeansonne for the lead in the closing minutes (contact between the two during the move was under stewards' review, with no decision confirmed in sources found)." },
-        { pos:2, who:"Aaron Jeansonne (Kellymoss)", gap:"19 points back after finishing 2nd in Race 1 at Road Atlanta." },
-        { pos:3, who:"Callum Hedge (JDX Racing)", gap:"Closest of the chasing pack" },
-        { pos:4, who:"Jared Thomas (JTR Motorsports Engineering)", gap:"In the chasing pack; finished 4th in Race 1 at Road Atlanta." },
-        { pos:5, who:"Janne Stiak (ACI Motorsports)", gap:"In the chasing pack, with 5 podiums in 6 races at Indianapolis" }
+        { pos:1, who:"Tyler Maxson (TOPP Racing)", gap:"Entered Race 2 leading by 19 points, then swept the weekend with his eighth win of the season, beating Jeansonne by 5.020 seconds (new points gap not published in sources found)." },
+        { pos:2, who:"Aaron Jeansonne (Kellymoss)", gap:"Finished 2nd again in Race 2 at Road Atlanta; new points gap not published in sources found." },
+        { pos:3, who:"Callum Hedge (JDX Racing)", gap:"Finished 3rd in Race 2 at Road Atlanta." },
+        { pos:4, who:"Janne Stiak (ACI Motorsports)", gap:"Finished 4th in Race 2 at Road Atlanta." },
+        { pos:5, who:"Jared Thomas (JTR Motorsports Engineering)", gap:"Finished 5th in Race 2 at Road Atlanta, after 4th in Race 1." }
       ] },
       { h:"Pro-Am", rows:[
-        { pos:1, who:"Patrick Mulcahy (ACI Motorsports)", gap:"Clinched the Pro-Am title at Indianapolis" }
+        { pos:1, who:"Patrick Mulcahy (ACI Motorsports)", gap:"Clinched the Pro-Am title at Indianapolis, then raced unopposed in both races at Road Atlanta." }
       ] },
       { h:"Masters", rows:[
-        { pos:1, who:"Marco Cirone (ACI Motorsports)", gap:"Extended his lead with a strong finish in Race 1 at Road Atlanta (exact new margin not published)." },
-        { pos:2, who:"Scott Blind (Ruckus Racing)", gap:"The defending champion; won the Masters class in Race 1 at Road Atlanta, but still trails Cirone in points." },
-        { pos:3, who:"Rob Walker (JTR Motorsports Engineering)" },
+        { pos:1, who:"Marco Cirone (ACI Motorsports)", gap:"Extended his lead further by winning Race 2 at Road Atlanta, beating Rob Walker by 1.452 seconds (new points gap not published in sources found)." },
+        { pos:2, who:"Rob Walker (JTR Motorsports Engineering)", gap:"Finished 2nd in Race 2 at Road Atlanta." },
+        { pos:3, who:"Scott Blind (Ruckus Racing)", gap:"The defending champion; won Masters in Race 1 at Road Atlanta but finished 3rd in Race 2 after an off-course excursion, still trailing Cirone in points." },
         { pos:4, who:"Richard Edge (ACI Motorsports)", gap:"Finished 2nd in the Masters class in Race 1 at Road Atlanta." }
       ] }
     ],
-    note:"Pro positions 3-5 are named from recent race reports, not an official points table -- their order past Maxson/Jeansonne isn't confirmed, and no points figures are shown for them since none were published. Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America and Sportscar365 race reports from Indianapolis and Road Atlanta Race 1 (Oct 1, 2026, via web search; direct site fetches were blocked in this environment). Alan Metni (Kellymoss) won the Pro-Am race at Road Atlanta Race 1, his second win of the season, but Mulcahy's title was already clinched." }
+    note:"Pro and Masters positions below the top of each class are named from recent race reports, not an official points table -- their order isn't confirmed, and no points figures are shown for them since none were published. Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America, Sportscar365 and GT REPORT race reports from Indianapolis and both Road Atlanta races (Oct 1-2, 2026, via web search; direct site fetches were blocked in this environment). Alan Metni (Kellymoss) won the Pro-Am race at Road Atlanta Race 1, his second win of the season, but Mulcahy's title was already clinched." }
 ];

@@ -1356,6 +1356,7 @@ async function scheduleSessionAlerts(forcedTrack){
     id:i+1,
     title:shortName(s.n),
     body:`${t.short} · starts in ${SESSION_ALERT_LEAD_MIN} minutes`,
+    sound:"racecar.caf",   /* bundled in the iOS app (ios/App/App/racecar.caf); iOS falls back to the default tone if it's missing */
     schedule:{at:new Date(s.start.getTime()-leadMs)}
   }))});
 }

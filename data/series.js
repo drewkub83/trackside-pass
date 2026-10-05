@@ -1,7 +1,13 @@
 /* Series guide: what each racing series is and how to tell its cars apart.
    Sessions find their series by name (see `match`). Written for spectators at class level, not car numbers,
    so it stays true all season. WeatherTech class colors are IMSA's official ones; other class colors are our own.
-   Sources: IMSA 2026 entry lists and class rules, IMSA/Porsche/Lamborghini series announcements. */
+   Sources: IMSA 2026 entry lists and class rules, IMSA/Porsche/Lamborghini series announcements.
+   yt (optional): the YouTube channel ID (not handle) that streams this series live and free, so the Race Day
+   hub's "Watch live" card can embed https://www.youtube.com/embed/live_stream?channel=<yt> -- that URL always
+   shows whatever's actually live on the channel right now, so it needs no per-event upkeep, but ONLY add it
+   for a series confirmed to stream complete, free, live coverage of its own races on that exact channel (not
+   just highlights or an unrelated channel from the same org). IMSA's own WeatherTech Championship is NOT
+   included here on purpose -- it's a Peacock/NBC broadcast, free on YouTube only for occasional select races. */
 const SERIES = [
   {
     id:"weathertech", match:/WeatherTech Championship|Petit Le Mans|Rolex 24|Twelve Hours/i,
@@ -69,7 +75,7 @@ const SERIES = [
     watch:{ race:"Two short sprint races with a single driver in each car: no pit stops for driver changes, so it is flat-out from the start. Prototypes and GT cars share the track." }
   },
   {
-    id:"mx5", match:/MX-5/i,
+    id:"mx5", match:/MX-5/i, yt:"UCg1o8Hezzo9Mx7ATxCyu__w",
     name:"Whelen Mazda MX-5 Cup", tag:"One car, one class",
     blurb:"Every driver races the identical Mazda MX-5 Cup car, prepared by Flis Performance, so the drivers, not the cars, decide the race. Expect big packs, drafting and constant position changes.",
     cars:[
@@ -81,7 +87,7 @@ const SERIES = [
     watch:{ race:"Every car is identical, so watch the draft. Packs of cars swap places on the straights, and the finish is often decided in the last corner." }
   },
   {
-    id:"carrera", match:/Carrera Cup/i,
+    id:"carrera", match:/Carrera Cup/i, yt:"UCch613iK0dXuGLlvFSePzwA",
     name:"Porsche Carrera Cup North America", tag:"One car, driver classes",
     blurb:"Every car is a Porsche 911 GT3 Cup, so it is the driver that makes the difference. The classes are for drivers, not cars, so Pro, Pro-Am and Masters drivers race in the same pack.",
     cars:[
@@ -125,7 +131,7 @@ const SERIES = [
     fine:"A spectator summary based on INDYCAR's published car facts. For official details, see INDYCAR.com."
   }
   ,{
-    id:"gtwca", match:/GT World Challenge America|Texas 8 Hour/i,
+    id:"gtwca", match:/GT World Challenge America|Texas 8 Hour/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g",
     name:"GT World Challenge America Powered by AWS", tag:"GT3 supercars, sprint racing",
     blurb:"North America's home for GT3 racing, run by SRO Motorsports Group. The cars are race versions of well-known sports cars, built to the same FIA GT3 rules used at the Spa 24 Hours and around the world, so many makes race on equal terms. Weekends are short sprint races instead of endurance events, with one exception in 2027: the Texas 8 Hour.",
     cars:[

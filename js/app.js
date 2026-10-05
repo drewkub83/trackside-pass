@@ -185,6 +185,14 @@ function openTrack(id,from){
   wx=null; wxToast=null; renderWx(); loadWeather();
   limits=null; view=fitted=fitView(); applyView(); { const w=document.getElementById("mapWrap"); lastSize=w.clientWidth+"x"+w.clientHeight; }
   hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); checkHubEntry(); checkRaceWeek();
+  /* resume live GPS automatically if it's already been allowed before, same consent-respecting check the
+     hub and race-week banner use -- never asks cold, only picks back up for someone who already said yes.
+     A web page can't keep watchPosition running once the OS fully closes the tab/PWA (no background
+     location API on the web, unlike a native app), so this can't make it survive that -- but it removes
+     the need to re-tap Locate Me every time you come back to a track during the same visit. */
+  if(navigator.permissions&&navigator.permissions.query){
+    navigator.permissions.query({name:"geolocation"}).then(p=>{ if(p.state==="granted") startGps(true); }).catch(()=>{});
+  }
 }
 function goHome(){
   /* while the hub is active (hub-mode never turned off, just another tab on top -- e.g. tapped through
@@ -363,6 +371,13 @@ function openStandings(sid){
   document.getElementById("stAsOf").textContent=std.asOf;
   document.getElementById("stBody").innerHTML=std.classes.map(c=>`<div class="wgroup"><h4>${esc(c.h)}</h4>${c.rows.map(standingsRowHtml).join("")}</div>`).join("")+(std.note?`<p class="wnote">${esc(std.note)}</p>`:"");
   showSheet("shStandings");
+}
+/* YouTube's "always whatever's live on this channel" embed -- loaded only on tap, into the sheet (not the
+   hub body, which gets rebuilt every 30s) so it isn't restarted mid-stream. Stopped on close (see closeSheet). */
+function openLiveStream(channelId,name){
+  document.getElementById("liveTitle").textContent=name+" — live";
+  document.getElementById("liveFrame").src=`https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=1`;
+  showSheet("shLive");
 }
 /* the series you've starred in the Race Day hub, when more than one shares a weekend -- global, not per track */
 function favSeries(){ try{ return localStorage.getItem("paddock:favSeries")||null; }catch(e){ return null; } }
@@ -723,10 +738,17 @@ function renderHub(){
     }
   }
 
+  /* "watch live": only for a series confirmed to stream its own races free on YouTube (data/series.js `yt`),
+     and only while it's actually the one on track right now -- not just "in focus". Opens in the sheet
+     (openLiveStream) rather than embedding directly here, since this whole card is rebuilt every 30s and an
+     iframe rebuilt that often would restart the stream over and over. */
+  const liveSr=live?seriesFor(live.n):null;
+  const liveStreamHtml=(liveSr&&liveSr.yt)?`<div class="hubCard hubTap" role="button" onclick="openLiveStream('${liveSr.yt}','${esc(liveSr.name)}')"><div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Watch live</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(liveSr.name)} on YouTube</div></div>`:"";
+
   const ov=layoutOverrides(), views=cur.pois.map(p=>applyOv(p,ov[pid(p)])).map((p,i)=>({p,i})).filter(c=>c.p.k==="view"&&!c.p.del);
   const viewsHtml=views.length?`<div class="hubCard"><h4>Best views</h4><div class="hubViewList">${views.map(c=>`<button onclick="hubGoView(${c.i})">${esc(c.p.n)}</button>`).join("")}</div></div>`:"";
 
-  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+standingsHtml+viewsHtml;
+  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+standingsHtml+viewsHtml+liveStreamHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */
@@ -1028,7 +1050,7 @@ function applyView(light){       /* light: only move/scale during a gesture; the
 /* bottom sheet */
 let sheetState=null;
 function showSheet(id){ sheetState=id; const s=document.getElementById("sheet"); s.hidden=false; document.getElementById("nearBar").hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=false; s.querySelectorAll(".sv").forEach(v=>v.hidden=(v.id!==id)); s.scrollTop=0; }
-function closeSheet(){ sheetState=null; const wasPoi=popI!==null; const s=document.getElementById("sheet"); if(s) s.hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=true; const nb=document.getElementById("nearBar"); if(nb) nb.hidden=false; popI=null; document.querySelectorAll(".poi.sel").forEach(el=>el.classList.remove("sel")); if(wasPoi) setTimeout(updateHeading,0); }
+function closeSheet(){ sheetState=null; const wasPoi=popI!==null; const s=document.getElementById("sheet"); if(s) s.hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=true; const nb=document.getElementById("nearBar"); if(nb) nb.hidden=false; popI=null; document.querySelectorAll(".poi.sel").forEach(el=>el.classList.remove("sel")); if(wasPoi) setTimeout(updateHeading,0); const lf=document.getElementById("liveFrame"); if(lf) lf.src=""; }
 function openLayers(){ if(sheetState==="shLayers") closeSheet(); else showSheet("shLayers"); }
 let popI=null;
 function selectPoi(i){

@@ -1320,8 +1320,37 @@ function openAlertTarget(){
   document.addEventListener("touchend",()=>{ if(!drag) return; drag=false; const c=el(); c.style.transition=""; if(dy<-30||Math.abs(dx)>60) hideAlertCard(true); else c.style.transform=""; });
 })();
 setInterval(checkAlerts,60000);
-document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkAlerts(); });
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) { checkAlerts(); scheduleSessionAlerts(); } });
 checkAlerts();
+
+/* Session alerts (native iOS app only): a local notification 10 minutes before every on-track session of the
+   next event on the calendar. Unlike the on-track card above, iOS keeps these and fires them with the app
+   closed -- no server needed. They're rebuilt each time the app opens (or comes back to the foreground), so a
+   schedule change shows up the next time you open the app, not on its own. iOS allows about 64 pending
+   notifications per app, so this is capped there. */
+const SESSION_ALERT_LEAD_MIN=10, SESSION_ALERT_MAX=60;
+function nativeNotifier(){ const c=window.Capacitor; return (c&&c.isNativePlatform&&c.isNativePlatform()&&c.Plugins&&c.Plugins.LocalNotifications)||null; }
+async function scheduleSessionAlerts(){
+  const LN=nativeNotifier(); if(!LN) return;
+  let display=(await LN.checkPermissions()).display;
+  if(display!=="granted") display=(await LN.requestPermissions()).display;
+  if(display!=="granted") return;
+  let next=null;
+  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(eventDone(t,e)) return; if(!next||e.d<next.e.d) next={t,e}; }));
+  if(!next) return;
+  const now=Date.now(), leadMs=SESSION_ALERT_LEAD_MIN*60000;
+  const sessions=sessionsOf(next.t).filter(s=>s.d>=next.e.d&&s.d<=eventEnd(next.e)&&s.start.getTime()-leadMs>now);
+  const pending=await LN.getPending();
+  if(pending.notifications.length) await LN.cancel({notifications:pending.notifications.map(n=>({id:n.id}))});
+  if(!sessions.length) return;
+  await LN.schedule({notifications:sessions.slice(0,SESSION_ALERT_MAX).map((s,i)=>({
+    id:i+1,
+    title:shortName(s.n),
+    body:`${next.t.short} · starts in ${SESSION_ALERT_LEAD_MIN} minutes`,
+    schedule:{at:new Date(s.start.getTime()-leadMs)}
+  }))});
+}
+scheduleSessionAlerts();
 
 function openSettings(){
  renderAutoSw(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }

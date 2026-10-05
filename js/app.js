@@ -799,7 +799,10 @@ function renderHub(){
 
   /* "Live timing": same on-track-now gating as Watch live, but keyed off `timing` instead of `yt` -- most
      series have one even when they don't stream free video, so this often shows on its own. */
-  const liveTimingHtml=(liveSr&&liveSr.timing)?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${liveSr.timing}')"><div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(liveSr.name)} -- opens in your browser</div></div>`:"";
+  /* Always there for the series in focus (not only while a session is live), so the timing page is one tap away
+     before and between sessions too. Inside the iPhone app it opens as an in-app browser sheet (openLiveTiming). */
+  const timingSr=sid?SERIES.find(r=>r.id===sid):null;
+  const liveTimingHtml=(timingSr&&timingSr.timing)?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingSr.timing}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingSr.name)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
 
   const ov=layoutOverrides(), views=cur.pois.map(p=>applyOv(p,ov[pid(p)])).map((p,i)=>({p,i})).filter(c=>c.p.k==="view"&&!c.p.del);
   const viewsHtml=views.length?`<div class="hubCard"><h4>Best views</h4><div class="hubViewList">${views.map(c=>`<button onclick="hubGoView(${c.i})">${esc(c.p.n)}</button>`).join("")}</div></div>`:"";

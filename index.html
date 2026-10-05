@@ -125,6 +125,7 @@
     </div>
     <div class="fl fl-bl"><button class="fab pin" id="spotBtn" aria-label="Save my spot" onclick="saveSpot()"><svg viewBox="0 0 24 24"><path d="M6 21V4M6 5h11l-2.6 4 2.6 4H6"/></svg></button></div>
 
+    <div class="sheetBackdrop" id="sheetBackdrop" hidden onclick="closeSheetBtn()"></div>
     <div class="sheet" id="sheet" hidden>
       <div class="handle"></div>
       <button class="sclose" onclick="closeSheetBtn()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
@@ -214,7 +215,8 @@
   </div>
 
   <nav class="tabs">
-    <button class="on" data-p="pMap" onclick="tab(this)"><svg viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Map</button>
+    <button data-p="pMap" onclick="tabHub(this)"><svg viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h13l-3 4 3 4H5"/></svg>Hub</button>
+    <button class="on" id="mapTabBtn" data-p="pMap" onclick="tabMap(this)"><svg viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Map</button>
     <button data-p="pEvents" onclick="tab(this)"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Events</button>
     <button data-p="pInfo" onclick="tab(this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>Info</button>
   </nav>

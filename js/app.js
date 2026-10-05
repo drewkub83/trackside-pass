@@ -67,8 +67,19 @@ function checkRaceWeek(){
   if(startIn>7||endIn<0) return;
   const key=goKey(g.t,g.e); let shown=[]; try{ shown=JSON.parse(localStorage.getItem(RACE_WEEK_KEY)||"[]"); }catch(e){}
   if(shown.includes(key)) return;
-  try{ localStorage.setItem(RACE_WEEK_KEY,JSON.stringify([...shown,key].slice(-10))); }catch(e){}
-  showRaceWeek(g.t,g.e);
+  /* geo-gated like the hub, and the same reason: only fire once you're actually AT the track, not the
+     first time you open the app during race week while still at home. Keeps re-checking (never marks
+     itself "shown") until that's actually true, so it still catches you the moment you arrive. */
+  if(!navigator.geolocation||!g.t.geo) return;
+  const tryGeo=()=>{ navigator.geolocation.getCurrentPosition(pos=>{
+    const km=haversine(pos.coords.latitude,pos.coords.longitude,(g.t.geo.n+g.t.geo.s)/2,(g.t.geo.w+g.t.geo.e)/2);
+    if(km>HUB_RADIUS_KM) return;
+    try{ localStorage.setItem(RACE_WEEK_KEY,JSON.stringify([...shown,key].slice(-10))); }catch(e){}
+    showRaceWeek(g.t,g.e);
+  }, ()=>{}, {maximumAge:600000,timeout:8000}); };
+  if(navigator.permissions&&navigator.permissions.query){
+    navigator.permissions.query({name:"geolocation"}).then(p=>{ if(p.state==="granted") tryGeo(); }).catch(()=>{});
+  }
 }
 function raceWeekConfetti(){
   const wrap=document.getElementById("rwConfetti"); if(!wrap) return;
@@ -169,11 +180,11 @@ function openTrack(id,from){
   document.querySelectorAll(".dn").forEach(el=>el.textContent=cur.short);
   view=null; limits=null; fitted=null; cancelAnim(); schedDay=null; fieldCache=null; parking=false; setMode(null); heading=0; devHeading=null; routePts=null; const _hold=document.getElementById("mapHolder"); if(_hold) _hold.style.transform=""; closeSheet(); setParkingUI(); applyDev(); renderNow(); renderSchedule(); if(editing) toggleEdit(); routeDest=null; renderMap(); renderSpot(); document.getElementById("nearBar").hidden=false; applyView(); renderLegend(); renderFood(); renderEvents(); renderInfo();
   showScreen("detail");
-  document.querySelectorAll(".tabs button")[0].click();
+  document.getElementById("mapTabBtn").click();
   window.scrollTo(0,0);
   wx=null; wxToast=null; renderWx(); loadWeather();
   limits=null; view=fitted=fitView(); applyView(); { const w=document.getElementById("mapWrap"); lastSize=w.clientWidth+"x"+w.clientHeight; }
-  hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); checkHubEntry();
+  hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); checkHubEntry(); checkRaceWeek();
 }
 function goHome(){
   /* while the hub is active (hub-mode never turned off, just another tab on top -- e.g. tapped through
@@ -181,7 +192,7 @@ function goHome(){
      swiping back already does -- not exit the track entirely. Only intercepts when we're not already
      looking at the hub itself, so the hub's own back arrow still exits to the track list as before. */
   if(hubMode){ const sc=document.querySelector(".screen.on"); const pn=sc&&sc.id==="detail"&&sc.querySelector(".panel.on");
-    if(pn&&pn.id!=="pMap"){ const mapBtn=sc.querySelector('.tabs button[data-p="pMap"]'); if(mapBtn){ mapBtn.click(); return; } } }
+    if(pn&&pn.id!=="pMap"){ const mapBtn=sc.querySelector('#mapTabBtn'); if(mapBtn){ mapBtn.click(); return; } } }
   if(hubBack()) return;
   renderHome(); stopGps(); showScreen(backTo);
 }
@@ -190,6 +201,11 @@ function tab(btn){
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id===btn.dataset.p));
   window.scrollTo(0,0); syncMapMode();
 }
+/* Hub and Map share one panel (pMap) but are two tabs: Hub forces the hub view on (even outside its
+   usual geo/date window -- it just shows whatever's accurate, same as the old dev-only preview button),
+   Map forces it off, so the two tabs behave like a normal mutually-exclusive pair. */
+function tabHub(btn){ tab(btn); hubDismissed=false; enterHub(); }
+function tabMap(btn){ tab(btn); if(hubMode) leaveHub(); }
 
 /* map */
 const TIER = {gate:1,stand:1,med:1,cross:1,screen:1,view:1,food:2,rest:2,merch:2,info:2,park:3,camp:3};
@@ -373,8 +389,8 @@ function renderEvents(){
   const up=all.filter(e=>!eventDone(cur,e)).sort((a,b)=>a.d.localeCompare(b.d)), done=all.filter(e=>eventDone(cur,e)).sort((a,b)=>b.d.localeCompare(a.d));
   evRows=up;
   const first=up[0], firstEnd=first&&eventEnd(first);
-  const row=(e,tag,isDone,idx)=>{ const d=new Date(e.d+"T12:00:00"), go=!isDone&&isGoing(cur,e);
-    return `<div class="item ev${tag?" nextup":""}${go?" going":""}" style="opacity:${isDone?.45:1}"><div class="date">${d.toLocaleDateString(undefined,{month:"short"})}<b>${d.getDate()}</b>${d.getFullYear()}</div>
+  const row=(e,tag,isDone,idx)=>{ const d=new Date(e.d+"T12:00:00"), go=!isDone&&isGoing(cur,e), live=tag==="Happening now";
+    return `<div class="item ev${tag?" nextup":""}${live?" live":""}${go?" going":""}" style="opacity:${isDone?.45:1}"><div class="date">${d.toLocaleDateString(undefined,{month:"short"})}<b>${d.getDate()}</b>${d.getFullYear()}</div>
       <div><h4>${esc(e.e)}</h4><p class="series">${esc(e.s)}${e.t>1?` — ${e.t}-day weekend`:""}${isDone?" — done":""}</p>
       ${tag||go?`<p class="tags">${tag?`<span class="tag">${tag}</span>`:""}${go?`<span class="tag go">You're going</span>`:""}</p>`:""}</div>
       ${isDone?"":`<button class="gobtn${go?" on":""}" aria-pressed="${go}" aria-label="${go?"Remove from my races":"I'm going to this race"}" onclick="toggleGoingRow(${idx})"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2.4"/></svg></button>`}</div>`; };
@@ -616,13 +632,13 @@ function checkHubEntry(){
   }
 }
 function enterHub(){ hubMode=true; document.getElementById("pMap").classList.add("hub-mode"); document.getElementById("hubView").hidden=false; renderHub(); }
-let hubReturn=false;   /* true while you're on the map because a hub button sent you there: back / swipe / close return to the hub */
+let hubReturn=false;   /* true while you're on the map because a hub button sent you there: swiping back or the header's back arrow return to the hub. Closing a popup (its own X, or End directions) never does -- that's just dismissing that one popup, not leaving the map, e.g. tapping a POI badge after "Full map" and closing it should leave you on the map, not bounce you back to the hub. */
 function leaveHub(){ exitHub(); hubReturn=true; }
 function backToHub(){ hubReturn=false; clearRoute(); setMode(null); closeSheet(); applyView(); hubDismissed=false; enterHub(); }
 /* returns true when it took you back to the hub, so callers can skip their normal back step */
 function hubBack(){ if(!hubReturn||hubMode) return false; const sc=document.querySelector(".screen.on"), pn=sc&&sc.querySelector(".panel.on"); if(!sc||sc.id!=="detail"||!pn||pn.id!=="pMap") return false; if(sheetState==="shLayers"||sheetState==="shGps") return false; backToHub(); return true; }
-function endDirections(){ if(!hubBack()) clearRoute(); }
-function closeSheetBtn(){ if(!hubBack()) closeSheet(); }
+function endDirections(){ clearRoute(); }
+function closeSheetBtn(){ closeSheet(); }
 function exitHub(){ hubMode=false; hubDismissed=true; document.getElementById("pMap").classList.remove("hub-mode"); document.getElementById("hubView").hidden=true; }
 function hubGoView(i){ leaveHub(); selectPoi(i); startDirections(); }
 function renderHub(){
@@ -711,6 +727,14 @@ function renderHub(){
   const viewsHtml=views.length?`<div class="hubCard"><h4>Best views</h4><div class="hubViewList">${views.map(c=>`<button onclick="hubGoView(${c.i})">${esc(c.p.n)}</button>`).join("")}</div></div>`:"";
 
   body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+standingsHtml+viewsHtml;
+  /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
+     body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
+     every render unless we reposition it. */
+  const stripEl=body.querySelector(".hubStrip");
+  if(stripEl){
+    const target=stripEl.querySelector(".hubChip.live")||[...stripEl.querySelectorAll(".hubChip")].find(c=>!c.classList.contains("past"))||stripEl.lastElementChild;
+    if(target) stripEl.scrollLeft=Math.max(0,target.offsetLeft-stripEl.offsetLeft);
+  }
 }
 function renderSchedule(){
   tzNote();
@@ -1003,8 +1027,8 @@ function applyView(light){       /* light: only move/scale during a gesture; the
 }
 /* bottom sheet */
 let sheetState=null;
-function showSheet(id){ sheetState=id; const s=document.getElementById("sheet"); s.hidden=false; document.getElementById("nearBar").hidden=true; s.querySelectorAll(".sv").forEach(v=>v.hidden=(v.id!==id)); s.scrollTop=0; }
-function closeSheet(){ sheetState=null; const wasPoi=popI!==null; const s=document.getElementById("sheet"); if(s) s.hidden=true; const nb=document.getElementById("nearBar"); if(nb) nb.hidden=false; popI=null; document.querySelectorAll(".poi.sel").forEach(el=>el.classList.remove("sel")); if(wasPoi) setTimeout(updateHeading,0); }
+function showSheet(id){ sheetState=id; const s=document.getElementById("sheet"); s.hidden=false; document.getElementById("nearBar").hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=false; s.querySelectorAll(".sv").forEach(v=>v.hidden=(v.id!==id)); s.scrollTop=0; }
+function closeSheet(){ sheetState=null; const wasPoi=popI!==null; const s=document.getElementById("sheet"); if(s) s.hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=true; const nb=document.getElementById("nearBar"); if(nb) nb.hidden=false; popI=null; document.querySelectorAll(".poi.sel").forEach(el=>el.classList.remove("sel")); if(wasPoi) setTimeout(updateHeading,0); }
 function openLayers(){ if(sheetState==="shLayers") closeSheet(); else showSheet("shLayers"); }
 let popI=null;
 function selectPoi(i){
@@ -1222,7 +1246,7 @@ document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkAle
 checkAlerts();
 
 function openSettings(){
- renderAutoSw(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }
+ renderAutoSw(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }
 
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----
    Sun times are worked out on the phone (no signal needed). At a track in the phone's own time zone it uses the
@@ -1425,7 +1449,7 @@ function swipeBack(){
      exits to the track list. */
   if(sc.id==="detail"){
     const activePanel=sc.querySelector(".panel.on");
-    if(activePanel&&activePanel.id!=="pMap"){ const mapBtn=sc.querySelector('.tabs button[data-p="pMap"]'); if(mapBtn){ mapBtn.click(); return; } }
+    if(activePanel&&activePanel.id!=="pMap"){ const mapBtn=sc.querySelector('#mapTabBtn'); if(mapBtn){ mapBtn.click(); return; } }
     goHome(); return;
   }
   const b=sc.querySelector('button[aria-label^="Back"]'); if(b) b.click();

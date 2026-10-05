@@ -379,6 +379,46 @@ function openLiveStream(channelId,name){
   document.getElementById("liveFrame").src=`https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=1`;
   showSheet("shLive");
 }
+/* rain radar: actual precipitation right now (RainViewer), not a forecast -- catches a storm the model-based
+   rainOutlook() above hasn't recognized yet. Leaflet (map library) and its tiles are loaded only when this
+   is opened, never on every page load, and the map is torn down on close (see closeSheet) so it never sits
+   around using data in the background; reopening builds it fresh, centered on whichever track is current. */
+let radarMap=null, radarLeafletLoading=null;
+function loadLeaflet(){
+  if(window.L) return Promise.resolve();
+  if(radarLeafletLoading) return radarLeafletLoading;
+  radarLeafletLoading=new Promise((resolve,reject)=>{
+    const css=document.createElement("link"); css.rel="stylesheet"; css.href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+    document.head.appendChild(css);
+    const s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js";
+    s.onload=()=>resolve(); s.onerror=()=>reject(new Error("load failed"));
+    document.head.appendChild(s);
+  });
+  return radarLeafletLoading;
+}
+function closeRadar(){ if(radarMap){ radarMap.remove(); radarMap=null; } }
+async function openRadar(){
+  showSheet("shRadar");
+  const asOf=document.getElementById("radarAsOf"); asOf.textContent="Loading radar…";
+  try{
+    await loadLeaflet();
+    if(sheetState!=="shRadar") return;   /* closed again while the library was loading */
+    const r=await fetch("https://api.rainviewer.com/public/weather-maps.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("radar "+r.status);
+    const j=await r.json(), frames=(j.radar&&j.radar.past)||[];
+    if(!frames.length) throw new Error("no frames");
+    if(sheetState!=="shRadar") return;
+    const latest=frames[frames.length-1];
+    const lat=(cur.geo.n+cur.geo.s)/2, lon=(cur.geo.w+cur.geo.e)/2;
+    closeRadar();
+    radarMap=L.map("radarMap",{zoomControl:true,scrollWheelZoom:false,attributionControl:false}).setView([lat,lon],8);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{subdomains:"abc",maxZoom:12}).addTo(radarMap);
+    L.tileLayer(`${j.host}${latest.path}/256/{z}/{x}/{y}/2/1_1.png`,{maxNativeZoom:7,maxZoom:12,opacity:0.75}).addTo(radarMap);
+    L.circleMarker([lat,lon],{radius:7,color:"#E39B7B",weight:2,fillColor:"#E39B7B",fillOpacity:0.9}).addTo(radarMap);
+    const ago=Math.max(0,Math.round((Date.now()/1000-latest.time)/60));
+    asOf.textContent=`Radar from ${ago<1?"just now":ago+" min ago"}.`;
+  }catch(e){ if(sheetState==="shRadar") asOf.textContent="Couldn't load the radar right now -- check your connection and try again."; }
+}
 /* the series you've starred in the Race Day hub, when more than one shares a weekend -- global, not per track */
 function favSeries(){ try{ return localStorage.getItem("paddock:favSeries")||null; }catch(e){ return null; } }
 function toggleFavSeries(id){ try{ localStorage.setItem("paddock:favSeries",favSeries()===id?"":id); }catch(e){} renderHub(); }
@@ -1050,7 +1090,7 @@ function applyView(light){       /* light: only move/scale during a gesture; the
 /* bottom sheet */
 let sheetState=null;
 function showSheet(id){ sheetState=id; const s=document.getElementById("sheet"); s.hidden=false; document.getElementById("nearBar").hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=false; s.querySelectorAll(".sv").forEach(v=>v.hidden=(v.id!==id)); s.scrollTop=0; }
-function closeSheet(){ sheetState=null; const wasPoi=popI!==null; const s=document.getElementById("sheet"); if(s) s.hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=true; const nb=document.getElementById("nearBar"); if(nb) nb.hidden=false; popI=null; document.querySelectorAll(".poi.sel").forEach(el=>el.classList.remove("sel")); if(wasPoi) setTimeout(updateHeading,0); const lf=document.getElementById("liveFrame"); if(lf) lf.src=""; }
+function closeSheet(){ sheetState=null; const wasPoi=popI!==null; const s=document.getElementById("sheet"); if(s) s.hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=true; const nb=document.getElementById("nearBar"); if(nb) nb.hidden=false; popI=null; document.querySelectorAll(".poi.sel").forEach(el=>el.classList.remove("sel")); if(wasPoi) setTimeout(updateHeading,0); const lf=document.getElementById("liveFrame"); if(lf) lf.src=""; closeRadar(); }
 function openLayers(){ if(sheetState==="shLayers") closeSheet(); else showSheet("shLayers"); }
 let popI=null;
 function selectPoi(i){
@@ -1435,6 +1475,7 @@ function renderWxSheet(){
   const when=new Date(wx.at).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}).replace(" "," ");
   el.innerHTML=`<div class="ptitle"><strong>Weather at ${esc(cur.short)}</strong></div>
     ${ro?`<div class="rainline ${ro.state}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.2 6 10.2A6 6 0 0 1 6 13.2C6 9.2 12 3 12 3z"/></svg><div>${ro.text}</div></div>`:""}
+    <button class="btn quiet radarBtn" onclick="openRadar()"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M12 12 A5 5 0 0 1 17 17 M12 12 A8 8 0 0 1 20 20"/></svg>See the actual rain radar</button>
     <div class="wnow"><span class="wbig">${wxIcon(c.weather_code,c.is_day)}</span><div><div class="wt">${tv(c.temperature_2m)}°</div><small>${cond}. Feels like ${tv(c.apparent_temperature)}°</small></div></div>
     <div class="pmeta">${stats.map(s=>`<span>${s}</span>`).join("")}</div>
     <h4 class="mh">Next 12 hours</h4><div class="whours">${hours}</div>${wk}

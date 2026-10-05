@@ -165,6 +165,12 @@
         <small>Streamed by the series itself on YouTube -- not something we run. Uses data like any video; on a weak signal it may buffer or not load.</small>
         <div class="liveWrap"><iframe id="liveFrame" src="" title="Live stream" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
       </div>
+      <div class="sv" id="shRadar" hidden>
+        <div class="ptitle"><strong>Rain radar</strong></div>
+        <small id="radarAsOf">Loading…</small>
+        <div class="radarWrap"><div id="radarMap"></div></div>
+        <small class="fine">Actual radar, not a forecast -- shows what's falling right now, refreshed every few minutes by <a href="https://www.rainviewer.com/" target="_blank" rel="noopener">RainViewer</a>. Map © OpenStreetMap contributors. Uses data like any map.</small>
+      </div>
       <div class="sv" id="shPark" hidden>
         <div class="ptitle"><strong>Parking</strong></div>
         <small>Each lot is shaded on the map. Tap one for details and directions.</small>

@@ -5,3 +5,14 @@ dist/
 .claude/
 .netlify/
 tools/street-circuits/
+
+# Capacitor iOS personal-use wrapper (see CLAUDE.md "Native app wrapper").
+# ios/ itself IS committed -- it's the actual Xcode project source, not a build
+# artifact -- only npm's and Xcode's own generated/derived files are ignored.
+node_modules/
+ios/App/Pods/
+ios/App/App.xcworkspace/xcuserdata/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
+ios/DerivedData/
+*.xcuserstate

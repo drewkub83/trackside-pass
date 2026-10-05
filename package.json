@@ -1,0 +1,32 @@
+{
+  "name": "trackside-pass",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Race-day companion PWA, wrapped as a personal-use iOS app with Capacitor.",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ios:sync": "cap sync ios",
+    "ios:open": "cap open ios"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drewkub83/trackside-pass.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/drewkub83/trackside-pass/issues"
+  },
+  "homepage": "https://github.com/drewkub83/trackside-pass#readme",
+  "dependencies": {
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.2"
+  }
+}

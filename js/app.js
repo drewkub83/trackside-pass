@@ -374,10 +374,18 @@ function openStandings(sid){
 }
 /* YouTube's "always whatever's live on this channel" embed -- loaded only on tap, into the sheet (not the
    hub body, which gets rebuilt every 30s) so it isn't restarted mid-stream. Stopped on close (see closeSheet). */
-/* "Live timing" card: a plain link-out to the sanctioning body's own timing page (data/series.js `timing`),
-   not an embed -- those sites run their own scripts and most refuse to load inside an iframe anyway, and
-   each one is already mobile-first, so the phone's own browser is the best place to show it. */
-function openLiveTiming(url){ window.open(url,"_blank"); }
+/* "Live timing" card: a link-out to the sanctioning body's own timing page (data/series.js `timing`), not an
+   embed -- those sites run their own scripts and most refuse to load inside an iframe anyway. In a plain
+   browser/installed PWA that means the phone's own browser, same as any other outbound link. Inside the
+   Capacitor iOS shell, @capacitor/browser is present and this instead opens a real in-app Safari sheet
+   (SFSafariViewController) -- a proper rise-up "Done"-button overlay, not a tab switch -- which is the one
+   thing the plain web app can never do on its own. window.Capacitor only exists inside that native shell, so
+   this same code runs unchanged for every other visitor and just takes the window.open path. */
+function openLiveTiming(url){
+  const cap=window.Capacitor;
+  if(cap&&cap.isNativePlatform&&cap.isNativePlatform()&&cap.Plugins&&cap.Plugins.Browser){ cap.Plugins.Browser.open({url}); return; }
+  window.open(url,"_blank");
+}
 function openLiveStream(channelId,name){
   document.getElementById("liveTitle").textContent=name+" — live";
   document.getElementById("liveFrame").src=`https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=1`;

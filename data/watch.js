@@ -198,5 +198,25 @@ const WATCH = [
         ["#96 Turner Motorsport BMW M4 GT3 EVO (Robby Foley, Patrick Gallagher)", "6 points back of Winward entering the race."]
       ] }
     ],
-    note:"Sources: NBC Sports, RACER (\"Blomqvist puts Acura on pole for Petit Le Mans, its final GTP race\"), IMSA.com (\"Blomqvist Lands on Motul Petit Le Mans Pole\"), Sportscar365 (\"Blomqvist Leads Acura Front Row Lockout for Petit Le Mans\") and GT-Report Friday qualifying reports, Oct 2, 2026 (via web search; several of these sites blocked direct fetches in this environment)." }
+    note:"Sources: NBC Sports, RACER (\"Blomqvist puts Acura on pole for Petit Le Mans, its final GTP race\"), IMSA.com (\"Blomqvist Lands on Motul Petit Le Mans Pole\"), Sportscar365 (\"Blomqvist Leads Acura Front Row Lockout for Petit Le Mans\") and GT-Report Friday qualifying reports, Oct 2, 2026 (via web search; several of these sites blocked direct fetches in this environment)." },
+  { t:"indianapolis", d:"2026-10-09", s:"gtwca",
+    asOf:"Entering the Indianapolis 8 Hour (Oct 9-10), the GT World Challenge America season finale, run jointly with the Intercontinental GT Challenge's own season finale. A record 29-car entry list: 6 Pro, 20 Pro-Am, 3 Am.",
+    groups:[
+      { h:"GT World Challenge America: Pro", items:[
+        ["JMF Motorsports Mercedes-AMG (Michai Stephens, Mikael Grenier)", "Lead the Pro standings by 9 points, 114 to 105, after finishing second at Barber."],
+        ["AF Corse USA Ferrari (Frederik Schandorff, Matias Perez Companc)", "9 points back after winning at Barber, their second Pro win of the season."],
+        ["Turner Motorsport BMW (Justin Rothberg, Robby Foley)", "Third, 10 points back, with the season's longest race left to close the gap."]
+      ] },
+      { h:"Pro-Am", items:[
+        ["GMG Racing Porsche (Kyle Washington, Tom Sargent)", "Lead Pro-Am by 6 points, 95 to 89, after finishing third at Barber."],
+        ["RS1 Porsche (Jan Heylen, Danny Dyszelski)", "6 points back entering the finale."],
+        ["Wright Motorsports Porsche (Dave Musial Jr., Ryan Yardley)", "Third, 9 points back; the team adds Porsche factory drivers Laurin Heinrich -- fresh off finishing runner-up in IMSA's GTP title fight at Petit Le Mans -- and Kevin Estre to its lineup for the 8-hour."],
+        ["Archangel Motorsports McLaren (Aaron Telitz, Todd Coleman)", "Won at Barber for the team's first Pro-Am victory, climbing to fifth in points (52)."],
+        ["Random Vandals Racing BMW (Marcus Ericsson, Hampus Ericsson, Derek DeBoer)", "IndyCar driver Marcus Ericsson joins his brother Hampus for the 8-hour -- a notable one-off addition to the entry list, not a title contender (10th in points)."]
+      ] },
+      { h:"Am", items:[
+        ["AF Corse USA Ferrari (Jay Schreibman, Oswaldo Negri)", "Lead Am by a commanding 143-to-25 margin over Scuderia Corsa; the title is effectively already settled since no rival can gain more than 25 points in one race."]
+      ] }
+    ],
+    note:"Sources: GT World Challenge America's own standings pages (Pro/Pro-Am/Am Teams, checked directly, Oct 5), its Barber race recap (\"AF Corse USA Takes Second Pro Win of Season as Archangel Motorsports Breaks Through at Barber in Pro-Am\"), and Sportscar365's entry-list report (\"29 Entries on Provisional Indy 8H Entry List\"), via web search. Three-time defending Indy 8 Hour champion Team WRT is sitting this one out after BMW reduced factory support for the final IGTC rounds. Driver-to-team pairings are as those sources gave them; the two different car numbers earlier Barber entries used for JMF Motorsports' Pro car weren't consistent between reports, so no car number is given here for any team." }
 ];

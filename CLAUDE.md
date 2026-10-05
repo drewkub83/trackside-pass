@@ -35,7 +35,8 @@ needs re-signing roughly every 7 days.
 - `ios/` **is committed to git** -- it's the actual native project source, not a build artifact. `node_modules/`
   and Xcode's own derived/user-state files are gitignored; see `.gitignore`.
 - Session alerts use `@capacitor/local-notifications` (`scheduleSessionAlerts` in `js/app.js`): on each app
-  open, the next event's sessions get a local notification 10 min before start. These are on-device only --
+  open while physically at a track, that track's next event's sessions get a local notification 10 min before
+  start (not at a track: the existing schedule is left alone). These are on-device only --
   true server-pushed notifications would need a paid Apple developer account, not the free personal one.
 - `window.Capacitor` only exists inside this native shell -- `js/app.js` must keep guarding every use of it
   (`window.Capacitor && window.Capacitor.isNativePlatform && ...`) and fall back to normal web behavior, since

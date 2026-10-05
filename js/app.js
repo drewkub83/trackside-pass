@@ -1334,10 +1334,13 @@ function nativeNotifier(){ const c=window.Capacitor; return (c&&c.isNativePlatfo
    race they're actually at. Not at a track (or no location) leaves the current schedule alone -- so alerts set
    at the venue keep working after you leave it. Location is only read if it's already allowed (same consent
    rule as the on-track card), so this never throws a surprise prompt. */
-async function scheduleSessionAlerts(){
+async function scheduleSessionAlerts(forcedTrack){
   const LN=nativeNotifier(); if(!LN) return;
-  try{ const p=navigator.permissions&&await navigator.permissions.query({name:"geolocation"}); if(p&&p.state==="denied") return; }catch(e){}
-  const t=await whereAmI(10000);
+  let t=forcedTrack||null;
+  if(!t){
+    try{ const p=navigator.permissions&&await navigator.permissions.query({name:"geolocation"}); if(p&&p.state==="denied") return; }catch(e){}
+    t=await whereAmI(10000);
+  }
   if(!t) return;
   const e=nextEventAt(t);
   if(!e) return;
@@ -1357,6 +1360,12 @@ async function scheduleSessionAlerts(){
   }))});
 }
 scheduleSessionAlerts();
+/* TEMPORARY test hook for the Indianapolis weekend (remove after Sunday Oct 11, 2026, along with the Settings row). */
+function setIndyAlertsNow(){
+  const t=TRACKS.find(x=>x.id==="indianapolis");
+  if(!nativeNotifier()){ toast("Alerts only work in the iPhone app."); return; }
+  scheduleSessionAlerts(t).then(()=>toast("Indianapolis alerts set."));
+}
 
 function openSettings(){
  renderAutoSw(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }

@@ -74,6 +74,9 @@
     <button class="sw" id="ppSw" role="switch" aria-checked="false" aria-label="Passport check-in" onclick="togglePassportAuto()"><i></i></button></div>
   <div class="auto"><div><b>On-track alerts</b><small>While you're at a track with the app open, a card pops up when a session goes on track.</small></div>
     <button class="sw" id="alertSw" role="switch" aria-checked="false" aria-label="On-track alerts" onclick="toggleAlerts()"><i></i></button></div>
+  <!-- TEMPORARY (Indianapolis test, remove after Sunday Oct 11): schedules Indy's session alerts without needing to be at the track. -->
+  <div class="auto"><div><b>Test: Indianapolis session alerts</b><small>Schedules this weekend's session alerts now, so you can see how they work. Temporary.</small></div>
+    <button class="btn quiet" onclick="setIndyAlertsNow()">Set now</button></div>
   <div class="sect">At the track</div>
   <div class="auto"><div><b>Keep the screen on</b><small>Stops the phone from dimming while the map is open. Uses more battery.</small></div>
     <button class="sw" id="awakeSw" role="switch" aria-checked="false" aria-label="Keep the screen on" onclick="toggleAwake()"><i></i></button></div>

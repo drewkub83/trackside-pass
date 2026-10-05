@@ -1352,7 +1352,7 @@ const hr12=t=>{ const h=+t.slice(11,13); return (h%12||12)+(h<12?" AM":" PM"); }
 const tm12=t=>{ const h=+t.slice(11,13), m=t.slice(14,16); return (h%12||12)+":"+m+(h<12?" AM":" PM"); };
 function wxUrl(t){
   t=t||cur; const g=t.geo, lat=((g.n+g.s)/2).toFixed(3), lon=((g.w+g.e)/2).toFixed(3);
-  return "https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+"&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,is_day"
+  return "https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+"&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,precipitation,wind_speed_10m,wind_gusts_10m,wind_direction_10m,is_day"
    +"&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset"
    +"&minutely_15=precipitation&forecast_minutely_15=16&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone="+encodeURIComponent(t.tz||"auto")+"&forecast_days=16";
 }
@@ -1384,6 +1384,12 @@ function rainOutlook(){        /* {state:"now"|"soon"|"none", mins, text, level}
   const now=localMin(Date.now()), THR=0.1;
   const slots=M.time.map((t,i)=>({s:Date.parse(t+":00Z")/60000-15,e:Date.parse(t+":00Z")/60000,p:M.precipitation[i]||0})).filter(x=>x.e>now);
   if(!slots.length) return null;
+  /* the forecast model's own live reading for right now -- folded into the current slot as a floor, so an
+     actual-rain-falling instant isn't missed just because the minutely_15 bucket it falls in rounded low.
+     This can't catch a storm the model's forecast run simply didn't see coming (that needs real radar, which
+     this free, keyless forecast API doesn't provide) -- only ones the model agrees are happening right now. */
+  const curP=wx.data.current&&typeof wx.data.current.precipitation==="number"?wx.data.current.precipitation:null;
+  if(curP!==null&&curP>slots[0].p) slots[0].p=curP;
   const level=p=>{ const r=p*4; return r>=7.6?"heavy":r>=2.5?"moderate":"light"; };
   if(slots[0].p>=THR&&slots[0].s<=now+2){
     let k=0; while(k<slots.length&&slots[k].p>=THR) k++;

@@ -801,8 +801,13 @@ function renderHub(){
      series have one even when they don't stream free video, so this often shows on its own. */
   /* Always there for the series in focus (not only while a session is live), so the timing page is one tap away
      before and between sessions too. Inside the iPhone app it opens as an in-app browser sheet (openLiveTiming). */
+  /* the series' own timing page when it has a guide (SERIES.timing); otherwise the first event on this weekend
+     with an official page (TIMING_LINKS), so F1 and NASCAR weekends get one even without a session list. */
   const timingSr=sid?SERIES.find(r=>r.id===sid):null;
-  const liveTimingHtml=(timingSr&&timingSr.timing)?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingSr.timing}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingSr.name)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
+  let timingUrl=null, timingName=null;
+  if(timingSr&&timingSr.timing){ timingUrl=timingSr.timing; timingName=timingSr.name; }
+  else { const fo=focusAt(cur); const hit=(fo?fo.group:[]).map(e=>TIMING_LINKS.find(x=>x.match.test(e.s||""))).find(Boolean); if(hit){ timingUrl=hit.url; timingName=hit.name; } }
+  const liveTimingHtml=timingUrl?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingUrl}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingName)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
 
   const ov=layoutOverrides(), views=cur.pois.map(p=>applyOv(p,ov[pid(p)])).map((p,i)=>({p,i})).filter(c=>c.p.k==="view"&&!c.p.del);
   const viewsHtml=views.length?`<div class="hubCard"><h4>Best views</h4><div class="hubViewList">${views.map(c=>`<button onclick="hubGoView(${c.i})">${esc(c.p.n)}</button>`).join("")}</div></div>`:"";

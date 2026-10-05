@@ -208,3 +208,15 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see GTAmerica.us."
 }
 ];
+
+/* Official live-timing pages for series that have event listings but no SERIES guide yet (F1, NASCAR). Matched
+   against an event's series name (its `s` field), so a race weekend with no session list still gets a link.
+   Only official organizer pages go here, checked directly. The timing content on these pages appears during live
+   sessions, the same as the GT World page. Add a row only after checking the page yourself. */
+const TIMING_LINKS = [
+  { match:/Formula 1/i, name:"Formula 1", url:"https://www.formula1.com/en/timing/f1-live-lite" },
+  { match:/NASCAR/i, name:"NASCAR", url:"https://www.nascar.com/followlive/" },
+  { match:/IMSA|WeatherTech|Pilot Challenge|VP Racing|MX-5|Carrera Cup|Super Trofeo/i, name:"IMSA", url:"https://www.imsa.com/scoring/" },
+  { match:/GT World Challenge|GT America|GT4 America|TC America|Toyota GR Cup|Intercontinental GT/i, name:"GT World Challenge America", url:"https://www.gt-world-challenge-america.com/watch-live#live-timing" },
+  { match:/INDYCAR|IndyCar/i, name:"INDYCAR", url:"https://racecontrol.indycar.com/" }
+];

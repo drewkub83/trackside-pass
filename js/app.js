@@ -374,6 +374,10 @@ function openStandings(sid){
 }
 /* YouTube's "always whatever's live on this channel" embed -- loaded only on tap, into the sheet (not the
    hub body, which gets rebuilt every 30s) so it isn't restarted mid-stream. Stopped on close (see closeSheet). */
+/* "Live timing" card: a plain link-out to the sanctioning body's own timing page (data/series.js `timing`),
+   not an embed -- those sites run their own scripts and most refuse to load inside an iframe anyway, and
+   each one is already mobile-first, so the phone's own browser is the best place to show it. */
+function openLiveTiming(url){ window.open(url,"_blank"); }
 function openLiveStream(channelId,name){
   document.getElementById("liveTitle").textContent=name+" — live";
   document.getElementById("liveFrame").src=`https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=1`;
@@ -785,10 +789,14 @@ function renderHub(){
   const liveSr=live?seriesFor(live.n):null;
   const liveStreamHtml=(liveSr&&liveSr.yt)?`<div class="hubCard hubTap" role="button" onclick="openLiveStream('${liveSr.yt}','${esc(liveSr.name)}')"><div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Watch live</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(liveSr.name)} on YouTube</div></div>`:"";
 
+  /* "Live timing": same on-track-now gating as Watch live, but keyed off `timing` instead of `yt` -- most
+     series have one even when they don't stream free video, so this often shows on its own. */
+  const liveTimingHtml=(liveSr&&liveSr.timing)?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${liveSr.timing}')"><div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(liveSr.name)} -- opens in your browser</div></div>`:"";
+
   const ov=layoutOverrides(), views=cur.pois.map(p=>applyOv(p,ov[pid(p)])).map((p,i)=>({p,i})).filter(c=>c.p.k==="view"&&!c.p.del);
   const viewsHtml=views.length?`<div class="hubCard"><h4>Best views</h4><div class="hubViewList">${views.map(c=>`<button onclick="hubGoView(${c.i})">${esc(c.p.n)}</button>`).join("")}</div></div>`:"";
 
-  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+standingsHtml+viewsHtml+liveStreamHtml;
+  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+standingsHtml+viewsHtml+liveStreamHtml+liveTimingHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */

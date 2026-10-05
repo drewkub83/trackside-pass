@@ -7,10 +7,20 @@
    shows whatever's actually live on the channel right now, so it needs no per-event upkeep, but ONLY add it
    for a series confirmed to stream complete, free, live coverage of its own races on that exact channel (not
    just highlights or an unrelated channel from the same org). IMSA's own WeatherTech Championship is NOT
-   included here on purpose -- it's a Peacock/NBC broadcast, free on YouTube only for occasional select races. */
+   included here on purpose -- it's a Peacock/NBC broadcast, free on YouTube only for occasional select races.
+   timing (optional): the official live timing & scoring page for the sanctioning body that runs this series'
+   races, so the Race Day hub's "Live timing" card can link straight out to it while this series is on track.
+   It's a link-out, not an embed -- these sites run their own scripts and most refuse to load inside an iframe,
+   and each one is already built mobile-first, so opening it in the phone's browser is both the only reliable
+   option and the better one. One URL often covers several series here because they share one sanctioning
+   body's timing system: IMSA's own scoring.page (imsa.com/scoring) covers every IMSA-sanctioned series
+   (WeatherTech, Pilot Challenge, VP Racing, and the support series that race at IMSA weekends -- MX-5 Cup,
+   Porsche Carrera Cup, Lamborghini Super Trofeo); SRO Motorsports' GT World Challenge America site covers
+   every SRO America series the same way (GT World Challenge America itself, GT4 America, TC America, Toyota
+   GR Cup North America, GT America) since they share one event and one timing feed. Checked directly, Oct 5. */
 const SERIES = [
   {
-    id:"weathertech", match:/WeatherTech Championship|Petit Le Mans|Rolex 24|Twelve Hours/i,
+    id:"weathertech", match:/WeatherTech Championship|Petit Le Mans|Rolex 24|Twelve Hours/i, timing:"https://www.imsa.com/scoring/",
     name:"IMSA WeatherTech SportsCar Championship", tag:"4 classes on track at once",
     blurb:"IMSA's top series and the headline act. Four classes of cars race together on the same track at the same time, so faster cars are always lapping slower ones. Each class has its own winner, so pick a class to follow instead of only watching who is first overall.",
     cars:[
@@ -39,7 +49,7 @@ const SERIES = [
     ]
   },
   {
-    id:"pilot", match:/Pilot Challenge|FOX Factory 120/i,
+    id:"pilot", match:/Pilot Challenge|FOX Factory 120/i, timing:"https://www.imsa.com/scoring/",
     name:"Michelin Pilot Challenge", tag:"2 classes: GS and TCR",
     blurb:"IMSA's second-tier series: production-based race cars in two classes, driven by two-driver crews who swap during pit stops. Expect tight, door-to-door racing. Most races run two hours, with four-hour races at Daytona and Mid-Ohio.",
     cars:[
@@ -57,7 +67,7 @@ const SERIES = [
     ]
   },
   {
-    id:"vp", match:/VP Racing/i,
+    id:"vp", match:/VP Racing/i, timing:"https://www.imsa.com/scoring/",
     name:"IMSA VP Racing SportsCar Challenge", tag:"Sprint races: LMP3, GTDX and GSX",
     blurb:"IMSA's sprint series: prototypes and GT cars in short, flat-out races. Each weekend has two 45-minute races, and every car has a single driver, so there are no driver changes.",
     cars:[
@@ -75,7 +85,7 @@ const SERIES = [
     watch:{ race:"Two short sprint races with a single driver in each car: no pit stops for driver changes, so it is flat-out from the start. Prototypes and GT cars share the track." }
   },
   {
-    id:"mx5", match:/MX-5/i, yt:"UCg1o8Hezzo9Mx7ATxCyu__w",
+    id:"mx5", match:/MX-5/i, yt:"UCg1o8Hezzo9Mx7ATxCyu__w", timing:"https://www.imsa.com/scoring/",
     name:"Whelen Mazda MX-5 Cup", tag:"One car, one class",
     blurb:"Every driver races the identical Mazda MX-5 Cup car, prepared by Flis Performance, so the drivers, not the cars, decide the race. Expect big packs, drafting and constant position changes.",
     cars:[
@@ -87,7 +97,7 @@ const SERIES = [
     watch:{ race:"Every car is identical, so watch the draft. Packs of cars swap places on the straights, and the finish is often decided in the last corner." }
   },
   {
-    id:"carrera", match:/Carrera Cup/i, yt:"UCch613iK0dXuGLlvFSePzwA",
+    id:"carrera", match:/Carrera Cup/i, yt:"UCch613iK0dXuGLlvFSePzwA", timing:"https://www.imsa.com/scoring/",
     name:"Porsche Carrera Cup North America", tag:"One car, driver classes",
     blurb:"Every car is a Porsche 911 GT3 Cup, so it is the driver that makes the difference. The classes are for drivers, not cars, so Pro, Pro-Am and Masters drivers race in the same pack.",
     cars:[
@@ -99,7 +109,7 @@ const SERIES = [
     watch:{ race:"The same car for everyone means close packs. Pro, Pro-Am and Masters drivers are mixed in one pack, each racing for their own class result." }
   },
   {
-    id:"lambo", match:/Super Trofeo/i,
+    id:"lambo", match:/Super Trofeo/i, timing:"https://www.imsa.com/scoring/",
     name:"Lamborghini Super Trofeo North America", tag:"One car, driver classes",
     blurb:"Single-make racing in the Lamborghini Huracan Super Trofeo Evo2, with Pro, ProAm, Am and Lamborghini Cup (LB Cup) driver classes racing together. Races run about 50 minutes.",
     cars:[
@@ -111,7 +121,7 @@ const SERIES = [
     watch:{ race:"Same car for everyone, with four driver classes racing in one field. Each class has its own winner." }
   }
   ,{
-    id:"indycar", match:/INDYCAR|IndyCar/i,
+    id:"indycar", match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
     name:"NTT INDYCAR SERIES", tag:"One car, three kinds of track",
     blurb:"North America's top open-wheel series. Every team runs the same Dallara chassis with the same aero kit, powered by a Chevrolet or Honda engine, so results come down to drivers, teams and strategy. The season mixes street circuits, permanent road courses and ovals, and it builds to the Indianapolis 500.",
     cars:[
@@ -131,7 +141,7 @@ const SERIES = [
     fine:"A spectator summary based on INDYCAR's published car facts. For official details, see INDYCAR.com."
   }
   ,{
-    id:"gtwca", match:/GT World Challenge America|Texas 8 Hour/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g",
+    id:"gtwca", match:/GT World Challenge America|Texas 8 Hour/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
     name:"GT World Challenge America Powered by AWS", tag:"GT3 supercars, sprint racing",
     blurb:"North America's home for GT3 racing, run by SRO Motorsports Group. The cars are race versions of well-known sports cars, built to the same FIA GT3 rules used at the Spa 24 Hours and around the world, so many makes race on equal terms. Weekends are short sprint races instead of endurance events, with one exception in 2027: the Texas 8 Hour.",
     cars:[
@@ -150,7 +160,7 @@ const SERIES = [
     fine:"A spectator summary of GT3 racing and GT World Challenge America. For official details, see GT-World-Challenge-America.com."
   }
 ,{
-  id:"gt4a", match:/GT4 America/i,
+  id:"gt4a", match:/GT4 America/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"Pirelli GT4 America", tag:"Production-based GT4 cars",
   blurb:"SRO America’s GT4 series. The cars are race versions of road-going sports cars such as the Ford Mustang, Aston Martin Vantage, BMW M4, Porsche Cayman and Toyota GR Supra, built to GT4 rules, with less power and less aero than the GT3 cars of GT World Challenge America.",
   cars:[
@@ -162,7 +172,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see GT4-America.com."
 }
 ,{
-  id:"tca", match:/TC America/i,
+  id:"tca", match:/TC America/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"TC America powered by Skip Barber", tag:"Touring cars",
   blurb:"Touring-car racing on SRO America weekends, with production-based four-door and hatchback cars built for racing. Close, door-to-door racing is the appeal.",
   cars:[
@@ -174,7 +184,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see the SRO America website."
 }
 ,{
-  id:"grcup", match:/Toyota GR Cup/i,
+  id:"grcup", match:/Toyota GR Cup/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"Toyota GR Cup North America", tag:"One car for everyone",
   blurb:"A single-make series: every car is the same Toyota GR86 race car, so the result comes down to the driver and the racecraft.",
   cars:[
@@ -186,7 +196,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see the SRO America website."
 }
 ,{
-  id:"gta", match:/GT America/i,
+  id:"gta", match:/GT America/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"GT America powered by AWS", tag:"GT3 cars, SRO America weekends",
   blurb:"A companion GT series on SRO America weekends, racing alongside GT World Challenge America at many rounds. Look for GT-style race cars from well-known makes.",
   cars:[

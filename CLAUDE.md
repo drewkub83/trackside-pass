@@ -38,6 +38,14 @@ needs re-signing roughly every 7 days.
   open while physically at a track, that track's next event's sessions get a local notification 10 min before
   start (not at a track: the existing schedule is left alone). These are on-device only --
   true server-pushed notifications would need a paid Apple developer account, not the free personal one.
+- `capacitor.config.json` must keep `ios.contentInset: "never"` (Capacitor's default). `"automatic"` makes the
+  native scroll view add its own safe-area padding, leaving dark bars top/bottom and re-measuring the layout on
+  every tab change. The web CSS handles safe areas itself with `env(safe-area-inset-*)`.
+- `js/native.js` (loaded before `app.js`, no-op outside the shell) routes `navigator.geolocation` and
+  `permissions.query({name:"geolocation"})` through `@capacitor/geolocation`. Without it the web view asks
+  "<site> would like to use your location" on every launch.
+- The app icon has a dark-mode variant (`AppIcon-dark.png`, from `icons/icon-night-1024.png`). Icons for iOS
+  must have no alpha channel.
 - `window.Capacitor` only exists inside this native shell -- `js/app.js` must keep guarding every use of it
   (`window.Capacitor && window.Capacitor.isNativePlatform && ...`) and fall back to normal web behavior, since
   the exact same code also runs for any plain browser/installed-PWA visit.

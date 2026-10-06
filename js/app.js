@@ -1168,7 +1168,7 @@ function computeLimits(){
   let [x0,y0,x1,y1]=c; const ov=layoutOverrides();
   cur.pois.map(p=>applyOv(p,ov[pid(p)])).concat(userStands()).forEach(p=>{ if(p.del) return; x0=Math.min(x0,p.x); y0=Math.min(y0,p.y); x1=Math.max(x1,p.x); y1=Math.max(y1,p.y); });
   const px=(x1-x0)*.06, py=(y1-y0)*.06, v=cur.vb; x0=Math.max(v[0],x0-px); y0=Math.max(v[1],y0-py); x1=Math.min(v[0]+v[2],x1+px); y1=Math.min(v[1]+v[3],y1+py);
-  limits={B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.min(Math.max(viewFor(f,x0,y0,x1,y1)[2],viewFor(f,...c)[2]*1.12),viewFor(f,...c)[2]*1.6)};
+  limits={B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.min(Math.max(viewFor(f,x0,y0,x1,y1)[2],viewFor(f,...c)[2]*1.12),viewFor(f,...c)[2]*1.25)}   /* zoom-out stops at 1.25x the fitted circuit: further out just shrinks the track to a speck */;
 }
 function clampView(v){
   if(!limits) computeLimits(); if(!limits) return v;

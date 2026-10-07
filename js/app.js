@@ -318,7 +318,14 @@ function startGps(quiet){   /* quiet: keep the current sheet open (used by the R
     const km = haversine(lat,lng,(cur.geo.n+cur.geo.s)/2,(cur.geo.w+cur.geo.e)/2);
     placeYou(x,y,`You're on site (±${accLabel(accuracy)})`);
     if(!inMap(x,y)) document.getElementById("gpsText").textContent=`You're about ${distKmLabel(km)} from ${cur.short}.`;
-  }, err=>{ document.getElementById("gpsText").textContent = err.code===1?"Location is off. Allow it in your phone's settings for this app.":"Couldn't get a fix. Try again outdoors."; if(quiet) toast(document.getElementById("gpsText").textContent); stopGps(); if(mode) refreshMode(false); }, {enableHighAccuracy:true,maximumAge:5000,timeout:15000});
+  }, err=>{
+    const t=document.getElementById("gpsText");
+    /* Only "blocked" ends GPS. A slow or missing fix (indoors, under cover, first seconds after opening) just keeps
+       looking -- the watch stays on -- and says so in the Locate sheet instead of popping a toast over the map. A
+       manual tap on Locate (not quiet) still stops and says so, as before. */
+    if(err.code===1){ t.textContent="Location is off. Allow it in your phone's settings for this app."; if(quiet) toast(t.textContent); stopGps(); if(mode) refreshMode(false); return; }
+    if(quiet){ t.textContent="Still looking for your location…"; return; }
+    t.textContent="Couldn't get a fix. Try again outdoors."; stopGps(); if(mode) refreshMode(false); }, {enableHighAccuracy:true,maximumAge:5000,timeout:15000});
 }
 function stopGps(){ if(watchId!==null){ navigator.geolocation.clearWatch(watchId); watchId=null; } const b=document.getElementById("gpsBtn"); if(b) b.classList.remove("on"); }
 function haversine(a1,o1,a2,o2){ const R=6371,r=Math.PI/180,dA=(a2-a1)*r,dO=(o2-o1)*r,h=Math.sin(dA/2)**2+Math.cos(a1*r)*Math.cos(a2*r)*Math.sin(dO/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }

@@ -94,7 +94,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 #pMap.hub-mode>.map-wrap,#pMap.hub-mode>.fl{display:none}
 .hubView{display:none;flex:1;flex-direction:column;overflow:auto;padding:0 16px calc(var(--tabh) + 20px)}
 #pMap.hub-mode .hubView{display:flex}
-.hubView .bar{padding:calc(env(safe-area-inset-top) + 10px) 0 14px}
+/* hub: the bar spans the full width (cancels the view's side padding) and the track name sits centred between the back button and an equal spacer */
+.hubView .bar{margin:0 -16px;padding:calc(env(safe-area-inset-top) + 10px) 16px 14px}
+.hubView .bar::after{content:"";flex:none;width:44px}
+.hubView .bar .ptitle2{flex:1;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hubCard{margin:0 0 14px;padding:16px 18px;border-radius:22px;background:var(--card);box-shadow:var(--shadow)}
 .hubCard h4{margin:0 0 6px;font-size:12.5px;color:var(--ink-2);font-weight:500;text-transform:uppercase;letter-spacing:.4px}
 .hubSessionName{font-size:19px;font-weight:600;margin:2px 0 2px}
@@ -214,7 +217,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .map-wrap.editing .poi{cursor:grab}
 .map-wrap.editing .poi .sc>circle:nth-child(2){stroke:var(--yellow);stroke-width:2.5}
 .map-wrap.placing,.map-wrap.adding{cursor:crosshair}
-.bar{display:flex;align-items:center;gap:12px;padding:max(14px,env(safe-area-inset-top)) 14px 8px}
+.bar{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;padding:max(14px,env(safe-area-inset-top)) 14px 8px;background:color-mix(in srgb,var(--paper) 82%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
 .bar .ptitle2{font-size:24px;font-weight:400}
 .map-note{padding:10px 24px 0;color:var(--ink-2);font-size:13px}
 .map-wrap svg .b-farm,.map-wrap svg .b-farmland,.map-wrap svg .b-residential,.map-wrap svg .b-cemetery{fill:var(--field)}

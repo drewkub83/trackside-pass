@@ -14,6 +14,11 @@ Pushing to `main` deploys the site (https://deft-medovik-55a935.netlify.app). Te
 ## Accuracy rule
 Never invent facts. Race facts (results, standings, points, cars, drivers) must come from published sources (imsa.com, racer.com, sportscar365.com, series sites, Porsche, etc.). Cross-check numbers. Do not use Wikipedia for numbers (its standings were wrong). If something cannot be verified, leave it out and say so in the entry's `note`. Do not use IMSA/Alkamel live timing data: it carries an explicit no-redistribution notice.
 
+## Event schedules (`sessions` in `data/<track>.js`)
+Fans only need **practice, qualifying and races** (plus the odd headline on-track event like a pole shootout or
+parade). Leave out team-only test/shakedown days, paddock logistics, briefings, registration, tech inspection,
+paid test sessions, autograph sessions. The official schedule PDFs list all of it -- filter it down.
+
 ## "What to watch" data (`data/watch.js`)
 One entry per series per weekend: `{t: track id, d: event start day, s: series id (see SERIES in data/series.js), from?: first day it shows, asOf, groups:[{h: class, items:[[car or driver, why]]}], note: sources}`. The app shows only the NEWEST entry per series whose `from` has arrived, so a mid-weekend update is a NEW entry with the same t/d/s and a later `from` that fully replaces the old one (write it as a fresh preview, drop stale claims, never an addendum). Old entries stay as history. The Race Day hub shows the entry for the series currently on track.
 

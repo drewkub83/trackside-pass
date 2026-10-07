@@ -6,8 +6,10 @@ sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from build_route import load, save, build
 import find_cross as fc
 FOOT={"footway","path","pedestrian","steps","cycleway"}
+NOT_FANS=re.compile(r"presse|press|media|paddock|fahrer|driver|team|vip|staff|marshal|service",re.I)
 def keep(o):
     if o["over"]!="circuit": return False
+    if NOT_FANS.search(o["name"]): return False          # press / paddock / staff tunnels are not for spectators
     if o["access"] in("private","no") or o["foot"]=="no": return False
     return o["hw"] in FOOT or o["name"]!="" or o["access"] in("permissive","yes","designated")
 def slug(s): return re.sub(r'[^a-z0-9]+','-',s.lower()).strip('-')
@@ -34,7 +36,7 @@ def apply(tid,write=False):
         if labels:
             lab=min(labels,key=lambda l:math.hypot(l[0]-o["x"],l[1]-o["y"]))
             if math.hypot(lab[0]-o["x"],lab[1]-o["y"])*mpu<110: near=lab[2]
-        if o["name"]: nm=o["name"].replace("Wallkway","Walkway")
+        if o["name"] and o["name"].strip().lower() not in ("tunnel","bridge","tunnel under the track"): nm=o["name"].replace("Wallkway","Walkway")
         else:
             base="Pedestrian bridge" if o["kind"]=="bridge" else "Tunnel under the track"
             seen[base]=seen.get(base,0)+1

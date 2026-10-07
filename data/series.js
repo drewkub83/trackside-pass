@@ -158,6 +158,25 @@ const SERIES = [
       {match:/Texas 8 Hour/i, title:"Texas 8 Hour", text:"An 8-hour endurance race at Circuit of the Americas, new for 2027, that replaces the Indianapolis 8 Hour as the flagship endurance event. Drivers share the car, and pit stops, tires and night running shape the result."}
     ],
     fine:"A spectator summary of GT3 racing and GT World Challenge America. For official details, see GT-World-Challenge-America.com."
+  },
+  {
+    id:"gtwce", match:/GT World Challenge Europe|24 Hours of Spa/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-europe.com/watch-live#live-timing",
+    name:"GT World Challenge Europe Powered by AWS", tag:"GT3 supercars, Sprint and Endurance Cups",
+    blurb:"Europe's top GT3 championship, run by SRO Motorsports Group. It is open to cars built to the FIA GT3 rules and balanced by SRO's Balance of Performance, the same rules used at GT World Challenge America. The season has ten rounds, split evenly between the Sprint Cup and the Endurance Cup, and it includes the CrowdStrike 24 Hours of Spa, the biggest GT race in the world.",
+    cars:[
+      {n:"GT3", full:"FIA GT3 race cars", type:"Race versions of supercars", c:"#1F6FB5", fg:"#FFFFFF", pace:"Fast",
+       text:"Race versions of road cars from makes such as Ferrari, Porsche, Mercedes-AMG, BMW, Lamborghini, McLaren, Aston Martin, Audi and others, all built to the same FIA GT3 rules. Balance of Performance keeps the makes close, so the racing comes down to drivers, strategy and tyres. Pirelli is the series' official tyre supplier.",
+       spot:"Looks like a road car with a big rear wing and race stripes. Team liveries, not the make, are what stand out."}
+    ],
+    rule:"Every car is a GT3 car, so they look alike in shape and speed. Drivers fall into four classes: Pro, Gold, Silver and Bronze, based on their ratings, and each class has its own winner as well as the overall result. Teams' and drivers' titles are awarded in each cup, and the points from both cups are combined for the full-season champions.",
+    watch:{
+      qualifying:"Cars go out to set their fastest laps, and the result sets the starting grid for the race.",
+      race:"Sprint Cup weekends have a pair of 60-minute races, so the action starts on lap one. Endurance Cup weekends have one long race, from three hours up to the 24 Hours of Spa, where pit stops, driver changes and the night hours decide a lot."
+    },
+    specials:[
+      {match:/24 Hours of Spa/i, title:"CrowdStrike 24 Hours of Spa", text:"The marquee event of the season: a full day and night of GT3 racing at Spa-Francorchamps in Belgium. The 2027 race is the 79th edition. Drivers share each car, and cars run through the night, so strategy, pit stops and staying out of trouble matter as much as raw speed."}
+    ],
+    fine:"A spectator summary of GT3 racing and GT World Challenge Europe, based on the series' own published information. For official details, see GT-World-Challenge-Europe.com."
   }
 ,{
   id:"gt4a", match:/GT4 America/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
@@ -217,6 +236,7 @@ const TIMING_LINKS = [
   { match:/Formula 1/i, name:"Formula 1", url:"https://www.formula1.com/en/timing/f1-live-lite" },
   { match:/NASCAR/i, name:"NASCAR", url:"https://www.nascar.com/followlive/" },
   { match:/IMSA|WeatherTech|Pilot Challenge|VP Racing|MX-5|Carrera Cup|Super Trofeo/i, name:"IMSA", url:"https://www.imsa.com/scoring/" },
-  { match:/GT World Challenge|GT America|GT4 America|TC America|Toyota GR Cup|Intercontinental GT/i, name:"GT World Challenge America", url:"https://www.gt-world-challenge-america.com/watch-live#live-timing" },
+  { match:/GT World Challenge Europe|24 Hours of Spa/i, name:"GT World Challenge Europe", url:"https://www.gt-world-challenge-europe.com/watch-live#live-timing" },
+  { match:/GT World Challenge America|GT America|GT4 America|TC America|Toyota GR Cup|Intercontinental GT/i, name:"GT World Challenge America", url:"https://www.gt-world-challenge-america.com/watch-live#live-timing" },
   { match:/INDYCAR|IndyCar/i, name:"INDYCAR", url:"https://racecontrol.indycar.com/" }
 ];

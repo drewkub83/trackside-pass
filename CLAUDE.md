@@ -28,6 +28,22 @@ Every track has a walking grid (`route`). Three things make Directions actually 
 - **Check:** in the browser console, from a gate / restroom / food / parking badge, `walkMetresTo()` should reach >= 98% of a
   track's badges. Don't bump a track's `rev` for this: it wipes the user's own badge edits.
 
+## Adding a new circuit (US or overseas)
+1. `tools/track-data/fetch_track_osm.py <id> <lat> <lon> [radius]` downloads the OpenStreetMap data (it uses a working Overpass
+   mirror; the main one is often down). `osm_raceways.py` lists raceway pieces; `chain_circuit.py <id> <official_km>` chains
+   them into one closed lap and prints the way ids (compare the length with the official one; several layouts can share a site
+   -- Barcelona has the chicane and no-chicane laps -- so pick the one whose turn count matches the series' published layout).
+2. `make_config.py` (edit SPECS) writes `tools/street-circuits/permanent/<id>.rb`: official length / turns / lap record from the
+   series' own event page, corner labels from OpenStreetMap's own piece names (never invented). Then
+   `ruby tools/street-circuits/build_permanent.rb tools/street-circuits/permanent/<id>.rb` builds `data/<id>.js` and registers it
+   in `index.html` and `sw.js`.
+3. Crossings, walking grid, elevation as in the section above. For new tracks build the grid with `build(tid, rle=True)`: the
+   rows are run-length encoded (`route.rle`, decoded in `walkRows()`) to keep data files small.
+4. Fan facilities (grandstands, food, restrooms) are NOT in OpenStreetMap; they need the circuit's official fan map. Say so in the
+   track's `facts` rather than leaving the map looking complete.
+Venues of a series that have no map yet go in that series' `stops` in `data/champs.js` as "Map coming soon" (with real dates);
+a stop disappears by itself once a track with the same id exists.
+
 ## Event schedules (`sessions` in `data/<track>.js`)
 Fans only need **practice, qualifying and races** (plus the odd headline on-track event like a pole shootout or
 parade). Leave out team-only test/shakedown days, paddock logistics, briefings, registration, tech inspection,

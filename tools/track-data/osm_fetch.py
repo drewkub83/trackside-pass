@@ -5,7 +5,7 @@ REPO=os.path.abspath(os.path.join(HERE,'..','..'))
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from elev_lib import track
 OSM=os.path.join(REPO,"tools","street-circuits","osm")+"/"
-EPS=["https://overpass.kumi.systems/api/interpreter","https://overpass-api.de/api/interpreter","https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
+EPS=["https://lz4.overpass-api.de/api/interpreter","https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"]
 for tid in sys.argv[1:]:
     f=OSM+tid+".json"
     if os.path.exists(f) and os.path.getsize(f)>1000: print(tid,"have"); continue

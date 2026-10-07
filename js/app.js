@@ -518,7 +518,7 @@ function crossPoints(){ const ov=layoutOverrides(); return cur.pois.map(p=>apply
 function walkRows(){
   const r=cur.route, cs=crossPoints(), key=cur.id+"|"+cs.map(p=>Math.round(p.x)+","+Math.round(p.y)).join(";");
   if(walkCache&&walkCache.key===key) return walkCache.rows;
-  const rows=r.rows.map(s=>s.split("")), cell=r.cell, mpu=r.mpu, pe=document.getElementById("trackPath"), samples=[];
+  const rows=r.rows.map(s=>(r.rle?s.replace(/([012])x(\d+);/g,(m,c,n)=>c.repeat(+n)):s).split("")), cell=r.cell, mpu=r.mpu, pe=document.getElementById("trackPath"), samples=[];
   const paint=(x,y,rad,fn)=>{ const i0=Math.max(0,Math.floor((x-rad-r.x0)/cell)), i1=Math.min(r.nx-1,Math.floor((x+rad-r.x0)/cell)), j0=Math.max(0,Math.floor((y-rad-r.y0)/cell)), j1=Math.min(r.ny-1,Math.floor((y+rad-r.y0)/cell));
     for(let j=j0;j<=j1;j++) for(let i=i0;i<=i1;i++) if(Math.hypot(r.x0+(i+.5)*cell-x,r.y0+(j+.5)*cell-y)<=rad) fn(i,j); };
   const open=(i,j)=>{ if(rows[j][i]==="1") rows[j][i]="2"; };

@@ -1,13 +1,15 @@
-import sys; sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+import os, sys; sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 import os
 HERE=os.path.dirname(os.path.abspath(__file__))
 REPO=os.path.abspath(os.path.join(HERE,'..','..'))
 from elev_lib import *
 from concurrent.futures import ThreadPoolExecutor
 import math
+# Outside the US, USGS has no data: use the global ~90 m Open-Meteo elevation model (rate limited, so a 150 m grid).
+GLOBAL={"canadian-tire-motorsport-park","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya"}
 def grid(tid):
-    vb,g=track(tid); m=mpu(vb,g)
-    nx=max(2,math.ceil(vb[2]*m/100)+1); ny=max(2,math.ceil(vb[3]*m/100)+1)
+    vb,g=track(tid); m=mpu(vb,g); sp=150 if tid in GLOBAL and tid!="canadian-tire-motorsport-park" else 100
+    nx=max(2,math.ceil(vb[2]*m/sp)+1); ny=max(2,math.ceil(vb[3]*m/sp)+1)
     cx=vb[2]/(nx-1); cy=vb[3]/(ny-1)
     nodes=[(vb[0]+i*cx, vb[1]+j*cy) for j in range(ny) for i in range(nx)]
     return vb,g,nx,ny,cx,cy,nodes
@@ -17,13 +19,14 @@ for tid in sys.argv[1:]:
     vb,g,nx,ny,cx,cy,nodes=grid(tid)
     lls=[xy2ll(vb,g,x,y) for x,y in nodes]
     print(tid,"grid",nx,"x",ny,"=",len(nodes),"points",flush=True)
-    if tid=="canadian-tire-motorsport-park":
+    if tid in GLOBAL:
         vals=[]
         for i in range(0,len(lls),100):
-            for k in range(6):
+            for k in range(8):
                 try: vals+=openmeteo(lls[i:i+100]); break
-                except Exception as e: time.sleep(20*(k+1))
+                except Exception as e: time.sleep(30*(k+1))
             else: vals+=[None]*len(lls[i:i+100])
+            time.sleep(1.5)
     else:
         with ThreadPoolExecutor(8) as ex: vals=list(ex.map(lambda p: usgs(*p), lls))
         for k in range(2):   # second pass for any that failed

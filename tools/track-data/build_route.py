@@ -45,7 +45,11 @@ class Grid:
                 if math.hypot((cx+.5)*s.cell-x,(cy+.5)*s.cell-y)<=r: s.set(cx,cy,v,only)
     def rows(s): return [r.decode() for r in s.a]
 WIDTH={"primary":12,"residential":8,"service":5,"path":3,"track":4,"bridge":5,"footway":3,"unclassified":6,"tertiary":8}
-def build(tid):
+def rle_encode(row):
+    # runs of 6+ identical cells become '<cell>x<count>;' (e.g. '0x57;'); the app decodes when route.rle is set
+    return re.sub(r'([012])\1{5,}',lambda m:m.group(1)+"x"+str(len(m.group(0)))+";",row)
+def rle_decode(row): return re.sub(r'([012])x(\d+);',lambda m:m.group(1)*int(m.group(2)),row)
+def build(tid,rle=False):
     T=load(tid); vb=T["vb"]; g=T["geo"]; mpu=(g["n"]-g["s"])*111000/vb[3]; cell=10.0/mpu
     G=Grid(vb[2],vb[3],cell,vb[0],vb[1]); base=T.get("base",{})
     def inside(poly,x,y):
@@ -117,7 +121,11 @@ def build(tid):
                     if not seen_block and s_*mpu>=25: break
                 else: free_run=0
                 s_+=step
-    T["route"]={"cell":round(cell,4),"nx":G.nx,"ny":G.ny,"x0":vb[0],"y0":vb[1],"mpu":round(mpu,4),"rows":G.rows()}
+    rows=G.rows()
+    T["route"]={"cell":round(cell,4),"nx":G.nx,"ny":G.ny,"x0":vb[0],"y0":vb[1],"mpu":round(mpu,4),"rows":rows}
+    if rle:
+        enc=[rle_encode(r) for r in rows]; assert [rle_decode(r) for r in enc]==rows, "RLE round-trip failed"
+        T["route"]["rows"]=enc; T["route"]["rle"]=1
     return T
 if __name__=="__main__":
     for tid in sys.argv[1:]:

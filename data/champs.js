@@ -1,14 +1,15 @@
 /* Championships shown on the home screen, one entry per series.
    match/skip: how a race is found in a track's `events` (by its series text `s`) -- or, for a support series
           (viaSupport:true), by the event's `support` list instead, since it never headlines its own weekend.
-   optIn: a support series that rides along with a main series. Off by default; the fan turns it on in Settings
-          ("Series I follow") if they actually follow it. Never shown in the home hero's "X + Y" headline.
+   optIn: a series that is off by default: either a support series that rides along with a main series, or a niche series
+          (HSR) with its own weekends. The fan turns it on in Settings ("Series I follow") if they actually follow it.
+          Never shown in the home hero's "X + Y" headline, and it stays off the home screen until turned on.
    stops: venues that are on the series schedule but have no map yet. They show in that series' list as "Map coming soon"
           and disappear from here automatically once a track with the same id is added to data/.
    showAll: also list every other venue in the app as "date to be announced" (IMSA does this).
    Sources: INDYCAR.com (2027 Phase One schedule, announced Aug 12, 2026), IMSA.com, SRO America (provisional 2027 calendar, June 26, 2026). */
 /* the day schedules, lists of cars and drivers to watch and support races were last checked (shown in Settings). Update it whenever they are refreshed. */
-const DATA_UPDATED = "2026-09-22";
+const DATA_UPDATED = "2026-10-07";
 const CHAMPS = [
   { id:"imsa", name:"IMSA", tile:"IMSA", full:"WeatherTech SportsCar Championship", match:/IMSA/i, skip:/test/i, guide:"weathertech",
     note:"Every venue on the 2027 IMSA WeatherTech schedule, including the Long Beach and Detroit street circuits and Canadian Tire Motorsport Park, plus Mid-Ohio." },
@@ -27,5 +28,7 @@ const CHAMPS = [
   { id:"carreracup", name:"Porsche Carrera Cup", tile:"CARR", full:"Porsche Carrera Cup North America", match:/Porsche Carrera Cup/i, viaSupport:true, optIn:true,
     note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },
   { id:"pilotchallenge", name:"Pilot Challenge", tile:"MPC", full:"Michelin Pilot Challenge", match:/Michelin Pilot Challenge/i, viaSupport:true, optIn:true,
-    note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." }
+    note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },
+  { id:"hsr", name:"HSR", tile:"HSR", full:"Historic Sportscar Racing", match:/HSR/i, optIn:true,
+    note:"Vintage and historic sports and race cars, with its own race weekends at Daytona, Sebring, Road Atlanta and Watkins Glen. Dates come from HSR's published schedule; several are still provisional and can change." }
 ];

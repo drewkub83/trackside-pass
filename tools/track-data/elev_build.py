@@ -6,7 +6,7 @@ from elev_lib import *
 from concurrent.futures import ThreadPoolExecutor
 import math
 # Outside the US, USGS has no data: use the global ~90 m Open-Meteo elevation model (rate limited, so a 150 m grid).
-GLOBAL={"canadian-tire-motorsport-park","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya"}
+GLOBAL={"canadian-tire-motorsport-park","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya","portimao","brands-hatch","imola"}
 def grid(tid):
     vb,g=track(tid); m=mpu(vb,g); sp=150 if tid in GLOBAL and tid!="canadian-tire-motorsport-park" else 100
     nx=max(2,math.ceil(vb[2]*m/sp)+1); ny=max(2,math.ceil(vb[3]*m/sp)+1)

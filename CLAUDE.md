@@ -14,6 +14,20 @@ Pushing to `main` deploys the site (https://deft-medovik-55a935.netlify.app). Te
 ## Accuracy rule
 Never invent facts. Race facts (results, standings, points, cars, drivers) must come from published sources (imsa.com, racer.com, sportscar365.com, series sites, Porsche, etc.). Cross-check numbers. Do not use Wikipedia for numbers (its standings were wrong). If something cannot be verified, leave it out and say so in the entry's `note`. Do not use IMSA/Alkamel live timing data: it carries an explicit no-redistribution notice.
 
+## Track data: walking routes, crossings, elevation (`tools/track-data/`)
+Every track has a walking grid (`route`). Three things make Directions actually work -- check all three for a new track:
+- **Crossings.** A walking route crosses the circuit ONLY at badges of kind `cross`, and each must sit within 60 m of the
+  circuit `path` or the app can't link it (a mis-placed crossing silently strands the infield -- Daytona's were 79 and 161 m
+  off). `python3 tools/track-data/find_cross.py <id>` lists real bridges/tunnels over the circuit from OpenStreetMap;
+  `add_cross.py <id> --write` adds the vetted ones (footway/path, named, or explicitly permissive; never `access=private`).
+- **Walking grid.** `build_route.py <id>` regenerates `route` from the track's own `base` map data. Only use it for tracks
+  with no grid; don't overwrite a hand-tuned one.
+- **Elevation** (hill notes in Directions). `elev_build.py <id>` downloads a ~100 m grid (USGS in the US, Open-Meteo for
+  Canada), `apply_elev.py <id>` bakes it in. Only worth it where the terrain has relief; flat tracks (Daytona, Sebring,
+  Indianapolis road course and oval) are skipped on purpose.
+- **Check:** in the browser console, from a gate / restroom / food / parking badge, `walkMetresTo()` should reach >= 98% of a
+  track's badges. Don't bump a track's `rev` for this: it wipes the user's own badge edits.
+
 ## Event schedules (`sessions` in `data/<track>.js`)
 Fans only need **practice, qualifying and races** (plus the odd headline on-track event like a pole shootout or
 parade). Leave out team-only test/shakedown days, paddock logistics, briefings, registration, tech inspection,

@@ -16,3 +16,7 @@ ios/App/App.xcodeproj/xcuserdata/
 ios/App/App.xcodeproj/project.xcworkspace/xcuserdata/
 ios/DerivedData/
 *.xcuserstate
+
+# generated intermediates (elevation downloads); the baked result lives in data/<track>.js
+tools/track-data/elev-out/
+tools/track-data/__pycache__/

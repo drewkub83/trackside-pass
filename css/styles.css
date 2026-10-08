@@ -611,3 +611,16 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 /* badges collapsed into a neighbour while zoomed out (see declutter() in app.js) */
 .map-wrap svg .poi.decl{display:none !important}
 .lgrp{margin:14px 0 0;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3,var(--ink-2))}
+
+/* Settings: collapsible groups. The header is the card; the rows inside keep their own cards. */
+.sgrp{margin:12px 14px 0}
+.sgh{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:15px 18px;text-align:left;color:var(--ink);background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--glass-edge);border-radius:24px}
+.sgh span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sgh b{font-size:16px;font-weight:500}
+.sgh small{font-size:13px;color:var(--ink-2)}
+.sgh svg{width:22px;height:22px;flex:none;fill:none;stroke:var(--ink-2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s ease}
+.sgrp.open .sgh svg{transform:rotate(180deg)}
+.sgb{display:none;padding-top:12px;margin:0 -14px}
+.sgrp.open .sgb{display:block;animation:sgin .22s ease}
+.sgb .auto,.sgb .appear{margin-bottom:12px}
+@keyframes sgin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}

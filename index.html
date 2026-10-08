@@ -58,18 +58,26 @@
 <!-- SETTINGS -->
 <section class="screen" id="settings">
   <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Settings</h2></div>
-  <div class="sect">Display</div>
+    <section class="sgrp" id="sg0">
+    <button class="sgh" aria-expanded="false" aria-controls="sgb0" onclick="toggleSettingsGroup(0)"><span><b>Look and units</b><small>Day and night, units, session times</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <div class="sgb" id="sgb0">
   <div class="appear"><b>Day and night</b><div class="seg themeSeg"></div><small class="themeNote"></small></div>
   <div class="appear"><b>Weather units</b><div class="seg wxUnitSeg"></div><small>Temperature and wind speed.</small></div>
   <div class="appear"><b>Distance units</b><div class="seg distUnitSeg"></div><small>Walking distances and elevation on the map.</small></div>
-  <div class="appear"><b>Accessible routes</b><div class="seg accessSeg"></div><small>Favors flatter paths over hills and steps when giving directions.</small></div>
   <div class="appear"><b>Session times</b><div class="seg timeSeg"></div><small>Track time is what the clocks at the venue show. My time converts to your phone's time zone.</small></div>
-  <div class="sect">My races</div>
+      </div>
+  </section>
+  <section class="sgrp" id="sg1">
+    <button class="sgh" aria-expanded="false" aria-controls="sgb1" onclick="toggleSettingsGroup(1)"><span><b>My races and series</b><small>Races you're going to, series you follow</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <div class="sgb" id="sgb1">
   <div class="appear"><b>Races I'm going to</b><div id="myRaces"></div></div>
   <div class="appear"><b>Home tile</b><div class="seg goSeg"></div><small>How long before a race you're going to that it takes over the home screen tile and the cars and drivers to watch list.</small></div>
-  <div class="sect">Series I follow</div>
-  <div class="appear"><div id="followList"></div><small>Drag &#9776; to set the order. Hidden series leave the home screen and the "next up" tile; races you mark as going always show. Support series (like Pilot Challenge) are off until you turn them on.</small></div>
-  <div class="sect">Location</div>
+    <div class="appear"><div id="followList"></div><small>Drag &#9776; to set the order. Hidden series leave the home screen and the "next up" tile; races you mark as going always show. Support series (like Pilot Challenge) are off until you turn them on.</small></div>
+      </div>
+  </section>
+  <section class="sgrp" id="sg2">
+    <button class="sgh" aria-expanded="false" aria-controls="sgb2" onclick="toggleSettingsGroup(2)"><span><b>At the track</b><small>Location, alerts, screen, directions</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <div class="sgb" id="sgb2">
   <div class="auto"><div><b>Open at the track</b><small>When you open the app at a venue, go straight to its map.</small></div>
     <button class="sw" id="autoSw" role="switch" aria-checked="false" aria-label="Open at the track" onclick="toggleAuto()"><i></i></button></div>
   <div class="auto"><div><b>Passport check-in</b><small>When you open the app at a track during a race weekend, stamp your passport.</small></div>
@@ -79,20 +87,28 @@
   <!-- TEMPORARY (Indianapolis test, remove after Sunday Oct 11): schedules Indy's session alerts without needing to be at the track. -->
   <div class="auto"><div><b>Test: Indianapolis session alerts</b><small>Schedules this weekend's session alerts now, so you can see how they work. Temporary.</small></div>
     <button class="btn quiet" onclick="setIndyAlertsNow()">Set now</button></div>
-  <div class="sect">At the track</div>
-  <div class="auto"><div><b>Keep the screen on</b><small>Stops the phone from dimming while the map is open. Uses more battery.</small></div>
+    <div class="auto"><div><b>Keep the screen on</b><small>Stops the phone from dimming while the map is open. Uses more battery.</small></div>
     <button class="sw" id="awakeSw" role="switch" aria-checked="false" aria-label="Keep the screen on" onclick="toggleAwake()"><i></i></button></div>
   <div class="auto"><div><b>Stamp vibration</b><small>A small buzz when a stamp lands (Android phones; iPhones do not allow it).</small></div>
     <button class="sw" id="hapSw" role="switch" aria-checked="true" aria-label="Stamp vibration" onclick="toggleHaptics()"><i></i></button></div>
-  <div class="sect">Passport</div>
+    <div class="appear"><b>Accessible routes</b><div class="seg accessSeg"></div><small>Favors flatter paths over hills and steps when giving directions.</small></div>
+    </div>
+  </section>
+  <section class="sgrp" id="sg3">
+    <button class="sgh" aria-expanded="false" aria-controls="sgb3" onclick="toggleSettingsGroup(3)"><span><b>Passport and your data</b><small>Badge animation, back up and restore</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <div class="sgb" id="sgb3">
   <div class="appear"><b>Badge animation</b><small style="margin:0 0 10px">See what unlocking a badge looks like.</small><button class="btn quiet" onclick="previewUnlock()">Preview animation</button> <button class="btn quiet" onclick="openStampSheet()">Sticker sheet: every stamp</button></div>
-  <div class="sect">Your data</div>
-  <div class="appear"><b>Back up and restore</b><small style="margin:0 0 10px">Your stamps and the races you are going to live only on this phone. Copy a backup code before you delete the app or get a new phone, and paste it here to bring them back.</small><div style="display:flex;gap:10px"><button class="btn quiet" onclick="ppBackup()">Copy backup code</button><button class="btn quiet" onclick="ppRestore()">Restore</button></div></div>
-  <div class="sect">About</div>
+    <div class="appear"><b>Back up and restore</b><small style="margin:0 0 10px">Your stamps and the races you are going to live only on this phone. Copy a backup code before you delete the app or get a new phone, and paste it here to bring them back.</small><div style="display:flex;gap:10px"><button class="btn quiet" onclick="ppBackup()">Copy backup code</button><button class="btn quiet" onclick="ppRestore()">Restore</button></div></div>
+      </div>
+  </section>
+  <section class="sgrp" id="sg4">
+    <button class="sgh" aria-expanded="false" aria-controls="sgb4" onclick="toggleSettingsGroup(4)"><span><b>About</b><small>Version, data freshness, screen check</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <div class="sgb" id="sgb4">
   <div class="appear"><b>Trackside Pass</b><small style="margin:0 0 4px">Version: <span id="abVer">…</span></small><small style="margin:0 0 12px">Schedules and watch lists checked: <span id="abData">…</span></small><button class="btn quiet" onclick="refreshApp()">Refresh the app</button><small>Downloads the newest version. Your stamps and races stay.</small></div>
-  <div class="sect">Screen check</div>
-  <div class="appear"><b>Screen</b><small class="scrinfo" id="scrInfo" style="margin:0 0 12px;white-space:pre-line;font-variant-numeric:tabular-nums"></small></div>
-  <div class="soon">More settings will appear here as the app grows.</div>
+    <div class="appear"><b>Screen</b><small class="scrinfo" id="scrInfo" style="margin:0 0 12px;white-space:pre-line;font-variant-numeric:tabular-nums"></small></div>
+      </div>
+  </section>
+<div class="soon">More settings will appear here as the app grows.</div>
 </section>
 
 <!-- SERIES: tracks in order of that series' next race -->

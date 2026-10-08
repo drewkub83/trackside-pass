@@ -256,7 +256,7 @@ function poiEl(p,i){
   const c = (p.k==='park'&&p.c)?p.c:KINDS[p.k].c;
   return `<g class="poi" data-k="${p.k}" data-i="${i}" data-tier="${TIER[p.k]||3}" data-x="${p.x}" data-y="${p.y}" data-sh="${p.k==='rest'&&hasShower(p)?1:0}" transform="translate(${p.x},${p.y})" style="display:${poiShown(p)?'':'none'}">
     <g class="sc"><circle r="17" fill="transparent"/><circle r="9" fill="${c}" stroke="#fff" stroke-width="1.8"/><g transform="scale(.7)">${p.k==='cross'&&/tunnel/i.test(p.n)?ICON.tunnel:ICON[p.k]}</g>
-    <text class="plabel" y="20" text-anchor="middle" font-size="10" font-weight="500" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke">${p.n}</text>${p.k==='rest'&&hasShower(p)?SHOWER:""}<circle class="halo" r="14" fill="none" stroke="var(--accent)" stroke-width="3"/></g></g>`;
+    <text class="plabel" y="20" text-anchor="middle" font-size="10" font-weight="500" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke">${p.n}</text>${p.k==='rest'&&hasShower(p)?SHOWER:""}<circle class="halo" r="14" fill="none" stroke="var(--accent)" stroke-width="3"/><g class="cnt" transform="translate(11,-11)"><circle r="6.2" fill="var(--ink)" stroke="#fff" stroke-width="1.3"/><text y="3" text-anchor="middle" font-size="8.2" font-weight="700" fill="#fff"></text></g></g></g>`;
 }
 /* a restroom has showers if it says so (p.shower), else if its whole track does (track.showers) */
 /* a restroom with showers stays visible when the Showers layer is on, even if Restrooms is off */
@@ -300,9 +300,13 @@ function renderMap(){ limits=null; document.getElementById("mapWrap").classList.
   </svg>`;
   if(mode) refreshMode(false);
 }
+/* the "Show on map" sheet: grouped, and only the kinds this track actually has badges for (a kind you are editing
+   in, or one that is currently on, always stays so it can be switched off) */
+const LAYER_GROUPS=[["Getting around",["gate","cross","info"]],["Watching",["stand","screen","view"]],["Facilities",["food","rest","shower","med","merch"]],["Staying",["camp"]]];
 function renderLegend(){
-  document.getElementById("layerList").innerHTML = Object.entries(KINDS).filter(([k])=>k!=="park").map(([k,v])=>
-    `<button class="chip ${layers.has(k)?'on':''}" style="--c:${v.c}" onclick="toggleLayer('${k}',this)"><i></i>${v.label}</button>`).join("");
+  const have=new Set((cur.pois||[]).filter(p=>!p.del).map(p=>p.k)); if(showersAvailable()) have.add("shower");
+  const chip=k=>`<button class="chip ${layers.has(k)?'on':''}" style="--c:${KINDS[k].c}" onclick="toggleLayer('${k}',this)"><i></i>${KINDS[k].label}</button>`;
+  document.getElementById("layerList").innerHTML=LAYER_GROUPS.map(([h,ks])=>{ const on=ks.filter(k=>have.has(k)); return on.length?`<h4 class="lgrp">${h}</h4><div class="layers">${on.map(chip).join("")}</div>`:""; }).join("");
 }
 function toggleLayer(k,btn){
   layers.has(k)?layers.delete(k):layers.add(k); btn.classList.toggle("on");
@@ -1136,7 +1140,29 @@ function applyView(light){       /* light: only move/scale during a gesture; the
     }
     lab.classList.toggle("on",on);
   });
+  declutter(svg,pois,k*px);
 }
+/* Zoomed out, badges that would sit on top of each other collapse into the most important one, which wears a
+   "+N" bubble; zooming in separates them. The selected badge, the one you're heading to and anything in a
+   finder mode (restrooms, camping, parking) always stay. unit = on-screen pixels per badge-size unit. */
+function declutter(svg,pois,unit){
+  svg.querySelectorAll(".poi.decl").forEach(el=>el.classList.remove("decl"));
+  svg.querySelectorAll(".poi .cnt").forEach(g=>{ g.style.display="none"; });
+  if(mode||parking) return;
+  const gap=18*unit*1.4, r=svg.getBoundingClientRect(), v=view||cur.vb, px=r.width/v[2];
+  const sel=el=>el.classList.contains("sel")||isNearEl(el);
+  const order=pois.filter(el=>el.style.display!=="none").sort((a,b)=>(sel(b)-sel(a))||(a.dataset.tier-b.dataset.tier)||((KEEP[a.dataset.k]??9)-(KEEP[b.dataset.k]??9)));
+  const kept=[];
+  order.forEach(el=>{
+    const x=(+el.dataset.x-v[0])*px, y=(+el.dataset.y-v[1])*px;
+    const host=sel(el)?null:kept.find(q=>Math.hypot(q.x-x,q.y-y)<gap);
+    if(host){ el.classList.add("decl"); host.n++; } else kept.push({el,x,y,n:0});
+  });
+  kept.forEach(q=>{ if(q.n){ const g=q.el.querySelector(".cnt"); g.querySelector("text").textContent="+"+q.n; g.style.display=""; } });
+}
+/* who wins a spot when badges collide: safety first, then getting around, then the rest */
+const KEEP={med:0,gate:1,cross:2,screen:3,view:3,stand:4,food:5,rest:5,merch:6,info:6,camp:7};
+const isNearEl=el=>el.classList.contains("near");
 /* bottom sheet */
 let sheetState=null;
 function showSheet(id){ sheetState=id; const s=document.getElementById("sheet"); s.hidden=false; document.getElementById("nearBar").hidden=true; const bd=document.getElementById("sheetBackdrop"); if(bd) bd.hidden=false; s.querySelectorAll(".sv").forEach(v=>v.hidden=(v.id!==id)); s.scrollTop=0; }

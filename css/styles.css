@@ -607,3 +607,7 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .seasonDiv{display:flex;align-items:center;gap:10px;padding:18px 8px 8px;color:var(--ink-2);font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase}
 .seasonDiv::before,.seasonDiv::after{content:"";flex:1;height:1px;background:var(--line)}
 .mcard .handle{width:38px;height:4px;border-radius:2px;background:var(--line);margin:-6px auto 12px}
+
+/* badges collapsed into a neighbour while zoomed out (see declutter() in app.js) */
+.map-wrap svg .poi.decl{display:none !important}
+.lgrp{margin:14px 0 0;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3,var(--ink-2))}

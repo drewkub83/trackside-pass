@@ -3,7 +3,7 @@
 A race-day companion web app (PWA): track maps and walking directions, schedules, weather, and a Race Day hub. Plain HTML/CSS/JS, no framework. The user is a fan who uses it in person at race weekends, mostly on a phone, so it has to work on a phone with poor signal.
 
 ## Layout
-- `index.html`, `css/styles.css`, `js/app.js` (the app), `js/passport.js`
+- `index.html`, `css/styles.css`, `js/app.js` (the app; section index at its top), `js/passport.js`
 - `data/<track-id>.js` one file per track (POIs, sessions, events, facts, outline: small, loaded at startup) plus
   `data/maps/<track-id>.js` (base map, walking grid, elevation: ~90% of the bytes, fetched when the track is opened by
   `ensureMap()` in `js/app.js`; `openTrack()` returns a Promise). **Edit events/POIs in `data/<id>.js` as before.** Tools that

@@ -131,10 +131,14 @@ function orderedChamps(){ const byId=Object.fromEntries(CHAMPS.map(c=>[c.id,c]))
 function renderChampList(){
   const el=document.getElementById("champList"); if(!el) return;
   const ordered=orderedChamps().filter(followed);
-  el.innerHTML=ordered.map(c=>{ const n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length;
+  const row=c=>{ const n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length;
     return `<li><button class="track-row series" onclick="openSeries('${c.id}')"><span class="tile txt">${c.tile}</span>
       <div><h2>${c.name}</h2><div class="meta">${c.full} · ${n} venue${n===1?"":"s"}</div></div>
-      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; }).join("");
+      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; };
+  /* once the series you follow span more than one part of the world, group them under region headings (your own
+     order still rules within a region, and the regions follow whichever of your series comes first) */
+  const regions=[...new Set(ordered.map(c=>c.region||"na"))];
+  el.innerHTML=regions.length<2?ordered.map(row).join(""):regions.map(r=>`<li class="regionHead">${REGIONS[r]||r}</li>`+ordered.filter(c=>(c.region||"na")===r).map(row).join("")).join("");
 }
 let curChamp=null, serRows=[];
 function toggleGoingSeries(i){ const r=serRows[i]; if(!r) return; const on=!isGoing(r.t,r.e); setGoing(r.t,r.e,on); renderSeries(); renderHero(); toast(on?`You're going: ${r.t.short}`:"Removed from your races"); }

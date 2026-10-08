@@ -624,3 +624,5 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .sgrp.open .sgb{display:block;animation:sgin .22s ease}
 .sgb .auto,.sgb .appear{margin-bottom:12px}
 @keyframes sgin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.regionHead{list-style:none;padding:12px 26px 4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.regionHead:first-child{padding-top:0}

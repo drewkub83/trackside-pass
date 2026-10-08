@@ -175,7 +175,26 @@ function dropStaleEdits(){
   try{ const k="paddock:rev:"+cur.id; if(localStorage.getItem(k)===String(cur.rev)) return;
     localStorage.removeItem("paddock:layout:"+cur.id); localStorage.removeItem("paddock:lots:"+cur.id); localStorage.removeItem("paddock:added:"+cur.id); localStorage.setItem(k,String(cur.rev)); }catch(e){}
 }
+/* A track's base map, walking grid and elevation live in data/maps/<id>.js (about 90% of its data) and are
+   fetched when the track is opened; the service worker keeps them on the phone, so this works with no signal. */
+const mapLoads={};
+function ensureMap(t){
+  if(t.mapReady) return Promise.resolve();
+  return mapLoads[t.id]||(mapLoads[t.id]=new Promise((ok,no)=>{
+    const s=document.createElement("script"); s.src="data/maps/"+t.id+".js";
+    s.onload=()=>{ Object.assign(t,TRACK_MAPS[t.id]); delete TRACK_MAPS[t.id]; t.mapReady=true; ok(); };
+    s.onerror=()=>{ delete mapLoads[t.id]; s.remove(); no(); };
+    document.head.appendChild(s); }));
+}
+let openSeq=0;
 function openTrack(id,from){
+  const t=TRACKS.find(x=>x.id===id), seq=++openSeq; if(!t) return Promise.resolve();
+  if(t.mapReady){ openTrackNow(id,from); return Promise.resolve(); }
+  const slow=setTimeout(()=>toast("Loading map…"),300);
+  return ensureMap(t).then(()=>{ clearTimeout(slow); if(seq===openSeq) openTrackNow(id,from); },()=>{ clearTimeout(slow);
+    toast(navigator.onLine?"Couldn't load this map. Try again.":"This map isn't saved on your phone yet. Connect once to download it."); });
+}
+function openTrackNow(id,from){
   cur = TRACKS.find(t=>t.id===id); userPos=null; stopGps(); dropStaleEdits(); syncPois(); backTo=(from==="imsa"?"series":from)||"series";
   document.querySelectorAll(".dn").forEach(el=>el.textContent=cur.short);
   view=null; limits=null; fitted=null; cancelAnim(); schedDay=null; fieldCache=null; parking=false; setMode(null); heading=0; devHeading=null; routePts=null; const _hold=document.getElementById("mapHolder"); if(_hold) _hold.style.transform=""; closeSheet(); setParkingUI(); applyDev(); renderNow(); renderSchedule(); if(editing) toggleEdit(); routeDest=null; renderMap(); renderSpot(); document.getElementById("nearBar").hidden=false; applyView(); renderLegend(); renderFood(); renderEvents(); renderInfo();
@@ -1325,7 +1344,7 @@ function hideAlertCard(dismiss){
 function dismissAlert(){ hideAlertCard(true); }
 function openAlertTarget(){
   if(!alertShown) return; const t=alertShown.t; hideAlertCard(true);
-  openTrack(t.id,"home"); setTimeout(showNowSession,0);
+  openTrack(t.id,"home").then(()=>setTimeout(showNowSession,0));
 }
 /* swipe up, or sideways, to dismiss -- like an OS notification banner */
 (function(){ let sx=0,sy=0,dx=0,dy=0,drag=false;
@@ -1581,6 +1600,8 @@ if("serviceWorker" in navigator){
     if(e.data&&e.data.type==="offline-ready"){ try{ if(localStorage.getItem("paddock:offline")) return; localStorage.setItem("paddock:offline","1"); }catch(_){} toast("Saved. Trackside Pass now works with no signal."); }
   });
   navigator.serviceWorker.register("sw.js").catch(()=>{});
+  /* a first visit that lost signal part-way saves the maps it missed the next time the app opens online */
+  navigator.serviceWorker.ready.then(r=>{ if(navigator.onLine&&r.active) r.active.postMessage({type:"topup"}); }).catch(()=>{});
 }
 
 /* swipe back: drag from the left edge of the screen (an installed web app has no browser back gesture) */

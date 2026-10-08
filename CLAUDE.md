@@ -4,7 +4,12 @@ A race-day companion web app (PWA): track maps and walking directions, schedules
 
 ## Layout
 - `index.html`, `css/styles.css`, `js/app.js` (the app), `js/passport.js`
-- `data/<track-id>.js` one file per track (map, POIs, sessions, events); `data/series.js` series guides; `data/watch.js` "What to watch"; `data/results.js` finished-race results; `data/champs.js` standings
+- `data/<track-id>.js` one file per track (POIs, sessions, events, facts, outline: small, loaded at startup) plus
+  `data/maps/<track-id>.js` (base map, walking grid, elevation: ~90% of the bytes, fetched when the track is opened by
+  `ensureMap()` in `js/app.js`; `openTrack()` returns a Promise). **Edit events/POIs in `data/<id>.js` as before.** Tools that
+  rewrite a whole track go through `build_route.load()/save()`, which merge and re-split automatically. After the Ruby
+  builder (`build_permanent.rb`) writes a whole file, run `python3 tools/track-data/split_tracks.py <id>`.
+  Never add `base`/`route`/`elev` back into the light file. `data/series.js` series guides; `data/watch.js` "What to watch"; `data/results.js` finished-race results; `data/champs.js` standings
 - `sw.js` service worker. **Bump `VERSION` on every change** or phones keep the old files.
 - `build.sh` copies the live files into `dist/`; Netlify runs it on every push to `main`.
 
@@ -37,7 +42,7 @@ Every track has a walking grid (`route`). Three things make Directions actually 
    series' own event page, corner labels from OpenStreetMap's own piece names (never invented). Then
    `ruby tools/street-circuits/build_permanent.rb tools/street-circuits/permanent/<id>.rb` builds `data/<id>.js` and registers it
    in `index.html` and `sw.js`.
-3. Crossings, walking grid, elevation as in the section above. For new tracks build the grid with `build(tid, rle=True)`: the
+3. Run `python3 tools/track-data/split_tracks.py <id>` (the builder writes a whole file), then crossings, walking grid, elevation as in the section above. For new tracks build the grid with `build(tid, rle=True)`: the
    rows are run-length encoded (`route.rle`, decoded in `walkRows()`) to keep data files small.
 4. Fan facilities (grandstands, food, restrooms) are NOT in OpenStreetMap; they need the circuit's official fan map. Say so in the
    track's `facts` rather than leaving the map looking complete.

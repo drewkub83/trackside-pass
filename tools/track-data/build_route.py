@@ -4,13 +4,26 @@ HERE=os.path.dirname(os.path.abspath(__file__))
 REPO=os.path.abspath(os.path.join(HERE,'..','..'))
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 ROOT=os.path.join(REPO,"data")+"/"
-def load(tid):
-    t=open(ROOT+tid+".js",encoding="utf-8").read()
-    m=re.match(r'\s*TRACKS\.push\((\{.*\})\);\s*$',t,re.S)
+# A track is two files: data/<id>.js (light: schedule, facts, badges, outline -- always loaded) and
+# data/maps/<id>.js (heavy: base map, walking grid, elevation -- fetched when the track is opened).
+HEAVY=("base","route","elev")
+MAPS=os.path.join(REPO,"data","maps")+"/"
+def _parse(path,pat):
+    m=re.match(pat,open(path,encoding="utf-8").read(),re.S)
     return json.loads(m.group(1))
+def load(tid):
+    """Whole track (light + map parts merged)."""
+    T=_parse(ROOT+tid+".js",r'\s*TRACKS\.push\((\{.*\})\);\s*$')
+    if os.path.exists(MAPS+tid+".js"): T.update(_parse(MAPS+tid+".js",r'\s*TRACK_MAPS\["[^"]+"\]=(\{.*\});\s*$'))
+    return T
+def _body(d): return ",\n".join("  "+json.dumps(k)+":"+json.dumps(v,separators=(",",":"),ensure_ascii=False) for k,v in d.items())
 def save(tid,obj):
-    body=",\n".join("  "+json.dumps(k)+":"+json.dumps(v,separators=(",",":"),ensure_ascii=False) for k,v in obj.items())
-    open(ROOT+tid+".js","w",encoding="utf-8").write("TRACKS.push({\n"+body+"\n});\n")
+    """Writes the track split into its light and map files."""
+    light={k:v for k,v in obj.items() if k not in HEAVY}; heavy={k:v for k,v in obj.items() if k in HEAVY}
+    open(ROOT+tid+".js","w",encoding="utf-8").write("TRACKS.push({\n"+_body(light)+"\n});\n")
+    os.makedirs(MAPS,exist_ok=True)
+    if heavy: open(MAPS+tid+".js","w",encoding="utf-8").write('TRACK_MAPS["'+tid+'"]={\n'+_body(heavy)+'\n};\n')
+    elif os.path.exists(MAPS+tid+".js"): os.remove(MAPS+tid+".js")
 def pts(d): return [(float(a),float(b)) for a,b in re.findall(r'(-?\d+\.?\d*),(-?\d+\.?\d*)',d)]
 class Grid:
     def __init__(s,W,H,cell,x0,y0):

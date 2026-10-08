@@ -1,9 +1,10 @@
 /* Trackside Pass service worker: makes the app work with no signal.
-   - First visit: downloads every app file and track once (about 1 MB).
+   - First visit: downloads the app and every track's info first (small), then each track's map one at a time
+     (about 4.6 MB in all). A dropped signal only skips the maps it missed; the app tops them up on later launches.
    - After that: opens instantly from the phone, then quietly refreshes files in the background
      when there is a connection, so edits show up on the next launch.
    Bump VERSION to force a clean re-download of everything. */
-const VERSION = "v153";
+const VERSION = "v154";
 const CACHE = "paddock-" + VERSION;
 const FONT_CACHE = "paddock-fonts";
 const TRACKS = ["daytona","sebring","laguna-seca","watkins-glen","road-america","vir","indianapolis","road-atlanta","mid-ohio","long-beach","detroit","canadian-tire-motorsport-park","phoenix","barber","st-petersburg","arlington","cota","sonoma","indianapolis-oval","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya","portimao","brands-hatch","imola"];
@@ -12,6 +13,23 @@ const SHELL = [
   "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", "icons/favicon.svg", "icons/favicon-32.png", "icons/pin.svg",
   ...TRACKS.map(t => "data/" + t + ".js")
 ];
+const MAPS = TRACKS.map(t => "data/maps/" + t + ".js");   /* base map + walking grid + elevation, fetched when a track is opened */
+
+/* Saves any track maps not on the phone yet, three at a time. Returns true once every map is saved. */
+async function saveMaps(cache) {
+  const todo = [];
+  for (const u of MAPS) if (!(await cache.match(u))) todo.push(u);
+  let i = 0;
+  await Promise.all([0, 1, 2].map(async () => {
+    while (i < todo.length) {
+      const u = todo[i++];
+      try { const r = await fetch(new Request(u, { cache: "reload" })); if (r.ok) await cache.put(u, r); } catch (_) { /* offline: try again next launch */ }
+    }
+  }));
+  for (const u of MAPS) if (!(await cache.match(u))) return false;
+  return true;
+}
+async function tellClients(type) { (await self.clients.matchAll({ includeUncontrolled: true })).forEach(c => c.postMessage({ type })); }
 
 /* Must match the <link> in index.html exactly. Saved up front so the fonts also work offline. */
 const FONT_CSS = "https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap";
@@ -33,8 +51,14 @@ self.addEventListener("install", e => {
     await cache.addAll(SHELL.map(u => new Request(u, { cache: "reload" })));
     await saveFonts();
     self.skipWaiting();
-    (await self.clients.matchAll({ includeUncontrolled: true })).forEach(c => c.postMessage({ type: "offline-ready" }));
+    if (await saveMaps(cache)) await tellClients("offline-ready");
   })());
+});
+
+/* The page asks for this on launch (when online), so a first visit that lost signal still ends up fully saved. */
+self.addEventListener("message", e => {
+  if (!e.data || e.data.type !== "topup") return;
+  e.waitUntil((async () => { if (await saveMaps(await caches.open(CACHE))) await tellClients("offline-ready"); })());
 });
 
 self.addEventListener("activate", e => {

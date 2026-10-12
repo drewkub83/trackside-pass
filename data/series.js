@@ -8,6 +8,8 @@
    for a series confirmed to stream complete, free, live coverage of its own races on that exact channel (not
    just highlights or an unrelated channel from the same org). IMSA's own WeatherTech Championship is NOT
    included here on purpose -- it's a Peacock/NBC broadcast, free on YouTube only for occasional select races.
+   SRO America's own site (tcamerica.us, "How to watch") says every qualifying session and race of GT World Challenge America, GT America, GT4 America,
+   TC America, Toyota GR Cup and McLaren Trophy is streamed live and free on the GTWorld YouTube channel, so those all share one channel id.
    timing (optional): the official live timing & scoring page for the sanctioning body that runs this series'
    races, so the Race Day hub's "Live timing" card can link straight out to it while this series is on track.
    It's a link-out, not an embed -- these sites run their own scripts and most refuse to load inside an iframe,
@@ -179,7 +181,7 @@ const SERIES = [
     fine:"A spectator summary of GT3 racing and GT World Challenge Europe, based on the series' own published information. For official details, see GT-World-Challenge-Europe.com."
   }
 ,{
-  id:"gt4a", match:/GT4 America/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
+  id:"gt4a", match:/GT4 America/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"Pirelli GT4 America", tag:"Production-based GT4 cars",
   blurb:"SRO America’s GT4 series. The cars are race versions of road-going sports cars such as the Ford Mustang, Aston Martin Vantage, BMW M4, Porsche Cayman and Toyota GR Supra, built to GT4 rules, with less power and less aero than the GT3 cars of GT World Challenge America.",
   cars:[
@@ -191,7 +193,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see GT4-America.com."
 }
 ,{
-  id:"tca", match:/TC America/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
+  id:"tca", match:/TC America/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"TC America powered by Skip Barber", tag:"Touring cars",
   blurb:"Touring-car racing on SRO America weekends, with production-based four-door and hatchback cars built for racing. Close, door-to-door racing is the appeal.",
   cars:[
@@ -203,7 +205,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see the SRO America website."
 }
 ,{
-  id:"grcup", match:/Toyota GR Cup/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
+  id:"grcup", match:/Toyota GR Cup/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"Toyota GR Cup North America", tag:"One car for everyone",
   blurb:"A single-make series: every car is the same Toyota GR86 race car, so the result comes down to the driver and the racecraft.",
   cars:[
@@ -215,7 +217,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see the SRO America website."
 }
 ,{
-  id:"gta", match:/GT America/i, timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
+  id:"gta", match:/GT America/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"GT America powered by AWS", tag:"GT3 cars, SRO America weekends",
   blurb:"A companion GT series on SRO America weekends, racing alongside GT World Challenge America at many rounds. Look for GT-style race cars from well-known makes.",
   cars:[

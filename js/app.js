@@ -612,9 +612,22 @@ function dijkstra(sx,sy,tx,ty){
   if(!isFinite(dist[target])) return null;
   const cells=[]; for(let u=target;u!==-1;u=prev[u]) cells.push([u%nx,(u-(u%nx))/nx]); return cells.reverse();
 }
+/* The search moves square to square on a 10 m grid, so a path running at an angle comes out as a staircase.
+   Pull the line straight wherever it can stay within one square of the route that was found and never touch
+   the circuit -- it still follows the same paths and crossings, just without the zigzag. */
+function straighten(cells){
+  const r=cur.route, nx=r.nx, rows=walkRows(), at=new Map(); cells.forEach(([x,y],k)=>at.set(y*nx+x,k));
+  const near=(X,Y,i,j)=>{ for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){ const k=at.get((Y+dy)*nx+X+dx); if(k!==undefined&&k>=i&&k<=j) return true; } return false; };
+  const clear=(i,j)=>{ const [ax,ay]=cells[i], [bx,by]=cells[j], n=Math.ceil(Math.hypot(bx-ax,by-ay)*4);
+    for(let s=1;s<n;s++){ const X=Math.floor(ax+.5+(bx-ax)*s/n), Y=Math.floor(ay+.5+(by-ay)*s/n); if(rows[Y][X]==="1"||!near(X,Y,i,j)) return false; } return true; };
+  const out=[cells[0]]; let i=0;
+  while(i<cells.length-1){ let j=i+1; while(j+1<cells.length&&clear(i,j+1)) j++; out.push(cells[j]); i=j; }
+  return out;
+}
 function routeOrigins(){
   const o=[]; if(userPos&&userPos.inside) o.push({v:"you",l:"Your location",x:userPos.x,y:userPos.y}); const sp=getSpot(); if(sp) o.push({v:"spot",l:"My spot",x:sp.x,y:sp.y});
-  const cx=cur.turns.reduce((s,t)=>s+t[0],0)/cur.turns.length, cy=cur.turns.reduce((s,t)=>s+t[1],0)/cur.turns.length;
+  /* "spectator side" = pushed away from the circuit's middle; tracks with no turn markers yet use the map's centre */
+  const nt=cur.turns.length, cx=nt?cur.turns.reduce((s,t)=>s+t[0],0)/nt:cur.vb[0]+cur.vb[2]/2, cy=nt?cur.turns.reduce((s,t)=>s+t[1],0)/nt:cur.vb[1]+cur.vb[3]/2;
   const out=(x,y)=>{ const dx=x-cx, dy=y-cy, L=Math.hypot(dx,dy)||1, m=16/cur.route.mpu; return [x+dx/L*m, y+dy/L*m]; };
   const [sx,sy]=out(cur.sf[0],cur.sf[1]); o.push({v:"sf",l:"Start/finish line (spectator side)",x:sx,y:sy});
   cur.turns.forEach(([x,y,n])=>{ const [ox,oy]=out(x,y); o.push({v:"t"+n,l:"Turn "+n+" (spectator side)",x:ox,y:oy}); });
@@ -668,9 +681,7 @@ function computeRoute(){
   document.getElementById("dirTo").textContent="To "+dest.n;
   const layer=document.getElementById("routeLayer");
   if(!cells){ layer.innerHTML=""; document.getElementById("dirStat").textContent="No route"; document.getElementById("dirNote").textContent=crossPoints().length?"Couldn't find a way there without crossing the track.":"No bridges or tunnels are mapped at this track yet, so a walking route can't cross the circuit."; return; }
-  let pts=[[o.x,o.y]].concat(cells.map(([x,y])=>[r.x0+(x+0.5)*r.cell, r.y0+(y+0.5)*r.cell]),[[dest.x,dest.y]]);
-  // light smoothing: drop middle points that are nearly collinear
-  const sm=[pts[0]]; for(let i=1;i<pts.length-1;i++){ const a=sm[sm.length-1], b=pts[i], c=pts[i+1]; const cross=Math.abs((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])); if(cross>r.cell*r.cell*0.35) sm.push(b); } sm.push(pts[pts.length-1]);
+  const sm=[[o.x,o.y]].concat(straighten(cells).map(([x,y])=>[r.x0+(x+0.5)*r.cell, r.y0+(y+0.5)*r.cell]),[[dest.x,dest.y]]);
   routePts=sm; let metres=0; for(let i=1;i<sm.length;i++) metres+=Math.hypot(sm[i][0]-sm[i-1][0],sm[i][1]-sm[i-1][1])*r.mpu;
   const d="M"+sm.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L");
   layer.innerHTML=`<path class="route-c" d="${d}"/><path class="route" d="${d}"/><circle cx="${o.x}" cy="${o.y}" r="5" fill="#fff" stroke="var(--gate)" stroke-width="2.5"/>`;

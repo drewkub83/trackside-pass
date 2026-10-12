@@ -267,12 +267,18 @@ const ICON = {
   tunnel:'<path d="M-8,5 h16 M-6,5 v-4 a6,6 0 0 1 12,0 v4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M0,5 v-3" stroke="#fff" stroke-width="1.6" stroke-dasharray="1.5 1.5"/>',
   view:'<path d="M-7.5,0 C-4.5,-5.5 4.5,-5.5 7.5,0 C4.5,5.5 -4.5,5.5 -7.5,0 Z" fill="none" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><circle r="2.3" fill="#fff"/>'
 };
+const SHOWER_ICON='<path d="M-4.5,-1 a4.5,4.5 0 0 1 9,0 z" fill="#fff"/><path d="M-3,2 v2.2 M0,2 v3 M3,2 v2.2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>';
 function poiEl(p,i){
   if(p.del) return "";
   const c = (p.k==='park'&&p.c)?p.c:KINDS[p.k].c;
-  return `<g class="poi" data-k="${p.k}" data-i="${i}" data-tier="${TIER[p.k]||3}" data-x="${p.x}" data-y="${p.y}" data-sh="${p.k==='rest'&&hasShower(p)?1:0}" transform="translate(${p.x},${p.y})" style="display:${poiShown(p)?'':'none'}">
-    <g class="sc"><circle r="17" fill="transparent"/><circle r="9" fill="${c}" stroke="#fff" stroke-width="1.8"/><g transform="scale(.7)">${p.k==='cross'&&/tunnel/i.test(p.n)?ICON.tunnel:ICON[p.k]}</g>
-    <text class="plabel" y="20" text-anchor="middle" font-size="10" font-weight="500" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke">${p.n}</text>${p.k==='rest'&&hasShower(p)?SHOWER:""}<circle class="halo" r="14" fill="none" stroke="var(--accent)" stroke-width="3"/><g class="cnt" transform="translate(11,-11)"><circle r="6.2" fill="var(--ink)" stroke="#fff" stroke-width="1.3"/><text y="3" text-anchor="middle" font-size="8.2" font-weight="700" fill="#fff"></text></g></g></g>`;
+  /* a restroom with showers is one elongated badge showing both icons */
+  const pill = p.k==='rest'&&hasShower(p);
+  const body = pill
+    ? `<circle r="17" fill="transparent"/><rect class="pillbg" x="-17" y="-9" width="34" height="18" rx="9" fill="${c}" stroke="#fff" stroke-width="1.8"/><g transform="translate(-8,0) scale(.62)">${ICON.rest}</g><g transform="translate(8.5,0) scale(.95)">${SHOWER_ICON}</g>`
+    : `<circle r="17" fill="transparent"/><circle r="9" fill="${c}" stroke="#fff" stroke-width="1.8"/><g transform="scale(.7)">${p.k==='cross'&&/tunnel/i.test(p.n)?ICON.tunnel:ICON[p.k]}</g>`;
+  return `<g class="poi" data-k="${p.k}" data-i="${i}" data-tier="${TIER[p.k]||3}" data-x="${p.x}" data-y="${p.y}" data-sh="${pill?1:0}" transform="translate(${p.x},${p.y})" style="display:${poiShown(p)?'':'none'}">
+    <g class="sc">${body}
+    <text class="plabel" y="20" text-anchor="middle" font-size="10" font-weight="500" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke">${p.n}</text><circle class="halo" r="14" fill="none" stroke="var(--accent)" stroke-width="3"/><g class="cnt" transform="translate(11,-11)"><circle r="6.2" fill="var(--ink)" stroke="#fff" stroke-width="1.3"/><text y="3" text-anchor="middle" font-size="8.2" font-weight="700" fill="#fff"></text></g></g></g>`;
 }
 /* a restroom has showers if it says so (p.shower), else if its whole track does (track.showers) */
 /* a restroom with showers stays visible when the Showers layer is on, even if Restrooms is off */
@@ -302,7 +308,7 @@ function renderMap(){ limits=null; document.getElementById("mapWrap").classList.
     <defs><pattern id="grass" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="var(--grass)"/><circle cx="6" cy="6" r="1" fill="var(--grass-2)" opacity=".35"/><circle cx="19" cy="17" r="1" fill="var(--grass-2)" opacity=".35"/></pattern></defs>
     <rect x="${t.vb[0]}" y="${t.vb[1]}" width="${t.vb[2]}" height="${t.vb[3]}" fill="url(#grass)"/>
     ${baseSvg(t)}
-    ${t.pit?`<path d="${t.pit}" fill="none" stroke="var(--pit)" stroke-width="4" stroke-linecap="round" opacity=".9"/>`:""}
+    ${t.pit?`<path d="${t.pit}" fill="none" stroke="var(--track-edge)" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="${t.pit}" fill="none" stroke="var(--pit)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:""}
     <path d="${t.path}" fill="none" stroke="var(--track-edge)" stroke-width="${(t.tw||7)+2}" stroke-linejoin="round"/>
     <path id="trackPath" d="${t.path}" fill="none" stroke="var(--track)" stroke-width="${t.tw||7}" stroke-linejoin="round"/>
     ${t.sfArrow?`<g class="sfa" transform="translate(${t.sfArrow[0]},${t.sfArrow[1]}) rotate(${t.sfArrow[2]})"><g class="sc noturn"><path d="M-9,0 H6 M1,-5 L6,0 L1,5" fill="none" stroke="#16181B" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/><path d="M-9,0 H6 M1,-5 L6,0 L1,5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></g>`:""}
@@ -504,7 +510,7 @@ function renderEvents(){
   const first=up[0], firstEnd=first&&eventEnd(first);
   const row=(e,tag,isDone,idx)=>{ const d=new Date(e.d+"T12:00:00"), go=!isDone&&isGoing(cur,e), live=tag==="Happening now";
     return `<div class="item ev${tag?" nextup":""}${live?" live":""}${go?" going":""}" style="opacity:${isDone?.45:1}"><div class="date">${d.toLocaleDateString(undefined,{month:"short"})}<b>${d.getDate()}</b>${d.getFullYear()}</div>
-      <div><h4>${esc(e.e)}</h4><p class="series">${esc(e.s)}${e.t>1?` — ${e.t}-day weekend`:""}${isDone?" — done":""}</p>
+      <div><h4>${esc(e.e)}</h4><p class="series">${esc(String(e.s).replace(/[,;]?\s*[—-]?\s*\d+-day weekend/i,""))}${e.t>1?` — ${e.t}-day weekend`:""}${isDone?" — done":""}</p>
       ${tag||go?`<p class="tags">${tag?`<span class="tag">${tag}</span>`:""}${go?`<span class="tag go">You're going</span>`:""}</p>`:""}</div>
       ${isDone?"":`<button class="gobtn${go?" on":""}" aria-pressed="${go}" aria-label="${go?"Remove from my races":"I'm going to this race"}" onclick="toggleGoingRow(${idx})"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2.4"/></svg></button>`}</div>`; };
   document.getElementById("eventList").innerHTML = up.map((e,i)=>row(e, first&&e.d<=firstEnd&&eventEnd(e)>=first.d?(first.d<=today?"Happening now":"Next up"):"", false, i)).join("")
@@ -752,8 +758,27 @@ function backToHub(){ hubReturn=false; clearRoute(); setMode(null); closeSheet()
 function hubBack(){ if(!hubReturn||hubMode) return false; const sc=document.querySelector(".screen.on"), pn=sc&&sc.querySelector(".panel.on"); if(!sc||sc.id!=="detail"||!pn||pn.id!=="pMap") return false; if(sheetState==="shLayers"||sheetState==="shGps") return false; backToHub(); return true; }
 function endDirections(){ clearRoute(); }
 function closeSheetBtn(){ closeSheet(); }
-function exitHub(){ hubMode=false; hubDismissed=true; document.getElementById("pMap").classList.remove("hub-mode"); document.getElementById("hubView").hidden=true; }
+function exitHub(){ hubLive.want=false; if(hubLive.playing) stopHubLive(); hubMode=false; hubDismissed=true; document.getElementById("pMap").classList.remove("hub-mode"); document.getElementById("hubView").hidden=true; }
 function hubGoView(i){ leaveHub(); selectPoi(i); startDirections(); }
+/* Inline live stream in the Race Day hub. State survives the hub's 30 s re-render: the iframe is only touched when
+   the channel changes. Starting it needs a tap (no data used on a weak signal); once started it follows the series
+   from one race to the next until you stop it or leave the hub. */
+let hubLive={ch:null,name:"",want:false,playing:false};
+function updateHubLive(sr){
+  const box=document.getElementById("hubLive"); if(!box) return;
+  if(!sr||!sr.yt){ if(hubLive.playing){ box.innerHTML=""; hubLive.playing=false; } hubLive.ch=null; box.hidden=true; return; }
+  const changed=sr.yt!==hubLive.ch; hubLive.name=sr.name;
+  if(changed){ hubLive.ch=sr.yt; hubLive.playing=hubLive.want; box.innerHTML=hubLiveHtml(); }
+  else if(!hubLive.playing) box.innerHTML=hubLiveHtml();   /* not playing: cheap to refresh; playing: leave the iframe alone */
+  box.hidden=false;
+}
+function hubLiveHtml(){
+  const head=`<div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Live now: ${esc(hubLive.name)} race</h4></div>`;
+  if(hubLive.playing) return head+`<div class="liveWrap"><iframe src="https://www.youtube-nocookie.com/embed/live_stream?channel=${hubLive.ch}&autoplay=1&playsinline=1" title="${esc(hubLive.name)} live" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button>`;
+  return head+`<div class="hubSessionSub" style="margin:4px 0 10px">Free on the series' YouTube channel.</div><button class="btn primary hubLivePlay" onclick="playHubLive()">Watch here</button>`;
+}
+function playHubLive(){ hubLive.want=true; hubLive.playing=true; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }
+function stopHubLive(){ hubLive.want=false; hubLive.playing=false; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }
 function renderHub(){
   if(!hubMode) return;
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
@@ -761,9 +786,13 @@ function renderHub(){
   const ss=sessionsResolved(), now=new Date();
   const live=currentSession(ss,now), next=ss.find(s=>s.start>now);
   const chev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
-  const sessCard=(tag,name,sub)=>`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${tag}</h4><div class="hubSessionName">${esc(name)}</div><div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
+  const sessCard=(tag,name,sub,isLive)=>`<div class="hubCard hubTap${isLive?" liveNow":""}" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${tag}</h4><div class="hubSessionName">${esc(name)}</div><div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
   let sessionHtml;
-  if(live) sessionHtml=sessCard("On track",shortName(live.n),live.est?"In progress":"Ends "+fmtTime(live.end,cur.tz));
+  /* every session on track right now (a common-round weekend can have two or three at once) */
+  const liveAll=ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000);
+  if(live) sessionHtml=liveAll.length>1
+    ? sessCard("On track now",liveAll.length+" sessions",liveAll.map(x=>esc(shortName(x.n))+" · "+(x.est?"in progress":"ends "+fmtTime(x.end,cur.tz))).join("<br>"),true)
+    : sessCard("On track now",shortName(live.n),live.est?"In progress":"Ends "+fmtTime(live.end,cur.tz),true);
   else if(next){ const soon=next.start-now<36e5; sessionHtml=sessCard("Next on track",shortName(next.n),soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)); }
   else sessionHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${esc(cur.eventName||"This weekend")}</h4><div class="hubSessionSub">No more sessions today</div></div>${chev}</div></div>`;
 
@@ -836,12 +865,13 @@ function renderHub(){
     }
   }
 
-  /* "watch live": only for a series confirmed to stream its own races free on YouTube (data/series.js `yt`),
-     and only while it's actually the one on track right now -- not just "in focus". Opens in the sheet
-     (openLiveStream) rather than embedding directly here, since this whole card is rebuilt every 30s and an
-     iframe rebuilt that often would restart the stream over and over. */
-  const liveSr=live?seriesFor(live.n):null;
-  const liveStreamHtml=(liveSr&&liveSr.yt)?`<div class="hubCard hubTap" role="button" onclick="openLiveStream('${liveSr.yt}','${esc(liveSr.name)}')"><div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Watch live</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(liveSr.name)} on YouTube</div></div>`:"";
+  /* "watch live": only for a RACE of a series confirmed to stream its own races free on YouTube (data/series.js `yt`).
+     The player lives in its own element above this card list (#hubLive) because the list below is rebuilt every
+     30 s and rebuilding an iframe would restart the stream. See updateHubLive(). */
+  const liveSr=live?seriesFor(live.n):null;   /* used by live timing below */
+  const liveRace=liveAll.find(x=>kindOf(x.n)==="race"&&(seriesFor(x.n)||{}).yt);
+  updateHubLive(liveRace?seriesFor(liveRace.n):null);
+  const liveStreamHtml="";
 
   /* "Live timing": same on-track-now gating as Watch live, but keyed off `timing` instead of `yt` -- most
      series have one even when they don't stream free video, so this often shows on its own. */
@@ -1161,20 +1191,26 @@ function applyView(light){       /* light: only move/scale during a gesture; the
 /* Zoomed out, badges that would sit on top of each other collapse into the most important one, which wears a
    "+N" bubble; zooming in separates them. The selected badge, the one you're heading to and anything in a
    finder mode (restrooms, camping, parking) always stay. unit = on-screen pixels per badge-size unit. */
+const CROWD_MIN=4;   /* a group of overlapping badges only collapses once it holds this many; smaller groups stay as they are */
 function declutter(svg,pois,unit){
   svg.querySelectorAll(".poi.decl").forEach(el=>el.classList.remove("decl"));
   svg.querySelectorAll(".poi .cnt").forEach(g=>{ g.style.display="none"; });
   if(mode||parking) return;
   const gap=18*unit*1.4, r=svg.getBoundingClientRect(), v=view||cur.vb, px=r.width/v[2];
   const sel=el=>el.classList.contains("sel")||isNearEl(el);
-  const order=pois.filter(el=>el.style.display!=="none").sort((a,b)=>(sel(b)-sel(a))||(a.dataset.tier-b.dataset.tier)||((KEEP[a.dataset.k]??9)-(KEEP[b.dataset.k]??9)));
-  const kept=[];
-  order.forEach(el=>{
-    const x=(+el.dataset.x-v[0])*px, y=(+el.dataset.y-v[1])*px;
-    const host=sel(el)?null:kept.find(q=>Math.hypot(q.x-x,q.y-y)<gap);
-    if(host){ el.classList.add("decl"); host.n++; } else kept.push({el,x,y,n:0});
+  const els=pois.filter(el=>el.style.display!=="none").map(el=>({el,x:(+el.dataset.x-v[0])*px,y:(+el.dataset.y-v[1])*px}));
+  /* group badges that overlap (directly or through a neighbour) */
+  const grp=els.map((_,i)=>i), find=i=>grp[i]===i?i:(grp[i]=find(grp[i]));
+  for(let i=0;i<els.length;i++) for(let j=i+1;j<els.length;j++) if(Math.hypot(els[i].x-els[j].x,els[i].y-els[j].y)<gap) grp[find(j)]=find(i);
+  const groups={}; els.forEach((e,i)=>(groups[find(i)]=groups[find(i)]||[]).push(e));
+  Object.values(groups).forEach(g=>{
+    if(g.length<CROWD_MIN) return;
+    const order=g.slice().sort((a,b)=>(sel(b.el)-sel(a.el))||(a.el.dataset.tier-b.el.dataset.tier)||((KEEP[a.el.dataset.k]??9)-(KEEP[b.el.dataset.k]??9)));
+    const kept=[];
+    order.forEach(e=>{ const host=sel(e.el)?null:kept.find(q=>Math.hypot(q.x-e.x,q.y-e.y)<gap);
+      if(host){ e.el.classList.add("decl"); host.n++; } else kept.push({el:e.el,x:e.x,y:e.y,n:0}); });
+    kept.forEach(q=>{ if(q.n){ const c=q.el.querySelector(".cnt"); c.querySelector("text").textContent="+"+q.n; c.style.display=""; } });
   });
-  kept.forEach(q=>{ if(q.n){ const g=q.el.querySelector(".cnt"); g.querySelector("text").textContent="+"+q.n; g.style.display=""; } });
 }
 /* who wins a spot when badges collide: safety first, then getting around, then the rest */
 const KEEP={med:0,gate:1,cross:2,screen:3,view:3,stand:4,food:5,rest:5,merch:6,info:6,camp:7};

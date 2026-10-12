@@ -215,7 +215,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .editbar{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
 .editbar textarea{width:100%;min-height:90px;margin-top:8px;font:12px/1.4 ui-monospace,Menlo,monospace;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--tint-2);color:var(--ink)}
 .map-wrap.editing .poi{cursor:grab}
-.map-wrap.editing .poi .sc>circle:nth-child(2){stroke:var(--yellow);stroke-width:2.5}
+.map-wrap.editing .poi .sc>circle:nth-child(2),.map-wrap.editing .poi .sc>.pillbg{stroke:var(--yellow);stroke-width:2.5}
 .map-wrap.placing,.map-wrap.adding{cursor:crosshair}
 .bar{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;padding:max(14px,env(safe-area-inset-top)) 14px 8px;background:color-mix(in srgb,var(--paper) 82%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
 .bar .ptitle2{font-size:24px;font-weight:400}
@@ -367,7 +367,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .map-wrap.m-camp svg .poi .shwr{display:inline}
 .map-wrap svg .poi .halo{display:none}
 .map-wrap svg .poi.near .halo{display:inline;animation:halo 1.4s ease-in-out infinite}
-.map-wrap svg .poi.near circle:nth-child(2){stroke:var(--accent);stroke-width:3}
+.map-wrap svg .poi.near circle:nth-child(2),.map-wrap svg .poi.near .pillbg{stroke:var(--accent);stroke-width:3}
 @keyframes halo{0%,100%{opacity:1;stroke-width:3}50%{opacity:.3;stroke-width:5.5}}
 .auto{display:flex;align-items:center;gap:16px;margin:0 14px 28px;padding:14px 18px;background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--glass-edge);border-radius:24px;box-shadow:var(--shadow)}
 .auto>div{flex:1;min-width:0}.auto b{display:block;font-weight:500;font-size:16px}.auto small{display:block;color:var(--ink-2);font-size:13px;margin-top:2px}
@@ -626,3 +626,26 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 @keyframes sgin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .regionHead{list-style:none;padding:12px 26px 4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
 .regionHead:first-child{padding-top:0}
+
+/* what is on track right now: clearly green in the event tab and the Race Day hub */
+.sess.live{background:color-mix(in srgb,#4FA37A 14%,var(--glass));box-shadow:inset 0 0 0 2px #4FA37A,var(--shadow)}
+.sess.live .sn em{display:inline-flex;align-items:center;gap:6px;margin-top:4px;padding:2px 9px 2px 8px;border-radius:999px;background:#4FA37A;color:#fff;font-weight:600;font-size:12px}
+.sess.live .sn em::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:livedot2 1.6s ease-out infinite}
+@keyframes livedot2{0%{box-shadow:0 0 0 0 rgba(255,255,255,.7)}100%{box-shadow:0 0 0 7px rgba(255,255,255,0)}}
+.hubCard.liveNow{background:color-mix(in srgb,#4FA37A 16%,var(--glass));box-shadow:inset 0 0 0 2px #4FA37A,var(--shadow)}
+.hubCard.liveNow h4{display:flex;align-items:center;gap:8px;color:#3E8F68}
+.hubCard.liveNow h4::before{content:"";width:9px;height:9px;border-radius:50%;background:#4FA37A;box-shadow:0 0 0 0 rgba(79,163,122,.55);animation:livedot 1.6s ease-out infinite}
+.hubChip.live{background:#4FA37A}
+.hubChip.live b,.hubChip.live span{color:#fff}
+/* a little air between the pinned header and the first hub card */
+.hubView #hubBody{padding-top:16px}
+
+/* phone turned sideways in a browser or an installed web app: use the whole width instead of a 480 px column
+   (the native iPhone app is locked to portrait in ios/App/App/Info.plist) */
+@media (orientation:landscape) and (max-height:520px){ .app{max-width:none} .mcard,.rwCard{max-width:480px} }
+
+.hubLive{margin:16px 0 12px}
+.hubLive:not([hidden])+#hubBody{padding-top:0}
+.hubLive .liveWrap{margin-top:12px}
+.hubLive .hubLiveStop{margin-top:10px}
+.hubLive .hubLivePlay{width:100%}

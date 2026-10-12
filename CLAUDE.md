@@ -78,6 +78,8 @@ needs re-signing roughly every 7 days.
   open while physically at a track, that track's next event's sessions get a local notification 10 min before
   start (not at a track: the existing schedule is left alone). These are on-device only --
   true server-pushed notifications would need a paid Apple developer account, not the free personal one.
+- The iPhone app is locked to portrait (`UISupportedInterfaceOrientations` in `ios/App/App/Info.plist` lists only Portrait; changing
+  it needs an Xcode rebuild). iPad keeps all orientations. In a browser/PWA, landscape just widens the layout (css `@media (orientation:landscape)`).
 - `capacitor.config.json` must keep `ios.contentInset: "never"` (Capacitor's default). `"automatic"` makes the
   native scroll view add its own safe-area padding, leaving dark bars top/bottom and re-measuring the layout on
   every tab change. The web CSS handles safe areas itself with `env(safe-area-inset-*)`.

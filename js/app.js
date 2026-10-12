@@ -1473,13 +1473,6 @@ async function scheduleSessionAlerts(forcedTrack){
   }))});
 }
 scheduleSessionAlerts();
-/* TEMPORARY test hook for the Indianapolis weekend (remove after Sunday Oct 11, 2026, along with the Settings row). */
-function setIndyAlertsNow(){
-  const t=TRACKS.find(x=>x.id==="indianapolis");
-  if(!nativeNotifier()){ toast("Alerts only work in the iPhone app."); return; }
-  scheduleSessionAlerts(t).then(()=>toast("Indianapolis alerts set."));
-}
-
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){

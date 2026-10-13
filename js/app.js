@@ -67,7 +67,7 @@ const GO_KEY="paddock:going";
 function goingList(){ try{ return JSON.parse(localStorage.getItem(GO_KEY)||"[]"); }catch(e){ return []; } }
 const goKey=(t,e)=>t.id+"|"+e.d+"|"+e.e;
 function isGoing(t,e){ return goingList().includes(goKey(t,e)); }
-function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} }
+function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>scheduleGoingReminders(on),0); }
 function nextGoing(){ const out=[]; TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(isGoing(t,e)&&!eventDone(t,e)) out.push({t,e}); })); return out.sort((a,b)=>a.e.d.localeCompare(b.e.d))[0]||null; }
 /* race week: a one-time celebration banner, the first time the app is opened during the week of a
    race you've marked "going" -- from 7 days before it starts through its last day. Shown once per
@@ -1472,22 +1472,55 @@ async function scheduleSessionAlerts(forcedTrack){
   if(display!=="granted") return;
   const now=Date.now(), leadMs=SESSION_ALERT_LEAD_MIN*60000, end=eventEnd(e);
   const sessions=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=end&&s.start.getTime()-leadMs>now);
-  const pending=await LN.getPending();
-  if(pending.notifications.length) await LN.cancel({notifications:pending.notifications.map(n=>({id:n.id}))});
+  const pending=await LN.getPending(), mine=pending.notifications.filter(n=>n.id<REMINDER_ID_BASE);   /* leave the going-race reminders alone */
+  if(mine.length) await LN.cancel({notifications:mine.map(n=>({id:n.id}))});
   if(!sessions.length) return;
   await LN.schedule({notifications:sessions.slice(0,SESSION_ALERT_MAX).map((s,i)=>({
     id:i+1,
     title:shortName(s.n),
     body:`${t.short} · starts in ${SESSION_ALERT_LEAD_MIN} minutes`,
     sound:"racecar.caf",   /* bundled in the iOS app (ios/App/App/racecar.caf); iOS falls back to the default tone if it's missing */
-    schedule:{at:new Date(s.start.getTime()-leadMs)}
+    schedule:{at:new Date(s.start.getTime()-leadMs)},
+    extra:{track:t.id}
   }))});
 }
 scheduleSessionAlerts();
+/* ---- reminders for races you marked "I'm going": a week before and the evening before --------------------------
+   Separate from the at-track session alerts above: those follow where the phone IS and only cover that track; these
+   follow what you CHOSE, so an event you didn't mark never reminds you, and two events on one weekend both remind only
+   if you marked both. Own notification ids (REMINDER_ID_BASE and up) so neither kind cancels the other. */
+const REM_KEY="paddock:remind", REMINDER_ID_BASE=1000;
+function remindersOn(){ try{ return localStorage.getItem(REM_KEY)!=="0"; }catch(e){ return true; } }
+function renderRemSw(){ const b=document.getElementById("remSw"); if(!b) return; const on=remindersOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
+async function toggleReminders(){
+  const on=!remindersOn(); try{ localStorage.setItem(REM_KEY,on?"1":"0"); }catch(e){} renderRemSw();
+  if(!nativeNotifier()){ toast(on?"Reminders work in the iPhone app.":"Off."); return; }
+  await scheduleGoingReminders(on); toast(on?"Reminders on for the races you're going to.":"Reminders off.");
+}
+async function scheduleGoingReminders(ask){
+  const LN=nativeNotifier(); if(!LN) return;
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=REMINDER_ID_BASE);
+  if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
+  if(!remindersOn()) return;
+  const evs=[]; goingList().forEach(k=>{ const [tid,d,...nm]=k.split("|"), t=TRACKS.find(x=>x.id===tid), e=t&&t.events.find(x=>x.d===d&&x.e===nm.join("|")); if(t&&e&&!eventDone(t,e)) evs.push({t,e}); });
+  if(!evs.length) return;
+  let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
+  const now=Date.now(), out=[]; let id=REMINDER_ID_BASE;
+  const at=(dStr,days,h)=>{ const [y,m,dd]=dStr.split("-").map(Number); return new Date(y,m-1,dd-days,h,0,0); };   /* the phone's own clock */
+  evs.sort((a,b)=>a.e.d.localeCompare(b.e.d)).slice(0,10).forEach(({t,e})=>{
+    const first=sessionsOf(t).filter(x=>x.d>=e.d&&x.d<=eventEnd(e)).sort((a,b)=>a.start-b.start)[0], extra={track:t.id};
+    const wk=at(e.d,7,9), eve=at(e.d,1,18);
+    if(wk.getTime()>now) out.push({id:id++,title:`${t.short} is in a week`,body:`${e.e} · ${fmtRange(e)}. Tap for the plan.`,schedule:{at:wk},extra});
+    if(eve.getTime()>now) out.push({id:id++,title:`Tomorrow: ${t.short}`,body:first?`First session ${fmtWhen(first.start,t.tz)} (track time). Gates, parking and the schedule are in the app.`:`${e.e}. Session times aren't published yet.`,schedule:{at:eve},extra});
+  });
+  if(out.length) await LN.schedule({notifications:out});
+}
+(function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.track) openTrack(x.track,"home"); }); })();
+scheduleGoingReminders(false);
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){
- renderAutoSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }
+ renderAutoSw(); renderRemSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }
 
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----
    Sun times are worked out on the phone (no signal needed). At a track in the phone's own time zone it uses the

@@ -4,7 +4,7 @@
    - After that: opens instantly from the phone, then quietly refreshes files in the background
      when there is a connection, so edits show up on the next launch.
    Bump VERSION to force a clean re-download of everything. */
-const VERSION = "v175";
+const VERSION = "v176";
 const CACHE = "paddock-" + VERSION;
 const FONT_CACHE = "paddock-fonts";
 const TRACKS = ["daytona","sebring","laguna-seca","watkins-glen","road-america","vir","indianapolis","road-atlanta","mid-ohio","long-beach","detroit","canadian-tire-motorsport-park","phoenix","barber","st-petersburg","arlington","cota","sonoma","indianapolis-oval","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya","portimao","brands-hatch","imola"];
@@ -32,7 +32,7 @@ async function saveMaps(cache) {
 async function tellClients(type) { (await self.clients.matchAll({ includeUncontrolled: true })).forEach(c => c.postMessage({ type })); }
 
 /* Must match the <link> in index.html exactly. Saved up front so the fonts also work offline. */
-const FONT_CSS = "https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap";
+const FONT_CSS = "https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap";
 
 async function saveFonts() {
   try {

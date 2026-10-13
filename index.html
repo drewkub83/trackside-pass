@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Trackside Pass — race track companion (prototype)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#F0EEE8">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,6 +16,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="css/styles.css">
+<script>try{if(localStorage.getItem("paddock:style")==="race")document.documentElement.setAttribute("data-style","race")}catch(e){}</script>
 </head>
 <body>
 <div class="app">
@@ -59,6 +60,7 @@
     <section class="sgrp" id="sg0">
     <button class="sgh" aria-expanded="false" aria-controls="sgb0" onclick="toggleSettingsGroup(0)"><span><b>Look and units</b><small>Day and night, units, session times</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
     <div class="sgb" id="sgb0">
+  <div class="appear"><b>Style</b><div class="seg styleSeg"></div><small class="styleNote"></small></div>
   <div class="appear"><b>Day and night</b><div class="seg themeSeg"></div><small class="themeNote"></small></div>
   <div class="appear"><b>Weather units</b><div class="seg wxUnitSeg"></div><small>Temperature and wind speed.</small></div>
   <div class="appear"><b>Distance units</b><div class="seg distUnitSeg"></div><small>Walking distances and elevation on the map.</small></div>

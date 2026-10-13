@@ -49,6 +49,12 @@ Every track has a walking grid (`route`). Three things make Directions actually 
 Venues of a series that have no map yet go in that series' `stops` in `data/champs.js` as "Map coming soon" (with real dates);
 a stop disappears by itself once a track with the same id exists.
 
+## Styles (Settings > Look and units > Style)
+`<html data-style="race">` switches on the Race Control look: one clearly marked override block at the bottom of `css/styles.css` (tokens for light, auto-dark and
+forced-dark, then component rules). Classic is the default and has no attribute. Preference key `paddock:style`; index.html applies it before first
+paint; `js/app.js` has `stylePref/applyStyle/setStyle`. Fonts (Barlow, Barlow Condensed) are in the index.html link AND `FONT_CSS` in sw.js: keep
+the two strings identical or the fonts are not saved for offline. Series stripe colours are the `--s-*` tokens, keyed by `data-s` on home rows.
+
 ## Event schedules (`sessions` in `data/<track>.js`)
 Fans only need **practice, qualifying and races** (plus the odd headline on-track event like a pole shootout or
 parade). Leave out team-only test/shakedown days, paddock logistics, briefings, registration, tech inspection,

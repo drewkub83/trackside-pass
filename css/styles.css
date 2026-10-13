@@ -649,3 +649,88 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .hubLive .liveWrap{margin-top:12px}
 .hubLive .hubLiveStop{margin-top:10px}
 .hubLive .hubLivePlay{width:100%}
+
+/* =====================================================================================================
+   STYLE: RACE CONTROL  (Settings > Look and units > Style). Everything below only applies when
+   <html data-style="race">; the classic look above is untouched. Bold condensed type, a black header with a
+   checkered strip, an orange accent, and an ink-black "on track now" card. Fine-tune colours in the token blocks.
+   ===================================================================================================== */
+:root[data-style="race"]{
+  --font:"Barlow","Segoe UI",system-ui,sans-serif; --font-d:"Barlow Condensed","Arial Narrow",sans-serif;
+  --paper:#F3F5F8; --card:#FFFFFF; --ink:#0B0D12; --ink-2:#566170; --line:rgba(11,13,18,.11);
+  --bg-a:#F3F5F8; --bg-b:#F3F5F8; --hero-a:#FFFFFF; --hero-b:#FFFFFF; --hero-c:#FFFFFF;
+  --tint:rgba(11,13,18,.06); --tint-2:rgba(11,13,18,.05);
+  --accent:#D9480F; --accent-2:#FF7A45; --nav:#0B0D12; --orange:#FF5A1F; --live-dot:#1DD97A;
+  --track:#FF5A1F; --track-edge:#FFFFFF; --pit:#566170;
+  --glass:#FFFFFF; --glass-strong:#FFFFFF; --glass-edge:rgba(11,13,18,.10);
+  --shadow:0 1px 2px rgba(11,13,18,.06); --glow:0 6px 16px rgba(255,90,31,.35);
+  --s-gtwca:#1F3BFF; --s-gtwce:#E4202A; --s-imsa:#F5A500; --s-indycar:#0FA968; --s-other:#6B7683;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-style="race"]:not([data-theme="light"]){
+    --paper:#0A0B0D; --card:#15171B; --ink:#F4F5F2; --ink-2:#8E949C; --line:rgba(255,255,255,.10);
+    --bg-a:#0A0B0D; --bg-b:#0A0B0D; --hero-a:#15171B; --hero-b:#15171B; --hero-c:#15171B;
+    --tint:rgba(255,255,255,.08); --tint-2:rgba(255,255,255,.06);
+    --accent:#FF6A33; --accent-2:#FF8A5C; --nav:#1C1F24; --track:#FF5A1F; --track-edge:#000000; --pit:#8E949C;
+    --glass:rgba(21,23,27,.94); --glass-strong:#15171B; --glass-edge:rgba(255,255,255,.10); --shadow:none;
+    --s-gtwca:#5C78FF; --s-gtwce:#FF5058; --s-imsa:#FFB82E; --s-indycar:#2BD38E; --s-other:#8E949C;
+  }
+}
+:root[data-style="race"][data-theme="dark"]{
+  --paper:#0A0B0D; --card:#15171B; --ink:#F4F5F2; --ink-2:#8E949C; --line:rgba(255,255,255,.10);
+  --bg-a:#0A0B0D; --bg-b:#0A0B0D; --hero-a:#15171B; --hero-b:#15171B; --hero-c:#15171B;
+  --tint:rgba(255,255,255,.08); --tint-2:rgba(255,255,255,.06);
+  --accent:#FF6A33; --accent-2:#FF8A5C; --nav:#1C1F24; --track:#FF5A1F; --track-edge:#000000; --pit:#8E949C;
+  --glass:rgba(21,23,27,.94); --glass-strong:#15171B; --glass-edge:rgba(255,255,255,.10); --shadow:none;
+  --s-gtwca:#5C78FF; --s-gtwce:#FF5058; --s-imsa:#FFB82E; --s-indycar:#2BD38E; --s-other:#8E949C;
+}
+/* type */
+:root[data-style="race"] body{font-family:var(--font)}
+:root[data-style="race"] h1,:root[data-style="race"] h2,:root[data-style="race"] h3,:root[data-style="race"] .cond,
+:root[data-style="race"] .hubCard h4,:root[data-style="race"] .sect,:root[data-style="race"] .ptitle2{font-family:var(--font-d);font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+:root[data-style="race"] .sect{letter-spacing:2px;font-weight:700}
+/* home header: black bar, white title, checkered strip */
+:root[data-style="race"] .mastbar{background:#0B0D12;color:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;padding-bottom:12px;overflow:visible}
+:root[data-style="race"] .mastbar h1{font-size:30px;font-weight:800;letter-spacing:.5px;color:#fff}
+:root[data-style="race"] .mastbar::after{content:"";position:absolute;left:0;right:0;bottom:-12px;height:12px;background:repeating-conic-gradient(#fff 0 25%,#0B0D12 0 50%) 0 0/12px 12px}
+:root[data-style="race"] .mastbar .fab{background:#fff;color:#0B0D12;border-color:#fff}
+:root[data-style="race"] .mast{padding-top:22px}
+/* hero: big orange countdown */
+:root[data-style="race"] .hero{background:var(--card);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow)}
+:root[data-style="race"] .hero .art{opacity:.09}
+:root[data-style="race"] .hero .kick{background:var(--ink);color:var(--paper);border-radius:6px;font-family:var(--font-d);font-weight:800;letter-spacing:1.5px;font-size:14px}
+:root[data-style="race"] .hero .num{font-family:var(--font-d);font-weight:800;font-size:128px;line-height:.82;letter-spacing:-5px;color:var(--orange);margin-top:12px}
+:root[data-style="race"] .hero .num small{font-family:var(--font-d);font-weight:800;font-size:34px;letter-spacing:0;line-height:.95;text-transform:uppercase;color:var(--ink);white-space:normal;max-width:120px;vertical-align:bottom;margin-left:12px}
+:root[data-style="race"] .hero .name{font-family:var(--font-d);font-weight:800;font-size:25px;line-height:1.02;text-transform:uppercase;margin-top:14px}
+:root[data-style="race"] .hero .sub{font-weight:500}
+/* series and track rows: flat cards with a coloured stripe per series */
+:root[data-style="race"] .track-row{background:var(--card);border:1px solid var(--line);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:18px}
+:root[data-style="race"] .track-row.series{border-left:8px solid var(--sc,var(--s-other))}
+:root[data-style="race"] .track-row.series[data-s="gtwca"]{--sc:var(--s-gtwca)}
+:root[data-style="race"] .track-row.series[data-s="gtwce"]{--sc:var(--s-gtwce)}
+:root[data-style="race"] .track-row.series[data-s="imsa"]{--sc:var(--s-imsa)}
+:root[data-style="race"] .track-row.series[data-s="indycar"]{--sc:var(--s-indycar)}
+:root[data-style="race"] .track-row .tile.txt,:root[data-style="race"] .track-row .tile.imsa{background:transparent;color:var(--sc,var(--accent));font-family:var(--font-d);font-weight:800;font-size:32px;letter-spacing:0}
+:root[data-style="race"] .track-row h2{font-size:23px}
+/* bottom navigation: active tab is a white pill with condensed caps */
+:root[data-style="race"] .tabs button.on{background:#fff;color:#0B0D12;font-family:var(--font-d);font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:.4px}
+/* Race Day hub */
+:root[data-style="race"] .hubCard{background:var(--card);border:1px solid var(--line);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:24px}
+:root[data-style="race"] .hubCard h4{letter-spacing:2px;font-size:15px}
+:root[data-style="race"] .hubSessionName{font-family:var(--font-d);font-weight:800;font-size:42px;line-height:.95;text-transform:uppercase}
+:root[data-style="race"] .hubCard.liveNow{background:#0B0D12;border-color:#0B0D12;box-shadow:none;color:#fff}
+:root[data-style="race"] .hubCard.liveNow h4{color:#fff}
+:root[data-style="race"] .hubCard.liveNow h4::before{background:var(--live-dot);box-shadow:0 0 0 0 rgba(29,217,122,.55)}
+:root[data-style="race"] .hubCard.liveNow .hubSessionSub{color:rgba(255,255,255,.75)}
+:root[data-style="race"] .hubCard.liveNow .chev{stroke:#fff}
+:root[data-style="race"] .hubChip{border-radius:14px}
+:root[data-style="race"] .hubChip.live{background:#0B0D12}
+:root[data-style="race"] .hubChip b{font-family:var(--font-d);font-weight:800;font-size:20px}
+/* buttons */
+:root[data-style="race"] .btn.primary{background:var(--orange);color:#0B0D12;font-family:var(--font-d);font-weight:800;text-transform:uppercase;letter-spacing:.5px;font-size:18px;box-shadow:none}
+@media (prefers-color-scheme: dark){
+  :root[data-style="race"]:not([data-theme="light"]) .hubCard.liveNow{background:#0F2E20;border-color:#1DD97A}
+  :root[data-style="race"]:not([data-theme="light"]) .hubChip.live{background:#0F2E20}
+}
+:root[data-style="race"][data-theme="dark"] .hubCard.liveNow{background:#0F2E20;border-color:#1DD97A}
+:root[data-style="race"][data-theme="dark"] .hubChip.live{background:#0F2E20}

@@ -144,7 +144,7 @@ function renderChampList(){
   const el=document.getElementById("champList"); if(!el) return;
   const ordered=orderedChamps().filter(followed);
   const row=c=>{ const n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length;
-    return `<li><button class="track-row series" onclick="openSeries('${c.id}')"><span class="tile txt">${c.tile}</span>
+    return `<li><button class="track-row series" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt">${c.tile}</span>
       <div><h2>${c.name}</h2><div class="meta">${c.full} · ${n} venue${n===1?"":"s"}</div></div>
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; };
   /* once the series you follow span more than one part of the world, group them under region headings (your own
@@ -1487,7 +1487,7 @@ scheduleSessionAlerts();
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){
- renderAutoSw(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }
+ renderAutoSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }
 
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----
    Sun times are worked out on the phone (no signal needed). At a track in the phone's own time zone it uses the
@@ -1527,6 +1527,15 @@ function renderThemeUI(p){
   document.querySelectorAll(".themeSeg").forEach(el=>{ el.innerHTML=THEMES.map(([k,l])=>`<button class="${k===p?"on":""}" onclick="setTheme('${k}')">${l}</button>`).join(""); });
   document.querySelectorAll(".themeNote").forEach(el=>el.textContent=note);
 }
+/* Style: "classic" (the original soft look) or "race" (Race Control: bold type, black header, orange accent). Saved on the phone;
+   index.html applies it before first paint so there is no flash. */
+const STYLE_KEY="paddock:style", STYLES=[["classic","Classic"],["race","Race Control"]];
+function stylePref(){ try{ return localStorage.getItem(STYLE_KEY)==="race"?"race":"classic"; }catch(e){ return "classic"; } }
+function applyStyle(){ const r=document.documentElement; if(stylePref()==="race") r.setAttribute("data-style","race"); else r.removeAttribute("data-style"); renderStyleUI(); }
+function renderStyleUI(){ const p=stylePref();
+  document.querySelectorAll(".styleSeg").forEach(el=>{ el.innerHTML=STYLES.map(([k,l])=>`<button class="${k===p?"on":""}" onclick="setStyle('${k}')">${l}</button>`).join(""); });
+  document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":"The original soft look."); }
+function setStyle(k){ try{ localStorage.setItem(STYLE_KEY,k); }catch(e){} applyStyle(); }
 function setTheme(k){ try{ localStorage.setItem(THEME_KEY,k); }catch(e){} applyTheme(); }
 applyTheme(); setInterval(applyTheme,60000);
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden) applyTheme(); });

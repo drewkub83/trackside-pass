@@ -734,3 +734,53 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 }
 :root[data-style="race"][data-theme="dark"] .hubCard.liveNow{background:#0F2E20;border-color:#1DD97A}
 :root[data-style="race"][data-theme="dark"] .hubChip.live{background:#0F2E20}
+
+/* ---- Race Control, part 2: home tiles, info card, map badges, passport summary ---- */
+/* the four series as 2 x 2 tiles (region headings span both columns) */
+:root[data-style="race"] #champList{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 14px;list-style:none}
+:root[data-style="race"] #champList>li{margin:0;min-width:0}
+:root[data-style="race"] #champList>li.regionHead{display:none}
+:root[data-style="race"] #champList .track-row.series{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:4px;min-height:112px;padding:14px 16px;width:100%}
+:root[data-style="race"] #champList .track-row.series .tile{width:auto;height:auto;padding:0;font-size:44px;line-height:1;justify-content:flex-start;display:block}
+:root[data-style="race"] #champList .track-row.series h2{font-family:var(--font);text-transform:none;letter-spacing:0;font-weight:600;font-size:15px;white-space:normal;line-height:1.15;overflow:visible}
+:root[data-style="race"] #champList .track-row.series.same h2{display:none}
+:root[data-style="race"] #champList .track-row.series .mfull{display:none}
+:root[data-style="race"] #champList .track-row.series .chev{display:none}
+:root[data-style="race"] #champList .track-row.series .meta{white-space:normal;font-size:12.5px;line-height:1.25;margin:2px 0 0;overflow:visible}
+/* passport summary */
+:root[data-style="race"] .ppsum{background:var(--card);border:1px solid var(--line);box-shadow:none;border-radius:24px}
+:root[data-style="race"] .ppsum .ppn{font-family:var(--font-d);font-weight:800;font-size:92px;line-height:.85;letter-spacing:-3px;color:var(--orange)}
+:root[data-style="race"] .ppsum .ppn small{font-family:var(--font-d);font-weight:800;font-size:28px;letter-spacing:0;text-transform:uppercase;color:var(--ink)}
+/* map badges: bold square badges, brighter kind colours */
+:root[data-style="race"] .map-wrap svg .poi.near .sqbg{stroke:var(--accent);stroke-width:3}
+:root[data-style="race"] .map-wrap.editing .poi .sc>.sqbg{stroke:var(--yellow);stroke-width:2.5}
+:root[data-style="race"]{--food:#E58E00;--screen:#8A6D1F;--info:#6B7683;--cross:#566170;--gate:#1F3BFF;--stand:#6D3BFF;--park:#0B0D12;--rest:#0A9E8F;--camp:#0FA968;--med:#E4202A;--merch:#E0147A;--view:#00A3C4}
+@media (prefers-color-scheme: dark){
+  :root[data-style="race"]:not([data-theme="light"]){--food:#FFB82E;--screen:#C9A33A;--info:#8E949C;--cross:#8E949C;--gate:#5C78FF;--stand:#9B7BFF;--park:#5C6670;--rest:#2BC9B8;--camp:#2BD38E;--med:#FF5058;--merch:#FF4FA3;--view:#35D6FF}
+}
+:root[data-style="race"][data-theme="dark"]{--food:#FFB82E;--screen:#C9A33A;--info:#8E949C;--cross:#8E949C;--gate:#5C78FF;--stand:#9B7BFF;--park:#5C6670;--rest:#2BC9B8;--camp:#2BD38E;--med:#FF5058;--merch:#FF4FA3;--view:#35D6FF}
+/* info tab: the venue card was drawn as a card inside a card (all styles) */
+.ivenue dl{background:none;border:0;box-shadow:none;padding:0;margin:0}
+
+/* ---- Race Control, part 3: events, sessions and pop-up cards ---- */
+:root[data-style="race"] .item,:root[data-style="race"] .sess{-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;border-radius:20px}
+:root[data-style="race"] .item h4{font-family:var(--font-d);font-weight:800;font-size:24px;line-height:1.05;text-transform:uppercase;letter-spacing:.2px}
+:root[data-style="race"] .ev .date{border-radius:14px}
+:root[data-style="race"] .ev .date b{font-family:var(--font-d);font-weight:800;font-size:36px;line-height:.95}
+:root[data-style="race"] .ev.nextup .date{background:var(--orange);color:#0B0D12}
+:root[data-style="race"] .sess .st{font-family:var(--font-d);font-weight:800;font-size:23px;line-height:1}
+:root[data-style="race"] .sess .sn{font-weight:600}
+:root[data-style="race"] .sess.live{background:#0B0D12;color:#fff;box-shadow:none}
+:root[data-style="race"] .sess.live .st{color:#fff}
+:root[data-style="race"] .sess.live .st small{color:rgba(255,255,255,.7)}
+:root[data-style="race"] .sess.live .sn em{background:var(--live-dot);color:#0B0D12}
+:root[data-style="race"] .sess.live .sn em::before{background:#0B0D12}
+:root[data-style="race"] .ev.live{box-shadow:inset 0 0 0 2px #0B0D12}
+:root[data-style="race"] .day.on{background:var(--orange);color:#0B0D12}
+:root[data-style="race"] #pcName{font-family:var(--font-d);font-weight:800;text-transform:uppercase;font-size:26px;letter-spacing:.3px}
+@media (prefers-color-scheme: dark){
+  :root[data-style="race"]:not([data-theme="light"]) .sess.live{background:#0F2E20;box-shadow:inset 0 0 0 1.5px #1DD97A}
+  :root[data-style="race"]:not([data-theme="light"]) .ev.live{box-shadow:inset 0 0 0 2px #1DD97A}
+}
+:root[data-style="race"][data-theme="dark"] .sess.live{background:#0F2E20;box-shadow:inset 0 0 0 1.5px #1DD97A}
+:root[data-style="race"][data-theme="dark"] .ev.live{box-shadow:inset 0 0 0 2px #1DD97A}

@@ -143,9 +143,9 @@ function orderedChamps(){ const byId=Object.fromEntries(CHAMPS.map(c=>[c.id,c]))
 function renderChampList(){
   const el=document.getElementById("champList"); if(!el) return;
   const ordered=orderedChamps().filter(followed);
-  const row=c=>{ const n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length;
-    return `<li><button class="track-row series" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt">${c.tile}</span>
-      <div><h2>${c.name}</h2><div class="meta">${c.full} · ${n} venue${n===1?"":"s"}</div></div>
+  const row=c=>{ const n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length, same=String(c.tile).toLowerCase()===String(c.name).toLowerCase();
+    return `<li><button class="track-row series${same?" same":""}" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt">${c.tile}</span>
+      <div><h2>${c.name}</h2><div class="meta"><span class="mfull">${c.full} · </span>${n} venue${n===1?"":"s"}</div></div>
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; };
   /* once the series you follow span more than one part of the world, group them under region headings (your own
      order still rules within a region, and the regions follow whichever of your series comes first) */
@@ -275,7 +275,7 @@ function poiEl(p,i){
   const pill = p.k==='rest'&&hasShower(p);
   const body = pill
     ? `<circle r="17" fill="transparent"/><rect class="pillbg" x="-17" y="-9" width="34" height="18" rx="9" fill="${c}" stroke="#fff" stroke-width="1.8"/><g transform="translate(-8,0) scale(.62)">${ICON.rest}</g><g transform="translate(8.5,0) scale(.95)">${SHOWER_ICON}</g>`
-    : `<circle r="17" fill="transparent"/><circle r="9" fill="${c}" stroke="#fff" stroke-width="1.8"/><g transform="scale(.7)">${p.k==='cross'&&/tunnel/i.test(p.n)?ICON.tunnel:ICON[p.k]}</g>`;
+    : `<circle r="17" fill="transparent"/>${document.documentElement.getAttribute("data-style")==="race"?`<rect class="sqbg" x="-9.5" y="-9.5" width="19" height="19" rx="5.5" fill="${c}" stroke="#fff" stroke-width="1.8"/>`:`<circle r="9" fill="${c}" stroke="#fff" stroke-width="1.8"/>`}<g transform="scale(.7)">${p.k==='cross'&&/tunnel/i.test(p.n)?ICON.tunnel:ICON[p.k]}</g>`;
   return `<g class="poi" data-k="${p.k}" data-i="${i}" data-tier="${TIER[p.k]||3}" data-x="${p.x}" data-y="${p.y}" data-sh="${pill?1:0}" transform="translate(${p.x},${p.y})" style="display:${poiShown(p)?'':'none'}">
     <g class="sc">${body}
     <text class="plabel" y="20" text-anchor="middle" font-size="10" font-weight="500" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke">${p.n}</text><circle class="halo" r="14" fill="none" stroke="var(--accent)" stroke-width="3"/><g class="cnt" transform="translate(11,-11)"><circle r="6.2" fill="var(--ink)" stroke="#fff" stroke-width="1.3"/><text y="3" text-anchor="middle" font-size="8.2" font-weight="700" fill="#fff"></text></g></g></g>`;
@@ -542,7 +542,7 @@ function renderInfo(){
     ["Signature section", sig]
   ];
   document.getElementById("iVenue").innerHTML = rows.map(([k,v])=>`<dt>${k}</dt>${v?`<dd>${esc(String(v))}</dd>`:`<dd class="tbd">Not added yet</dd>`}`).join("")
-    + `<dt>Best views</dt>${views.length?`<dd>${views.map(p=>esc(p.n)).join(", ")} <span class="lr-who">Marked on the map with an eye icon</span></dd>`:`<dd class="tbd">Not added yet</dd>`}`
+    + `<dt>Best views</dt>${views.length?`<dd>${views.map(p=>esc(p.n)).join("<br>")}<span class="lr-who">Marked on the map with an eye icon</span></dd>`:`<dd class="tbd">Not added yet</dd>`}`
     + `<dt>Lap record</dt>${lapRecordHtml()}`;
   const skip = new Set(["Signature section","Signature sections","Signature","Length"]);
   const rest = Object.entries(facts).filter(([k])=>!skip.has(k));
@@ -1531,7 +1531,7 @@ function renderThemeUI(p){
    index.html applies it before first paint so there is no flash. */
 const STYLE_KEY="paddock:style", STYLES=[["classic","Classic"],["race","Race Control"]];
 function stylePref(){ try{ return localStorage.getItem(STYLE_KEY)==="race"?"race":"classic"; }catch(e){ return "classic"; } }
-function applyStyle(){ const r=document.documentElement; if(stylePref()==="race") r.setAttribute("data-style","race"); else r.removeAttribute("data-style"); renderStyleUI(); }
+function applyStyle(){ const r=document.documentElement; if(stylePref()==="race") r.setAttribute("data-style","race"); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
 function renderStyleUI(){ const p=stylePref();
   document.querySelectorAll(".styleSeg").forEach(el=>{ el.innerHTML=STYLES.map(([k,l])=>`<button class="${k===p?"on":""}" onclick="setStyle('${k}')">${l}</button>`).join(""); });
   document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":"The original soft look."); }

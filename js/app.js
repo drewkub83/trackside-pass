@@ -522,10 +522,13 @@ function toggleGoingRow(i){ const e=evRows[i]; if(!e) return; const on=!isGoing(
    is its own field on the track (cur.lapRecord), because it is specific to the exact layout that file draws —
    a venue with more than one layout (an oval vs. its road course) gets a separate track id with its own record. */
 function bestViewPois(){ const ov=layoutOverrides(); return cur.pois.map(p=>applyOv(p,ov[pid(p)])).filter(p=>p.k==="view"&&!p.del); }
+/* lapRecord can also be a list, one per major series ({series, time, who, car, year, note}), for a venue
+   several championships share -- each one's record stands on its own, they aren't comparable. */
 function lapRecordHtml(){
   const r = cur.lapRecord; if(!r) return `<dd class="tbd">Not added yet</dd>`;
   if(typeof r === "string") return `<dd>${esc(r)}</dd>`;
-  return `<dd>${esc(r.time)}<span class="lr-who">${esc([r.who,r.car,r.year].filter(Boolean).join(" · "))}${r.note?` — ${esc(r.note)}`:""}</span></dd>`;
+  const one = x=>`<dd>${x.series?`${esc(x.series)}: `:""}${esc(x.time)}<span class="lr-who">${esc([x.who,x.car,x.year].filter(Boolean).join(" · "))}${x.note?` — ${esc(x.note)}`:""}</span></dd>`;
+  return Array.isArray(r) ? r.map(one).join("") : one(r);
 }
 function renderInfo(){
   document.getElementById("iBlurb").textContent = cur.blurb;
@@ -540,7 +543,7 @@ function renderInfo(){
   ];
   document.getElementById("iVenue").innerHTML = rows.map(([k,v])=>`<dt>${k}</dt>${v?`<dd>${esc(String(v))}</dd>`:`<dd class="tbd">Not added yet</dd>`}`).join("")
     + `<dt>Best views</dt>${views.length?`<dd>${views.map(p=>esc(p.n)).join("<br>")}<span class="lr-who">Marked on the map with an eye icon</span></dd>`:`<dd class="tbd">Not added yet</dd>`}`
-    + `<dt>Lap record</dt>${lapRecordHtml()}`;
+    + `<dt>Lap record${Array.isArray(cur.lapRecord)?"s":""}</dt>${lapRecordHtml()}`;
   const skip = new Set(["Signature section","Signature sections","Signature","Length"]);
   const rest = Object.entries(facts).filter(([k])=>!skip.has(k));
   document.getElementById("iFacts").innerHTML = rest.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");

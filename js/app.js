@@ -219,7 +219,7 @@ function openTrackNow(id,from){
   window.scrollTo(0,0);
   wx=null; wxToast=null; renderWx(); loadWeather();
   limits=null; view=fitted=fitView(); applyView(); { const w=document.getElementById("mapWrap"); lastSize=w.clientWidth+"x"+w.clientHeight; }
-  hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); checkHubEntry(); checkRaceWeek();
+  hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); checkRaceWeek();
   /* resume live GPS automatically if it's already been allowed before, same consent-respecting check the
      hub and race-week banner use -- never asks cold, only picks back up for someone who already said yes.
      A web page can't keep watchPosition running once the OS fully closes the tab/PWA (no background
@@ -230,13 +230,10 @@ function openTrackNow(id,from){
   }
 }
 function goHome(){
-  /* while the hub is active (hub-mode never turned off, just another tab on top -- e.g. tapped through
-     from "On track" or the Today strip), the visible back arrow should surface the hub again, same as
-     swiping back already does -- not exit the track entirely. Only intercepts when we're not already
-     looking at the hub itself, so the hub's own back arrow still exits to the track list as before. */
-  if(hubMode){ const sc=document.querySelector(".screen.on"); const pn=sc&&sc.id==="detail"&&sc.querySelector(".panel.on");
-    if(pn&&pn.id!=="pMap"){ const mapBtn=sc.querySelector('#mapTabBtn'); if(mapBtn){ mapBtn.click(); return; } } }
-  if(hubBack()) return;
+  /* The hub is the root of a track: Map/Events/Info step back to it, and only the hub's own back arrow
+     leaves for the track list. (Swiping back does the same.) */
+  const sc=document.querySelector(".screen.on"), pn=sc&&sc.id==="detail"&&sc.querySelector(".panel.on");
+  if(pn&&!(hubMode&&pn.id==="pMap")){ if(pn.id==="pMap") backToHub(); else document.getElementById("hubTabBtn").click(); return; }
   renderHome(); stopGps(); showScreen(backTo);
 }
 function tab(btn){
@@ -742,26 +739,14 @@ function renderNow(){
   else if(next){ pill.classList.remove("live"); const soon=next.start-now<36e5; document.getElementById("nowTag").textContent="NEXT"; document.getElementById("nowTxt").textContent=`${shortName(next.n)} · ${soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)}`; }
   else { document.getElementById("nowTag").textContent="DONE"; document.getElementById("nowTxt").textContent=`${cur.eventName||"Event"} weekend is over`; }
 }
-/* Race Day hub: replaces the map (not a new tab -- "Full map" always gets you there) when you're near the
-   track during its own event weekend. Geo-gated and consent-respecting: only auto-checks location if the
-   phone has already granted it before (e.g. via Locate Me on the map); never triggers a cold permission
-   prompt just from opening a track's page. Dismissing it for a track (View full map) sticks until you
-   reopen that track. */
+/* Race Day hub: the landing page of every track (Hub and Map are the first two tabs, sharing one panel). It
+   shows whatever is accurate for the moment -- next/live sessions, weather, results, what to watch -- and the
+   Map tab (or "Full map") is one tap away. Opening a track always starts on the hub; leaving it for the map
+   sticks until you reopen that track. */
 let hubMode=false, hubDismissed=false;
 const HUB_RADIUS_KM=32.2;   /* 20 miles */
-function hubEligible(t){ const fo=focusAt(t); if(!fo) return false; return daysBetween(localToday(),fo.d)<=1&&localToday()<=fo.end; }
-function checkHubEntry(){
-  if(hubDismissed||!hubEligible(cur)||!navigator.geolocation) return;
-  const tryGeo=()=>{ const id=cur.id; navigator.geolocation.getCurrentPosition(pos=>{
-    if(!cur||cur.id!==id||hubDismissed) return;
-    const km=haversine(pos.coords.latitude,pos.coords.longitude,(cur.geo.n+cur.geo.s)/2,(cur.geo.w+cur.geo.e)/2);
-    if(km<=HUB_RADIUS_KM) enterHub();
-  }, ()=>{}, {maximumAge:600000,timeout:8000}); };
-  if(navigator.permissions&&navigator.permissions.query){
-    navigator.permissions.query({name:"geolocation"}).then(p=>{ if(p.state==="granted") tryGeo(); }).catch(()=>{});
-  }
-}
-function enterHub(){ hubMode=true; document.getElementById("pMap").classList.add("hub-mode"); document.getElementById("hubView").hidden=false; renderHub(); }
+function hubTabs(){ const pm=document.getElementById("pMap"); if(!pm||!pm.classList.contains("on")) return; document.querySelectorAll(".tabs button[data-p=pMap]").forEach(b=>b.classList.toggle("on",hubMode===(b.getAttribute("onclick")||"").startsWith("tabHub"))); }
+function enterHub(){ hubMode=true; hubTabs(); document.getElementById("pMap").classList.add("hub-mode"); document.getElementById("hubView").hidden=false; renderHub(); }
 let hubReturn=false;   /* true while you're on the map because a hub button sent you there: swiping back or the header's back arrow return to the hub. Closing a popup (its own X, or End directions) never does -- that's just dismissing that one popup, not leaving the map, e.g. tapping a POI badge after "Full map" and closing it should leave you on the map, not bounce you back to the hub. */
 function leaveHub(){ exitHub(); hubReturn=true; }
 function backToHub(){ hubReturn=false; clearRoute(); setMode(null); closeSheet(); applyView(); hubDismissed=false; enterHub(); }
@@ -769,7 +754,7 @@ function backToHub(){ hubReturn=false; clearRoute(); setMode(null); closeSheet()
 function hubBack(){ if(!hubReturn||hubMode) return false; const sc=document.querySelector(".screen.on"), pn=sc&&sc.querySelector(".panel.on"); if(!sc||sc.id!=="detail"||!pn||pn.id!=="pMap") return false; if(sheetState==="shLayers"||sheetState==="shGps") return false; backToHub(); return true; }
 function endDirections(){ clearRoute(); }
 function closeSheetBtn(){ closeSheet(); }
-function exitHub(){ hubLive.want=false; if(hubLive.playing) stopHubLive(); hubMode=false; hubDismissed=true; document.getElementById("pMap").classList.remove("hub-mode"); document.getElementById("hubView").hidden=true; }
+function exitHub(){ hubLive.want=false; if(hubLive.playing) stopHubLive(); hubMode=false; hubDismissed=true; hubTabs(); document.getElementById("pMap").classList.remove("hub-mode"); document.getElementById("hubView").hidden=true; }
 function hubGoView(i){ leaveHub(); selectPoi(i); startDirections(); }
 /* Inline live stream in the Race Day hub. State survives the hub's 30 s re-render: the iframe is only touched when
    the channel changes. Starting it needs a tap (no data used on a weak signal); once started it follows the series
@@ -821,7 +806,13 @@ function renderHub(){
     ? sessCard("On track now",liveAll.length+" sessions",liveAll.map(x=>esc(shortName(x.n))+" · "+(x.est?"in progress":"ends "+fmtTime(x.end,cur.tz))).join("<br>"),true)
     : sessCard("On track now",shortName(live.n),live.est?"In progress":"Ends "+fmtTime(live.end,cur.tz),true);
   else if(next){ const soon=next.start-now<36e5; sessionHtml=sessCard("Next on track",shortName(next.n),soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)); }
-  else sessionHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${esc(cur.eventName||"This weekend")}</h4><div class="hubSessionSub">No more sessions today</div></div>${chev}</div></div>`;
+  else {
+    /* nothing left to show a countdown for: say when the next event is (the hub is the landing page, so this is
+       what an off-season visit sees), or "no more sessions today" in the middle of an event weekend */
+    const fo=focusAt(cur), away=fo?daysBetween(localToday(),fo.d):0;
+    const sub=!fo?"No upcoming event listed":away>0?`${esc(fmtRange(fo.first))} · ${away===1?"tomorrow":"in "+away+" days"}`:"No more sessions today";
+    sessionHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${fo&&away>0?"Next event":esc(cur.eventName||"This weekend")}</h4>${fo&&away>0?`<div class="hubSessionName">${esc(fo.first.e)}</div>`:""}<div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
+  }
 
   /* today at a glance: every session today as a small strip, so overlapping series (a common-round weekend
      like Barber or Road Atlanta) are visible without opening the schedule. Tapping it opens the schedule,
@@ -1386,7 +1377,7 @@ async function autoOpen(){
   try{
     try{ const p=navigator.permissions&&await navigator.permissions.query({name:"geolocation"}); if(p&&p.state==="denied") return; }catch(e){}
     const t=await whereAmI(9000);
-    if(t&&!inDetail()){ openTrack(t.id,"home"); toast(`You're at ${t.short}. Opened its map.`); }
+    if(t&&!inDetail()){ openTrack(t.id,"home"); toast(`You're at ${t.short}. Opened its Race Day hub.`); }
   } finally { autoBusy=false; }
 }
 function renderAutoSw(){ const b=document.getElementById("autoSw"); if(!b) return; const on=autoOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
@@ -1396,7 +1387,7 @@ async function toggleAuto(){
   const t=await whereAmI(15000);
   if(t===undefined){ toast("Location is blocked. Allow it for this app in your phone's settings, then try again."); return; }
   try{ localStorage.setItem(AUTO_KEY,"1"); }catch(e){} renderAutoSw();
-  if(t){ openTrack(t.id,"home"); toast(`You're at ${t.short}. Opened its map.`); } else toast("On. It checks each time you open the app.");
+  if(t){ openTrack(t.id,"home"); toast(`You're at ${t.short}. Opened its Race Day hub.`); } else toast("On. It checks each time you open the app.");
 }
 renderAutoSw(); renderUnitsUI(); renderAccessUI(); autoOpen();
 
@@ -1754,14 +1745,9 @@ function swipeBack(){
   if(hubBack()) return;
   const sh=document.getElementById("sheet"); if(sh&&!sh.hidden){ closeSheet(); return; }
   const sc=document.querySelector(".screen.on"); if(!sc||sc.id==="home") return;
-  /* the detail screen has four tabs (Map/Food/Events/Info): one swipe from Food/Events/Info goes back
-     one step, to the Map tab, same as the tab bar's own hierarchy -- a second swipe from Map then
-     exits to the track list. */
-  if(sc.id==="detail"){
-    const activePanel=sc.querySelector(".panel.on");
-    if(activePanel&&activePanel.id!=="pMap"){ const mapBtn=sc.querySelector('#mapTabBtn'); if(mapBtn){ mapBtn.click(); return; } }
-    goHome(); return;
-  }
+  /* the detail screen's tabs are Hub/Map/Events/Info: one swipe from Map/Events/Info goes back to the hub, and a
+     second swipe from the hub exits to the track list (goHome does both). */
+  if(sc.id==="detail"){ goHome(); return; }
   const b=sc.querySelector('button[aria-label^="Back"]'); if(b) b.click();
 }
 function swipeTarget(){

@@ -22,10 +22,10 @@ function ppStats(p){
     by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); });
       ids.forEach(i=>series.add(i)); if(ids.size>=2) bill=true; });
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=e.t) marathon=true; }); });
-  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,endu,endLong,zones:zones.size,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
+  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,endu,endLong,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
 const PP_GLOBAL=[
-  {id:"first",name:"First Stamp",desc:"Check in at your first race weekend.",icon:"star",tier:"x",test:s=>s.tracks>=1},
+  {id:"first",name:"First Stamp",desc:"Check in at your first race weekend.",icon:"star",tier:"x",sty:"first",test:s=>s.tracks>=1},
   {id:"hopper",name:"Track Hopper",desc:"Visit 3 different tracks.",icon:"hop",tier:"b",sty:"hopper",test:s=>s.tracks>=3},
   {id:"tripper",name:"Road Tripper",desc:"Visit 6 different tracks.",icon:"sign",tier:"s",sty:"tripper",test:s=>s.tracks>=6},
   {id:"weekend",name:"Full Weekend",desc:"Check in every day of one race weekend.",icon:"cal",tier:"s",sty:"wkend",test:s=>s.full},
@@ -40,21 +40,21 @@ const PP_GLOBAL=[
   {id:"gtfan",name:"GT Fan",desc:"Check in at a GT World Challenge America weekend.",icon:"gt",tier:"x",sty:"gtwca",test:s=>s.series.has("gtwca")},
   {id:"stock",name:"Stock Car",desc:"Check in at a NASCAR weekend.",icon:"stockcar",tier:"x",sty:"nascar",test:s=>s.series.has("nascar")},
   {id:"grandprix",name:"Grand Prix",desc:"Check in at a Formula 1 weekend.",icon:"flag",tier:"s",sty:"f1",test:s=>s.series.has("f1")},
-  {id:"double",name:"Double Bill",desc:"Check in on a day when two series raced at the same track.",icon:"two",tier:"s",test:s=>s.bill},
-  {id:"trifecta",name:"Series Trifecta",desc:"Check in at IMSA, IndyCar and GT World weekends.",icon:"three",tier:"g",test:s=>["imsa","indycar","gtwca"].every(i=>s.series.has(i))},
+  {id:"double",name:"Double Bill",desc:"Check in on a day when two series raced at the same track.",icon:"two",tier:"s",sty:"double",test:s=>s.bill},
+  {id:"trifecta",name:"Series Trifecta",desc:"Check in at IMSA, IndyCar and GT World weekends.",icon:"three",tier:"g",sty:"trifecta",test:s=>["imsa","indycar","gtwca"].every(i=>s.series.has(i))},
   /* places */
-  {id:"zones",name:"Time Zone Traveler",desc:"Check in at tracks in three different time zones.",icon:"globe2",tier:"s",test:s=>s.zones>=3},
+  {id:"zones",name:"Time Zone Traveler",desc:"Check in at tracks in three different time zones.",icon:"globe2",tier:"s",sty:"zones",test:s=>s.zones>=3},
   {id:"border",name:"Border Crosser",desc:"Visit Canadian Tire Motorsport Park in Canada.",icon:"leaf",tier:"s",sty:"border",test:s=>s.visits["canadian-tire-motorsport-park"]>0},
   {id:"sunshine",name:"Sunshine State",desc:"Visit Daytona, Sebring and St. Petersburg.",icon:"fl",tier:"s",sty:"sunshine",test:s=>["daytona","sebring","st-petersburg"].every(i=>s.visits[i]>0)},
   {id:"lonestar",name:"Lone Star",desc:"Visit Circuit of the Americas and Arlington.",icon:"tx",tier:"s",sty:"lonestar",test:s=>s.visits["cota"]>0&&s.visits["arlington"]>0},
   {id:"lakes",name:"Great Lakes Loop",desc:"Visit Road America, Mid-Ohio and Detroit.",icon:"waves",tier:"s",sty:"lakes",test:s=>["road-america","mid-ohio","detroit"].every(i=>s.visits[i]>0)},
   {id:"golden",name:"Golden State",desc:"Visit Long Beach, Laguna Seca and Sonoma.",icon:"ca",tier:"s",sty:"golden",test:s=>["long-beach","laguna-seca","sonoma"].every(i=>s.visits[i]>0)},
   {id:"peach",name:"Peach and Bama",desc:"Visit Road Atlanta and Barber.",icon:"peach",tier:"b",sty:"peach",test:s=>s.visits["road-atlanta"]>0&&s.visits["barber"]>0},
-  {id:"banks",name:"High Banks",desc:"Visit an oval: Daytona or Phoenix.",icon:"tri",tier:"b",test:s=>s.visits["daytona"]>0||s.visits["phoenix"]>0},
+  {id:"banks",name:"High Banks",desc:"Visit a banked oval: Daytona, Phoenix or the Indy 500 oval.",icon:"tri",tier:"b",sty:"banks",test:s=>s.visits["daytona"]>0||s.visits["phoenix"]>0||s.visits["indianapolis-oval"]>0},
   /* how much */
-  {id:"marathon",name:"Marathon",desc:"Check in every day of a four-day race weekend.",icon:"clock",tier:"g",test:s=>s.marathon},
-  {id:"ten",name:"Ten Weekends",desc:"Check in at 10 race weekends.",icon:"cal",tier:"s",test:s=>s.weekends>=10},
-  {id:"season",name:"Season Ticket",desc:"Check in at 25 race weekends.",icon:"cup",tier:"g",test:s=>s.weekends>=25},
+  {id:"marathon",name:"Marathon",desc:"Check in every day of a four-day race weekend.",icon:"clock",tier:"g",sty:"marathon",test:s=>s.marathon},
+  {id:"ten",name:"Ten Weekends",desc:"Check in at 10 race weekends.",icon:"cal",tier:"s",sty:"ten",test:s=>s.weekends>=10},
+  {id:"season",name:"Season Ticket",desc:"Check in at 25 race weekends.",icon:"cup",tier:"g",sty:"season",test:s=>s.weekends>=25},
   {id:"grand",name:"Grand Tourer",desc:"Visit 10 different tracks.",icon:"van",tier:"g",sty:"grand",test:s=>s.tracks>=10},
   {id:"fullgrid",name:"Full Grid",desc:"Visit every track in the app. The rarest stamp of all.",icon:"grid",tier:"z",test:s=>s.tracks>=s.total}
 ];
@@ -168,6 +168,14 @@ const PP_SERIES={
   golden:{kind:"states",states:["California"],ids:["long-beach","laguna-seca","sonoma"],band:true,bandInk:"#C28A00",bandText:"#4A3200",ink:"#4A3200",acc:"#B23A2A",top:"GOLDEN STATE",bot:"CALIFORNIA",size:9.2,space:2.2},
   peach:{kind:"states",states:["Georgia","Alabama"],ids:["road-atlanta","barber"],band:true,bandInk:"#C2553A",ink:"#8C3A26",acc:"#1F5E4A",top:"PEACH AND BAMA",bot:"GEORGIA · ALABAMA",size:8.8,space:1.8},
   border:{kind:"states",states:["Ontario"],ctx:["Michigan","Ohio","Wisconsin"],lakes:true,ids:["canadian-tire-motorsport-park"],band:true,bandInk:"#9C2B2B",ink:"#7A2020",acc:"#E0A100",top:"BORDER CROSSER",bot:"CANADA",size:8.8,space:2},
+  first:{kind:"star",band:true,bandInk:"#2F6F6A",ink:"#1F4F4B",acc:"#C98400",top:"FIRST STAMP",bot:"FIRST CHECK-IN",size:9.2,space:2.2},
+  zones:{kind:"clocks",band:true,bandInk:"#8E3B2F",ink:"#6B2A21",acc:"#C98400",top:"TIME ZONE TRAVELER",bot:"3 TIME ZONES",size:8.2,space:1.5},
+  marathon:{kind:"stopwatch",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"MARATHON",bot:"ALL FOUR DAYS",size:9.2,space:2.4},
+  ten:{kind:"tally",n:10,band:true,bandInk:"#5B3F8C",ink:"#3E2A63",acc:"#C98400",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS",size:8.8,space:1.9},
+  season:{kind:"tally",n:25,band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SEASON TICKET",bot:"25 RACE WEEKENDS",size:8.8,space:1.9},
+  banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
+  double:{kind:"venn",venn:"duo",band:true,bandInk:"#7A2E3A",ink:"#561F29",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
+  trifecta:{kind:"venn",venn:"trio",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"IMSA · INDYCAR · GT WORLD",size:8.6,space:1.7},
   f1:{match:/Formula 1/i,ink:"#1D1D22",acc:"#D0202A",top:"FORMULA 1",bot:"GRAND PRIX",size:9.5,space:1.6}
 };
 const PP_LAND=[[[-122.8,49],[-95.2,49],[-95.2,49.4],[-94.8,49.4],[-94.6,48.8],[-94.3,48.7],[-92.6,48.5],[-91.6,48.1],[-90.8,48.3],[-89.3,48.0],[-88.4,48.3],[-84.9,46.9],[-84.8,46.6],[-84.5,46.5],[-84.6,46.4],[-84.1,46.5],[-83.9,46.1],[-83.5,46.0],[-83.6,45.8],[-82.6,45.3],[-82.1,43.6],[-83.1,42.1],[-83.0,41.8],[-82.7,41.7],[-78.9,42.9],[-79.2,43.5],[-78.7,43.6],[-76.8,43.6],[-76.5,44.0],[-74.9,45.0],[-71.5,45.0],[-71.4,45.3],[-70.7,45.5],[-70.0,46.7],[-69.2,47.4],[-68.9,47.2],[-68.2,47.4],[-67.8,47.1],[-67.8,45.7],[-67.0,44.8],[-70.1,43.7],[-70.8,42.9],[-70.8,42.3],[-70.5,41.8],[-70.1,41.8],[-70.2,42.1],[-69.9,41.9],[-70.0,41.6],[-72.9,41.2],[-73.7,40.9],[-72.2,41.1],[-71.9,40.9],[-73.3,40.6],[-74.0,40.6],[-74.0,40.8],[-74.3,40.5],[-74.0,40.4],[-74.2,39.7],[-74.9,38.9],[-75.0,39.2],[-75.5,39.5],[-75.3,39.0],[-75.1,38.8],[-75.1,38.4],[-75.9,37.2],[-75.7,37.9],[-76.2,38.3],[-76.3,39.1],[-76.5,38.7],[-76.3,38.1],[-77.0,38.2],[-76.3,37.9],[-76.3,37.0],[-76.0,36.9],[-75.7,35.6],[-76.4,34.8],[-77.4,34.5],[-78.1,33.9],[-78.6,33.9],[-79.1,33.5],[-79.2,33.2],[-80.9,32.0],[-81.3,31.4],[-81.5,30.7],[-81.3,30.0],[-80.5,28.5],[-80.5,28.0],[-80.1,26.9],[-80.1,25.8],[-80.4,25.2],[-80.7,25.1],[-81.2,25.2],[-81.3,25.6],[-81.7,25.9],[-82.9,27.9],[-82.7,28.6],[-82.9,29.1],[-83.7,29.9],[-84.1,30.1],[-85.1,29.6],[-85.8,30.2],[-86.4,30.4],[-87.5,30.3],[-88.4,30.4],[-89.6,30.2],[-89.4,29.9],[-89.4,29.5],[-89.2,29.3],[-89.4,29.2],[-89.8,29.3],[-90.2,29.1],[-90.9,29.1],[-91.6,29.7],[-92.5,29.6],[-93.2,29.8],[-94.7,29.5],[-95.6,28.7],[-96.6,28.3],[-97.1,27.8],[-97.4,27.4],[-97.4,26.7],[-97.1,25.9],[-97.5,25.8],[-99.0,26.4],[-99.5,27.5],[-100.1,28.1],[-101.0,29.4],[-101.7,29.8],[-102.5,29.8],[-103.1,29.0],[-103.9,29.3],[-104.5,29.6],[-105.0,30.6],[-106.5,31.8],[-108.2,31.8],[-108.2,31.3],[-111.0,31.3],[-114.8,32.5],[-114.7,32.7],[-117.1,32.5],[-117.3,33.0],[-117.9,33.6],[-118.4,33.7],[-118.5,34.0],[-119.1,34.1],[-119.4,34.3],[-120.4,34.4],[-120.6,34.6],[-120.7,35.2],[-121.7,36.2],[-122.5,37.6],[-122.5,37.8],[-123.7,39.0],[-123.9,39.8],[-124.4,40.3],[-124.2,41.1],[-124.2,42.0],[-124.5,42.8],[-124.1,43.7],[-123.9,45.5],[-124.1,46.9],[-124.7,48.2],[-124.6,48.4],[-123.1,48.0],[-122.6,47.1],[-122.3,47.4]],[[-122.8,49],[-125.6,50.4],[-127.4,50.8],[-128.0,51.7],[-127.9,52],[-81.2,52],[-79.9,51.2],[-79.1,51.5],[-78.9,52],[-56.0,52],[-57.1,51.4],[-58.8,51.1],[-60.0,50.2],[-61.7,50.1],[-63.9,50.3],[-66.4,50.2],[-67.2,49.5],[-68.5,49.1],[-71.1,46.8],[-70.3,47.0],[-68.7,48.3],[-66.6,49.1],[-65.1,49.2],[-64.2,48.7],[-65.1,48.1],[-64.5,46.2],[-63.2,45.7],[-61.5,45.9],[-60.5,47.0],[-60.4,46.3],[-59.8,45.9],[-61.0,45.3],[-64.2,44.3],[-65.4,43.5],[-66.1,43.6],[-66.2,44.5],[-64.4,45.3],[-67.1,45.1],[-67.8,45.7],[-67.8,47.1],[-68.2,47.4],[-68.9,47.2],[-69.2,47.4],[-70.0,46.7],[-70.7,45.5],[-71.4,45.3],[-71.5,45.0],[-74.9,45.0],[-76.5,44.0],[-76.8,43.6],[-78.7,43.6],[-79.2,43.5],[-78.9,42.9],[-82.7,41.7],[-83.0,41.8],[-83.1,42.1],[-82.1,43.6],[-82.6,45.3],[-83.6,45.8],[-83.5,46.0],[-83.9,46.1],[-84.1,46.5],[-84.6,46.4],[-84.5,46.5],[-84.8,46.6],[-84.9,46.9],[-88.4,48.3],[-89.3,48.0],[-90.8,48.3],[-91.6,48.1],[-92.6,48.5],[-94.3,48.7],[-94.6,48.8],[-94.8,49.4],[-95.2,49.4],[-95.2,49]]];
@@ -319,12 +327,47 @@ function ppStateArt(sp,ink,acc,skin,u,visits,locked){
       :`<circle cx="${f(x)}" cy="${f(y)}" r="1.9" fill="${skin}" stroke="${ink}" stroke-width=".7"/>`; }).join("");
   return base+dots;
 }
+/* ---- emblems for the count / clock / overlap badges ---- */
+function ppStarArt(ink,acc,skin){
+  const star=(R,r,cx,cy)=>{ let d=""; for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, rr=i%2?r:R; d+=(i?"L":"M")+(cx+rr*Math.cos(a)).toFixed(1)+" "+(cy+rr*Math.sin(a)).toFixed(1); } return d+"Z"; };
+  let rays=""; for(let i=0;i<20;i++){ const a=i*Math.PI/10+Math.PI/20; rays+=`M${(80+32*Math.cos(a)).toFixed(1)} ${(65+32*Math.sin(a)).toFixed(1)}L${(80+(i%2?35:37)*Math.cos(a)).toFixed(1)} ${(65+(i%2?35:37)*Math.sin(a)).toFixed(1)}`; }
+  return `<path d="${rays}" stroke="${acc}" stroke-width="1.1" stroke-linecap="round" fill="none"/><path d="${star(27,11.6,80,65)}" fill="${ink}" stroke="${ink}" stroke-width="1.6" stroke-linejoin="round"/><path d="${star(18.6,8,80,65)}" fill="${skin}"/><path d="${star(10.2,4.4,80,65)}" fill="${acc}"/>`;
+}
+/* four clocks, one hour apart: the four US time zones; a zone you have checked in at is lit */
+function ppClocksArt(ink,acc,skin,zones){
+  const Z=[["ET",3],["CT",2],["MT",1],["PT",12]], xs=[42.5,67.8,93.2,118.5]; let out=""; const f=n=>n.toFixed(1);
+  Z.forEach(([z,h],i)=>{ const cx=xs[i], cy=65, r=10.8, on=zones&&zones.has(z), a=((h%12)/12)*Math.PI*2-Math.PI/2, tk=[0,1,2,3].map(q=>{ const t=q*Math.PI/2; return `M${f(cx+(r-3)*Math.cos(t))} ${f(cy+(r-3)*Math.sin(t))}L${f(cx+(r-1.4)*Math.cos(t))} ${f(cy+(r-1.4)*Math.sin(t))}`; }).join("");
+    out+=`<g opacity="${on?1:.36}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${on?skin:"none"}" stroke="${on?acc:ink}" stroke-width="${on?2.4:1.5}"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${ink}" stroke-width="1.1"/><path d="${tk}" stroke="${ink}" stroke-width=".9"/><path d="M${cx} ${cy}L${f(cx+6.2*Math.cos(a))} ${f(cy+6.2*Math.sin(a))}" stroke="${ink}" stroke-width="1.7" stroke-linecap="round"/><path d="M${cx} ${cy}V${f(cy-8.6)}" stroke="${ink}" stroke-width="1.1" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="1.3" fill="${on?acc:ink}"/><text x="${cx}" y="87" font-size="6.2" font-weight="800" letter-spacing=".8" text-anchor="middle" fill="${ink}">${z}</text></g>`; });
+  if(zones&&zones.has("EU")) out+=`<text x="80" y="98" font-size="5.6" font-weight="800" letter-spacing=".8" text-anchor="middle" fill="${acc}">+ EUROPE</text>`;
+  return out;
+}
+/* a stopwatch with four quarters, one per day of a four-day weekend */
+function ppStopwatchArt(ink,acc,skin,done){
+  const cx=80, cy=73, f=n=>n.toFixed(1), pt=(r,a)=>f(cx+r*Math.cos(a))+" "+f(cy+r*Math.sin(a)); let q="", t="";
+  for(let i=0;i<4;i++){ const a0=-Math.PI/2+i*Math.PI/2+.07, a1=a0+Math.PI/2-.14; q+=`<path d="M${pt(10,a0)}L${pt(21,a0)}A21 21 0 0 1 ${pt(21,a1)}L${pt(10,a1)}A10 10 0 0 0 ${pt(10,a0)}Z" fill="${done?acc:"none"}" stroke="${ink}" stroke-width="1"/><text x="${f(cx+15.5*Math.cos(a0+Math.PI/4))}" y="${f(cy+15.5*Math.sin(a0+Math.PI/4)+2)}" font-size="6.6" font-weight="800" text-anchor="middle" fill="${done?skin:ink}">${i+1}</text>`; }
+  for(let i=0;i<60;i++){ const a=i*Math.PI/30, r0=i%5?24:22.2; t+=`M${pt(r0,a)}L${pt(26,a)}`; }
+  return `<g transform="translate(80 69) scale(1.1) translate(-80 -73)"><rect x="${cx-5}" y="${cy-39}" width="10" height="6.5" rx="1.6" fill="${ink}"/><rect x="${cx-2.4}" y="${cy-34}" width="4.8" height="4" fill="${ink}"/><path d="M${pt(30,-Math.PI/4)}l4.6-4.6" stroke="${ink}" stroke-width="3.4" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="29" fill="none" stroke="${ink}" stroke-width="2.6"/><circle cx="${cx}" cy="${cy}" r="26.4" fill="none" stroke="${ink}" stroke-width=".8"/><path d="${t}" stroke="${ink}" stroke-width=".7"/>${q}<circle cx="${cx}" cy="${cy}" r="3.2" fill="${ink}"/></g>`;
+}
+/* tally marks, five to a group (four strokes and a slash); one mark per race weekend checked in, the rest faint */
+function ppTallyArt(ink,acc,N,have){
+  const groups=N/5, f=n=>n.toFixed(1); let out="", idx=0;
+  const lay=groups<=2?[[58,48,82],[102,48,82]].slice(0,groups):[[48,46,68],[80,46,68],[112,46,68],[64,76,96],[96,76,96]].slice(0,groups);
+  lay.forEach(([cx,y0,y1])=>{ const sw=groups<=2?2.7:2.3, gap=groups<=2?6.2:5.2; let d="";
+    for(let j=0;j<4;j++){ const on=idx++<have; d=`<path d="M${f(cx-1.5*gap+j*gap)} ${y0}V${y1}" stroke="${on?ink:ink}" stroke-width="${sw}" stroke-linecap="round" opacity="${on?1:.2}"/>`; out+=d; }
+    const on=idx++<have; out+=`<path d="M${f(cx-2.6*gap)} ${y1-3}L${f(cx+2.6*gap)} ${y0+3}" stroke="${on?acc:ink}" stroke-width="${sw}" stroke-linecap="round" opacity="${on?1:.2}"/>`; });
+  return out;
+}
+/* overlapping circles: two series on one day (Double Bill), or the three IMSA / IndyCar / GT weekends (Series Trifecta) */
+function ppVennArt(ink,acc,kind){
+  const K=kind==="trio"?[[68,60,17,"#E0A100","IMSA",62,57],[92,60,17,"#2E7D5B","INDY",98,57],[80,81,17,"#3452D9","GTWC",80,92]]:[[67,70,20,ink,"",0,0],[93,70,20,acc,"",0,0]];
+  return (kind==="trio"?"":"")+K.map(([x,y,r,c])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" fill-opacity="${kind==="trio"?.55:.5}" stroke="${ink}" stroke-width="1.3"/>`).join("")+(kind==="trio"?K.map(([x,y,r,c,t,tx,ty])=>`<text x="${tx}" y="${ty}" font-size="5.4" font-weight="800" letter-spacing=".5" text-anchor="middle" fill="${ink}">${t}</text>`).join(""):`<text x="80" y="73.6" font-size="10" font-weight="800" text-anchor="middle" fill="${ink}">2</text>`);
+}
 /* track ids in the order you first checked in at them (for the Road Tripper route) */
 function ppVisitOrder(){ const seen=[]; ppLoad().stamps.slice().sort((a,b)=>(a.at||0)-(b.at||0)).forEach(x=>{ if(!seen.includes(x.t)) seen.push(x.t); }); return seen; }
 function seriesStamp(d,o){
   o=o||{}; const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
   const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=ppMapProj();
-  const visits=o.visits||(locked?{}:ppStats(ppLoad()).visits), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
+  const st=o.stats||(locked?null:ppStats(ppLoad())), visits=o.visits||(st?st.visits:{}), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
   let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }
   const venues=sp.kind&&sp.kind!=="tracks"?[]:ppVenues(sp), at=v=>proj(v.lon,v.lat).map(n=>n.toFixed(1)).join(" ");
   const stops=sp.route==="visited"?(o.order||(locked?[]:ppVisitOrder())).map(id=>venues.find(v=>v.ids.includes(id))).filter(v=>v&&v.ids.some(i=>visits[i]>0)):(sp.route?venues:[]);
@@ -334,12 +377,17 @@ function seriesStamp(d,o){
       :`<circle cx="${x}" cy="${y}" r="1.5" fill="#F3EAD2" stroke="${ink}" stroke-width=".6" opacity=".9"/>`; }).join("");
   const map=`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
   const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
-  const cells=[[42,36],[80,36],[42,69],[80,69]], vis4=id=>visits[id]>0;
+  const vis4=id=>visits[id]>0, nO=(sp.ids||[]).length, cells=nO===1?[[61,46]]:nO===2?[[40,48],[82,48]]:nO===3?[[22,50],[61,50],[100,50]]:[[42,36],[80,36],[42,69],[80,69]], cw=nO>=4?38:38, ch=nO>=4?31:34;
+  const any=sp.any;      /* any: lit as soon as one of the circuits is visited */
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
-    :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
-    :sp.kind==="outlines"?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=vis4(id);
-        return `<g opacity="${on||locked?1:.3}"><svg x="${cells[i][0]}" y="${cells[i][1]}" width="38" height="31" ${ppOutline(t,31,{c:ink,w:on?1.9:1.4})}</svg></g>`; }).join("")
+    :sp.kind==="star"?ppStarArt(ink,acc,"#F3EAD2")
+    :sp.kind==="clocks"?ppClocksArt(ink,acc,"#F3EAD2",st?st.zoneSet:null)
+    :sp.kind==="stopwatch"?ppStopwatchArt(ink,acc,"#F3EAD2",!locked&&(o.done!==false))
+    :sp.kind==="tally"?ppTallyArt(ink,acc,sp.n,locked?0:Math.min(sp.n,st?st.weekends:(o.have||0)))
+    :sp.kind==="venn"?ppVennArt(ink,acc,sp.venn)
+    :sp.kind==="outlines"?(nO===4?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`:"")+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=any?sp.ids.some(vis4):vis4(id);
+        return `<g opacity="${on||locked?1:.3}"><svg x="${cells[i][0]}" y="${cells[i][1]}" width="${cw}" height="${ch}" ${ppOutline(t,Math.min(cw,ch),{c:ink,w:on?2.2:1.5})}</svg></g>`; }).join("")
     :sp.kind==="days"?["FRI","SAT","SUN"].map((dn,i)=>{ const x=44+i*25; return `<rect x="${x}" y="50" width="22" height="34" rx="3.5" fill="none" stroke="${ink}" stroke-width="1.5"/><path d="M${x},50.5h22v8.5h-22z" fill="${ink}"/><text x="${x+11}" y="57" font-size="5.6" font-weight="800" letter-spacing=".6" text-anchor="middle" fill="#F3EAD2">${dn}</text><path d="M${x+5.5},70.5l4.6,4.8l7-8.6" fill="none" stroke="${acc}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`; }).join("")
     :map+(abroad?`<text x="36" y="104" font-size="5.2" font-weight="800" letter-spacing=".4" fill="${acc}">+${abroad} ABROAD</text>`:"");
   const defs=`<path id="st${u}t" d="M 30,80 A 50,50 0 0 1 130,80"/><path id="st${u}bt" d="M 13.8,80 A 66.2,66.2 0 0 1 146.2,80"/><path id="st${u}bb" d="M 6.2,80 A 73.8,73.8 0 0 0 153.8,80"/><path id="st${u}b" d="M 20,80 A 60,60 0 0 0 140,80"/><clipPath id="st${u}c"><circle cx="80" cy="80" r="58"/></clipPath><clipPath id="st${u}k"><circle cx="80" cy="80" r="49"/></clipPath>
@@ -400,7 +448,10 @@ function legendStamp(d,o){
   const rough=!locked&&o.rough!==false, filt=ppFilter(u,rough);
   const frame=locked?`<path d="${edge}" fill="none" stroke="${ink}" stroke-width="2.2" stroke-dasharray="5 4"/><circle cx="80" cy="80" r="55" fill="none" stroke="${ink}" stroke-width="1.6" stroke-dasharray="3 4"/>`
     :`<path d="${edge}" fill="none" stroke="${ink}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="80" cy="80" r="68.5" fill="none" stroke="${ink}" stroke-width="1.6"/><path d="${band}" fill="${ink}"/><circle cx="80" cy="80" r="55.5" fill="none" stroke="${ink}" stroke-width="1.6"/><circle cx="80" cy="80" r="52" fill="none" stroke="${ink}" stroke-width=".8"/>`;
-  const trophy=`<g transform="translate(51.5,44) scale(2.4)" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${PP_ICON.cup}</g>`;
+  /* every track in the app as a small outline: the ones you have visited are inked, the rest faint */
+  const st=o.stats||(locked?null:ppStats(ppLoad())), vs=o.visits||(st?st.visits:{}), cols=6, rows=Math.ceil(n/cols), cw=11.6, chh=10.2, gx=80-cols*cw/2, gy=57;
+  const trophy=TRACKS.map((t,i)=>{ const c=i%cols, r=Math.floor(i/cols), last=r===rows-1, inLast=n-(rows-1)*cols, off=last?(cols-inLast)*cw/2:0, on=vs[t.id]>0;
+    return `<g opacity="${on||locked?1:.26}"><svg x="${(gx+off+c*cw).toFixed(1)}" y="${(gy+r*chh).toFixed(1)}" width="${cw-1.2}" height="${chh-1}" ${ppOutline(t,9.4,{c:ink,w:on?1.6:1.2})}</svg></g>`; }).join("");
   const text=locked?"":`<text font-size="10.5" font-weight="700" letter-spacing="1.6" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">FULL GRID</textPath></text><text font-size="8.4" font-weight="700" letter-spacing="1.1" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">ALL ${n} TRACKS</textPath></text>`;
   const date="";
   return `<svg class="stamp legend${locked?" locked":""}" viewBox="0 0 160 160" aria-hidden="true"><defs><path id="st${u}t" d="M 41,80 A 39,39 0 0 1 119,80"/><path id="st${u}b" d="M 34,80 A 46,46 0 0 0 126,80"/>${filt}</defs>

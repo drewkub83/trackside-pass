@@ -784,3 +784,11 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 }
 :root[data-style="race"][data-theme="dark"] .sess.live{background:#0F2E20;box-shadow:inset 0 0 0 1.5px #1DD97A}
 :root[data-style="race"][data-theme="dark"] .ev.live{box-shadow:inset 0 0 0 2px #1DD97A}
+
+/* Info tab: each fact is a centred heading with its value(s) underneath, not a two-column grid (cramped on a phone) */
+.info dl,.ivenue dl{display:block}
+.info dt{text-align:center;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0}
+.info dd{text-align:center;margin:4px 0 0}
+.info dd+dt{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+:root[data-style="race"] .info dt{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:.4px}
+.info dl.more dd{text-align:left}   /* the More facts are full paragraphs: easier to read left-aligned */

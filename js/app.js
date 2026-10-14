@@ -790,6 +790,22 @@ function hubLiveHtml(){
 }
 function playHubLive(){ hubLive.want=true; hubLive.playing=true; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }
 function stopHubLive(){ hubLive.want=false; hubLive.playing=false; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }
+/* Results get added to data/results.js minutes after a race ends. While the hub is showing "results will show here
+   once they're posted", re-fetch that one file (straight from the network, at most once a minute) and swap the
+   entries in place -- no app update or reload needed. Offline or failing fetches are ignored. */
+let resultsAt=0;
+async function refreshResults(){
+  if(Date.now()-resultsAt<60000||typeof RESULTS==="undefined") return;
+  resultsAt=Date.now();
+  try{
+    const r=await fetch("data/results.js?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok) return;
+    const fresh=new Function(await r.text()+";return RESULTS;")();
+    if(!Array.isArray(fresh)||JSON.stringify(fresh)===JSON.stringify(RESULTS)) return;
+    RESULTS.length=0; fresh.forEach(x=>RESULTS.push(x));
+    if(cur&&hubMode) renderHub();
+  }catch(e){}
+}
 function renderHub(){
   if(!hubMode) return;
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
@@ -866,15 +882,17 @@ function renderHub(){
   /* uses every session ever listed for this track, not sessionsResolved() -- the instant the weekend's
      last session ends, focusAt(cur) flips to the track's NEXT event (possibly months away), which would
      make sessionsResolved() (and its date) empty right at the exact moment this card matters most. */
-  const doneRaces=sessionsOf(cur).filter(s=>kindOf(s.n)==="race"&&s.end<=now&&now-s.end<=6*3600000).sort((a,b)=>b.end-a.end);
-  if(doneRaces.length){
-    const jr=doneRaces[0], sr=seriesFor(jr.n);
-    if(sr){
-      const evt=(cur.events||[]).find(e=>jr.d>=e.d&&jr.d<=eventEnd(e));
-      const res=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===evt.d&&r.s===sr.id).pop():null;
-      resultsHtml=`<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${esc(sr.name)}</div>${res?res.groups.map(g=>resultGroupHtml(g,5)).join(""):`<div class="hubSessionSub">The race just ended -- results will show here once they're posted.</div>`}</div>`;
-    }
-  }
+  const doneAll=sessionsOf(cur).filter(s=>kindOf(s.n)==="race"&&s.end<=now&&now-s.end<=6*3600000).sort((a,b)=>b.end-a.end);
+  const seenSr={}, doneRaces=doneAll.filter(s=>{ const r=seriesFor(s.n); if(!r||seenSr[r.id]) return false; seenSr[r.id]=1; return true; });
+  let waitingRes=false;
+  resultsHtml=doneRaces.map(jr=>{
+    const sr=seriesFor(jr.n);
+    const evt=(cur.events||[]).find(e=>jr.d>=e.d&&jr.d<=eventEnd(e));
+    const res=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===evt.d&&r.s===sr.id).pop():null;
+    if(!res) waitingRes=true;
+    return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${esc(sr.name)}</div>${res?res.groups.map(g=>resultGroupHtml(g,5)).join(""):`<div class="hubSessionSub">The race just ended -- results will show here once they're posted.</div>`}</div>`;
+  }).join("");
+  if(waitingRes) refreshResults();
 
   /* "watch live": only for a RACE of a series confirmed to stream its own races free on YouTube (data/series.js `yt`).
      The player lives in its own element above this card list (#hubLive) because the list below is rebuilt every

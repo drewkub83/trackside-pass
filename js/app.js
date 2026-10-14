@@ -755,7 +755,6 @@ function hubBack(){ if(!hubReturn||hubMode) return false; const sc=document.quer
 function endDirections(){ clearRoute(); }
 function closeSheetBtn(){ closeSheet(); }
 function exitHub(){ hubLive.want=false; if(hubLive.playing) stopHubLive(); hubMode=false; hubDismissed=true; hubTabs(); document.getElementById("pMap").classList.remove("hub-mode"); document.getElementById("hubView").hidden=true; }
-function hubGoView(i){ leaveHub(); selectPoi(i); startDirections(); }
 /* Inline live stream in the Race Day hub. State survives the hub's 30 s re-render: the iframe is only touched when
    the channel changes. Starting it needs a tap (no data used on a weak signal); once started it follows the series
    from one race to the next until you stop it or leave the hub. */
@@ -833,11 +832,15 @@ function renderHub(){
   }
 
   const spot=getSpot();
+  const hasKind=k=>cur.pois.some(p=>p.k===k&&!p.del);
+  const tile=(on,svg,label)=>`<button onclick="${on}"><svg viewBox="0 0 24 24">${svg}</svg>${label}</button>`;
   const actionsHtml=`<div class="hubActions">
     <button onclick="leaveHub();toggleMode('rest')"><svg viewBox="0 0 24 24" class="wc"><circle cx="7" cy="4.5" r="2"/><path d="M4.5 8h5v6H8.4v6H5.6v-6H4.5z"/><circle cx="17" cy="4.5" r="2"/><path d="M15 8h4l2 6h-1.7l.3 6h-5.2l.3-6H13z"/><path d="M12 3v18" stroke-width="1"/></svg>Restrooms</button>
-    <button onclick="leaveHub();toggleMode('food')"><svg viewBox="0 0 24 24"><path d="M4 11h16M5 11a7 7 0 0 1 14 0M3 15h18M6 15v3h12v-3"/></svg>Food</button>
-    ${spot?`<button onclick="leaveHub();routeToSpot()"><svg viewBox="0 0 24 24"><path d="M6 21V4M6 5h11l-2.6 4 2.6 4H6"/></svg>My spot</button>`:""}
-    <button onclick="leaveHub()"><svg viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>Full map</button>
+    ${tile("leaveHub();toggleMode('food')",'<path d="M4 11h16M5 11a7 7 0 0 1 14 0M3 15h18M6 15v3h12v-3"/>',"Food")}
+    ${hasKind("merch")?tile("leaveHub();toggleMode('merch')",'<path d="M8.5 3L3 6l2 4.5 2.5-1V21h9V9.5l2.5 1L21 6l-5.5-3q-1.5 2-3.5 2T8.5 3z"/>',"Merch"):""}
+    ${hasKind("view")?tile("leaveHub();toggleMode('view')",'<path d="M2 12c3.2-6 16.8-6 20 0-3.2 6-16.8 6-20 0z"/><circle cx="12" cy="12" r="3"/>',"Best views"):""}
+    ${tile(spot?"leaveHub();routeToSpot()":"leaveHub();saveSpot()",'<path d="M6 21V4M6 5h11l-2.6 4 2.6 4H6"/>',spot?"My spot":"Save my spot")}
+    ${tile("leaveHub()",'<path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/>',"Full map")}
   </div>`;
 
   /* "what to watch" follows the series on track (or next on track): when MX-5 Cup takes the track, its storylines are what shows.
@@ -905,10 +908,7 @@ function renderHub(){
   else { const fo=focusAt(cur); const hit=(fo?fo.group:[]).map(e=>TIMING_LINKS.find(x=>x.match.test(e.s||""))).find(Boolean); if(hit){ timingUrl=hit.url; timingName=hit.name; } }
   const liveTimingHtml=timingUrl?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingUrl}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingName)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
 
-  const ov=layoutOverrides(), views=cur.pois.map(p=>applyOv(p,ov[pid(p)])).map((p,i)=>({p,i})).filter(c=>c.p.k==="view"&&!c.p.del);
-  const viewsHtml=views.length?`<div class="hubCard"><h4>Best views</h4><div class="hubViewList">${views.map(c=>`<button onclick="hubGoView(${c.i})">${esc(c.p.n)}</button>`).join("")}</div></div>`:"";
-
-  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+actionsHtml+watchHtml+standingsHtml+viewsHtml+liveStreamHtml+liveTimingHtml;
+  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+liveStreamHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */
@@ -1070,10 +1070,10 @@ function toggleParking(){
 /* focus modes: Restrooms and Camping work like Parking: only the relevant badges show */
 let mode=null, modeAt=0;
 /* modes that just filter the map to one kind and highlight the closest one, no popup card */
-const QUIET_MODES=["rest","food"];
+const QUIET_MODES=["rest","food","merch"];
 function setMode(m){
   clearNear(); mode=m; const w=document.getElementById("mapWrap"); if(!w) return;
-  w.classList.toggle("m-rest",m==="rest"); w.classList.toggle("m-camp",m==="camp"); w.classList.toggle("m-food",m==="food");
+  w.classList.toggle("m-rest",m==="rest"); w.classList.toggle("m-camp",m==="camp"); w.classList.toggle("m-food",m==="food"); w.classList.toggle("m-merch",m==="merch"); w.classList.toggle("m-view",m==="view");
   document.getElementById("restBtn").classList.toggle("on",m==="rest");
   document.getElementById("foodBtn").classList.toggle("on",m==="food");
 }
@@ -1094,11 +1094,12 @@ function refreshMode(show){
   const best=items.length&&items[0].m!==null?items[0]:null;
   if(quiet&&best){ const el=document.querySelector(`.poi[data-i="${best.i}"]`); if(el){ el.classList.add("near"); const lab=el.querySelector(".plabel"); lab.dataset.orig=lab.textContent; lab.textContent+=` · ${mins(best.m)} min`; } }
   const noWhere=!o&&(watchId!==null?"Location is on, but you're not at the track. Save your spot to see walk times.":"Turn on location or save your spot to see walk times.");
-  const modeLabel={rest:"Restrooms",food:"Concessions",camp:"Camping"}[mode];
+  const modeLabel={rest:"Restrooms",food:"Concessions",merch:"Merchandise",view:"Best views",camp:"Camping"}[mode];
   document.getElementById("modeDot").style.setProperty("--c",KINDS[kind].c);
   document.getElementById("modeTitle").textContent=modeLabel;
   document.getElementById("modeNote").textContent=quiet
     ? (best?`Closest: ${best.p.n}, ${mins(best.m)} min walk (${walkLabel(best.m)}) from ${o.l}.`:(noWhere||"No walking route found from here."))
+    : mode==="view" ? `Good places to watch from. Tap one for details and directions.${o?"":" "+noWhere}`
     : `Camp areas and restrooms.${showersAvailable()?" The blue shower icon marks restrooms with showers.":""}${o?"":" "+noWhere}`;
   const btn=document.getElementById("modeBtn"), go=document.getElementById("modeGo");
   if(quiet&&best){ go.hidden=false; btn.textContent="Directions to closest"; btn.onclick=()=>{ selectPoi(best.i); startDirections(); }; }

@@ -10,19 +10,19 @@ function ppTracks(){ const o=anyOrder().map(x=>x.t); return o.concat(TRACKS.filt
 function trackToday(t){ return new Date().toLocaleDateString("en-CA",{timeZone:t.tz}); }
 function activeEvent(t){ const today=trackToday(t); return t.events.find(e=>!/test/i.test(e.s||"")&&e.d<=today&&today<=eventEnd(e))||null; }
 /* an IMSA Endurance Cup round: the WeatherTech Championship races of six hours or more (Rolex 24, Sebring 12, the Glen 6, Road America 6, Petit Le Mans 10) */
-const ppIsEndu=e=>{ const m=/IMSA WeatherTech, (\d+) hours/.exec(e.s||""); return !!m&&+m[1]>=6; };
+const ppIsEndu=(e,min)=>{ const m=/IMSA WeatherTech, (\d+) hours/.exec(e.s||""); return !!m&&+m[1]>=(min||6); };
 function ppStats(p){
   const ids=new Set(TRACKS.map(t=>t.id)), by={}; p.stamps.forEach(s=>{ if(ids.has(s.t)) (by[s.t]=by[s.t]||[]).push(s); });
   const visits={}; let full=false;
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id), evs=new Set(by[id].map(s=>s.ev)); visits[id]=evs.size;
     evs.forEach(ev=>{ const e=t.events.find(x=>x.d===ev), n=e?(e.t||1):1; if(n>=2&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=n) full=true; }); });
   /* which series raced on the days you checked in, and how far you have travelled */
-  const series=new Set(); let bill=false, marathon=false, endu=false; const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
+  const series=new Set(); let bill=false, marathon=false, endu=false; const endLong=new Set(); const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||""));
-    by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; });
+    by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); });
       ids.forEach(i=>series.add(i)); if(ids.size>=2) bill=true; });
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=e.t) marathon=true; }); });
-  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,endu,zones:zones.size,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
+  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,endu,endLong,zones:zones.size,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
 const PP_GLOBAL=[
   {id:"first",name:"First Stamp",desc:"Check in at your first race weekend.",icon:"star",tier:"x",test:s=>s.tracks>=1},
@@ -31,8 +31,8 @@ const PP_GLOBAL=[
   {id:"weekend",name:"Full Weekend",desc:"Check in every day of one race weekend.",icon:"cal",tier:"s",test:s=>s.full},
   {id:"street",name:"Street Fighter",desc:"Visit two street circuits: Long Beach, Detroit, St. Petersburg or Arlington.",icon:"wall",tier:"s",test:s=>["long-beach","detroit","st-petersburg","arlington"].filter(i=>s.visits[i]>0).length>=2},
   {id:"jungle",name:"Concrete Jungle",desc:"Visit all four street circuits: Long Beach, Detroit, St. Petersburg and Arlington.",icon:"city",tier:"g",test:s=>["long-beach","detroit","st-petersburg","arlington"].every(i=>s.visits[i]>0)},
-  {id:"endurance",name:"Endurance Triple",desc:"Visit Daytona, Sebring and Road Atlanta.",icon:"moon",tier:"g",test:s=>["daytona","sebring","road-atlanta"].every(i=>s.visits[i]>0)},
-  {id:"endcup",name:"Endurance Cup",desc:"Check in at an IMSA Endurance Cup weekend: the Rolex 24, Sebring 12 Hours, Six Hours of the Glen, Road America six-hour or Petit Le Mans.",icon:"moon",tier:"s",sty:"endurance",test:s=>s.endu},
+  {id:"endurance",name:"Endurance Triple",desc:"Check in at the Rolex 24, the Sebring 12 Hours and Petit Le Mans: IMSA's three races of 10 hours or more.",icon:"moon",tier:"g",sty:"triple",test:s=>["daytona","sebring","road-atlanta"].every(i=>s.endLong.has(i))},
+  {id:"endcup",name:"Endurance Cup",desc:"Check in at an IMSA Endurance Cup weekend: the Rolex 24, Sebring 12 Hours, Six Hours of the Glen, Road America six-hour or Petit Le Mans.",icon:"moon",tier:"s",sty:"endcup",test:s=>s.endu},
   {id:"tour",name:"IMSA Grand Tour",desc:"Visit every venue on the IMSA schedule.",icon:"cup",tier:"g",test:s=>s.imsaVisited>=s.imsaTotal},
   /* by series */
   {id:"sportscar",name:"Sports Car Fan",desc:"Check in at an IMSA WeatherTech weekend.",icon:"car",tier:"x",sty:"imsa",test:s=>s.series.has("imsa")},
@@ -153,7 +153,8 @@ const PP_SERIES={
   indycar:{champ:"indycar",ink:"#17402F",acc:"#C23B22",top:"INDYCAR",bot:"OPEN WHEEL",size:10.5,space:2.2},
   gtwca:{champ:"gtwca",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD",bot:"GT FAN",size:10,space:2},
   nascar:{match:/NASCAR/i,ink:"#6E1822",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR",size:11.5,space:3},
-  endurance:{endu:true,route:true,band:true,ink:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
+  endcup:{endu:6,route:true,band:true,ink:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
+  triple:{endu:10,route:true,band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
   f1:{match:/Formula 1/i,ink:"#1D1D22",acc:"#D0202A",top:"FORMULA 1",bot:"GRAND PRIX",size:9.5,space:1.6}
 };
 const PP_LAND=[[[-122.8,49],[-95.2,49],[-95.2,49.4],[-94.8,49.4],[-94.6,48.8],[-94.3,48.7],[-92.6,48.5],[-91.6,48.1],[-90.8,48.3],[-89.3,48.0],[-88.4,48.3],[-84.9,46.9],[-84.8,46.6],[-84.5,46.5],[-84.6,46.4],[-84.1,46.5],[-83.9,46.1],[-83.5,46.0],[-83.6,45.8],[-82.6,45.3],[-82.1,43.6],[-83.1,42.1],[-83.0,41.8],[-82.7,41.7],[-78.9,42.9],[-79.2,43.5],[-78.7,43.6],[-76.8,43.6],[-76.5,44.0],[-74.9,45.0],[-71.5,45.0],[-71.4,45.3],[-70.7,45.5],[-70.0,46.7],[-69.2,47.4],[-68.9,47.2],[-68.2,47.4],[-67.8,47.1],[-67.8,45.7],[-67.0,44.8],[-70.1,43.7],[-70.8,42.9],[-70.8,42.3],[-70.5,41.8],[-70.1,41.8],[-70.2,42.1],[-69.9,41.9],[-70.0,41.6],[-72.9,41.2],[-73.7,40.9],[-72.2,41.1],[-71.9,40.9],[-73.3,40.6],[-74.0,40.6],[-74.0,40.8],[-74.3,40.5],[-74.0,40.4],[-74.2,39.7],[-74.9,38.9],[-75.0,39.2],[-75.5,39.5],[-75.3,39.0],[-75.1,38.8],[-75.1,38.4],[-75.9,37.2],[-75.7,37.9],[-76.2,38.3],[-76.3,39.1],[-76.5,38.7],[-76.3,38.1],[-77.0,38.2],[-76.3,37.9],[-76.3,37.0],[-76.0,36.9],[-75.7,35.6],[-76.4,34.8],[-77.4,34.5],[-78.1,33.9],[-78.6,33.9],[-79.1,33.5],[-79.2,33.2],[-80.9,32.0],[-81.3,31.4],[-81.5,30.7],[-81.3,30.0],[-80.5,28.5],[-80.5,28.0],[-80.1,26.9],[-80.1,25.8],[-80.4,25.2],[-80.7,25.1],[-81.2,25.2],[-81.3,25.6],[-81.7,25.9],[-82.9,27.9],[-82.7,28.6],[-82.9,29.1],[-83.7,29.9],[-84.1,30.1],[-85.1,29.6],[-85.8,30.2],[-86.4,30.4],[-87.5,30.3],[-88.4,30.4],[-89.6,30.2],[-89.4,29.9],[-89.4,29.5],[-89.2,29.3],[-89.4,29.2],[-89.8,29.3],[-90.2,29.1],[-90.9,29.1],[-91.6,29.7],[-92.5,29.6],[-93.2,29.8],[-94.7,29.5],[-95.6,28.7],[-96.6,28.3],[-97.1,27.8],[-97.4,27.4],[-97.4,26.7],[-97.1,25.9],[-97.5,25.8],[-99.0,26.4],[-99.5,27.5],[-100.1,28.1],[-101.0,29.4],[-101.7,29.8],[-102.5,29.8],[-103.1,29.0],[-103.9,29.3],[-104.5,29.6],[-105.0,30.6],[-106.5,31.8],[-108.2,31.8],[-108.2,31.3],[-111.0,31.3],[-114.8,32.5],[-114.7,32.7],[-117.1,32.5],[-117.3,33.0],[-117.9,33.6],[-118.4,33.7],[-118.5,34.0],[-119.1,34.1],[-119.4,34.3],[-120.4,34.4],[-120.6,34.6],[-120.7,35.2],[-121.7,36.2],[-122.5,37.6],[-122.5,37.8],[-123.7,39.0],[-123.9,39.8],[-124.4,40.3],[-124.2,41.1],[-124.2,42.0],[-124.5,42.8],[-124.1,43.7],[-123.9,45.5],[-124.1,46.9],[-124.7,48.2],[-124.6,48.4],[-123.1,48.0],[-122.6,47.1],[-122.3,47.4]],[[-122.8,49],[-125.6,50.4],[-127.4,50.8],[-128.0,51.7],[-127.9,52],[-81.2,52],[-79.9,51.2],[-79.1,51.5],[-78.9,52],[-56.0,52],[-57.1,51.4],[-58.8,51.1],[-60.0,50.2],[-61.7,50.1],[-63.9,50.3],[-66.4,50.2],[-67.2,49.5],[-68.5,49.1],[-71.1,46.8],[-70.3,47.0],[-68.7,48.3],[-66.6,49.1],[-65.1,49.2],[-64.2,48.7],[-65.1,48.1],[-64.5,46.2],[-63.2,45.7],[-61.5,45.9],[-60.5,47.0],[-60.4,46.3],[-59.8,45.9],[-61.0,45.3],[-64.2,44.3],[-65.4,43.5],[-66.1,43.6],[-66.2,44.5],[-64.4,45.3],[-67.1,45.1],[-67.8,45.7],[-67.8,47.1],[-68.2,47.4],[-68.9,47.2],[-69.2,47.4],[-70.0,46.7],[-70.7,45.5],[-71.4,45.3],[-71.5,45.0],[-74.9,45.0],[-76.5,44.0],[-76.8,43.6],[-78.7,43.6],[-79.2,43.5],[-78.9,42.9],[-82.7,41.7],[-83.0,41.8],[-83.1,42.1],[-82.1,43.6],[-82.6,45.3],[-83.6,45.8],[-83.5,46.0],[-83.9,46.1],[-84.1,46.5],[-84.6,46.4],[-84.5,46.5],[-84.8,46.6],[-84.9,46.9],[-88.4,48.3],[-89.3,48.0],[-90.8,48.3],[-91.6,48.1],[-92.6,48.5],[-94.3,48.7],[-94.6,48.8],[-94.8,49.4],[-95.2,49.4],[-95.2,49]]];
@@ -170,7 +171,7 @@ function ppMapProj(){      /* fits the lower 48 into a box 98 x 57, centred on (
 }
 /* the series' mapped venues, one dot per place: layouts that share a site (Indianapolis road course and oval) merge */
 function ppVenues(sp){
-  const c=sp.champ&&champ(sp.champ), hit=e=>c?inChamp(c,e):sp.endu?ppIsEndu(e):sp.match&&(sp.match.test(e.s||"")||(e.support||[]).some(x=>sp.match.test(x))), out=[];
+  const c=sp.champ&&champ(sp.champ), hit=e=>c?inChamp(c,e):sp.endu?ppIsEndu(e,sp.endu):sp.match&&(sp.match.test(e.s||"")||(e.support||[]).some(x=>sp.match.test(x))), out=[];
   TRACKS.filter(t=>t.events.some(hit)).forEach(t=>{ const lat=(t.geo.n+t.geo.s)/2, lon=(t.geo.w+t.geo.e)/2, key=t.events.filter(hit).map(e=>e.d.slice(5)).sort()[0], g=out.find(v=>Math.abs(v.lat-lat)<.05&&Math.abs(v.lon-lon)<.05); if(g) g.ids.push(t.id); else out.push({ids:[t.id],lat,lon,key}); });
   if(sp.route) out.sort((a,b)=>a.key.localeCompare(b.key));      /* calendar order, for the dotted route between venues */
   return out;
@@ -190,9 +191,9 @@ function seriesStamp(d,o){
   if(locked) return `<svg class="stamp locked" viewBox="0 0 160 160" aria-hidden="true"><defs>${defs}</defs><circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="2.4" stroke-dasharray="5 5"/><g opacity=".85">${map}</g></svg>`;
   return `<svg class="stamp" viewBox="0 0 160 160" aria-hidden="true"><defs>${defs}${rough?`<filter id="st${u}f" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="${(u%37)+2}" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -4 3.75" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in" result="c"/><feDisplacementMap in="c" in2="n" scale="1" xChannelSelector="R" yChannelSelector="G"/></filter>`:""}</defs>
     <g${rough?` filter="url(#st${u}f)"`:""} opacity=".94">
-      ${sp.band?`<circle cx="80" cy="80" r="70" fill="none" stroke="${ink}" stroke-width="12"/><circle cx="80" cy="80" r="78" fill="none" stroke="${acc}" stroke-width="1.5"/><circle cx="80" cy="80" r="63" fill="none" stroke="${ink}" stroke-width="1"/>
-      <text font-size="${sp.size}" font-weight="800" letter-spacing="${sp.space}" fill="#F3EAD2"><textPath href="#st${u}bt" startOffset="50%" text-anchor="middle">${top}</textPath></text>
-      <text font-size="${sp.size}" font-weight="800" letter-spacing="${sp.space}" fill="#F3EAD2"><textPath href="#st${u}bb" startOffset="50%" text-anchor="middle">${bot}</textPath></text>`
+      ${sp.band?`<circle cx="80" cy="80" r="70" fill="none" stroke="${sp.bandInk||ink}" stroke-width="12"/><circle cx="80" cy="80" r="78" fill="none" stroke="${sp.bandInk?ink:acc}" stroke-width="1.5"/><circle cx="80" cy="80" r="63" fill="none" stroke="${ink}" stroke-width="1"/>
+      <text font-size="${sp.size}" font-weight="800" letter-spacing="${sp.space}" fill="${sp.bandText||'#F3EAD2'}"><textPath href="#st${u}bt" startOffset="50%" text-anchor="middle">${top}</textPath></text>
+      <text font-size="${sp.size}" font-weight="800" letter-spacing="${sp.space}" fill="${sp.bandText||'#F3EAD2'}"><textPath href="#st${u}bb" startOffset="50%" text-anchor="middle">${bot}</textPath></text>`
       :`      <circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="3.4"/>
       <circle cx="80" cy="80" r="71.5" fill="none" stroke="${acc}" stroke-width="1.6"/>
       <path d="${ticks}" fill="none" stroke="${ink}" stroke-width=".9"/>
@@ -293,7 +294,7 @@ const PP_LISTS={street:[["long-beach","detroit","st-petersburg","arlington"],2],
   sunshine:[["daytona","sebring","st-petersburg"],3],lonestar:[["cota","arlington"],2],lakes:[["road-america","mid-ohio","detroit"],3],golden:[["long-beach","laguna-seca","sonoma"],3],peach:[["road-atlanta","barber"],2]};
 const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
 function ppProg(d,st){
-  const l=PP_LISTS[d.id]; if(l) return [Math.min(l[1],l[0].filter(i=>st.visits[i]>0).length),l[1]];
+  const l=PP_LISTS[d.id]; if(l) return [Math.min(l[1],l[0].filter(i=>d.id==="endurance"?st.endLong.has(i):st.visits[i]>0).length),l[1]];
   const c=PP_COUNTS[d.id]; if(c){ const need=typeof c[1]==="function"?c[1](st):c[1]; return [Math.min(need,c[0](st)),need]; }
   return null;
 }

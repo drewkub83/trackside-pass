@@ -21,6 +21,6 @@ TRACKS.push({
   "tz":"America/New_York",
   "eventName":"Mobil 1 Twelve Hours of Sebring",
   "nturns":17,
-  "lapRecord":{"time":"1:45.836","who":"Pipo Derani","car":"Cadillac V-Series.R","year":2023,"note":"IMSA GTP qualifying record, Mobil 1 Twelve Hours of Sebring — still stood through the 2026 race"},
+  "lapRecord":[{"series":"IMSA GTP","time":"1:45.836","who":"Pipo Derani","car":"Cadillac V-Series.R","year":2023,"note":"qualifying"},{"series":"IMSA LMP2","time":"1:48.311","who":"Giedo van der Garde","car":"ORECA LMP2 07","year":2022,"note":"as listed by IMSA"},{"series":"IMSA GTD PRO","time":"1:58.480","who":"Jack Hawksworth","car":"Lexus RC F GT3","year":2026,"note":"qualifying"},{"series":"IMSA GTD","time":"1:58.710","who":"Daniel Serra","car":"Ferrari 488 GT3","year":2018,"note":"qualifying"}],
   "turns":[[128,130,"1"],[125,-83,"2"],[41,-107,"3"],[-298,-6,"7"],[-239,-88,"8"],[-35,-224,"10"],[44,-182,"11"],[170,-203,"12"],[173,-9,"13"],[258,130,"14"],[225,230,"15"],[-217,235,"16"],[-268,174,"17"]]
 });

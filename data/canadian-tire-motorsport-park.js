@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"2.46 mi (3.96 km)",
   "opened":1961,
   "blurb":"A permanent 2.459-mile, 10-turn road course in the countryside north of Bowmanville, Ontario, opened in 1961 and run clockwise. It is IMSA's only stop in Canada. The long Mario Andretti Straight leads into the Esses, and Moss Corner and Clayton Corner are the other big landmarks.",
+  "lapRecord":[{"series":"IMSA LMP2","time":"1:07.904","who":"Jeremy Clarke","car":"ORECA LMP2 07","year":2026,"note":"qualifying"},{"series":"IMSA GTD PRO","time":"1:14.373","who":"Alexander Sims","car":"Corvette Z06 GT3.R","year":2024,"note":"qualifying"},{"series":"IMSA GTD","time":"1:15.060","who":"Frankie Montecalvo","car":"Lexus RC F GT3","year":2024,"note":"qualifying"}],
   "facts":{"Signature sections":"Mario Andretti Straight, the Esses, Moss Corner, Clayton Corner","Camping":"Trackside camping, including reserved sites","Country":"Canada. Distances on site are usually posted in kilometres.","Venue data":"Circuit, roads, paddocks and lots from OpenStreetMap; fan facilities and turn numbers from the track's current official map","Where to watch (IMSA fan guide)":"The start/finish straight for pit stops, Clayton Corner (downhill double apex), Quebec Corner, Moss Corner (slowest corner, great for passing), the Mario Andretti Straightaway at Turn 7 and Turn 9 before the finish. Photo spots include the Esses between Turns 8 and 10 and the hill outside Turn 1."},
   "vb":[0,0,800,727],
   "geo":{"n":44.056696,"s":44.040797,"w":-78.691768,"e":-78.667532},

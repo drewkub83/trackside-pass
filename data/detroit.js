@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"1.65 mi",
   "opened":2023,
   "blurb":"A 1.645-mile, nine-turn street circuit through downtown Detroit beside the Renaissance Center and the Detroit River. The cars run flat out down Jefferson Avenue, hairpin at Turn 3, then dive down Bates Street and along the riverfront before the pit lane on Franklin Street. This is the 2026 layout and it may change for 2027.",
+  "lapRecord":[{"series":"IMSA GTP","time":"1:05.313","who":"Earl Bamber","car":"Cadillac V-Series.R","year":2026,"note":"qualifying"},{"series":"IMSA GTD PRO","time":"1:09.092","who":"Antonio García","car":"Corvette Z06 GT3.R","year":2024,"note":"qualifying"}],
   "facts":{"Signature sections":"Jefferson Avenue front straight, the Turn 3 hairpin, the Atwater Street riverfront run","Race weekend":"Rebuilt on city streets every year","Best seat for value":"Rooftop and plaza viewing platforms along Jefferson Avenue","Crossings":"Pedestrian bridges over Jefferson Avenue, Bates Street and Rivard Street","Where to watch (IMSA fan guide)":"Viewing platforms along Jefferson Avenue and the Riverwalk near Winner's Circle; the pit lane (the only double-sided one on the IMSA schedule); Grandstands 1 and 9 over the pit lane and finish line (free on Friday only); and the Hairpin at Turn 3 for passes under braking."},
   "events":[{"d":"2027-06-04","e":"Chevrolet Detroit Grand Prix","s":"IMSA WeatherTech, GTP and GTD PRO","t":2},{"d":"2027-06-04","e":"Chevrolet Detroit Grand Prix presented by Lear","s":"NTT INDYCAR SERIES","t":3}],
   "tz":"America/Detroit",

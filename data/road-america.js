@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"4.048 mi",
   "opened":1955,
   "blurb":"America's national park of speed: four miles of rolling Wisconsin countryside, 14 turns, and a paddock full of bratwurst. Nearly every major series races here.",
+  "lapRecord":[{"series":"IMSA GTP","time":"1:47.730","who":"Pipo Derani","car":"Cadillac V-Series.R","year":2023,"note":"qualifying"},{"series":"IMSA GTD PRO","time":"2:02.198","who":"Nicky Catsburg","car":"Corvette Z06 GT3.R","year":2024,"note":"qualifying"},{"series":"IMSA GTD","time":"2:03.291","who":"Madison Snow","car":"BMW M4 GT3","year":2023,"note":"qualifying"}],
   "facts":{"Signature sections":"The Kink, Canada Corner, Turn 5","Lap record":"1:39.8 (IndyCar)","Best seat for value":"Turn 5 hillside or the Carousel","Venue data":"Circuit, roads, bridges, tunnels, grandstands, restrooms, food and lots from OpenStreetMap; additional fan facilities from the track's current official map; camping approximate","Where to watch (IMSA fan guide)":"Turn 1 (with a large jumbo screen), Turn 3 downhill, Moraine Sweep (the fastest part of the track), Turn 5 for hard braking, the Carousel viewing trail around Turns 9 and 10, and Fireman's Hill, the highest point, overlooking Turns 13 and 14."},
   "vb":[-340,-411,786,792],
   "geo":{"n":43.808935,"s":43.789668,"w":-88.007328,"e":-87.981014},

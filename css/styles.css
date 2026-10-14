@@ -792,3 +792,20 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .info dd+dt{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 :root[data-style="race"] .info dt{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:.4px}
 .info dl.more dd{text-align:left}   /* the More facts are full paragraphs: easier to read left-aligned */
+
+/* before the weekend: starred sessions, calendar, season cards */
+.sess{grid-template-columns:82px 1fr 36px}.sess.tap{grid-template-columns:82px 1fr 26px 36px}
+.sstar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink-2)}.sstar svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linejoin:round}
+.sstar.on{color:var(--accent)}.sstar.on svg{fill:var(--accent)}
+.schedTools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.schedTools .pill{height:38px;font-size:14px;font-weight:500}.schedTools .pill svg{width:18px;height:18px}
+.hubQuick{display:flex;gap:10px;margin:-4px 0 14px}.hubQuick button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:46px;border-radius:16px;background:var(--card);box-shadow:var(--shadow);font-size:14px;font-weight:600;color:var(--ink)}
+.hubQuick button svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.hubQuick button.on{background:var(--accent);color:#fff}.hubQuick button.on svg{stroke:#fff}
+.hubStarList{display:grid;gap:6px;margin-top:8px}.hubStarList div{display:flex;justify-content:space-between;gap:12px;font-size:14px}.hubStarList b{font-weight:600;white-space:nowrap}.hubStarList span{color:var(--ink-2);text-align:right}
+.scards{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin:0 14px 8px}
+.scard{display:block;min-width:0;text-align:left;padding:14px 16px;border-radius:20px;background:var(--card);box-shadow:var(--shadow);border-left:6px solid var(--sc,var(--accent));width:100%}
+.scard .scTop{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.scard .scTop b{font-size:16px;font-weight:700}.scard .scTop span{font-size:13px;font-weight:600;color:var(--accent);white-space:nowrap}
+.scard .scNext{margin-top:2px;font-size:14px;color:var(--ink)}
+.scard .scRow{margin-top:5px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.scard .scRow i{font-style:normal;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:10.5px;margin-right:7px;color:var(--ink)}
+:root[data-style="race"] .scard{background:var(--card);box-shadow:none;border:1px solid var(--line);border-left:6px solid var(--sc,var(--s-other))}
+:root[data-style="race"] .scard[data-s="gtwca"]{--sc:var(--s-gtwca)}:root[data-style="race"] .scard[data-s="gtwce"]{--sc:var(--s-gtwce)}:root[data-style="race"] .scard[data-s="imsa"]{--sc:var(--s-imsa)}:root[data-style="race"] .scard[data-s="indycar"]{--sc:var(--s-indycar)}
+:root[data-style="race"] .scard .scTop b{font-family:var(--font-d);font-weight:800;text-transform:uppercase;font-size:20px;letter-spacing:.3px}

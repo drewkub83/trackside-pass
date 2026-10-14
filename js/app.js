@@ -68,6 +68,52 @@ function goingList(){ try{ return JSON.parse(localStorage.getItem(GO_KEY)||"[]")
 const goKey=(t,e)=>t.id+"|"+e.d+"|"+e.e;
 function isGoing(t,e){ return goingList().includes(goKey(t,e)); }
 function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>scheduleGoingReminders(on),0); }
+/* Starred sessions: tap the star on a session to get an alert 10 minutes before it (works anywhere, not just at the track,
+   because you picked that session yourself). The star list is on this phone; alerts are the iPhone app's own notifications. */
+const STAR_KEY="paddock:stars", STAR_ID_BASE=2000;
+const starKey=(t,s)=>`${t.id}|${s.d}|${s.s}|${s.n}`;
+function starList(){ try{ return JSON.parse(localStorage.getItem(STAR_KEY)||"[]"); }catch(e){ return []; } }
+function isStarred(t,s){ return starList().includes(starKey(t,s)); }
+function toggleStar(i){
+  const s=sessionsResolved()[i]; if(!s) return; const k=starKey(cur,s), on=!starList().includes(k);
+  let l=starList().filter(x=>x!==k); if(on) l.push(k); try{ localStorage.setItem(STAR_KEY,JSON.stringify(l.slice(-80))); }catch(e){}
+  renderSchedule(); if(hubMode) renderHub();
+  toast(on?(nativeNotifier()?"Starred. You'll get an alert 10 minutes before.":"Starred. It shows in your day on the hub."):"Removed from your sessions.");
+  scheduleStarAlerts(on);
+}
+async function scheduleStarAlerts(ask){
+  const LN=nativeNotifier(); if(!LN) return;
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=STAR_ID_BASE);
+  if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
+  const now=Date.now(), lead=SESSION_ALERT_LEAD_MIN*60000, out=[];
+  starList().forEach(k=>{ const [tid,d,st,...nm]=k.split("|"), t=TRACKS.find(x=>x.id===tid), n=nm.join("|"), s=t&&sessionsOf(t).find(x=>x.d===d&&x.s===st&&x.n===n);
+    if(s&&s.start.getTime()-lead>now) out.push({t,s}); });
+  if(!out.length) return;
+  let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
+  out.sort((a,b)=>a.s.start-b.s.start);
+  await LN.schedule({notifications:out.slice(0,40).map(({t,s},i)=>({id:STAR_ID_BASE+i,title:shortName(s.n),body:`${t.short} · starts in ${SESSION_ALERT_LEAD_MIN} minutes`,sound:"racecar.caf",schedule:{at:new Date(s.start.getTime()-lead)},extra:{track:t.id}}))});
+}
+/* Add to calendar: a .ics file with one event per session and a 10-minute alarm, shared with the phone's own Calendar app. */
+const icsDate=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+const icsEsc=x=>String(x).replace(/\\/g,"\\\\").replace(/;/g,"\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+const icsFold=l=>{ let o="",b=l; while(b.length>73){ o+=b.slice(0,73)+"\r\n "; b=b.slice(73); } return o+b; };
+function buildIcs(t,list,evName){
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Trackside Pass//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH"], stamp=icsDate(new Date());
+  list.forEach(s=>{ L.push("BEGIN:VEVENT",`UID:${starKey(t,s).replace(/[^A-Za-z0-9]/g,"")}@tracksidepass`,`DTSTAMP:${stamp}`,`DTSTART:${icsDate(s.start)}`,`DTEND:${icsDate(s.end)}`,`SUMMARY:${icsEsc(shortName(s.n))}`,`LOCATION:${icsEsc(t.name+", "+t.place)}`,`DESCRIPTION:${icsEsc(evName+". Times shown in your calendar's own time zone.")}`,"BEGIN:VALARM","TRIGGER:-PT10M","ACTION:DISPLAY",`DESCRIPTION:${icsEsc(shortName(s.n)+" starts in 10 minutes")}`,"END:VALARM","END:VEVENT"); });
+  L.push("END:VCALENDAR"); return L.map(icsFold).join("\r\n")+"\r\n";
+}
+async function deliverIcs(name,text){
+  try{ const file=new File([text],name,{type:"text/calendar"}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:name}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  const url=URL.createObjectURL(new Blob([text],{type:"text/calendar"})), a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000);
+  toast("Calendar file ready. Open it to add the sessions.");
+}
+function addToCalendar(scope){
+  const now=new Date(), all=sessionsResolved().filter(s=>s.end>now), list=scope==="mine"?all.filter(s=>isStarred(cur,s)):all;
+  if(!list.length){ toast(scope==="mine"?"Star a session first.":"No upcoming sessions to add."); return; }
+  const fo=focusAt(cur), ev=fo?[...new Set(fo.group.map(e=>e.e))].join(" · "):cur.eventName||cur.name;
+  deliverIcs(`${cur.id}-${list[0].d}.ics`,buildIcs(cur,list,ev));
+}
+function hubToggleGoing(){ const fo=focusAt(cur); if(!fo) return; const on=!isGoing(cur,fo.first); setGoing(cur,fo.first,on); renderHub(); renderHero(); toast(on?`You're going: ${cur.short}`:"Removed from your races"); }
 function nextGoing(){ const out=[]; TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(isGoing(t,e)&&!eventDone(t,e)) out.push({t,e}); })); return out.sort((a,b)=>a.e.d.localeCompare(b.e.d))[0]||null; }
 /* race week: a one-time celebration banner, the first time the app is opened during the week of a
    race you've marked "going" -- from 7 days before it starts through its last day. Shown once per
@@ -125,7 +171,20 @@ function renderHero(){
     <div class="num">${on?"Day "+day:n}<small>${on?`of ${e.t||1} day${(e.t||1)>1?"s":""}`:(n===1?"day to go":"days to go")}</small></div>
     <div class="name">${e.e}</div><div class="sub">${t.short} · ${fmtRange(e)}</div></button>`;
 }
-function renderHome(){ renderHero(); renderChampList(); if(curChamp) renderSeries(); }
+/* "Your series, next up": one card per followed series with the next race, the last result and the points leader.
+   This is what an off-week looks like -- there is always something coming and something to catch up on. */
+function renderSeason(){
+  const el=document.getElementById("season"); if(!el) return; const today=localToday();
+  const cards=orderedChamps().filter(followed).map(c=>{
+    const o=orderOf(c)[0], st=stopsOf(c)[0], pick=o&&(!st||o.e.d<=st.d)?{t:o.t.short,e:o.e}:st?{t:st.short,e:st}:null; if(!pick) return "";
+    const n=daysBetween(today,pick.e.d), when=pick.e.d<=today?"On now":n===1?"Tomorrow":`In ${n} days`;
+    const last=typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.s===c.guide).sort((a,b)=>b.d.localeCompare(a.d))[0]:null;
+    const g0=last&&last.groups[0], win0=g0?(g0.order?g0.order[0].replace(/^\d+\.\s*/,""):g0.winner):"", win=win0.includes(" — ")?win0.split(" — ").pop():win0;   /* drivers, not the car */
+    const std=standingsFor(c.guide), lead=std&&std.classes[0]&&std.classes[0].rows[0];
+    return `<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} · ${esc(fmtRange(pick.e))}</div>${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" · "+lead.pts+" pts":""}</div>`:""}</button>`; }).filter(Boolean).slice(0,4);
+  el.innerHTML=cards.length?`<div class="sect">Your series, next up</div><div class="scards">${cards.join("")}</div>`:"";
+}
+function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
 function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e.d,s&&s.d].filter(Boolean).sort()[0]||"9999-99-99"; }
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort
@@ -859,6 +918,8 @@ function renderHub(){
   if(fav&&cand.some(c=>{ const sr=seriesFor(c.n); return sr&&sr.id===fav; })) sid=fav;
   else for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
 
+  /* off-week: no live or upcoming session to follow, so fall back to the series of the next event for standings */
+  if(!sid){ const nx=CHAMPS.filter(c=>!c.optIn&&followed(c)).map(c=>({c,e:nextIn(c,cur)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)), pickS=nx.find(x=>standingsFor(x.c.guide||x.c.id))||nx[0]; if(pickS) sid=pickS.c.guide||pickS.c.id; }   /* the first series here that has standings to show */
   const wAll=watchNow();
   let watchHtml="";
   if(wAll.length){
@@ -912,7 +973,17 @@ function renderHub(){
   else { const fo=focusAt(cur); const hit=(fo?fo.group:[]).map(e=>TIMING_LINKS.find(x=>x.match.test(e.s||""))).find(Boolean); if(hit){ timingUrl=hit.url; timingName=hit.name; } }
   const liveTimingHtml=timingUrl?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingUrl}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingName)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
 
-  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+liveStreamHtml;
+  /* before the weekend: countdown actions, your starred sessions, and how it went here last time */
+  let quickHtml="", dayHtml="", lastHereHtml="";
+  { const fq=focusAt(cur), aw=fq?daysBetween(localToday(),fq.d):-1, upcoming=ss.filter(x=>x.end>now);
+    if(fq&&aw>0){ const going=isGoing(cur,fq.first);
+      quickHtml=`<div class="hubQuick"><button class="${going?"on":""}" aria-pressed="${going}" onclick="hubToggleGoing()"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>${going?"I'm going":"I'm going?"}</button>${upcoming.length?`<button onclick="addToCalendar('all')">${CAL_SVG}Add to calendar</button>`:""}</div>`; }
+    const mine=upcoming.filter(x=>isStarred(cur,x));
+    if(mine.length) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><h4>Your sessions</h4>${chev}</div><div class="hubStarList">${mine.slice(0,6).map(x=>`<div><b>${fmtWhen(x.start,cur.tz)}</b><span>${esc(shortName(x.n))}</span></div>`).join("")}</div><p class="asof hubAsof">${nativeNotifier()?"You'll get an alert 10 minutes before each one.":"Star more in the schedule."}</p></div>`;
+    else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions you care about in the schedule and get an alert before each.</div></div>${chev}</div></div>`;
+    if(!resultsHtml&&aw>0&&typeof RESULTS!=="undefined"){ const last=RESULTS.filter(r=>r.t===cur.id).sort((a,b)=>b.d.localeCompare(a.d))[0];
+      if(last) lastHereHtml=`<div class="hubCard"><h4>Last time here</h4><div class="hubSeries">${esc(last.event)}</div>${last.groups.slice(0,2).map(g=>resultGroupHtml(g,3)).join("")}</div>`; } }
+  body.innerHTML=sessionHtml+quickHtml+dayHtml+resultsHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */
@@ -922,11 +993,13 @@ function renderHub(){
     if(target) stripEl.scrollLeft=Math.max(0,target.offsetLeft-stripEl.offsetLeft);
   }
 }
+const CAL_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>';
 function renderSchedule(){
   tzNote();
   renderWatch();
   const sec=document.getElementById("schedSection"); const ss=sessionsResolved(), fo=focusAt(cur);
   if(!fo){ sec.hidden=true; return; }
+  document.getElementById("schedTools").innerHTML="";
   const names=[...new Set(fo.group.map(e=>e.e))].join(" · ");
   if(!ss.length){       /* the next weekend has no session times yet */
     const on=fo.d<=localToday(), when=fo.group.length>1?fmtRange({d:fo.d,t:daysBetween(fo.d,fo.end)+1}):fmtRange(fo.first);
@@ -943,7 +1016,10 @@ function renderSchedule(){
   document.getElementById("schedList").innerHTML=ss.map((s,i)=>({s,i})).filter(x=>x.s.d===schedDay).map(({s,i})=>{ const live=s.start<=now&&now<s.end, past=s.end<=now, sr=seriesFor(s.n);
     const chips=sr&&sr.cars.length>1?`<span class="chips">${sr.cars.map(chipHtml).join("")}</span>`:"";
     const inner=`<div class="st">${fmtTime(s.start,cur.tz)}${s.est?"":`<small>to ${fmtTime(s.end,cur.tz)}</small>`}</div><div class="sn">${s.n}${live?"<em>On track now</em>":(!past&&s.start-now<36e5?`<em>${relTime(s.start-now)}</em>`:"")}${chips}</div>${sr?`<span class="ib" aria-hidden="true">i</span>`:""}`;
-    return sr?`<button class="sess tap ${live?"live":past?"past":""}" onclick="showInfo(${i})" aria-label="About ${esc(s.n)}">${inner}</button>`:`<div class="sess ${live?"live":past?"past":""}">${inner}</div>`; }).join("");
+    const on=isStarred(cur,s), star=past||live?"":`<button class="sstar${on?" on":""}" aria-pressed="${on}" aria-label="${on?"Remove from my sessions":"Alert me before this session"}" onclick="event.stopPropagation();toggleStar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></button>`;
+    return sr?`<div class="sess tap ${live?"live":past?"past":""}" role="button" tabindex="0" onclick="showInfo(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showInfo(${i})}" aria-label="About ${esc(s.n)}">${inner}${star}</div>`:`<div class="sess ${live?"live":past?"past":""}">${inner}${star}</div>`; }).join("");
+  const mineN=ss.filter(x=>x.end>now&&isStarred(cur,x)).length, soonN=ss.filter(x=>x.end>now).length;
+  document.getElementById("schedTools").innerHTML=soonN?`<button class="pill" onclick="addToCalendar('all')">${CAL_SVG}Add weekend to calendar</button>${mineN?`<button class="pill" onclick="addToCalendar('mine')">${CAL_SVG}My ${mineN} session${mineN>1?"s":""}</button>`:""}`:"";
 }
 /* ---- series guide (data/series.js) ---- */
 function seriesFor(name){ return SERIES.find(s=>s.match.test(name))||null; }
@@ -1488,7 +1564,7 @@ async function scheduleSessionAlerts(forcedTrack){
   if(display!=="granted") display=(await LN.requestPermissions()).display;
   if(display!=="granted") return;
   const now=Date.now(), leadMs=SESSION_ALERT_LEAD_MIN*60000, end=eventEnd(e);
-  const sessions=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=end&&s.start.getTime()-leadMs>now);
+  const sessions=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=end&&s.start.getTime()-leadMs>now&&!isStarred(t,s));   /* starred ones already have their own alert */
   const pending=await LN.getPending(), mine=pending.notifications.filter(n=>n.id<REMINDER_ID_BASE);   /* leave the going-race reminders alone */
   if(mine.length) await LN.cancel({notifications:mine.map(n=>({id:n.id}))});
   if(!sessions.length) return;
@@ -1516,7 +1592,7 @@ async function toggleReminders(){
 }
 async function scheduleGoingReminders(ask){
   const LN=nativeNotifier(); if(!LN) return;
-  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=REMINDER_ID_BASE);
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=REMINDER_ID_BASE&&n.id<STAR_ID_BASE);
   if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
   if(!remindersOn()) return;
   const evs=[]; goingList().forEach(k=>{ const [tid,d,...nm]=k.split("|"), t=TRACKS.find(x=>x.id===tid), e=t&&t.events.find(x=>x.d===d&&x.e===nm.join("|")); if(t&&e&&!eventDone(t,e)) evs.push({t,e}); });
@@ -1533,7 +1609,7 @@ async function scheduleGoingReminders(ask){
   if(out.length) await LN.schedule({notifications:out});
 }
 (function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.track) openTrack(x.track,"home"); }); })();
-scheduleGoingReminders(false);
+scheduleGoingReminders(false); scheduleStarAlerts(false);
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){

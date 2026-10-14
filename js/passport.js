@@ -32,7 +32,7 @@ const PP_GLOBAL=[
   {id:"endurance",name:"Endurance Triple",desc:"Visit Daytona, Sebring and Road Atlanta.",icon:"moon",tier:"g",test:s=>["daytona","sebring","road-atlanta"].every(i=>s.visits[i]>0)},
   {id:"tour",name:"IMSA Grand Tour",desc:"Visit every venue on the IMSA schedule.",icon:"cup",tier:"g",test:s=>s.imsaVisited>=s.imsaTotal},
   /* by series */
-  {id:"sportscar",name:"Sports Car Fan",desc:"Check in at an IMSA WeatherTech weekend.",icon:"car",tier:"x",test:s=>s.series.has("imsa")},
+  {id:"sportscar",name:"Sports Car Fan",desc:"Check in at an IMSA WeatherTech weekend.",icon:"car",tier:"x",sty:"imsa",test:s=>s.series.has("imsa")},
   {id:"openwheel",name:"Open Wheel",desc:"Check in at an IndyCar weekend.",icon:"wheel",tier:"x",test:s=>s.series.has("indycar")},
   {id:"gtfan",name:"GT Fan",desc:"Check in at a GT World Challenge America weekend.",icon:"gt",tier:"x",test:s=>s.series.has("gtwca")},
   {id:"stock",name:"Stock Car",desc:"Check in at a NASCAR weekend.",icon:"stockcar",tier:"x",test:s=>s.series.has("nascar")},
@@ -141,7 +141,38 @@ const ppFs=(txt,len)=>Math.max(6.4,Math.min(12.5,len/(txt.length*0.74)));
 function ppOutline(t,size,sw){ const b=trackBox(t), sc=Math.min(size/b[2],size/b[3]); return `viewBox="${b.join(" ")}"><path d="${t.path}" fill="none" stroke="${sw.c}" stroke-width="${(sw.w/sc).toFixed(1)}" stroke-linejoin="round" stroke-linecap="round"/>`; }
 let ppUid=0;
 function ppFilter(u,rough){ return rough?`<filter id="st${u}f" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="1" seed="${(u%37)+2}" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -4 3.25" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in" result="c"/><feDisplacementMap in="c" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/></filter>`:""; }
+/* ---------------- series stamps: a two-colour bezel stamp per series (IMSA first) ---------------- */
+const PP_SERIES={
+  imsa:{ink:"#22272E",acc:"#C98400",top:"IMSA WEATHERTECH",bot:"SPORTS CAR FAN"}
+};
+/* a prototype in side view, facing right, drawn in a 100 x 30 box; wheel arches are cut out of the body and the
+   window and wheel hubs are holes (evenodd), so only one colour of ink is needed */
+const PP_PROTO='M3,22.5 L3,10 L10,8.5 L13,3.5 L17,8.5 L32,9.5 C38,10 40,5.5 45,5 L56,4.5 C62,5 66,10 72,12 L86,15 C92,16 97,18 98,21 L98,23 L87,23 A8.5,8.5 0 0 0 70,23 L32.5,23 A8.5,8.5 0 0 0 15.5,23 Z '
+  +'M46.5,10.8 L47.5,6.4 L56,5.9 L63,6.8 L69,10.8 Z '
+  +'M16.5,23 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 M21.9,23 a1.6,1.6 0 1,0 3.2,0 a1.6,1.6 0 1,0 -3.2,0 '
+  +'M71.5,23 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 M76.9,23 a1.6,1.6 0 1,0 3.2,0 a1.6,1.6 0 1,0 -3.2,0';
+function seriesStamp(d,o){
+  o=o||{}; const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.5)":sp.ink, acc=locked?"rgba(110,98,72,.5)":sp.acc, u=++ppUid;
+  const top=sp.top, bot=sp.bot, ft=9.6, fb=9.6, rough=!locked&&o.rough!==false;
+  let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }
+  let chk=""; for(let r=0;r<2;r++) for(let c=0;c<22;c++) if((r+c)%2===0) chk+=`M${19+c*5.5},${77+r*6}h5.5v6h-5.5z`;
+  const car=`<g transform="translate(34,44) scale(.93)"><path d="${PP_PROTO}" fill="${ink}" fill-rule="evenodd"/>${locked?"":`<path d="M5.5,16 H62 L90,18.2" fill="none" stroke="${acc}" stroke-width="1.5" stroke-linecap="round"/>`}</g>`;
+  if(locked) return `<svg class="stamp locked" viewBox="0 0 160 160" aria-hidden="true"><circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="2.4" stroke-dasharray="5 5"/><g opacity=".75">${car}</g></svg>`;
+  return `<svg class="stamp" viewBox="0 0 160 160" aria-hidden="true"><defs><path id="st${u}t" d="M 27,80 A 53,53 0 0 1 133,80"/><path id="st${u}b" d="M 20,80 A 60,60 0 0 0 140,80"/><clipPath id="st${u}c"><circle cx="80" cy="80" r="62"/></clipPath>${rough?`<filter id="st${u}f" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="${(u%37)+2}" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -4 3.75" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in" result="c"/><feDisplacementMap in="c" in2="n" scale="1" xChannelSelector="R" yChannelSelector="G"/></filter>`:""}</defs>
+    <g${rough?` filter="url(#st${u}f)"`:""} opacity=".94">
+      <circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="3.4"/>
+      <circle cx="80" cy="80" r="71.5" fill="none" stroke="${acc}" stroke-width="1.6"/>
+      <path d="${ticks}" fill="none" stroke="${ink}" stroke-width=".9"/>
+      <circle cx="80" cy="80" r="63" fill="none" stroke="${ink}" stroke-width="1"/>
+      <text font-size="${ft.toFixed(1)}" font-weight="800" letter-spacing="1.4" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${top}</textPath></text>
+      <text font-size="${fb.toFixed(1)}" font-weight="800" letter-spacing="1.8" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${bot}</textPath></text>
+            <g clip-path="url(#st${u}c)"><path d="${chk}" fill="${ink}"/><path d="M0,76.4H160M0,89.6H160" stroke="${acc}" stroke-width="1.2"/></g>
+      ${car}
+      ${o.date?`<line x1="52" y1="102" x2="108" y2="102" stroke="${ink}" stroke-width="1"/><text x="80" y="114" font-size="9.6" font-weight="800" letter-spacing=".9" text-anchor="middle" fill="${ink}">${ppDate(o.date)}</text>`:""}
+    </g></svg>`;
+}
 function stampSvg(d,o){
+  if(d.sty) return seriesStamp(d,o);
   if(d.tier==="z") return legendStamp(d,o);
   o=o||{}; const locked=!!o.locked, ink=locked?"rgba(110,98,72,.5)":(PP_INK[d.tier]||PP_INK.x), u=++ppUid, isT=!!d.track;
   const top=(isT?d.track.name:d.name).toUpperCase(), bot=isT?PP_TIERS[+String(d.id).split(":")[2]-1][0].toUpperCase():"TRACKSIDE PASS";

@@ -43,15 +43,16 @@
 
 <!-- PASSPORT -->
 <section class="screen" id="passport">
-  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Passport</h2></div>
+  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Passport</h2>
+    <button class="fab ppmore" aria-label="Backup and restore" onclick="ppMenu()"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
+    <div class="ppmenu" id="ppMenu" hidden><button onclick="ppMenu(false);ppBackup()">Copy backup code</button><button onclick="ppMenu(false);ppRestore()">Restore from a code</button><small>Your passport is kept on this phone. A backup code moves it to a new phone.</small></div></div>
   <div class="ppsum" id="ppSum"></div>
-  <div class="ppcheck"><button class="btn primary" onclick="passportManual()">Check in here</button><small id="ppStatus"></small><small>Stamps only count at a track, during a race weekend.</small></div>
+  <div class="ppcheck"><button class="btn quiet" id="ppCheckBtn" onclick="passportManual()">Check in here</button><small id="ppStatus"></small><small>Stamps only count at a track, during a race weekend.</small></div>
   <div class="sect">Tracks</div>
-  <div class="pgrid" id="ppTracks"></div>
+  <div class="ppSeg" role="group" aria-label="Group tracks"><button id="ppgRegion" onclick="ppGroup('region')">By region</button><button id="ppgSeries" onclick="ppGroup('series')">By series</button></div>
+  <div id="ppTracks"></div>
   <div class="sect">Badges</div>
-  <div class="bgrid" id="ppBadges"></div>
-  <div class="ppfoot"><button class="btn quiet" onclick="ppBackup()">Copy backup code</button><button class="btn quiet" onclick="ppRestore()">Restore</button></div>
-  <div class="soon">Your passport is kept on this phone. A backup code lets you move it to a new phone.</div>
+  <div id="ppBadges"></div>
 </section>
 
 <!-- SETTINGS -->

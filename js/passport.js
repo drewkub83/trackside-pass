@@ -203,17 +203,73 @@ function renderPassportCard(){
   const m=document.getElementById("ppMeta"); if(!m) return; const p=ppLoad(), st=ppStats(p), n=Object.keys(p.unlocked).filter(k=>!k.startsWith("t:")).length;
   m.textContent=st.tracks?`${st.tracks} of ${st.total} tracks · ${n} badge${n===1?"":"s"}`:`Stamps and badges from race weekends`;
 }
-function renderPassport(){
-  const p=ppLoad(), st=ppStats(p), total=PP_GLOBAL.length, got=PP_GLOBAL.filter(d=>p.unlocked[d.id]).length;
-  document.getElementById("ppSum").innerHTML=`<div class="ppn">${st.tracks}<small>of ${st.total} tracks</small></div><div class="ppb">${got} of ${total} badges</div>`;
-  document.getElementById("ppTracks").innerHTML=ppTracks().map(t=>{ const n=st.visits[t.id]||0;
-    const tier=ppTier(n), def=n?ppTrackDefs().find(d=>d.track===t&&d.id.endsWith(":"+tier)):null, last=p.stamps.filter(s=>s.t===t.id).reduce((m,s)=>Math.max(m,s.at||0),0);
-    const art=def?`<span class="sbox" style="--r:${ppRot(t.id)}deg">${stampSvg(def,{date:last||undefined})}</span>`:`<span class="sbox empty"><svg ${ppOutline(t,34,{c:"rgba(90,75,45,.38)",w:1.8})}</svg></span>`;
-    return `<button class="pt t${tier}" onclick="openTrack('${t.id}','passport')">${art}<b>${esc(t.short)}</b><small>${n?`${n} race weekend${n>1?"s":""}`:"Not yet"}</small></button>`; }).join("");
-  document.getElementById("ppBadges").innerHTML=PP_GLOBAL.map(d=>{ const at=p.unlocked[d.id];
-    return `<${at?`button onclick="ppReplay('${d.id}')"`:"div"} class="pb${at?"":" lock"}${d.tier==="z"?" legend":""}"><span class="sbox big" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{locked:!at,date:at||undefined})}</span><b>${d.name}</b><small>${at?"Unlocked "+new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):d.desc+(d.tier==="z"?` You have ${st.tracks} of ${st.total}.`:"")}</small></${at?"button":"div"}>`; }).join("");
+/* ---- passport layout: tracks grouped by region or by series, badges grouped with a "next up" list ---- */
+const PP_GROUP_KEY="paddock:ppGroup";
+function ppGroupMode(){ try{ return localStorage.getItem(PP_GROUP_KEY)==="series"?"series":"region"; }catch(e){ return "region"; } }
+function ppGroup(m){ try{ localStorage.setItem(PP_GROUP_KEY,m); }catch(e){} renderPassport(); }
+function ppMenu(force){ const m=document.getElementById("ppMenu"); if(m) m.hidden=force===undefined?!m.hidden:!force; }
+document.addEventListener("click",e=>{ if(!e.target.closest("#ppMenu,.ppmore")) ppMenu(false); });
+const ppRegionOf=t=>/^Europe\//.test(t.tz||"")?"eu":"na";
+const PP_BADGE_GROUPS=[
+  ["By series",["sportscar","openwheel","gtfan","stock","grandprix","double","trifecta","tour"]],
+  ["Places",["street","jungle","endurance","zones","border","sunshine","lonestar","lakes","golden","peach","banks"]],
+  ["Milestones",["first","hopper","tripper","grand","weekend","marathon","ten","season","fullgrid"]]];
+/* how close each unearned badge is: [have, need] (only for the ones that are a count of something) */
+const PP_LISTS={street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
+  sunshine:[["daytona","sebring","st-petersburg"],3],lonestar:[["cota","arlington"],2],lakes:[["road-america","mid-ohio","detroit"],3],golden:[["long-beach","laguna-seca","sonoma"],3],peach:[["road-atlanta","barber"],2]};
+const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
+function ppProg(d,st){
+  const l=PP_LISTS[d.id]; if(l) return [Math.min(l[1],l[0].filter(i=>st.visits[i]>0).length),l[1]];
+  const c=PP_COUNTS[d.id]; if(c){ const need=typeof c[1]==="function"?c[1](st):c[1]; return [Math.min(need,c[0](st)),need]; }
+  return null;
 }
-function openPassport(){ renderPassport(); document.getElementById("ppStatus").textContent=""; showScreen("passport"); }
+const ppChev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
+const ppSec=(title,count,inner,open,sid)=>`<details class="ppSec"${open?" open":""}${sid?` data-s="${sid}"`:""}><summary><span class="ppSecT">${title}</span><span class="ppSecN">${count}</span>${ppChev}</summary>${inner}</details>`;
+function ppTrackGrid(list,p,st,defs){
+  const sorted=list.slice().sort((a,b)=>a.short.localeCompare(b.short)), got=sorted.filter(t=>st.visits[t.id]), not=sorted.filter(t=>!st.visits[t.id]);
+  const earned=t=>{ const n=st.visits[t.id], tier=ppTier(n), def=defs.find(d=>d.track===t&&d.id.endsWith(":"+tier)), last=p.stamps.filter(s=>s.t===t.id).reduce((m,s)=>Math.max(m,s.at||0),0);
+    return `<button class="pt t${tier}" onclick="openTrack('${t.id}','passport')"><span class="sbox" style="--r:${ppRot(t.id)}deg">${stampSvg(def,{date:last||undefined})}</span><b>${esc(t.short)}</b><small>${n} race weekend${n>1?"s":""}</small></button>`; };
+  const empty=t=>`<button class="pt mini" onclick="openTrack('${t.id}','passport')"><span class="sbox empty"><svg ${ppOutline(t,34,{c:"rgba(90,75,45,.38)",w:1.8})}</svg></span><b>${esc(t.short)}</b></button>`;
+  return (got.length?`<div class="pgrid">${got.map(earned).join("")}</div>`:"")+(not.length?`<div class="pgrid mini">${not.map(empty).join("")}</div>`:"");
+}
+function ppTracksHtml(p,st){
+  const defs=ppTrackDefs(), mode=ppGroupMode(), count=l=>`${l.filter(t=>st.visits[t.id]).length} of ${l.length}`;
+  let html;
+  if(mode==="series"){
+    /* a track shows under every series that races there, so the same stamp can appear more than once */
+    html=orderedChamps().filter(c=>!c.optIn||followed(c)).map(c=>({c,l:TRACKS.filter(t=>t.events.some(e=>inChamp(c,e)))})).filter(x=>x.l.length)
+      .map(x=>ppSec(esc(x.c.name),count(x.l),ppTrackGrid(x.l,p,st,defs),x.l.some(t=>st.visits[t.id]),x.c.id)).join("");
+  } else {
+    html=Object.keys(REGIONS).map(r=>({r,l:TRACKS.filter(t=>ppRegionOf(t)===r)})).filter(x=>x.l.length)
+      .map(x=>ppSec(esc(REGIONS[x.r]),count(x.l),ppTrackGrid(x.l,p,st,defs),true)).join("");
+  }
+  return html;
+}
+function ppNextUp(p,st){
+  return PP_GLOBAL.filter(d=>!p.unlocked[d.id]).map((d,i)=>{ const g=ppProg(d,st); return {d,g,i,score:g?g[0]/g[1]:(d.tier==="x"?0.01:0)}; })
+    .filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3);
+}
+function ppBadgesHtml(p,st){
+  const next=ppNextUp(p,st), byId=Object.fromEntries(PP_GLOBAL.map(d=>[d.id,d]));
+  const need=x=>x.g?`<span class="ppbar"><i style="width:${Math.round(x.g[0]/x.g[1]*100)}%"></i></span>`:"";
+  const nextHtml=next.length?`<div class="ppNextBox"><h4>Next up</h4>${next.map(x=>`<button class="ppnx" onclick="toast(${esc(JSON.stringify(x.d.desc))})"><span class="sbox sm">${stampSvg(x.d,{locked:true})}</span><div><b>${esc(x.d.name)}</b><small>${esc(x.d.desc)}</small>${need(x)}</div>${x.g?`<em>${x.g[0]} of ${x.g[1]}</em>`:""}</button>`).join("")}</div>`:"";
+  const groups=PP_BADGE_GROUPS.map(([title,ids])=>{ const ds=ids.map(i=>byId[i]).filter(Boolean), got=ds.filter(d=>p.unlocked[d.id]), lock=ds.filter(d=>!p.unlocked[d.id]);
+    const big=d=>{ const at=p.unlocked[d.id]; return `<button class="pb${d.tier==="z"?" legend":""}" onclick="ppReplay('${d.id}')"><span class="sbox mid" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:at})}</span><b>${esc(d.name)}</b><small>${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}</small></button>`; };
+    const small=d=>{ const g=ppProg(d,st), tip=d.desc+(g?` You have ${g[0]} of ${g[1]}.`:""); return `<button class="pb lock mini${d.tier==="z"?" legend":""}" onclick="toast(${esc(JSON.stringify(tip))})"><span class="sbox sm">${stampSvg(d,{locked:true})}</span><b>${esc(d.name)}</b></button>`; };
+    return ppSec(title,`${got.length} of ${ds.length}`,(got.length?`<div class="bgrid three">${got.map(big).join("")}</div>`:"")+(lock.length?`<div class="bgrid mini">${lock.map(small).join("")}</div>`:""),true);
+  }).join("");
+  return nextHtml+groups;
+}
+function renderPassport(){
+  const p=ppLoad(), st=ppStats(p), total=PP_GLOBAL.length, got=PP_GLOBAL.filter(d=>p.unlocked[d.id]).length, nx=ppNextUp(p,st).find(x=>x.g);
+  document.getElementById("ppSum").innerHTML=`<div class="ppn">${st.tracks}<small>of ${st.total} tracks</small></div><div class="ppbar big"><i style="width:${Math.round(st.tracks/st.total*100)}%"></i></div>
+    <div class="ppb">${got} of ${total} badges${nx?` · next: ${esc(nx.d.name)}, ${nx.g[0]} of ${nx.g[1]}`:""}</div>`;
+  const live=TRACKS.some(t=>activeEvent(t)), cb=document.getElementById("ppCheckBtn"); if(cb) cb.className="btn "+(live?"primary":"quiet");
+  const mode=ppGroupMode(); document.getElementById("ppgRegion").classList.toggle("on",mode==="region"); document.getElementById("ppgSeries").classList.toggle("on",mode==="series");
+  document.getElementById("ppTracks").innerHTML=ppTracksHtml(p,st);
+  document.getElementById("ppBadges").innerHTML=ppBadgesHtml(p,st);
+}
+function openPassport(){ renderPassport(); ppMenu(false); document.getElementById("ppStatus").textContent=""; showScreen("passport"); }
 function ppBackup(){ const code=btoa(unescape(encodeURIComponent(JSON.stringify({...ppLoad(),going:goingList(),v:2})))); try{ navigator.clipboard.writeText(code).then(()=>toast("Backup code copied. Keep it somewhere safe.")); }catch(e){ prompt("Copy this backup code:",code); } }
 function ppRestore(){
   const code=prompt("Paste your backup code:"); if(!code) return;

@@ -170,8 +170,8 @@ function seriesStamp(d,o){
   const visits=o.visits||(locked?{}:ppStats(ppLoad()).visits), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
   let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }
   const dots=ppVenues(sp).map(v=>{ const [x,y]=proj(v.lon,v.lat).map(n=>n.toFixed(1)), on=visits[v.id]>0;
-    return on?`<circle cx="${x}" cy="${y}" r="3.9" fill="#F3EAD2" stroke="${acc}" stroke-width=".9"/><circle cx="${x}" cy="${y}" r="2.3" fill="${acc}" stroke="${ink}" stroke-width=".8"/>`
-      :`<circle cx="${x}" cy="${y}" r="2" fill="#F3EAD2" stroke="${ink}" stroke-width=".8"/>`; }).join("");
+    return on?`<circle cx="${x}" cy="${y}" r="3.1" fill="#F3EAD2" stroke="${acc}" stroke-width=".8"/><circle cx="${x}" cy="${y}" r="1.85" fill="${acc}" stroke="${ink}" stroke-width=".7"/>`
+      :`<circle cx="${x}" cy="${y}" r="1.5" fill="#F3EAD2" stroke="${ink}" stroke-width=".7"/>`; }).join("");
   const map=`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${dots}`;
   const defs=`<path id="st${u}t" d="M 27,80 A 53,53 0 0 1 133,80"/><path id="st${u}b" d="M 20,80 A 60,60 0 0 0 140,80"/><clipPath id="st${u}c"><circle cx="80" cy="80" r="58"/></clipPath><clipPath id="st${u}k"><circle cx="80" cy="80" r="49"/></clipPath>
     <pattern id="st${u}h" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".6" fill="${ink}"/></pattern><pattern id="st${u}hl" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".26" fill="${ink}" opacity=".5"/></pattern>`;

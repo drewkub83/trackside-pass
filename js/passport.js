@@ -152,6 +152,8 @@ const PP_SERIES={
   imsa:{champ:"imsa",ink:"#22272E",acc:"#C98400",top:"IMSA",bot:"GRAND TOUR"},
   sportscar:{kind:"flags",band:true,ink:"#22272E",acc:"#C98400",top:"SPORTS CAR FAN",bot:"IMSA WEEKEND",size:9.2,space:2.2},
   indycar:{champ:"indycar",ink:"#17402F",acc:"#C23B22",top:"INDYCAR",bot:"OPEN WHEEL",size:10.5,space:2.2},
+  indyA:{kind:"types",band:true,bandInk:"#17402F",ink:"#17402F",acc:"#C23B22",top:"OPEN WHEEL",bot:"OVAL · ROAD · STREET",size:9.2,space:2.2},
+  indyB:{kind:"wheel",band:true,bandInk:"#17402F",ink:"#17402F",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
   gtwca:{champ:"gtwca",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD",bot:"GT FAN",size:10,space:2},
   nascar:{match:/NASCAR/i,ink:"#6E1822",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR",size:11.5,space:3},
   endcup:{endu:6,route:true,band:true,ink:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
@@ -203,6 +205,20 @@ function ppFlags(ink,acc,skin){
   const l=flag(-1), r=flag(1);
   return l.staff+r.staff+l.flag+r.flag;
 }
+/* a racing wheel, front on: tyre with tread blocks, sidewall ring, rim with ten slim spokes and a centre-lock nut */
+function ppWheelArt(ink,acc,skin){
+  const cx=80, cy=72, f=n=>n.toFixed(2); let tread="", spokes="";    /* drawn centred on (80,72); the group below scales it to fit above the date */
+  for(let i=0;i<36;i++){ const a=i/36*Math.PI*2, a2=a+0.09; tread+=`M${f(cx+Math.cos(a)*33)} ${f(cy+Math.sin(a)*33)}L${f(cx+Math.cos(a)*37.6)} ${f(cy+Math.sin(a)*37.6)}L${f(cx+Math.cos(a2)*37.6)} ${f(cy+Math.sin(a2)*37.6)}L${f(cx+Math.cos(a2)*33)} ${f(cy+Math.sin(a2)*33)}Z`; }
+  for(let i=0;i<10;i++){ const a=i/10*Math.PI*2+Math.PI/10, a1=a-.1, a2=a+.1; spokes+=`M${f(cx+Math.cos(a1)*6.5)} ${f(cy+Math.sin(a1)*6.5)}L${f(cx+Math.cos(a1)*20)} ${f(cy+Math.sin(a1)*20)}L${f(cx+Math.cos(a2)*20)} ${f(cy+Math.sin(a2)*20)}L${f(cx+Math.cos(a2)*6.5)} ${f(cy+Math.sin(a2)*6.5)}Z`; }
+  return `<g transform="translate(80 67) scale(.86) translate(-80 -72)"><circle cx="${cx}" cy="${cy}" r="37.6" fill="${ink}"/><path d="${tread}" fill="${skin}" opacity=".9"/><circle cx="${cx}" cy="${cy}" r="33" fill="${ink}"/><circle cx="${cx}" cy="${cy}" r="29.5" fill="none" stroke="${skin}" stroke-width=".7"/>`
+    +`<circle cx="${cx}" cy="${cy}" r="25" fill="${acc}"/><circle cx="${cx}" cy="${cy}" r="22.2" fill="${skin}"/><circle cx="${cx}" cy="${cy}" r="20.6" fill="${ink}"/><path d="${spokes}" fill="${skin}"/>`
+    +`<circle cx="${cx}" cy="${cy}" r="7.4" fill="${ink}" stroke="${skin}" stroke-width=".8"/><circle cx="${cx}" cy="${cy}" r="3.6" fill="${acc}"/></g>`; }
+/* the three kinds of IndyCar track, drawn as the real circuits: an oval, a road course and a street circuit */
+function ppTrackTypes(ink,acc,skin,visits,locked){
+  const kinds=[["indianapolis-oval","OVAL",["indianapolis-oval","phoenix"]],["barber","ROAD",["barber","indianapolis"]],["long-beach","STREET",["long-beach","detroit","st-petersburg","arlington"]]]; let out="";
+  kinds.forEach(([id,label,ids],i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return; const cx=42+i*38, on=ids.some(k=>visits[k]>0);
+    out+=`<g opacity="${on||locked?1:.34}"><svg x="${cx-17}" y="${46}" width="34" height="34" ${ppOutline(t,34,{c:ink,w:on?2.2:1.6})}</svg><text x="${cx}" y="93" font-size="5.8" font-weight="800" letter-spacing=".8" text-anchor="middle" fill="${ink}">${label}</text>${on?`<path d="M${cx-8} 97.5H${cx+8}" stroke="${acc}" stroke-width="1.4" stroke-linecap="round"/>`:""}</g>`; });
+  return out; }
 /* track ids in the order you first checked in at them (for the Road Tripper route) */
 function ppVisitOrder(){ const seen=[]; ppLoad().stamps.slice().sort((a,b)=>(a.at||0)-(b.at||0)).forEach(x=>{ if(!seen.includes(x.t)) seen.push(x.t); }); return seen; }
 function seriesStamp(d,o){
@@ -220,6 +236,8 @@ function seriesStamp(d,o){
   const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
   const cells=[[42,36],[80,36],[42,69],[80,69]], vis4=id=>visits[id]>0;
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
+    :sp.kind==="wheel"?ppWheelArt(ink,acc,"#F3EAD2")
+    :sp.kind==="types"?ppTrackTypes(ink,acc,"#F3EAD2",visits,locked)
     :sp.kind==="outlines"?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=vis4(id);
         return `<g opacity="${on||locked?1:.3}"><svg x="${cells[i][0]}" y="${cells[i][1]}" width="38" height="31" ${ppOutline(t,31,{c:ink,w:on?1.9:1.4})}</svg></g>`; }).join("")
     :sp.kind==="days"?["FRI","SAT","SUN"].map((dn,i)=>{ const x=44+i*25; return `<rect x="${x}" y="50" width="22" height="34" rx="3.5" fill="none" stroke="${ink}" stroke-width="1.5"/><path d="M${x},50.5h22v8.5h-22z" fill="${ink}"/><text x="${x+11}" y="57" font-size="5.6" font-weight="800" letter-spacing=".6" text-anchor="middle" fill="#F3EAD2">${dn}</text><path d="M${x+5.5},70.5l4.6,4.8l7-8.6" fill="none" stroke="${acc}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`; }).join("")

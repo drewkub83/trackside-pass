@@ -49,6 +49,9 @@ Every track has a walking grid (`route`). Three things make Directions actually 
 Venues of a series that have no map yet go in that series' `stops` in `data/champs.js` as "Map coming soon" (with real dates);
 a stop disappears by itself once a track with the same id exists.
 
+## Race Day hub is the landing page
+Opening any track lands on the Hub tab (`enterHub()` in `openTrackNow`); Map is the second tab, then Events and Info. The back arrow and swipe-back step Map/Events/Info -> Hub -> track list (`goHome`). Off-season the hub's top card shows the next event and its date.
+
 ## Styles (Settings > Look and units > Style)
 `<html data-style="race">` switches on the Race Control look: one clearly marked override block at the bottom of `css/styles.css` (tokens for light, auto-dark and
 forced-dark, then component rules). Classic is the default and has no attribute. Preference key `paddock:style`; index.html applies it before first

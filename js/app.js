@@ -1074,13 +1074,16 @@ function toggleParking(){
 /* focus modes: Restrooms and Camping work like Parking: only the relevant badges show */
 let mode=null, modeAt=0;
 /* modes that just filter the map to one kind and highlight the closest one, no popup card */
-const QUIET_MODES=["rest","food","merch"];
+const QUIET_MODES=["rest","food","merch","view"];
 function setMode(m){
   clearNear(); mode=m; const w=document.getElementById("mapWrap"); if(!w) return;
   w.classList.toggle("m-rest",m==="rest"); w.classList.toggle("m-camp",m==="camp"); w.classList.toggle("m-food",m==="food"); w.classList.toggle("m-merch",m==="merch"); w.classList.toggle("m-view",m==="view");
   document.getElementById("restBtn").classList.toggle("on",m==="rest");
   document.getElementById("foodBtn").classList.toggle("on",m==="food");
+  /* Merch and Best views have no button on the map (they open from the hub), so while one is on, a small chip says so and clears it */
+  const chip=document.getElementById("modeChip"); if(chip){ const lab={merch:"Merch",view:"Best views"}[m]; chip.hidden=!lab; if(lab) chip.firstElementChild.textContent=lab; }
 }
+function clearMode(){ setMode(null); closeSheet(); applyView(); }
 function toggleMode(m){
   if(mode===m){ setMode(null); closeSheet(); applyView(); return; }
   if(parking) toggleParking();

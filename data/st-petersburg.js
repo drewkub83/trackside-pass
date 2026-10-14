@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"1.8 mi",
   "opened":2003,
   "blurb":"IndyCar's season opener on the downtown waterfront, with the Albert Whitted Airport runway as the front straight.",
+  "lapRecord":[{"series":"IndyCar","time":"1:00.6795","who":"Josef Newgarden","car":"Dallara IR-18","year":2024,"note":"race lap record"}],
   "facts":{"Race weekend":"Built on city streets and the airport runway every March","Front straight":"Runway 7/25 of Albert Whitted Airport","Signature sections":"Turn 1 at the end of the runway, the Bayshore Drive run to Turn 10, the Turn 13 and 14 hairpin loop","Crossings":"Pedestrian bridges at Turns 2, 3 and 6"},
   "events":[{"d":"2027-03-05","e":"Firestone Grand Prix of St. Petersburg","s":"NTT INDYCAR SERIES","t":3}],
   "tz":"America/New_York",

@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"3.426 mi",
   "opened":2012,
   "blurb":"A 3.426-mile, 20-turn road course outside Austin, Texas, opened in 2012 and best known for Formula 1 and MotoGP. The circuit climbs steeply to a blind Turn 1, then flows through a fast esses section before a long back straight into the Turn 12 hairpin. In 2027 it hosts the first Texas 8 Hour.",
+  "lapRecord":[{"series":"Formula 1","time":"1:36.169","who":"Charles Leclerc","car":"Ferrari SF90","year":2019,"note":"race lap record"},{"series":"MotoGP","time":"2:02.037","who":"Ai Ogura","car":"Aprilia RS-GP","year":2026,"note":"race lap record (NASCAR now uses a shorter layout, so it isn't listed)"}],
   "facts":{"Signature sections":"The climb to Turn 1, the Turn 3 to 6 esses, the long back straight into Turn 12, and the Turn 16 to 18 sequence","Elevation":"About 133 feet of elevation change, with a steep climb up to Turn 1","Landmark":"The Tower Observation Deck, with views over the circuit","Campus":"A large Grand Plaza, Fan Field and the Germania Insurance Amphitheater"},
   "vb":[0,0,800,781],
   "geo":{"n":30.148462,"s":30.122348,"w":-97.647142,"e":-97.616338},

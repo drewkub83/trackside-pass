@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"3.916 km (2.43 mi)",
   "opened":"1926 (Grand Prix circuit 1960)",
   "blurb":"The Grand Prix circuit at Brands Hatch in Kent, England: 3.916 km and 9 turns, from the plunge of Paddock Hill Bend through Druids and Graham Hill Bend and out into the woods to Clearways. It opens the Sprint Cup season on May 1-2, 2027.",
+  "lapRecord":[{"series":"GT World Challenge","time":"1:21.370","who":"Raffaele Marciello","car":"Mercedes-AMG GT3","year":2022,"note":"series record (qualifying)"},{"series":"Outright","time":"1:12.276","who":"Adam Carroll","car":"A1GP Ferrari","year":2009,"note":"race lap record on the Grand Prix circuit since its 2003 layout change"}],
   "facts":{"Signature sections":"Paddock Hill Bend, Druids, Graham Hill Bend, Clearways","Venue data":"Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map."},
   "vb":[0,0,800,990],
   "geo":{"n":51.368151,"s":51.330432,"w":0.251055,"e":0.299682},

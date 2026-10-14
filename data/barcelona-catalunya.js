@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"4.655 km (2.89 mi)",
   "opened":1991,
   "blurb":"The Circuit de Barcelona-Catalunya at Montmeló, near Barcelona, drawn here with the final chicane (the 16-turn layout GT World lists). It closes the 2027 GT World Challenge Europe season with an Endurance Cup round.",
+  "lapRecord":[{"series":"Formula 1","time":"1:18.183","who":"Valtteri Bottas","car":"Mercedes W11","year":2020,"note":"race lap record on the 16-turn layout with the final chicane (F1 has used the no-chicane layout since 2023)"}],
   "facts":{"Signature sections":null,"Venue data":"Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map."},
   "vb":[0,0,800,1038],
   "geo":{"n":41.600687,"s":41.538171,"w":2.223072,"e":2.287227},

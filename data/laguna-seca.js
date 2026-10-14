@@ -21,6 +21,6 @@ TRACKS.push({
   "tz":"America/Los_Angeles",
   "eventName":"Monterey SportsCar Championship",
   "nturns":11,
-  "lapRecord":[{"series":"IMSA GTP","time":"1:12.445","who":"Sébastien Bourdais","car":"Cadillac V-Series.R","year":2024,"note":"qualifying"},{"series":"IMSA GTD PRO","time":"1:19.727","who":"Nicky Catsburg","car":"Corvette Z06 GT3.R","year":2024,"note":"qualifying"},{"series":"IMSA GTD","time":"1:20.810","who":"Kenton Koch","car":"Mercedes-AMG GT3","year":2025,"note":"qualifying"}],
+  "lapRecord":[{"series":"IndyCar","time":"1:08.4168","who":"Álex Palou","car":"Dallara IR-18","year":2023,"note":"race lap record"},{"series":"IMSA GTP","time":"1:12.445","who":"Sébastien Bourdais","car":"Cadillac V-Series.R","year":2024,"note":"qualifying"},{"series":"IMSA GTD PRO","time":"1:19.727","who":"Nicky Catsburg","car":"Corvette Z06 GT3.R","year":2024,"note":"qualifying"},{"series":"IMSA GTD","time":"1:20.810","who":"Kenton Koch","car":"Mercedes-AMG GT3","year":2025,"note":"qualifying"}],
   "turns":[[-205,-95,"1"],[-187,85,"2"],[-178,-60,"3"],[-29,-21,"4"],[-52,243,"5"],[175,228,"6"],[211,-9,"7"],[222,-53,"8"],[188,-100,"8A"],[154,-190,"9"],[24,-160,"10"],[-62,-300,"11"]]
 });

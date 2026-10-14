@@ -184,20 +184,106 @@ function ppVenues(sp){
   if(sp.route) out.sort((a,b)=>a.key.localeCompare(b.key));      /* calendar order, for the dotted route between venues */
   return out;
 }
-/* A GT3 race car in side view, facing right, drawn from real dimensions in millimetres (modelled on a 911 GT3 R:
-   4.57 m long, 2.46 m wheelbase, about 1.2 m tall). Origin is the ground under the rear of the car, y pointing up,
-   so the group is drawn with scale(k,-k). Body, glass, door lines, side intake and headlight are one evenodd path. */
-function ppSliver(x1,y1,x2,y2,w){ const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy), nx=-dy/L*w/2, ny=dx/L*w/2; return `M${x1+nx},${y1+ny}L${x2+nx},${y2+ny}L${x2-nx},${y2-ny}L${x1-nx},${y1-ny}Z`; }
-const PP_GT3_BODY="M150,190L40,330L30,640C30,800 150,920 330,955C700,985 1250,1085 1750,1175C1950,1208 2450,1214 2700,1188C2950,1135 3250,985 3480,885C3750,842 4150,762 4400,642C4500,592 4570,500 4565,380L4560,210L4625,140L4645,92L4430,92L3944,150A405,405 0 1 1 3234,150L1491,150A415,415 0 1 1 769,150L330,150Z"
-  +"M3330,915L2780,1150C2620,1168 2250,1165 2060,1130C1940,1100 1870,1040 1845,985Z"+ppSliver(3090,870,3055,400,13)+ppSliver(1790,850,1760,420,13)
-  +"M1560,500L1640,645L1705,632L1625,480Z"+"M4380,645C4440,605 4500,565 4522,505L4500,492C4470,545 4420,580 4352,622Z"+ppSliver(3210,300,3320,300,16)+ppSliver(4140,700,4300,640,12);
-function ppWheel(cx,cy,r,ink){ let sp=""; for(let i=0;i<5;i++){ const a=i*Math.PI*2/5-Math.PI/2; sp+=`M${cx+Math.cos(a)*80},${cy+Math.sin(a)*80}L${cx+Math.cos(a)*(r-115)},${cy+Math.sin(a)*(r-115)}`; }
-  return `<path fill-rule="evenodd" d="M${cx-r},${cy}a${r},${r} 0 1,0 ${2*r},0a${r},${r} 0 1,0 ${-2*r},0M${cx-(r-105)},${cy}a${r-105},${r-105} 0 1,0 ${2*(r-105)},0a${r-105},${r-105} 0 1,0 ${-2*(r-105)},0M${cx-100},${cy}a100,100 0 1,0 200,0a100,100 0 1,0 -200,0M${cx-30},${cy}a30,30 0 1,0 60,0a30,30 0 1,0 -60,0" fill="${ink}"/><path d="${sp}" stroke="${ink}" stroke-width="50" stroke-linecap="round" fill="none"/>`; }
-function ppGT3(ink,acc,skin){
-  return `<path d="${PP_GT3_BODY}" fill="${ink}" fill-rule="evenodd"/><path d="M3130,935L3290,962L3275,1012L3150,1000Z" fill="${ink}"/>`
-    +`<path d="M-40,1268L525,1238L605,1112L335,1068L20,1074Z" fill="${ink}"/><path d="M-20,1190L560,1180" stroke="${acc}" stroke-width="22" fill="none"/><path d="M300,1070C300,1010 315,985 335,955M110,1074C120,1030 190,985 255,962" stroke="${ink}" stroke-width="36" fill="none"/>`
-    +`<path d="M620,345L3170,385" stroke="${acc}" stroke-width="32" fill="none" stroke-linecap="round"/><circle cx="2360" cy="620" r="165" fill="${acc}"/><circle cx="2360" cy="620" r="108" fill="${skin}"/>`
-    +ppWheel(3589,345,345,ink)+ppWheel(1130,355,355,ink); }
+/* A GT3 race car in three-quarter view, built as a small 3D model from real dimensions (modelled on a 911 GT3 R:
+   4.57 m long, 2.46 m wheelbase, about 1.2 m tall) and projected to flat-shaded polygons (painter's algorithm).
+   The geometry is built once; colours are applied per stamp. x = forward, y = up, z = toward the camera side. */
+const PP_CAR=(function(){
+  const lerp=(a,b,t)=>a+(b-a)*t, clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), ss=(a,b,x)=>{ const t=clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
+  const pw=(pts,x)=>{ if(x<=pts[0][0]) return pts[0][1]; for(let i=1;i<pts.length;i++){ if(x<=pts[i][0]){ const [x0,y0]=pts[i-1],[x1,y1]=pts[i]; const t=(x-x0)/(x1-x0); const s=t*t*(3-2*t)*.35+t*.65; return lerp(y0,y1,s); } } return pts[pts.length-1][1]; };
+  // centre-line top profile (tail -> nose)
+  const TOP=[[30,640],[120,860],[330,950],[700,985],[1250,1085],[1750,1175],[2000,1205],[2450,1212],[2700,1188],[3000,1100],[3250,985],[3480,885],[3750,842],[4150,762],[4400,642],[4500,540],[4565,380]];
+  const T=x=>pw(TOP,x);
+  const W=x=>pw([[30,760],[330,930],[700,990],[1700,1000],[2500,940],[3300,955],[3900,950],[4300,900],[4565,770]],x);      // half-width at the shoulder
+  const YB=x=>pw([[30,300],[200,170],[330,150],[3944,150],[4300,130],[4565,200]],x);                                       // underside
+  const G=x=>ss(1700,2050,x)*(1-ss(3250,3500,x));                                                                         // greenhouse presence
+  const BELT=x=>lerp(985,915,clamp((x-1845)/(3330-1845),0,1));
+  function section(x){
+    const t=T(x), w=W(x), yb=YB(x), g=G(x), belt=BELT(x), ysh=lerp(t-70,belt,g), wt=lerp(w-70,520+0.05*(t-1100),g), wc=lerp(w-35,w*0.84,g);
+    const wg=lerp(wt+10,wc-120,g), R=[[0,yb],[w-70,yb],[w,yb+80],[w,ysh],[wc,ysh+lerp(30,35,g)],[wg,lerp(ysh+30,ysh+(t-ysh)*0.82,g)],[lerp(wt*0.62,380,g),t-lerp(25,10,g)],[0,t]];
+    return R;
+  }
+  function build(opt){
+    const φ=(opt.yaw||36)*Math.PI/180, θ=(opt.pitch||9)*Math.PI/180, cx=2300, cz=0;
+    const proj=(x,y,z)=>{ const sx=(x-cx)*Math.cos(φ)-(z-cz)*Math.sin(φ), t=(x-cx)*Math.sin(φ)+(z-cz)*Math.cos(φ), su=y*Math.cos(θ)-t*Math.sin(θ), d=t*Math.cos(θ)+y*Math.sin(θ); return [sx,-su,d]; };
+    const view=[Math.sin(φ)*Math.cos(θ),Math.sin(θ),Math.cos(φ)*Math.cos(θ)];
+    const light=(()=>{ const v=[0.55,0.85,0.45]; const n=Math.hypot(...v); return v.map(a=>a/n); })();
+    const polys=[];
+    const add=(pts,kind,extra)=>{ // pts: 3D points; cull back faces, shade
+      const a=pts[0],b=pts[1],c=pts[2]; const u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]], v=[c[0]-a[0],c[1]-a[1],c[2]-a[2]]; let n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]]; const nl=Math.hypot(...n)||1; n=n.map(q=>q/nl);
+      if(extra&&extra.axis){ const cc=[0,1,2].map(k=>pts.reduce((s,p)=>s+p[k],0)/pts.length); if(n[0]*(cc[0]-extra.axis[0])+n[1]*(cc[1]-extra.axis[1])+n[2]*(cc[2]-extra.axis[2])<0) n=n.map(q=>-q); }
+      const facing=n[0]*view[0]+n[1]*view[1]+n[2]*view[2]; if(!(extra&&extra.both) && facing<=0.001) return;
+      const lam=Math.max(0,n[0]*light[0]+n[1]*light[1]+n[2]*light[2]);
+      const pp=pts.map(p=>proj(p[0],p[1],p[2])); const depth=pp.reduce((s,q)=>s+q[2],0)/pp.length;
+      polys.push({pp,depth,kind,lam,n});
+    };
+    // body loft
+    const xs=[]; for(let x=30;x<=4565;x+=(x<4300?100:60)) xs.push(Math.min(x,4565)); if(xs[xs.length-1]!==4565) xs.push(4565);
+    const secs=xs.map(x=>({x,s:section(x)}));
+    const ring=(s,x,side)=>{ // full ring of 3D points around (right half mirrored)
+      const half=s.map(([hw,y])=>[x,y,hw*side]); return half; };
+    for(let i=0;i<secs.length-1;i++){
+      const A=secs[i], B=secs[i+1], g=G((A.x+B.x)/2);
+      for(const side of [1,-1]){
+        for(let j=0;j<A.s.length-1;j++){
+          const a0=A.s[j],a1=A.s[j+1],b0=B.s[j],b1=B.s[j+1];
+          const P=(p,x)=>[x,p[1],p[0]*side];
+          const q=[P(a0,A.x),P(a1,A.x),P(b1,B.x),P(b0,B.x)];
+          // orient so the outward normal comes out right for both sides
+          const poly=side===1?q:[q[3],q[2],q[1],q[0]];
+          let kind="body"; const xm=(A.x+B.x)/2;
+          if(j===4&&g>0.9&&xm>1900&&xm<3330) kind="glass";            // side glass
+          if(j>=6&&xm>2800&&xm<3470&&g>0.05) kind="glass";            // windscreen (top segments only; j=5 is the A-pillar)
+          if(j===0) kind="under";
+          if(xm>4440){ if(j<=1) kind="under"; else if(j>=3&&j<=4&&Math.abs(A.s[j][0])>430&&Math.abs(A.s[j][0])<760) kind="lamp"; }
+          add(poly,kind,{axis:[xm,(YB(xm)+T(xm))/2,0]});
+        }
+      }
+    }
+    // end caps
+    const capN=secs[secs.length-1], capT=secs[0];
+    const capPts=(sec,x)=>{ const r=sec.s.map(([hw,y])=>[x,y,hw]); const l=sec.s.slice().reverse().map(([hw,y])=>[x,y,-hw]); return r.concat(l); };
+    const fan=(pts,rev,kind)=>{ for(let i=1;i<pts.length-1;i++){ const tri=[pts[0],pts[i],pts[i+1]]; add(tri,kind,{axis:[2300,600,0]}); } };
+    fan(capPts(capN,4565),false,"body"); fan(capPts(capT,30),true,"body");
+    // wing, splitter, mirror (depth-sorted with the body)
+    const box=(x0,x1,y0,y1,z0,z1,kind)=>{ const V=[[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]]; const ax=[(x0+x1)/2,(y0+y1)/2,(z0+z1)/2]; [[0,1,2,3],[4,5,6,7],[0,1,5,4],[3,2,6,7],[0,3,7,4],[1,2,6,5]].forEach(f=>add(f.map(i=>V[i]),kind,{axis:ax})); };
+    box(20,540,1185,1215,-800,800,"wing");                       // blade
+    for(const sd of [1,-1]){ const z0=sd>0?780:-800, z1=sd>0?800:-780; const ep=[[-40,1268],[525,1238],[605,1112],[335,1068],[20,1074]]; const ax=[300,1170,sd*790];
+      add(ep.map(([x,y])=>[x,y,z1]),"plate",{axis:[300,1170,0]}); add(ep.map(([x,y])=>[x,y,z0]),"plate",{axis:[300,1170,0]});
+      box(280,340,950,1090,sd*(sd>0?330:340)-30,sd*(sd>0?330:340)+30,"wing"); }
+    box(3900,4645,92,135,-900,900,"splitter");
+    for(const sd of [1,-1]) box(3150,3300,940,1000,sd*(1000),sd*(1135),"body");
+    // wheels (drawn last, on top): near side only
+    const wheels=[]; const near=1;
+    const WH=[{x:3589,r:345,tw:310,zo:W(3589)-15},{x:1130,r:355,tw:340,zo:W(1130)-15}];
+    const ell=(xc,yc,zc,r,n)=>{ const o=[]; for(let i=0;i<n;i++){ const a=i/n*Math.PI*2; o.push(proj(xc+r*Math.cos(a),yc+r*Math.sin(a),zc)); } return o; };
+    WH.forEach(w=>{ const yc=w.r; const layers=[]; layers.push({pp:ell(w.x,yc,w.zo+8,w.r+62,26),fill:"#F3EAD2"});
+      for(let k=0;k<=4;k++){ const z=w.zo-w.tw*(1-k/4); layers.push({pp:ell(w.x,yc,z,w.r,26),fill:"#101317"}); }
+      layers.push({pp:ell(w.x,yc,w.zo,w.r-12,26),fill:"#1A1E24"}); layers.push({pp:ell(w.x,yc,w.zo+4,w.r-95,26),fill:"#8A92A0"});
+      for(let i=0;i<5;i++){ const a=i/5*Math.PI*2-Math.PI/2, a2=a+0.30, a1=a-0.30; layers.push({pp:[proj(w.x+Math.cos(a1)*70,yc+Math.sin(a1)*70,w.zo+6),proj(w.x+Math.cos(a1)*(w.r-100),yc+Math.sin(a1)*(w.r-100),w.zo+6),proj(w.x+Math.cos(a2)*(w.r-100),yc+Math.sin(a2)*(w.r-100),w.zo+6),proj(w.x+Math.cos(a2)*70,yc+Math.sin(a2)*70,w.zo+6)],fill:"#2A3038"}); }
+      layers.push({pp:ell(w.x,yc,w.zo+10,80,20),fill:"#2A3038"}); layers.push({pp:ell(w.x,yc,w.zo+12,28,12),fill:"#C98400"});
+      wheels.push(...layers); });
+    const decals=[]; const zS=x=>W(x)+3;
+    { const top=[],bot=[]; for(let x=620;x<=3180;x+=140){ top.push(proj(x,372,zS(x))); bot.push(proj(x,336,zS(x))); } decals.push({pp:top.concat(bot.reverse()),fill:"#C98400"}); }
+    { const xc=2330, yc=620, z=zS(xc)+2; decals.push({pp:ell(xc,yc,z,172,32),fill:"#C98400"}); decals.push({pp:ell(xc,yc,z+1,112,32),fill:"#F3EAD2"}); }
+    return {polys,wheels,decals,proj,view,φ,θ};
+  }
+  return {build};
+})();
+let ppCarMesh=null;
+function ppCarShapes(){
+  if(ppCarMesh) return ppCarMesh;
+  const m=PP_CAR.build({yaw:36,pitch:9}); m.polys.sort((a,b)=>a.depth-b.depth);
+  const list=m.polys.map(p=>({pp:p.pp,k:p.kind==="body"?(p.lam>.66?"b3":p.lam>.42?"b2":p.lam>.2?"b1":"b0"):p.kind})).concat(m.decals.map((d,i)=>({pp:d.pp,k:d.fill==="#C98400"?"acc":"skin"})),m.wheels.map(w=>({pp:w.pp,k:w.fill==="#101317"?"tire":w.fill==="#1A1E24"?"tire2":w.fill==="#8A92A0"?"rim":w.fill==="#2A3038"?"spoke":w.fill==="#C98400"?"acc":"skin"})));
+  let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; list.forEach(p=>p.pp.forEach(q=>{ x0=Math.min(x0,q[0]); x1=Math.max(x1,q[0]); y0=Math.min(y0,q[1]); y1=Math.max(y1,q[1]); }));
+  return ppCarMesh={list,x0,x1,y0,y1};
+}
+const ppMix=(a,b,t)=>{ const h=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16)); const A=h(a),B=h(b); return "#"+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,"0")).join(""); };
+/* the car as an svg group: width w, centred on cx, wheels resting on y=ground */
+function ppCar3d(ink,acc,skin,w,cx,ground){
+  const m=ppCarShapes(), s=w/(m.x1-m.x0), P=q=>`${((q[0]-m.x0)*s).toFixed(1).replace(/\.0$/,"")} ${((q[1]-m.y1)*s).toFixed(1).replace(/\.0$/,"")}`;
+  const steel="#A9B4C6", col={b3:ppMix(ink,steel,.5),b2:ppMix(ink,steel,.22),b1:ink,b0:ppMix(ink,"#000000",.3),glass:skin,lamp:ppMix(acc,skin,.5),under:ppMix(ink,"#000000",.35),plate:ppMix(ink,steel,.1),wing:ppMix(ink,steel,.14),splitter:ppMix(ink,"#000000",.35),acc:acc,skin:skin,tire:ppMix(ink,"#000000",.5),tire2:ppMix(ink,"#000000",.25),rim:ppMix(ink,steel,.55),spoke:ppMix(ink,steel,.08)};
+  return `<g transform="translate(${(cx-w/2).toFixed(2)} ${ground})" stroke-linejoin="round" stroke-width="${(0.45).toFixed(2)}">`+m.list.map(p=>{ const c=col[p.k]||ink; return `<path d="M${p.pp.map(P).join("L")}Z" fill="${c}" stroke="${c}"/>`; }).join("")+`</g>`;
+}
 /* track ids in the order you first checked in at them (for the Road Tripper route) */
 function ppVisitOrder(){ const seen=[]; ppLoad().stamps.slice().sort((a,b)=>(a.at||0)-(b.at||0)).forEach(x=>{ if(!seen.includes(x.t)) seen.push(x.t); }); return seen; }
 function seriesStamp(d,o){
@@ -214,9 +300,9 @@ function seriesStamp(d,o){
   const map=`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
   const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
   const cells=[[42,36],[80,36],[42,69],[80,69]], vis4=id=>visits[id]>0;
-  const k=0.0224, car=sp.kind!=="car"?"":`<g transform="translate(${(80-2302*k).toFixed(2)} 85) scale(${k} ${-k})">${ppGT3(ink,acc,"#F3EAD2")}</g>`;
-  let chk=""; if(sp.kind==="car") for(let r=0;r<2;r++) for(let c=0;c<24;c++) if((r+c)%2===0) chk+=`M${22+c*4.9},${88+r*4.6}h4.9v4.6h-4.9z`;
-  const centre=sp.kind==="car"?`<g clip-path="url(#st${u}c)"><path d="${chk}" fill="${ink}"/><path d="M0,87.7H160M0,97.4H160" stroke="${acc}" stroke-width="1"/></g>${car}`
+  const car=sp.kind!=="car"?"":locked?`<g opacity=".5">${ppCar3d("#8E8670","#8E8670","#F3EAD2",94,80,90)}</g>`:ppCar3d(ink,acc,"#F3EAD2",94,80,90);
+  let chk=""; if(sp.kind==="car") for(let r=0;r<2;r++) for(let c=0;c<24;c++) if((r+c)%2===0) chk+=`M${22+c*4.9},${93+r*4.4}h4.9v4.4h-4.9z`;
+  const centre=sp.kind==="car"?`<g clip-path="url(#st${u}c)"><path d="${chk}" fill="${ink}"/><path d="M0,92.7H160M0,102.1H160" stroke="${acc}" stroke-width="1"/></g>${car}`
     :sp.kind==="outlines"?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=vis4(id);
         return `<g opacity="${on||locked?1:.3}"><svg x="${cells[i][0]}" y="${cells[i][1]}" width="38" height="31" ${ppOutline(t,31,{c:ink,w:on?1.9:1.4})}</svg></g>`; }).join("")
     :sp.kind==="days"?["FRI","SAT","SUN"].map((dn,i)=>{ const x=44+i*25; return `<rect x="${x}" y="50" width="22" height="34" rx="3.5" fill="none" stroke="${ink}" stroke-width="1.5"/><path d="M${x},50.5h22v8.5h-22z" fill="${ink}"/><text x="${x+11}" y="57" font-size="5.6" font-weight="800" letter-spacing=".6" text-anchor="middle" fill="#F3EAD2">${dn}</text><path d="M${x+5.5},70.5l4.6,4.8l7-8.6" fill="none" stroke="${acc}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`; }).join("")

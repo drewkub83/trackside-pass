@@ -151,7 +151,7 @@ function ppFilter(u,rough){ return rough?`<filter id="st${u}f" x="-4%" y="-4%" w
 const PP_SERIES={
   imsa:{champ:"imsa",ink:"#22272E",acc:"#C98400",top:"IMSA",bot:"GRAND TOUR"},
   sportscar:{kind:"flags",band:true,ink:"#22272E",acc:"#C98400",top:"SPORTS CAR FAN",bot:"IMSA WEEKEND",size:9.2,space:2.2},
-  openwheel:{kind:"ofcar",band:true,bandInk:"#17402F",ink:"#17402F",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
+  openwheel:{kind:"cubist",band:true,bandInk:"#17402F",ink:"#17402F",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
   gtwca:{champ:"gtwca",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD",bot:"GT FAN",size:10,space:2},
   nascar:{match:/NASCAR/i,ink:"#6E1822",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR",size:11.5,space:3},
   endcup:{endu:6,route:true,band:true,ink:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
@@ -274,27 +274,37 @@ const PP_OF=(function(){
     // decals: amber stripe down the nose and tub
     const stripe=[]; for(let x=1500;x<=4800;x+=150){ const t=T(x)+3; stripe.push([x,t,34]); }
     const top=stripe.map(([x,t,z])=>proj(x,t,z)), bot=stripe.slice().reverse().map(([x,t,z])=>proj(x,t,-z)); dec.push({pp:top.concat(bot),fill:"acc"});
-    return {polys,dec,wheels,arms};
+    return {polys,dec,wheels,arms,proj};
   }
   return {build};
 })();
-let ppOfMesh=null;
-function ppOfShapes(){
-  if(ppOfMesh) return ppOfMesh;
-  const m=PP_OF.build({yaw:40,pitch:11}); m.polys.sort((a,b)=>a.depth-b.depth); const list=[];
+const ppOfViews={};
+/* the car's polygons for one camera (yaw: 0 = from the side, 90 = from the front; pitch: 0 = level, 85 = from above), far to near */
+function ppOfView(yaw,pitch){
+  const key=yaw+"/"+pitch; if(ppOfViews[key]) return ppOfViews[key];
+  const m=PP_OF.build({yaw,pitch}); m.polys.sort((a,b)=>a.depth-b.depth); const list=[];
   const bk=p=>p.kind==="body"?(p.lam>.62?"b3":p.lam>.4?"b2":p.lam>.2?"b1":"b0"):p.kind;
   m.wheels.filter(w=>w.sd<0).forEach(w=>w.grp.forEach(g=>list.push({pp:g.pp,k:g.fill})));
   m.polys.forEach(p=>list.push({pp:p.pp,k:bk(p)})); m.arms.forEach(a=>list.push({pp:a.pp,k:"arm"})); m.dec.forEach(d=>list.push({pp:d.pp,k:d.fill}));
   m.wheels.filter(w=>w.sd>0).sort((a,b)=>a.dep-b.dep).forEach(w=>w.grp.forEach(g=>list.push({pp:g.pp,k:g.fill})));
   let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; list.forEach(p=>p.pp.forEach(q=>{ x0=Math.min(x0,q[0]); x1=Math.max(x1,q[0]); y0=Math.min(y0,q[1]); y1=Math.max(y1,q[1]); }));
-  return ppOfMesh={list,x0,x1,y0,y1};
+  return ppOfViews[key]={list,x0,x1,y0,y1,bx:(x0+x1)/2,by:(y0+y1)/2,proj:m.proj};
 }
 const ppMix=(a,b,t)=>{ const h=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16)); const A=h(a),B=h(b); return "#"+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,"0")).join(""); };
-/* the car as an svg group: width w, centred on cx, wheels resting on y=ground */
-function ppOfCar(ink,acc,skin,w,cx,ground){
-  const m=ppOfShapes(), s=w/(m.x1-m.x0), n=v=>v.toFixed(1).replace(/\.0$/,""), P=q=>`${n((q[0]-m.x0)*s)} ${n((q[1]-m.y1)*s)}`, lt="#C9D6CC", blk="#000000";
-  const col={b3:ppMix(ink,lt,.5),b2:ppMix(ink,lt,.22),b1:ink,b0:ppMix(ink,blk,.3),under:ppMix(ink,blk,.45),plate:ppMix(ink,lt,.06),wing:ppMix(ink,lt,.12),helmet:skin,visor:ppMix(ink,blk,.6),hstripe:acc,cockpit:ppMix(ink,blk,.55),tire:"#13181A",tire2:"#232A2C",cover:ppMix(skin,ink,.12),coverIn:ink,acc:acc,arm:ppMix(ink,blk,.35)};
-  return `<ellipse cx="${n(cx+w*.02)}" cy="${n(ground-w*.05)}" rx="${n(w*.4)}" ry="${n(w*.03)}" fill="${ink}" opacity=".18"/><g transform="translate(${n(cx-w/2)} ${n(ground)})" stroke-linejoin="round" stroke-width=".4">`+m.list.map(p=>{ const c=col[p.k]||ink; return `<path d="M${p.pp.map(P).join("L")}Z" fill="${c}" stroke="${c}"/>`; }).join("")+`</g>`;
+/* Picasso-style open-wheel car: the whole car in three-quarter view, with angular shards laid over it that show the same part from another
+   side (rear wing from the side, cockpit from above, nose from the front), each shifted and tilted a little out of register, in its own
+   flat colours with bold black edges. */
+const PP_CUBPAL={cub:{b3:"#EBC96E",b2:"#D2744C",b1:"#4F7186",b0:"#2F5242"}};   /* one hue per facet, as in synthetic cubism */
+function ppCubist(ink,acc,skin,u,locked){
+  const K="#14171B", n=v=>v.toFixed(1).replace(/\.0$/,""), V=ppOfView(40,11), pal=PP_CUBPAL.cub, S=.0245, at=[80,72];
+  const T=q=>[at[0]+(q[0]-V.bx)*S, at[1]+(q[1]-V.by)*S];
+  const col={b3:pal.b3,b2:pal.b2,b1:pal.b1,b0:pal.b0,under:K,plate:"#E8D9AE",wing:K,helmet:"#F6EBCB",visor:K,hstripe:acc,cockpit:K,tire:K,tire2:"#2A2E31",cover:"#F1E4BE",coverIn:"#4F7186",acc:acc,arm:K};
+  let car=""; V.list.forEach(p=>{ const c=col[p.k]||pal.b1; car+=`<path d="M${p.pp.map(T).map(q=>n(q[0])+" "+n(q[1])).join("L")}Z" fill="${c}" stroke="${p.k.charAt(0)==="b"?ppMix(c,K,.35):c}" stroke-width="${p.k.charAt(0)==="b"?.12:.3}" stroke-linejoin="round"/>`; });
+  /* translucent planes laid across the car, and the construction lines of the drawing */
+  const plane=(pts,fill,op)=>`<polygon points="${pts.map(q=>q.join(",")).join(" ")}" fill="${fill}" opacity="${op}"/>`;
+  const planes=plane([[30,56],[74,38],[96,52],[52,76]],"#4F7186",.30)+plane([[84,46],[128,60],[118,92],[78,78]],"#D2744C",.28)+plane([[26,84],[70,66],[96,90],[44,104]],"#EBC96E",.34)+plane([[100,36],[116,50],[96,66]],K,.22);
+  const lines=`<path d="M24 92L136 52M58 40L96 100" stroke="${K}" stroke-width=".9" stroke-linecap="round" fill="none" opacity=".85"/><path d="M64 98Q82 108 118 86" stroke="${K}" stroke-width="1.1" fill="none" stroke-linecap="round"/>`;
+  return `<g>${car}</g>${planes}${lines}`;
 }
 /* track ids in the order you first checked in at them (for the Road Tripper route) */
 function ppVisitOrder(){ const seen=[]; ppLoad().stamps.slice().sort((a,b)=>(a.at||0)-(b.at||0)).forEach(x=>{ if(!seen.includes(x.t)) seen.push(x.t); }); return seen; }
@@ -313,7 +323,7 @@ function seriesStamp(d,o){
   const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
   const cells=[[42,36],[80,36],[42,69],[80,69]], vis4=id=>visits[id]>0;
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
-    :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
+    :sp.kind==="cubist"?(locked?`<g opacity=".4">${ppCubist(ink,acc,"#F3EAD2",u)}</g>`:ppCubist(ink,acc,"#F3EAD2",u))
     :sp.kind==="outlines"?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=vis4(id);
         return `<g opacity="${on||locked?1:.3}"><svg x="${cells[i][0]}" y="${cells[i][1]}" width="38" height="31" ${ppOutline(t,31,{c:ink,w:on?1.9:1.4})}</svg></g>`; }).join("")
     :sp.kind==="days"?["FRI","SAT","SUN"].map((dn,i)=>{ const x=44+i*25; return `<rect x="${x}" y="50" width="22" height="34" rx="3.5" fill="none" stroke="${ink}" stroke-width="1.5"/><path d="M${x},50.5h22v8.5h-22z" fill="${ink}"/><text x="${x+11}" y="57" font-size="5.6" font-weight="800" letter-spacing=".6" text-anchor="middle" fill="#F3EAD2">${dn}</text><path d="M${x+5.5},70.5l4.6,4.8l7-8.6" fill="none" stroke="${acc}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`; }).join("")

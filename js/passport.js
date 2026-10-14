@@ -26,11 +26,11 @@ function ppStats(p){
 }
 const PP_GLOBAL=[
   {id:"first",name:"First Stamp",desc:"Check in at your first race weekend.",icon:"star",tier:"x",test:s=>s.tracks>=1},
-  {id:"hopper",name:"Track Hopper",desc:"Visit 3 different tracks.",icon:"hop",tier:"b",test:s=>s.tracks>=3},
-  {id:"tripper",name:"Road Tripper",desc:"Visit 6 different tracks.",icon:"sign",tier:"s",test:s=>s.tracks>=6},
-  {id:"weekend",name:"Full Weekend",desc:"Check in every day of one race weekend.",icon:"cal",tier:"s",test:s=>s.full},
-  {id:"street",name:"Street Fighter",desc:"Visit two street circuits: Long Beach, Detroit, St. Petersburg or Arlington.",icon:"wall",tier:"s",test:s=>["long-beach","detroit","st-petersburg","arlington"].filter(i=>s.visits[i]>0).length>=2},
-  {id:"jungle",name:"Concrete Jungle",desc:"Visit all four street circuits: Long Beach, Detroit, St. Petersburg and Arlington.",icon:"city",tier:"g",test:s=>["long-beach","detroit","st-petersburg","arlington"].every(i=>s.visits[i]>0)},
+  {id:"hopper",name:"Track Hopper",desc:"Visit 3 different tracks.",icon:"hop",tier:"b",sty:"hopper",test:s=>s.tracks>=3},
+  {id:"tripper",name:"Road Tripper",desc:"Visit 6 different tracks.",icon:"sign",tier:"s",sty:"tripper",test:s=>s.tracks>=6},
+  {id:"weekend",name:"Full Weekend",desc:"Check in every day of one race weekend.",icon:"cal",tier:"s",sty:"wkend",test:s=>s.full},
+  {id:"street",name:"Street Fighter",desc:"Visit two street circuits: Long Beach, Detroit, St. Petersburg or Arlington.",icon:"wall",tier:"s",sty:"street",test:s=>["long-beach","detroit","st-petersburg","arlington"].filter(i=>s.visits[i]>0).length>=2},
+  {id:"jungle",name:"Concrete Jungle",desc:"Visit all four street circuits: Long Beach, Detroit, St. Petersburg and Arlington.",icon:"city",tier:"g",sty:"jungle",test:s=>["long-beach","detroit","st-petersburg","arlington"].every(i=>s.visits[i]>0)},
   {id:"endurance",name:"Endurance Triple",desc:"Check in at the Rolex 24, the Sebring 12 Hours and Petit Le Mans: IMSA's three races of 10 hours or more.",icon:"moon",tier:"g",sty:"triple",test:s=>["daytona","sebring","road-atlanta"].every(i=>s.endLong.has(i))},
   {id:"endcup",name:"Endurance Cup",desc:"Check in at an IMSA Endurance Cup weekend: the Rolex 24, Sebring 12 Hours, Six Hours of the Glen, Road America six-hour or Petit Le Mans.",icon:"moon",tier:"s",sty:"endcup",test:s=>s.endu},
   {id:"tour",name:"IMSA Grand Tour",desc:"Visit every venue on the IMSA schedule.",icon:"cup",tier:"g",test:s=>s.imsaVisited>=s.imsaTotal},
@@ -55,7 +55,7 @@ const PP_GLOBAL=[
   {id:"marathon",name:"Marathon",desc:"Check in every day of a four-day race weekend.",icon:"clock",tier:"g",test:s=>s.marathon},
   {id:"ten",name:"Ten Weekends",desc:"Check in at 10 race weekends.",icon:"cal",tier:"s",test:s=>s.weekends>=10},
   {id:"season",name:"Season Ticket",desc:"Check in at 25 race weekends.",icon:"cup",tier:"g",test:s=>s.weekends>=25},
-  {id:"grand",name:"Grand Tourer",desc:"Visit 10 different tracks.",icon:"van",tier:"g",test:s=>s.tracks>=10},
+  {id:"grand",name:"Grand Tourer",desc:"Visit 10 different tracks.",icon:"van",tier:"g",sty:"grand",test:s=>s.tracks>=10},
   {id:"fullgrid",name:"Full Grid",desc:"Visit every track in the app. The rarest stamp of all.",icon:"grid",tier:"z",test:s=>s.tracks>=s.total}
 ];
 const PP_TIERS=[["First Visit","b","Check in at %s during a race weekend."],["Return Visit","s","Come back for a second race weekend at %s."],["Regular","g","Three race weekends at %s."]];
@@ -155,6 +155,12 @@ const PP_SERIES={
   nascar:{match:/NASCAR/i,ink:"#6E1822",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR",size:11.5,space:3},
   endcup:{endu:6,route:true,band:true,ink:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
   triple:{endu:10,route:true,band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
+  hopper:{kind:"tracks",band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#C28A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
+  tripper:{kind:"tracks",route:"visited",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
+  grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
+  wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},
+  street:{kind:"outlines",ids:["long-beach","detroit","st-petersburg","arlington"],band:true,bandInk:"#2F3A45",ink:"#2F3A45",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.7},
+  jungle:{kind:"outlines",ids:["long-beach","detroit","st-petersburg","arlington"],band:true,bandInk:"#C28A00",bandText:"#2F3A45",ink:"#2F3A45",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
   f1:{match:/Formula 1/i,ink:"#1D1D22",acc:"#D0202A",top:"FORMULA 1",bot:"GRAND PRIX",size:9.5,space:1.6}
 };
 const PP_LAND=[[[-122.8,49],[-95.2,49],[-95.2,49.4],[-94.8,49.4],[-94.6,48.8],[-94.3,48.7],[-92.6,48.5],[-91.6,48.1],[-90.8,48.3],[-89.3,48.0],[-88.4,48.3],[-84.9,46.9],[-84.8,46.6],[-84.5,46.5],[-84.6,46.4],[-84.1,46.5],[-83.9,46.1],[-83.5,46.0],[-83.6,45.8],[-82.6,45.3],[-82.1,43.6],[-83.1,42.1],[-83.0,41.8],[-82.7,41.7],[-78.9,42.9],[-79.2,43.5],[-78.7,43.6],[-76.8,43.6],[-76.5,44.0],[-74.9,45.0],[-71.5,45.0],[-71.4,45.3],[-70.7,45.5],[-70.0,46.7],[-69.2,47.4],[-68.9,47.2],[-68.2,47.4],[-67.8,47.1],[-67.8,45.7],[-67.0,44.8],[-70.1,43.7],[-70.8,42.9],[-70.8,42.3],[-70.5,41.8],[-70.1,41.8],[-70.2,42.1],[-69.9,41.9],[-70.0,41.6],[-72.9,41.2],[-73.7,40.9],[-72.2,41.1],[-71.9,40.9],[-73.3,40.6],[-74.0,40.6],[-74.0,40.8],[-74.3,40.5],[-74.0,40.4],[-74.2,39.7],[-74.9,38.9],[-75.0,39.2],[-75.5,39.5],[-75.3,39.0],[-75.1,38.8],[-75.1,38.4],[-75.9,37.2],[-75.7,37.9],[-76.2,38.3],[-76.3,39.1],[-76.5,38.7],[-76.3,38.1],[-77.0,38.2],[-76.3,37.9],[-76.3,37.0],[-76.0,36.9],[-75.7,35.6],[-76.4,34.8],[-77.4,34.5],[-78.1,33.9],[-78.6,33.9],[-79.1,33.5],[-79.2,33.2],[-80.9,32.0],[-81.3,31.4],[-81.5,30.7],[-81.3,30.0],[-80.5,28.5],[-80.5,28.0],[-80.1,26.9],[-80.1,25.8],[-80.4,25.2],[-80.7,25.1],[-81.2,25.2],[-81.3,25.6],[-81.7,25.9],[-82.9,27.9],[-82.7,28.6],[-82.9,29.1],[-83.7,29.9],[-84.1,30.1],[-85.1,29.6],[-85.8,30.2],[-86.4,30.4],[-87.5,30.3],[-88.4,30.4],[-89.6,30.2],[-89.4,29.9],[-89.4,29.5],[-89.2,29.3],[-89.4,29.2],[-89.8,29.3],[-90.2,29.1],[-90.9,29.1],[-91.6,29.7],[-92.5,29.6],[-93.2,29.8],[-94.7,29.5],[-95.6,28.7],[-96.6,28.3],[-97.1,27.8],[-97.4,27.4],[-97.4,26.7],[-97.1,25.9],[-97.5,25.8],[-99.0,26.4],[-99.5,27.5],[-100.1,28.1],[-101.0,29.4],[-101.7,29.8],[-102.5,29.8],[-103.1,29.0],[-103.9,29.3],[-104.5,29.6],[-105.0,30.6],[-106.5,31.8],[-108.2,31.8],[-108.2,31.3],[-111.0,31.3],[-114.8,32.5],[-114.7,32.7],[-117.1,32.5],[-117.3,33.0],[-117.9,33.6],[-118.4,33.7],[-118.5,34.0],[-119.1,34.1],[-119.4,34.3],[-120.4,34.4],[-120.6,34.6],[-120.7,35.2],[-121.7,36.2],[-122.5,37.6],[-122.5,37.8],[-123.7,39.0],[-123.9,39.8],[-124.4,40.3],[-124.2,41.1],[-124.2,42.0],[-124.5,42.8],[-124.1,43.7],[-123.9,45.5],[-124.1,46.9],[-124.7,48.2],[-124.6,48.4],[-123.1,48.0],[-122.6,47.1],[-122.3,47.4]],[[-122.8,49],[-125.6,50.4],[-127.4,50.8],[-128.0,51.7],[-127.9,52],[-81.2,52],[-79.9,51.2],[-79.1,51.5],[-78.9,52],[-56.0,52],[-57.1,51.4],[-58.8,51.1],[-60.0,50.2],[-61.7,50.1],[-63.9,50.3],[-66.4,50.2],[-67.2,49.5],[-68.5,49.1],[-71.1,46.8],[-70.3,47.0],[-68.7,48.3],[-66.6,49.1],[-65.1,49.2],[-64.2,48.7],[-65.1,48.1],[-64.5,46.2],[-63.2,45.7],[-61.5,45.9],[-60.5,47.0],[-60.4,46.3],[-59.8,45.9],[-61.0,45.3],[-64.2,44.3],[-65.4,43.5],[-66.1,43.6],[-66.2,44.5],[-64.4,45.3],[-67.1,45.1],[-67.8,45.7],[-67.8,47.1],[-68.2,47.4],[-68.9,47.2],[-69.2,47.4],[-70.0,46.7],[-70.7,45.5],[-71.4,45.3],[-71.5,45.0],[-74.9,45.0],[-76.5,44.0],[-76.8,43.6],[-78.7,43.6],[-79.2,43.5],[-78.9,42.9],[-82.7,41.7],[-83.0,41.8],[-83.1,42.1],[-82.1,43.6],[-82.6,45.3],[-83.6,45.8],[-83.5,46.0],[-83.9,46.1],[-84.1,46.5],[-84.6,46.4],[-84.5,46.5],[-84.8,46.6],[-84.9,46.9],[-88.4,48.3],[-89.3,48.0],[-90.8,48.3],[-91.6,48.1],[-92.6,48.5],[-94.3,48.7],[-94.6,48.8],[-94.8,49.4],[-95.2,49.4],[-95.2,49]]];
@@ -172,23 +178,34 @@ function ppMapProj(){      /* fits the lower 48 into a box 98 x 57, centred on (
 /* the series' mapped venues, one dot per place: layouts that share a site (Indianapolis road course and oval) merge */
 function ppVenues(sp){
   const c=sp.champ&&champ(sp.champ), hit=e=>c?inChamp(c,e):sp.endu?ppIsEndu(e,sp.endu):sp.match&&(sp.match.test(e.s||"")||(e.support||[]).some(x=>sp.match.test(x))), out=[];
-  TRACKS.filter(t=>t.events.some(hit)).forEach(t=>{ const lat=(t.geo.n+t.geo.s)/2, lon=(t.geo.w+t.geo.e)/2, key=t.events.filter(hit).map(e=>e.d.slice(5)).sort()[0], g=out.find(v=>Math.abs(v.lat-lat)<.05&&Math.abs(v.lon-lon)<.05); if(g) g.ids.push(t.id); else out.push({ids:[t.id],lat,lon,key}); });
+  const inUS=t=>{ const la=(t.geo.n+t.geo.s)/2, lo=(t.geo.w+t.geo.e)/2; return la>24&&la<50&&lo>-126&&lo<-66; };
+  (sp.all||sp.kind==="tracks"?TRACKS.filter(inUS):TRACKS.filter(t=>t.events.some(hit))).forEach(t=>{ const lat=(t.geo.n+t.geo.s)/2, lon=(t.geo.w+t.geo.e)/2, key=(t.events.filter(hit).map(e=>e.d.slice(5)).sort()[0])||"", g=out.find(v=>Math.abs(v.lat-lat)<.05&&Math.abs(v.lon-lon)<.05); if(g) g.ids.push(t.id); else out.push({ids:[t.id],lat,lon,key}); });
   if(sp.route) out.sort((a,b)=>a.key.localeCompare(b.key));      /* calendar order, for the dotted route between venues */
   return out;
 }
+/* track ids in the order you first checked in at them (for the Road Tripper route) */
+function ppVisitOrder(){ const seen=[]; ppLoad().stamps.slice().sort((a,b)=>(a.at||0)-(b.at||0)).forEach(x=>{ if(!seen.includes(x.t)) seen.push(x.t); }); return seen; }
 function seriesStamp(d,o){
   o=o||{}; const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
   const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=ppMapProj();
   const visits=o.visits||(locked?{}:ppStats(ppLoad()).visits), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
   let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }
-  const venues=ppVenues(sp), route=sp.route&&venues.length>1?`<path d="M${venues.map(v=>proj(v.lon,v.lat).map(n=>n.toFixed(1)).join(" ")).join("L")}" fill="none" stroke="${acc}" stroke-width="1.1" stroke-dasharray="2.6 2" stroke-linecap="round" stroke-linejoin="round"/>`:"";
+  const venues=sp.kind&&sp.kind!=="tracks"?[]:ppVenues(sp), at=v=>proj(v.lon,v.lat).map(n=>n.toFixed(1)).join(" ");
+  const stops=sp.route==="visited"?(o.order||(locked?[]:ppVisitOrder())).map(id=>venues.find(v=>v.ids.includes(id))).filter(v=>v&&v.ids.some(i=>visits[i]>0)):(sp.route?venues:[]);
+  const route=stops.length>1?`<path d="M${stops.map(at).join("L")}" fill="none" stroke="${acc}" stroke-width="1.1" stroke-dasharray="2.6 2" stroke-linecap="round" stroke-linejoin="round"/>`:"";
   const dots=venues.map(v=>{ const [x,y]=proj(v.lon,v.lat).map(n=>n.toFixed(1)), on=v.ids.some(i=>visits[i]>0);
     return on?`<circle cx="${x}" cy="${y}" r="4" fill="#F3EAD2" stroke="${acc}" stroke-width="1.1"/><circle cx="${x}" cy="${y}" r="2.2" fill="${acc}" stroke="${ink}" stroke-width=".8"/>`
       :`<circle cx="${x}" cy="${y}" r="1.5" fill="#F3EAD2" stroke="${ink}" stroke-width=".6" opacity=".9"/>`; }).join("");
   const map=`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
+  const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
+  const cells=[[42,36],[80,36],[42,69],[80,69]], vis4=id=>visits[id]>0;
+  const centre=sp.kind==="outlines"?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=vis4(id);
+        return `<g opacity="${on||locked?1:.3}"><svg x="${cells[i][0]}" y="${cells[i][1]}" width="38" height="31" ${ppOutline(t,31,{c:ink,w:on?1.9:1.4})}</svg></g>`; }).join("")
+    :sp.kind==="days"?["FRI","SAT","SUN"].map((dn,i)=>{ const x=44+i*25; return `<rect x="${x}" y="50" width="22" height="34" rx="3.5" fill="none" stroke="${ink}" stroke-width="1.5"/><path d="M${x},50.5h22v8.5h-22z" fill="${ink}"/><text x="${x+11}" y="57" font-size="5.6" font-weight="800" letter-spacing=".6" text-anchor="middle" fill="#F3EAD2">${dn}</text><path d="M${x+5.5},70.5l4.6,4.8l7-8.6" fill="none" stroke="${acc}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`; }).join("")
+    :map+(abroad?`<text x="36" y="104" font-size="5.2" font-weight="800" letter-spacing=".4" fill="${acc}">+${abroad} ABROAD</text>`:"");
   const defs=`<path id="st${u}t" d="M 30,80 A 50,50 0 0 1 130,80"/><path id="st${u}bt" d="M 13.8,80 A 66.2,66.2 0 0 1 146.2,80"/><path id="st${u}bb" d="M 6.2,80 A 73.8,73.8 0 0 0 153.8,80"/><path id="st${u}b" d="M 20,80 A 60,60 0 0 0 140,80"/><clipPath id="st${u}c"><circle cx="80" cy="80" r="58"/></clipPath><clipPath id="st${u}k"><circle cx="80" cy="80" r="49"/></clipPath>
     <pattern id="st${u}h" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".6" fill="${ink}"/></pattern><pattern id="st${u}hl" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".26" fill="${ink}" opacity=".5"/></pattern>`;
-  if(locked) return `<svg class="stamp locked" viewBox="0 0 160 160" aria-hidden="true"><defs>${defs}</defs><circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="2.4" stroke-dasharray="5 5"/><g opacity=".85">${map}</g></svg>`;
+  if(locked) return `<svg class="stamp locked" viewBox="0 0 160 160" aria-hidden="true"><defs>${defs}</defs><circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="2.4" stroke-dasharray="5 5"/><g opacity=".85">${centre}</g></svg>`;
   return `<svg class="stamp" viewBox="0 0 160 160" aria-hidden="true"><defs>${defs}${rough?`<filter id="st${u}f" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="${(u%37)+2}" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -4 3.75" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in" result="c"/><feDisplacementMap in="c" in2="n" scale="1" xChannelSelector="R" yChannelSelector="G"/></filter>`:""}</defs>
     <g${rough?` filter="url(#st${u}f)"`:""} opacity=".94">
       ${sp.band?`<circle cx="80" cy="80" r="70" fill="none" stroke="${sp.bandInk||ink}" stroke-width="12"/><circle cx="80" cy="80" r="78" fill="none" stroke="${sp.bandInk?ink:acc}" stroke-width="1.5"/><circle cx="80" cy="80" r="63" fill="none" stroke="${ink}" stroke-width="1"/>
@@ -201,8 +218,8 @@ function seriesStamp(d,o){
       <text font-size="${sp.size||14}" font-weight="800" letter-spacing="${sp.space||5}" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${top}</textPath></text>
       <text font-size="9.6" font-weight="800" letter-spacing="1.8" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${bot}</textPath></text>
 `}
-      ${map}
-      ${o.date?`<text x="80" y="114" font-size="9.6" font-weight="800" letter-spacing=".9" text-anchor="middle" fill="${ink}">${ppDate(o.date)}</text><path d="M40,110.6H52M108,110.6H120" stroke="${acc}" stroke-width="1.2"/>`:""}
+      ${centre}
+      ${o.date?`<text x="80" y="114" font-size="9.6" font-weight="800" letter-spacing=".9" text-anchor="middle" fill="${ink}">${ppDate(o.date)}</text><path d="M35,110.6H46M114,110.6H125" stroke="${acc}" stroke-width="1.2"/>`:""}
     </g></svg>`;
 }
 /* ---------------- series logos ----------------

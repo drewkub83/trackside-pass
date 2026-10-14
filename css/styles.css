@@ -813,10 +813,9 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 :root[data-style="race"] .ppSec[data-s]>summary .ppSecT::before{content:"";display:inline-block;width:4px;height:14px;margin-right:8px;border-radius:2px;vertical-align:-2px;background:var(--sc,var(--s-other))}
 :root[data-style="race"] .ppSec[data-s="gtwca"]{--sc:var(--s-gtwca)}:root[data-style="race"] .ppSec[data-s="gtwce"]{--sc:var(--s-gtwce)}
 :root[data-style="race"] .ppSec[data-s="imsa"]{--sc:var(--s-imsa)}:root[data-style="race"] .ppSec[data-s="indycar"]{--sc:var(--s-indycar)}
-/* series marks (stamp stand-ins for series logos) */
-.smark{display:inline-grid;place-items:center;flex:none;width:var(--sz,44px);height:var(--sz,44px);border-radius:50%;background:#F3EAD2;box-shadow:0 1px 4px rgba(0,0,0,.28);vertical-align:middle}
-.smark svg{display:block;width:100%;height:100%}
-.smark.logo{width:auto;border-radius:0;background:none;box-shadow:none}.smark.logo img{display:block;height:var(--sz,44px);width:auto}
+/* series logos (see SERIES_LOGOS in js/passport.js) */
+.smark{display:inline-flex;align-items:center;flex:none}
+.smark img{display:block;height:var(--sz,44px);width:auto}
 .track-row .tile.txt.mk{background:none;padding:0;box-shadow:none}
 .hubSeries{display:flex;align-items:center;gap:8px}
 .bar .ptitle2 .smark{margin-right:10px}.bar .ptitle2{display:flex;align-items:center}

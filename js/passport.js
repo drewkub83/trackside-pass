@@ -33,9 +33,9 @@ const PP_GLOBAL=[
   {id:"jungle",name:"Concrete Jungle",desc:"Visit all four street circuits: Long Beach, Detroit, St. Petersburg and Arlington.",icon:"city",tier:"g",sty:"jungle",test:s=>["long-beach","detroit","st-petersburg","arlington"].every(i=>s.visits[i]>0)},
   {id:"endurance",name:"Endurance Triple",desc:"Check in at the Rolex 24, the Sebring 12 Hours and Petit Le Mans: IMSA's three races of 10 hours or more.",icon:"moon",tier:"g",sty:"triple",test:s=>["daytona","sebring","road-atlanta"].every(i=>s.endLong.has(i))},
   {id:"endcup",name:"Endurance Cup",desc:"Check in at an IMSA Endurance Cup weekend: the Rolex 24, Sebring 12 Hours, Six Hours of the Glen, Road America six-hour or Petit Le Mans.",icon:"moon",tier:"s",sty:"endcup",test:s=>s.endu},
-  {id:"tour",name:"IMSA Grand Tour",desc:"Visit every venue on the IMSA schedule.",icon:"cup",tier:"g",test:s=>s.imsaVisited>=s.imsaTotal},
+  {id:"tour",name:"IMSA Grand Tour",desc:"Visit every venue on the IMSA schedule.",icon:"cup",tier:"g",sty:"imsa",test:s=>s.imsaVisited>=s.imsaTotal},
   /* by series */
-  {id:"sportscar",name:"Sports Car Fan",desc:"Check in at an IMSA WeatherTech weekend.",icon:"car",tier:"x",sty:"imsa",test:s=>s.series.has("imsa")},
+  {id:"sportscar",name:"Sports Car Fan",desc:"Check in at an IMSA WeatherTech weekend.",icon:"car",tier:"x",sty:"sportscar",test:s=>s.series.has("imsa")},
   {id:"openwheel",name:"Open Wheel",desc:"Check in at an IndyCar weekend.",icon:"wheel",tier:"x",sty:"indycar",test:s=>s.series.has("indycar")},
   {id:"gtfan",name:"GT Fan",desc:"Check in at a GT World Challenge America weekend.",icon:"gt",tier:"x",sty:"gtwca",test:s=>s.series.has("gtwca")},
   {id:"stock",name:"Stock Car",desc:"Check in at a NASCAR weekend.",icon:"stockcar",tier:"x",sty:"nascar",test:s=>s.series.has("nascar")},
@@ -149,7 +149,8 @@ function ppFilter(u,rough){ return rough?`<filter id="st${u}f" x="-4%" y="-4%" w
    in at is filled amber, so the stamp doubles as a progress map. Coastlines: Natural Earth (public domain),
    simplified, as [lon,lat] rings (mainland United States, then southern Canada). */
 const PP_SERIES={
-  imsa:{champ:"imsa",ink:"#22272E",acc:"#C98400",top:"IMSA",bot:"SPORTS CAR FAN"},
+  imsa:{champ:"imsa",ink:"#22272E",acc:"#C98400",top:"IMSA",bot:"GRAND TOUR"},
+  sportscar:{kind:"car",band:true,ink:"#22272E",acc:"#C98400",top:"SPORTS CAR FAN",bot:"IMSA WEEKEND",size:9.2,space:2.2},
   indycar:{champ:"indycar",ink:"#17402F",acc:"#C23B22",top:"INDYCAR",bot:"OPEN WHEEL",size:10.5,space:2.2},
   gtwca:{champ:"gtwca",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD",bot:"GT FAN",size:10,space:2},
   nascar:{match:/NASCAR/i,ink:"#6E1822",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR",size:11.5,space:3},
@@ -183,6 +184,20 @@ function ppVenues(sp){
   if(sp.route) out.sort((a,b)=>a.key.localeCompare(b.key));      /* calendar order, for the dotted route between venues */
   return out;
 }
+/* A GT3 race car in side view, facing right, drawn from real dimensions in millimetres (modelled on a 911 GT3 R:
+   4.57 m long, 2.46 m wheelbase, about 1.2 m tall). Origin is the ground under the rear of the car, y pointing up,
+   so the group is drawn with scale(k,-k). Body, glass, door lines, side intake and headlight are one evenodd path. */
+function ppSliver(x1,y1,x2,y2,w){ const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy), nx=-dy/L*w/2, ny=dx/L*w/2; return `M${x1+nx},${y1+ny}L${x2+nx},${y2+ny}L${x2-nx},${y2-ny}L${x1-nx},${y1-ny}Z`; }
+const PP_GT3_BODY="M150,190L40,330L30,640C30,800 150,920 330,955C700,985 1250,1085 1750,1175C1950,1208 2450,1214 2700,1188C2950,1135 3250,985 3480,885C3750,842 4150,762 4400,642C4500,592 4570,500 4565,380L4560,210L4625,140L4645,92L4430,92L3944,150A405,405 0 1 1 3234,150L1491,150A415,415 0 1 1 769,150L330,150Z"
+  +"M3330,915L2780,1150C2620,1168 2250,1165 2060,1130C1940,1100 1870,1040 1845,985Z"+ppSliver(3090,870,3055,400,13)+ppSliver(1790,850,1760,420,13)
+  +"M1560,500L1640,645L1705,632L1625,480Z"+"M4380,645C4440,605 4500,565 4522,505L4500,492C4470,545 4420,580 4352,622Z"+ppSliver(3210,300,3320,300,16)+ppSliver(4140,700,4300,640,12);
+function ppWheel(cx,cy,r,ink){ let sp=""; for(let i=0;i<5;i++){ const a=i*Math.PI*2/5-Math.PI/2; sp+=`M${cx+Math.cos(a)*80},${cy+Math.sin(a)*80}L${cx+Math.cos(a)*(r-115)},${cy+Math.sin(a)*(r-115)}`; }
+  return `<path fill-rule="evenodd" d="M${cx-r},${cy}a${r},${r} 0 1,0 ${2*r},0a${r},${r} 0 1,0 ${-2*r},0M${cx-(r-105)},${cy}a${r-105},${r-105} 0 1,0 ${2*(r-105)},0a${r-105},${r-105} 0 1,0 ${-2*(r-105)},0M${cx-100},${cy}a100,100 0 1,0 200,0a100,100 0 1,0 -200,0M${cx-30},${cy}a30,30 0 1,0 60,0a30,30 0 1,0 -60,0" fill="${ink}"/><path d="${sp}" stroke="${ink}" stroke-width="50" stroke-linecap="round" fill="none"/>`; }
+function ppGT3(ink,acc,skin){
+  return `<path d="${PP_GT3_BODY}" fill="${ink}" fill-rule="evenodd"/><path d="M3130,935L3290,962L3275,1012L3150,1000Z" fill="${ink}"/>`
+    +`<path d="M-40,1268L525,1238L605,1112L335,1068L20,1074Z" fill="${ink}"/><path d="M-20,1190L560,1180" stroke="${acc}" stroke-width="22" fill="none"/><path d="M300,1070C300,1010 315,985 335,955M110,1074C120,1030 190,985 255,962" stroke="${ink}" stroke-width="36" fill="none"/>`
+    +`<path d="M620,345L3170,385" stroke="${acc}" stroke-width="32" fill="none" stroke-linecap="round"/><circle cx="2360" cy="620" r="165" fill="${acc}"/><circle cx="2360" cy="620" r="108" fill="${skin}"/>`
+    +ppWheel(3589,345,345,ink)+ppWheel(1130,355,355,ink); }
 /* track ids in the order you first checked in at them (for the Road Tripper route) */
 function ppVisitOrder(){ const seen=[]; ppLoad().stamps.slice().sort((a,b)=>(a.at||0)-(b.at||0)).forEach(x=>{ if(!seen.includes(x.t)) seen.push(x.t); }); return seen; }
 function seriesStamp(d,o){
@@ -199,7 +214,10 @@ function seriesStamp(d,o){
   const map=`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
   const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
   const cells=[[42,36],[80,36],[42,69],[80,69]], vis4=id=>visits[id]>0;
-  const centre=sp.kind==="outlines"?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=vis4(id);
+  const k=0.0224, car=sp.kind!=="car"?"":`<g transform="translate(${(80-2302*k).toFixed(2)} 85) scale(${k} ${-k})">${ppGT3(ink,acc,"#F3EAD2")}</g>`;
+  let chk=""; if(sp.kind==="car") for(let r=0;r<2;r++) for(let c=0;c<24;c++) if((r+c)%2===0) chk+=`M${22+c*4.9},${88+r*4.6}h4.9v4.6h-4.9z`;
+  const centre=sp.kind==="car"?`<g clip-path="url(#st${u}c)"><path d="${chk}" fill="${ink}"/><path d="M0,87.7H160M0,97.4H160" stroke="${acc}" stroke-width="1"/></g>${car}`
+    :sp.kind==="outlines"?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=vis4(id);
         return `<g opacity="${on||locked?1:.3}"><svg x="${cells[i][0]}" y="${cells[i][1]}" width="38" height="31" ${ppOutline(t,31,{c:ink,w:on?1.9:1.4})}</svg></g>`; }).join("")
     :sp.kind==="days"?["FRI","SAT","SUN"].map((dn,i)=>{ const x=44+i*25; return `<rect x="${x}" y="50" width="22" height="34" rx="3.5" fill="none" stroke="${ink}" stroke-width="1.5"/><path d="M${x},50.5h22v8.5h-22z" fill="${ink}"/><text x="${x+11}" y="57" font-size="5.6" font-weight="800" letter-spacing=".6" text-anchor="middle" fill="#F3EAD2">${dn}</text><path d="M${x+5.5},70.5l4.6,4.8l7-8.6" fill="none" stroke="${acc}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`; }).join("")
     :map+(abroad?`<text x="36" y="104" font-size="5.2" font-weight="800" letter-spacing=".4" fill="${acc}">+${abroad} ABROAD</text>`:"");

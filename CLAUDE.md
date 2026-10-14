@@ -33,6 +33,15 @@ Every track has a walking grid (`route`). Three things make Directions actually 
 - **Check:** in the browser console, from a gate / restroom / food / parking badge, `walkMetresTo()` should reach >= 98% of a
   track's badges. Don't bump a track's `rev` for this: it wipes the user's own badge edits.
 
+## Lap records (`lapRecord` in `data/<track>.js`)
+A list, one entry per series (per class for IMSA and WEC): the series' **track record on the layout the map draws** -- the fastest lap ever
+in any session (race, qualifying, pole, even practice), whatever the year; the user does not care when it was set. Only top series that are
+on that track's calendar in the app (IMSA, IndyCar, GT World Challenge America/Europe) plus F1/MotoGP/NASCAR where they appear there, and WEC
+(not set up yet, but its venues Imola, Spa, COTA and Portimao already carry its Hypercar and LMGT3 records). No support series (Pilot Challenge,
+Carrera Cup, MX-5, GT4, ELMS, Indy NXT...). Layouts stay apart (oval vs road course, chicane vs no chicane). `note` says whether the lap was a
+race or qualifying lap. Wikipedia is fine for circuit lap records; IMSA's class "track records" (qualifying) come from IMSA's own reports.
+Never guess a number: if a record cannot be found, leave the entry out. The Info tab shows series, time and driver (no year).
+
 ## Adding a new circuit (US or overseas)
 1. `tools/track-data/fetch_track_osm.py <id> <lat> <lon> [radius]` downloads the OpenStreetMap data (it uses a working Overpass
    mirror; the main one is often down). `osm_raceways.py` lists raceway pieces; `chain_circuit.py <id> <official_km>` chains

@@ -524,11 +524,11 @@ function toggleGoingRow(i){ const e=evRows[i]; if(!e) return; const on=!isGoing(
 function bestViewPois(){ const ov=layoutOverrides(); return cur.pois.map(p=>applyOv(p,ov[pid(p)])).filter(p=>p.k==="view"&&!p.del); }
 /* lapRecord can also be a list, one per major series ({series, time, who, car, year, note}), for a venue
    several championships share -- each one's record stands on its own, they aren't comparable. The list shows
-   only series, time, driver and year (car/note stay in the data as the source record). */
+   only series, time and driver (year/car/note stay in the data as the source record). */
 function lapRecordHtml(){
   const r = cur.lapRecord; if(!r) return `<dd class="tbd">Not added yet</dd>`;
   if(typeof r === "string") return `<dd>${esc(r)}</dd>`;
-  if(Array.isArray(r)) return `<dd class="lrs">${r.map(x=>`<div class="lr"><span class="lr-s">${esc(x.series)}</span>${esc(x.time)}<span class="lr-who">${esc([x.who,x.year].filter(Boolean).join(" · "))}</span></div>`).join("")}</dd>`;
+  if(Array.isArray(r)) return `<dd class="lrs">${r.map(x=>`<div class="lr"><span class="lr-s">${esc(x.series)}</span>${esc(x.time)}<span class="lr-who">${esc(x.who||"")}</span></div>`).join("")}</dd>`;
   return `<dd>${esc(r.time)}<span class="lr-who">${esc([r.who,r.car,r.year].filter(Boolean).join(" · "))}${r.note?` — ${esc(r.note)}`:""}</span></dd>`;
 }
 function renderInfo(){

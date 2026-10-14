@@ -6,7 +6,7 @@ TRACKS.push({
   "length":"2.73 mi",
   "opened":2026,
   "blurb":"A street circuit through the Arlington entertainment district, around AT&T Stadium and Globe Life Field, with a 0.95-mile Randol Mill Road back straight.",
-  "lapRecord":[{"series":"IndyCar","time":"1:33.9902","who":"Scott Dixon","car":"Dallara IR-18","year":2026,"note":"fastest race lap at the first race on this street circuit"}],
+  "lapRecord":[{"series":"IndyCar","time":"1:33.9902","who":"Scott Dixon","car":"Dallara IR-18","year":2026,"note":"fastest lap of the first race on this circuit; pole was 1:34.3562 (Marcus Ericsson)"}],
   "facts":{"Race weekend":"Built on city streets around the stadiums every March","Signature sections":"The Randol Mill Road back straight, the Horseshoe beside AT&T Stadium, split pit lane","Designer":"Tony Cottman","Crossings":"Pedestrian bridges plus street-level crossings that open when the track is cold"},
   "events":[{"d":"2027-03-19","e":"Java House Grand Prix of Arlington","s":"NTT INDYCAR SERIES","t":3}],
   "tz":"America/Chicago",

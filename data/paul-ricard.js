@@ -4,6 +4,7 @@ TRACKS.push({
   "short":"Paul Ricard",
   "place":"Le Castellet, France",
   "length":"5.791 km (3.60 mi)",
+  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:52.982","who":"Jules Gounon","car":"Mercedes-AMG GT3 Evo","year":2023,"note":"fastest qualifying lap I could find at the 1000 km (not checked against every year) on the 5.770 km layout without the Mistral chicane"}],
   "opened":1970,
   "blurb":"A 5.791 km circuit at Le Castellet in the south of France, with a long Mistral straight. It opens the 2027 GT World Challenge Europe season with a six-hour race on the Saturday evening.",
   "facts":{"Signature sections":"The Mistral straight, Courbe de Signes, the S de la Verrerie","Venue data":"Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map."},

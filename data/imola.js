@@ -6,7 +6,7 @@ TRACKS.push({
   "length":"4.909 km (3.05 mi)",
   "opened":1953,
   "blurb":"The Autodromo Internazionale Enzo e Dino Ferrari at Imola in Italy: 4.909 km and 19 turns, including Tamburello, Tosa, Acque Minerali and Rivazza. GT World plans a three-hour Endurance Cup race here on May 21-23, 2027, its first visit since 2022; the round is subject to final agreement.",
-  "lapRecord":[{"series":"Formula 1","time":"1:15.484","who":"Lewis Hamilton","car":"Mercedes W11","year":2020,"note":"race lap record"},{"series":"WEC","time":"1:31.794","who":"Antonio Fuoco","car":"Ferrari 499P","year":2024,"note":"Hypercar race lap record"}],
+  "lapRecord":[{"series":"Formula 1","time":"1:13.609","who":"Valtteri Bottas","car":"Mercedes W11","year":2020,"note":"fastest lap ever (Q3 pole lap); race lap record 1:15.484, Lewis Hamilton, 2020"},{"series":"WEC Hypercar","time":"1:28.920","who":"Antonio Giovinazzi","car":"Ferrari 499P","year":2025,"note":"Hyperpole qualifying lap, 6 Hours of Imola"},{"series":"WEC LMGT3","time":"1:41.181","who":"Tom Fleming","car":"McLaren 720S GT3 Evo","year":2026,"note":"Hyperpole qualifying lap (pole), 6 Hours of Imola; Garage 59"}],
   "facts":{"Signature sections":"Tamburello, Tosa, Acque Minerali, Rivazza","Venue data":"Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map."},
   "vb":[0,0,800,765],
   "geo":{"n":44.372454,"s":44.335475,"w":11.685616,"e":11.739465},

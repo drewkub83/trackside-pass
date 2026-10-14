@@ -143,8 +143,8 @@ function orderedChamps(){ const byId=Object.fromEntries(CHAMPS.map(c=>[c.id,c]))
 function renderChampList(){
   const el=document.getElementById("champList"); if(!el) return;
   const ordered=orderedChamps().filter(followed);
-  const row=c=>{ const n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length, same=String(c.tile).toLowerCase()===String(c.name).toLowerCase();
-    return `<li><button class="track-row series${same?" same":""}" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt">${c.tile}</span>
+  const row=c=>{ const mk=typeof seriesMark==="function"?seriesMark(c.id,60):"", n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length, same=!mk&&String(c.tile).toLowerCase()===String(c.name).toLowerCase();
+    return `<li><button class="track-row series${same?" same":""}" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt${mk?" mk":""}">${mk||c.tile}</span>
       <div><h2>${c.name}</h2><div class="meta"><span class="mfull">${c.full} · </span>${n} venue${n===1?"":"s"}</div></div>
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; };
   /* once the series you follow span more than one part of the world, group them under region headings (your own
@@ -156,7 +156,7 @@ let curChamp=null, serRows=[];
 function toggleGoingSeries(i){ const r=serRows[i]; if(!r) return; const on=!isGoing(r.t,r.e); setGoing(r.t,r.e,on); renderSeries(); renderHero(); toast(on?`You're going: ${r.t.short}`:"Removed from your races"); }
 function renderSeries(){
   const c=curChamp; if(!c) return; const today=localToday(), order=orderOf(c);
-  document.getElementById("serTitle").textContent=c.name;
+  document.getElementById("serTitle").innerHTML=`${seriesMark(c.id,34)}<span>${esc(c.name)}</span>`;
   document.getElementById("serAbout").innerHTML=c.guide?`<ul class="list"><li><button class="track-row series" onclick="showSeriesInfo('${c.id}')"><span class="tile txt">i</span>
     <div><h2>About ${c.name}</h2><div class="meta">The cars and how to follow the racing</div></div><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li></ul>`:"";
   const items=order.map(({t,e})=>({d:e.d,t,e})).concat(stopsOf(c).map(s=>({d:s.d,s}))).sort((a,b)=>a.d.localeCompare(b.d));
@@ -859,7 +859,7 @@ function renderHub(){
   let watchHtml="";
   if(wAll.length){
     const x=wAll.find(e=>e.s===sid)||wAll[0], isFav=fav===x.s, star=wAll.length>1?`<button class="hubStar${isFav?" on":""}" aria-label="${isFav?"Unstar":"Star"} ${esc(watchSeriesName(x))}" onclick="toggleFavSeries('${x.s}')"><svg viewBox="0 0 24 24"><path d="M12 3l2.9 6.2 6.6.8-5 4.6 1.4 6.6L12 18l-5.9 3.2L7.5 14.6l-5-4.6 6.6-.8z"/></svg></button>`:"";
-    watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;
+    watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${seriesMark(x.s,24)}${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;
   }
 
   /* championship standings for that same series -- top of each class only; tap for the full table. */
@@ -884,7 +884,7 @@ function renderHub(){
     const evt=(cur.events||[]).find(e=>jr.d>=e.d&&jr.d<=eventEnd(e));
     const res=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===evt.d&&r.s===sr.id).pop():null;
     if(!res) waitingRes=true;
-    return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${esc(sr.name)}</div>${res?res.groups.map(g=>resultGroupHtml(g,5)).join(""):`<div class="hubSessionSub">The race just ended -- results will show here once they're posted.</div>`}</div>`;
+    return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res?res.groups.map(g=>resultGroupHtml(g,5)).join(""):`<div class="hubSessionSub">The race just ended -- results will show here once they're posted.</div>`}</div>`;
   }).join("");
   if(waitingRes) refreshResults();
 
@@ -955,7 +955,7 @@ function showInfo(i){
   const kind=kindOf(s.n), label={practice:"Practice",qualifying:"Qualifying",race:"Race"}[kind];
   const watch=(sr.watch&&sr.watch[kind])||DEFAULT_WATCH[kind], specials=(sr.specials||[]).filter(x=>x.match.test(s.n));
   document.getElementById("infoBody").innerHTML=`
-    <div class="mkick">${sr.tag}</div><h3 id="infoTitle">${sr.name}</h3><p class="mblurb">${sr.blurb}</p>
+    <div class="mhead">${seriesMark(sr.id,84)}<div><div class="mkick">${sr.tag}</div><h3 id="infoTitle">${sr.name}</h3></div></div><p class="mblurb">${sr.blurb}</p>
     <div class="mnow"><b>${label}: what to watch</b><p>${watch}</p>${specials.map(x=>`<p><b>${x.title}.</b> ${x.text}</p>`).join("")}</div>
     <h4 class="mh">${sr.cars.length>1?"The classes":"The car"}</h4>
     ${sr.cars.map(c=>`<div class="ccard"><div class="chead">${chipHtml(c)}<div><strong>${c.full}</strong><small>${c.type}</small></div>${c.pace?`<span class="pace">${c.pace}</span>`:""}</div><p>${c.text}</p>${c.spot?`<p class="spot"><b>How to spot it:</b> ${c.spot}</p>`:""}</div>`).join("")}
@@ -967,7 +967,7 @@ function showSeriesInfo(id){
   const c=champ(id), sr=c&&SERIES.find(s=>s.id===c.guide); if(!sr) return;
   const card=x=>`<div class="ccard"><div class="chead">${chipHtml(x)}<div><strong>${x.full}</strong><small>${x.type}</small></div>${x.pace?`<span class="pace">${x.pace}</span>`:""}</div><p>${x.text}</p>${x.spot?`<p class="spot"><b>How to spot it:</b> ${x.spot}</p>`:""}</div>`;
   document.getElementById("infoBody").innerHTML=`
-    <div class="mkick">${sr.tag}</div><h3 id="infoTitle">${sr.name}</h3><p class="mblurb">${sr.blurb}</p>
+    <div class="mhead">${seriesMark(sr.id,84)}<div><div class="mkick">${sr.tag}</div><h3 id="infoTitle">${sr.name}</h3></div></div><p class="mblurb">${sr.blurb}</p>
     <div class="mnow"><b>What to watch</b><p>${(sr.watch&&sr.watch.race)||DEFAULT_WATCH.race}</p>${(sr.specials||[]).map(x=>`<p><b>${x.title}.</b> ${x.text}</p>`).join("")}</div>
     <h4 class="mh">${sr.cars.length>1?"The classes":"The car"}</h4>${sr.cars.map(card).join("")}
     ${sr.rule?`<div class="mrule"><b>Telling them apart</b><p>${sr.rule}</p></div>`:""}

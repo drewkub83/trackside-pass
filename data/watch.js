@@ -5,6 +5,24 @@
    later from (for example after qualifying): the newest entry whose from has arrived replaces the older one. Old entries stay as history.
    Facts are only what published race reports and standings said. Refresh this before each weekend. */
 const WATCH = [
+  { t:"portimao", d:"2026-10-15", s:"gtwce", asOf:"Current on Oct 15, before practice: the 61-car entry list is official and the standings are after round 9 (Barcelona). The 3-hour race is Saturday, Oct 17, 5 PM track time.",
+    groups:[
+      { h:"The headline: Pro", items:[
+        ["#3 Mercedes-AMG Team Verstappen Racing (Max Verstappen, Ben Barnicoat, Chris Lulham)", "Four-time Formula 1 champion Max Verstappen makes his GT World Challenge Europe debut, in the car run by 2Seas Motorsport (Daily Sportscar). The car's only Endurance Cup podium this season was the Nürburgring, where it finished 3rd in the Pro class."],
+        ["#48 Mercedes-AMG Team MANN-FILTER (Lucas Auer, Maro Engel, Luca Stolz)", "Already Endurance Cup drivers' champions, clinched at the Nürburgring. They have not finished lower than 4th in the Pro class in four Endurance Cup races, so for them the finale is a free swing at a win."],
+        ["#7 Comtoyou Aston Martin (Mattia Drudi, Nicki Thiim, Ross Gunn)", "Won the Pro class at Paul Ricard and at the Nürburgring. Ross Gunn replaces Marco Sorensen for this round. Comtoyou are second in the Endurance Cup teams table, 26 points behind Winward, and can only catch them with a perfect weekend (Daily Sportscar)."]] },
+      { h:"Overall titles", items:[
+        ["Lucas Auer / Maro Engel (Winward)", "Lead the full-season drivers' table on 131.5 points, 29.5 clear of the next crew, with the final round to run. The series marks the standings provisional, and Daily Sportscar says the outcome of an appeal over a Misano disqualification could cut the lead to 20."],
+        ["Team WRT vs Winward Racing", "Team WRT lead the full-season teams table on 142.5, five points ahead of Winward on 137.5."]] },
+      { h:"Gold Cup: three crews, one title", items:[
+        ["#998 Rowe Racing BMW (Ugo De Wilde, Jens Klingmann, Tim Tramnitz)", "Lead the Endurance Cup Gold standings on 89 points, three clear of #58. Won the Spa 24 Hours class."],
+        ["#58 Garage 59 McLaren (Benjamin Goethe, Louis Prette, Thomas Fleming)", "Three points back on 86, and the Paul Ricard class winners. #71 Selected Car Racing Ferrari (11 back) is the outside chance."]] },
+      { h:"Bronze Cup", items:[
+        ["#74 Kessel Racing Ferrari (Dustin Blattner and team-mates)", "Won the Bronze class at Monza and Spa. Dustin Blattner has 87 points to the #991 Paradine BMW crew's 71. The points table lists Dennis Marschall first on 102, but Daily Sportscar and Dive-Bomb both say the Bronze title fight is really Blattner against the #991 crew because of driver-eligibility rules. They differ on who exactly is ineligible, so treat that detail as unconfirmed."]] },
+      { h:"Silver Cup", items:[
+        ["#30 Team WRT BMW (Ignacio Montenegro, Amaury Cordeel, Matisse Lismont)", "The Silver Cup title is already decided in their favour (87 points to 56). They have finished second in the class three times this season but have no Endurance Cup class win yet, so a victory is the thing left to chase."]] }
+    ],
+    note:"Sources: the series' own standings pages (Endurance Cup tables by class and the teams table, read Oct 14), its official entry list and Main Race results for Paul Ricard, Monza, Spa and the Nürburgring, its finale news piece, and Daily Sportscar's entry-list report (Oct 14) and Dive-Bomb's preview for the title situations and the Misano appeal. The #3 line-up is new, so no form is shown for it. Several sources disagree on small details (Daily Sportscar calls the #71 an AF Corse entry; the official list says Selected Car Racing, which is used here). Standings are provisional." },
   { t:"barber", d:"2026-09-25", s:"gtwca", asOf:"Current after Road America (Aug 30). Barber is the second-to-last round.",
     groups:[
       { h:"GT World Challenge America: Pro", items:[

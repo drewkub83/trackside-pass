@@ -183,6 +183,14 @@
         <small id="stAsOf"></small>
         <div id="stBody"></div>
       </div>
+      <div class="sv" id="shGame" hidden>
+        <div class="ptitle"><strong id="gmTitle">Pick your podium</strong></div>
+        <small id="gmSub"></small>
+        <div class="gmTabs" id="gmTabs"></div>
+        <div class="gmSlots" id="gmSlots"></div>
+        <div class="gmList" id="gmList"></div>
+        <small class="fine" id="gmFoot"></small>
+      </div>
       <div class="sv" id="shLive" hidden>
         <div class="ptitle"><strong id="liveTitle">Watch live</strong></div>
         <small>Streamed by the series itself on YouTube -- not something we run. Uses data like any video; on a weak signal it may buffer or not load.</small>
@@ -309,6 +317,7 @@
 <script src="data/watch.js"></script>
 <script src="data/results.js"></script>
 <script src="data/standings.js"></script>
+<script src="data/entries.js"></script>
 <script src="data/champs.js"></script>
 <div class="unlock" id="unlock" hidden role="dialog" aria-modal="true" aria-label="New stamp" onclick="if(event.target===this)closeUnlock()">
   <div class="ul-card"><div class="ul-stage"><div class="ul-imp" id="ulMedal"></div><div class="ul-flash"></div><div class="ul-tool"><i></i></div><div class="ul-burst" id="ulBurst"></div></div>

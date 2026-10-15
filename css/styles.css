@@ -809,3 +809,25 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 :root[data-style="race"] .scard{background:var(--card);box-shadow:none;border:1px solid var(--line);border-left:6px solid var(--sc,var(--s-other))}
 :root[data-style="race"] .scard[data-s="gtwca"]{--sc:var(--s-gtwca)}:root[data-style="race"] .scard[data-s="gtwce"]{--sc:var(--s-gtwce)}:root[data-style="race"] .scard[data-s="imsa"]{--sc:var(--s-imsa)}:root[data-style="race"] .scard[data-s="indycar"]{--sc:var(--s-indycar)}
 :root[data-style="race"] .scard .scTop b{font-family:var(--font-d);font-weight:800;text-transform:uppercase;font-size:20px;letter-spacing:.3px}
+
+/* Pick your podium */
+.gmTabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 10px}
+.gmTab{padding:8px 14px;border-radius:999px;background:var(--tint-2);color:var(--ink);font-size:14px;font-weight:600}
+.gmTab.on{background:linear-gradient(160deg,var(--accent-2),var(--accent));color:#fff}.gmTab i{font-style:normal;font-size:11px;margin-left:6px;opacity:.7}
+.gmSlots{display:grid;gap:6px;margin-bottom:12px}
+.gmSlot{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:16px;background:var(--tint-2);text-align:left;color:var(--ink-2);font-size:14px;min-width:0}
+.gmSlot b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--card);color:var(--ink);font-size:12px;flex:none}
+.gmSlot span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gmSlot.full{color:var(--ink)}.gmSlot strong{font-weight:700}
+.gmSlot em{font-style:normal;font-weight:700;font-size:13px;flex:none}
+.gmSlot.hit{box-shadow:inset 0 0 0 2px #2e9d5b}.gmSlot.near{box-shadow:inset 0 0 0 2px #d9a21b}.gmSlot.miss{opacity:.6}
+.gmList{display:grid;gap:6px}
+.gmCar{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:16px;background:var(--tint-2);text-align:left;color:var(--ink);min-width:0}
+.gmCar.picked{box-shadow:inset 0 0 0 2px var(--accent)}
+.gmCar:disabled{opacity:.75}
+.gmNo{font-weight:800;font-size:16px;min-width:38px;flex:none}
+.gmTxt{flex:1;min-width:0;display:grid}.gmTxt b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gmTxt small{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gmCar em{font-style:normal;font-weight:800;font-size:13px;flex:none}
+.gmReal{padding:10px 14px;border-radius:16px;font-size:13px;color:var(--ink-2);background:var(--tint-2)}.gmReal b{color:var(--ink)}
+.gmRecs{margin-top:16px}.gmRecs h4{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.gmRec{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:4px 0;color:var(--ink)}.gmRec.tot{border-top:1px solid var(--line);margin-top:4px;padding-top:8px}

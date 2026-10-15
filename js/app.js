@@ -866,6 +866,77 @@ async function refreshResults(){
     if(cur&&hubMode) renderHub();
   }catch(e){}
 }
+/* ---- Pick your podium ----
+   Before a race, call the top three cars in each class from the series' own entry list (data/entries.js). Picks lock at the
+   race's start and are scored against data/results.js once the result is posted: 5 points for the right car in the right place,
+   2 for a podium car in the wrong place. Everything stays on this phone (paddock:picks); no accounts, no server.
+   Results that only name the winner (or the winner and a podium, unordered) score only the places they actually settle. */
+const PICK_KEY="paddock:picks";
+const gameKey=g=>`${g.t}|${g.d}|${g.s}`;
+function picksAll(){ try{ return JSON.parse(localStorage.getItem(PICK_KEY)||"{}"); }catch(e){ return {}; } }
+function picksOf(g){ return picksAll()[gameKey(g)]||{}; }
+function savePicks(g,cls,list){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
+const gameNum=str=>{ const m=/#(\d+)/.exec(str||""); return m?m[1]:null; };
+function gameResult(g){ return typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===g.t&&r.d===g.d&&r.s===g.s).pop()||null:null; }
+/* the race's settled places for one class: exact[i] = car number in place i+1 when the order was published, podium = every car known to be on it */
+function gamePodium(res,cls){
+  const grp=res&&res.groups.find(x=>x.h.toLowerCase()===cls.toLowerCase()); if(!grp) return null;
+  if(grp.order){ const exact=grp.order.slice(0,3).map(gameNum); return {exact,podium:exact.filter(Boolean)}; }
+  const w=gameNum(grp.winner), rest=(grp.podium||[]).map(gameNum).filter(Boolean);
+  return {exact:[w],podium:[w].concat(rest).filter(Boolean),extra:rest.length};
+}
+function gameScore(g){
+  const res=gameResult(g); if(!res) return null; const picks=picksOf(g); let pts=0,max=0,cars=0;
+  const per={};
+  g.classes.forEach(c=>{ const pk=picks[c.h]; const pd=gamePodium(res,c.h); if(!pk||!pd) return; const marks=[];
+    pk.forEach((n,i)=>{ if(pd.exact[i]!==undefined&&pd.exact[i]!==null){ max+=5; const ok=pd.exact[i]===n; if(ok){ pts+=5; marks.push("hit"); } else if(pd.podium.includes(n)){ pts+=2; marks.push("near"); } else marks.push("miss"); }
+      else if(pd.podium.includes(n)){ pts+=2; max+=2; marks.push("near"); } else marks.push(pd.exact[i]===null||pd.extra!==undefined||pd.exact.length<3?"open":"miss"); });
+    per[c.h]=marks; cars+=pk.length; });
+  return {pts,max,per,cars,res};
+}
+/* the entry list for the weekend in focus (null when we have none, or it is not time yet) */
+function gameNow(){
+  const fo=focusAt(cur); if(!fo||typeof ENTRIES==="undefined"||daysBetween(localToday(),fo.d)>goDays()) return null;
+  return ENTRIES.find(x=>x.t===cur.id&&x.d>=fo.d&&x.d<=fo.end)||null;
+}
+function gameLock(g){   /* when the race starts: picks freeze then (or as soon as a result exists) */
+  const race=sessionsOf(cur).filter(s=>{ const sr=seriesFor(s.n); return sr&&sr.id===g.s&&kindOf(s.n)==="race"&&s.d>=g.d; })[0];
+  return race||null;
+}
+const gameLocked=g=>{ const l=gameLock(g); return !!gameResult(g)||(l&&l.start<=new Date()); };
+let gameG=null, gameCls=null;
+function gameCardHtml(g,chev){
+  const sc=gameScore(g), pk=picksOf(g), done=g.classes.filter(c=>(pk[c.h]||[]).length===3).length, locked=gameLocked(g), lock=gameLock(g);
+  const line=sc?`You scored <b>${sc.pts}</b> of ${sc.max} possible points.`:locked?(done?"Picks are locked. Your score comes after the race.":"The race has started, so picks are closed."):done?`${done} of ${g.classes.length} classes picked${lock?` · locks at the start of the race, ${fmtWhen(lock.start,cur.tz)}`:""}`:"Call the top three in each class before the race. Scored against the real result, on this phone only.";
+  return `<div class="hubCard hubTap" role="button" onclick="openGame()"><div class="hubCardRow"><div><h4>Pick your podium</h4><div class="hubSessionSub">${line}</div></div>${chev}</div></div>`;
+}
+function openGame(){
+  const g=gameNow(); if(!g) return; gameG=g; if(!gameCls||!g.classes.some(c=>c.h===gameCls)) gameCls=g.classes[0].h; renderGame(); showSheet("shGame");
+}
+function renderGame(){
+  const g=gameG; if(!g) return; const locked=gameLocked(g), sc=gameScore(g), lock=gameLock(g), pk=picksOf(g), c=g.classes.find(x=>x.h===gameCls), mine=pk[c.h]||[];
+  document.getElementById("gmTitle").textContent=`${watchSeriesName({s:g.s})}: pick your podium`;
+  document.getElementById("gmSub").textContent=sc?`Scored against the official result: ${sc.pts} of ${sc.max} points.`:locked?"Picks are locked.":`Tap cars to fill 1st, 2nd and 3rd in each class. Picks lock at the start of the race${lock?`, ${fmtWhen(lock.start,cur.tz)}`:""}.`;
+  document.getElementById("gmTabs").innerHTML=g.classes.map(x=>{ const n=(pk[x.h]||[]).length; return `<button class="gmTab${x.h===gameCls?" on":""}" onclick="gameCls='${x.h}';renderGame()">${esc(x.h)}${n?`<i>${n}/3</i>`:""}</button>`; }).join("");
+  const pd=sc&&gamePodium(sc.res,c.h), marks=(sc&&sc.per[c.h])||[], find=n=>c.cars.find(r=>r[0]===n);
+  document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}" ${locked||!n?"disabled":""} onclick="gameDrop(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="hit"?"+5":mk==="near"?"+2":mk==="open"?"?":"0"}</em>`:n&&!locked?"<em>×</em>":""}</button>`; }).join("");
+  const real=pd?`<div class="gmReal"><b>Official result</b> ${pd.exact.map((n,i)=>n?`${i+1}. #${n}`:`${i+1}. not listed`).join(" · ")}${pd.extra?` · also on the podium: ${pd.podium.slice(1).map(n=>"#"+n).join(", ")}`:""}</div>`:sc?`<div class="gmReal">The result for this class is not in yet.</div>`:"";
+  document.getElementById("gmList").innerHTML=real+c.cars.map(r=>{ const at=mine.indexOf(r[0]); return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small></span>${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
+  document.getElementById("gmFoot").innerHTML=esc(g.asOf)+gameRecordHtml();
+}
+function gamePick(n){
+  const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), at=list.indexOf(n);
+  if(at>=0) list.splice(at,1); else if(list.length<3) list.push(n); else { toast("Remove a pick first (tap it in the slots above)"); return; }
+  savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub();
+}
+function gameDrop(i){ const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(); list.splice(i,1); savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub(); }
+/* every weekend you have played that now has a result: one line each and a running total */
+function gameRecordHtml(){
+  if(typeof ENTRIES==="undefined") return ""; let tp=0,tm=0; const rows=[];
+  ENTRIES.forEach(g=>{ const sc=gameScore(g); if(!sc||!sc.cars) return; tp+=sc.pts; tm+=sc.max; const t=TRACKS.find(x=>x.id===g.t); rows.push(`<div class="gmRec"><span>${esc(t?t.short:g.t)} · ${esc(watchSeriesName({s:g.s}))}</span><b>${sc.pts}/${sc.max}</b></div>`); });
+  return rows.length?`<div class="gmRecs"><h4>Your record</h4>${rows.join("")}<div class="gmRec tot"><span>Total</span><b>${tp}/${tm}</b></div></div>`:"";
+}
+
 function renderHub(){
   if(!hubMode) return;
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
@@ -996,7 +1067,8 @@ function renderHub(){
     else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions you care about in the schedule and get an alert before each.</div></div>${chev}</div></div>`;
     if(!resultsHtml&&aw>0&&typeof RESULTS!=="undefined"){ const last=RESULTS.filter(r=>r.t===cur.id).sort((a,b)=>b.d.localeCompare(a.d))[0];
       if(last) lastHereHtml=`<div class="hubCard"><h4>Last time here</h4><div class="hubSeries">${esc(last.event)}</div>${last.groups.slice(0,2).map(g=>resultGroupHtml(g,3)).join("")}</div>`; } }
-  body.innerHTML=sessionHtml+quickHtml+dayHtml+resultsHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
+  const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"";
+  body.innerHTML=sessionHtml+quickHtml+dayHtml+resultsHtml+gameHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */

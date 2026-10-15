@@ -869,12 +869,19 @@ async function refreshResults(){
 /* ---- Pick your podium ----
    Before a race, call the top three cars in each class from the series' own entry list (data/entries.js). Picks lock at the
    race's start and are scored against data/results.js once the result is posted: 5 points for the right car in the right place,
-   2 for a podium car in the wrong place. Everything stays on this phone (paddock:picks); no accounts, no server.
+   2 for a podium car in the wrong place, both times a long-shot multiplier: every pick banks the car's win chance (data/entries.js)
+   at the moment you make it, and pays x sqrt(10 / chance%), kept between 0.5 and 3 (a 10% car pays x1, a 2% car about x2.2, a 30%
+   car x0.58). Everything stays on this phone (paddock:picks, with the banked chances under "_p"); no accounts, no server.
    Results that only name the winner (or the winner and a podium, unordered) score only the places they actually settle. */
 const PICK_KEY="paddock:picks";
 const gameKey=g=>`${g.t}|${g.d}|${g.s}`;
 function picksAll(){ try{ return JSON.parse(localStorage.getItem(PICK_KEY)||"{}"); }catch(e){ return {}; } }
 function picksOf(g){ return picksAll()[gameKey(g)]||{}; }
+const gameMult=p=>Math.min(3,Math.max(.5,Math.sqrt(10/(p>0?p:10))));
+const gameExact=p=>Math.round(5*gameMult(p)), gameNear=p=>Math.round(2*gameMult(p));
+function carP(g,cls,n){ const c=g.classes.find(x=>x.h===cls), r=c&&c.cars.find(x=>x[0]===n); return r&&typeof r[4]==="number"?r[4]:null; }
+function pickP(g,cls,n){ const b=(picksOf(g)._p||{})[cls+"|"+n]; return typeof b==="number"?b:carP(g,cls,n); }   /* the chance banked when picked (or the current one for older picks) */
+function setPickP(g,cls,n,p){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); const m=Object.assign({},all[k]._p); if(p==null) delete m[cls+"|"+n]; else m[cls+"|"+n]=p; all[k]._p=m; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
 function savePicks(g,cls,list){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
 const gameNum=str=>{ const m=/#(\d+)/.exec(str||""); return m?m[1]:null; };
 function gameResult(g){ return typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===g.t&&r.d===g.d&&r.s===g.s).pop()||null:null; }
@@ -889,9 +896,12 @@ function gameScore(g){
   const res=gameResult(g); if(!res) return null; const picks=picksOf(g); let pts=0,max=0,cars=0;
   const per={};
   g.classes.forEach(c=>{ const pk=picks[c.h]; const pd=gamePodium(res,c.h); if(!pk||!pd) return; const marks=[];
-    pk.forEach((n,i)=>{ if(pd.exact[i]!==undefined&&pd.exact[i]!==null){ max+=5; const ok=pd.exact[i]===n; if(ok){ pts+=5; marks.push("hit"); } else if(pd.podium.includes(n)){ pts+=2; marks.push("near"); } else marks.push("miss"); }
-      else if(pd.podium.includes(n)){ pts+=2; max+=2; marks.push("near"); } else marks.push(pd.exact[i]===null||pd.extra!==undefined||pd.exact.length<3?"open":"miss"); });
-    per[c.h]=marks; cars+=pk.length; });
+    const gain=[];
+    pk.forEach((n,i)=>{ const p=pickP(g,c.h,n), ex=gameExact(p), ne=gameNear(p); let got=0;
+      if(pd.exact[i]!==undefined&&pd.exact[i]!==null){ max+=ex; const ok=pd.exact[i]===n; if(ok){ got=ex; marks.push("hit"); } else if(pd.podium.includes(n)){ got=ne; marks.push("near"); } else marks.push("miss"); }
+      else if(pd.podium.includes(n)){ got=ne; max+=ne; marks.push("near"); } else marks.push(pd.exact[i]===null||pd.extra!==undefined||pd.exact.length<3?"open":"miss");
+      pts+=got; gain.push(got); });
+    per[c.h]=marks; per[c.h+"#"]=gain; cars+=pk.length; });
   return {pts,max,per,cars,res};
 }
 /* the entry list for the weekend in focus (null when we have none, or it is not time yet) */
@@ -919,21 +929,21 @@ function renderGame(){
   document.getElementById("gmSub").textContent=sc?`Scored against the official result: ${sc.pts} of ${sc.max} points.`:locked?"Picks are locked.":`Tap cars to fill 1st, 2nd and 3rd in each class. Picks lock at the start of the race${lock?`, ${fmtWhen(lock.start,cur.tz)}`:""}.`;
   document.getElementById("gmTabs").innerHTML=g.classes.map(x=>{ const n=(pk[x.h]||[]).length; return `<button class="gmTab${x.h===gameCls?" on":""}" onclick="gameCls='${x.h}';renderGame()">${esc(x.h)}${n?`<i>${n}/3</i>`:""}</button>`; }).join("");
   const pd=sc&&gamePodium(sc.res,c.h), marks=(sc&&sc.per[c.h])||[], find=n=>c.cars.find(r=>r[0]===n);
-  document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}" ${locked||!n?"disabled":""} onclick="gameDrop(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="hit"?"+5":mk==="near"?"+2":mk==="open"?"?":"0"}</em>`:n&&!locked?"<em>×</em>":""}</button>`; }).join("");
+  document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}" ${locked||!n?"disabled":""} onclick="gameDrop(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="open"?"?":"+"+(((sc&&sc.per[c.h+"#"])||[])[i]||0)}</em>`:n&&!locked?`<em>${gameExact(pickP(g,c.h,n))} pts</em>`:""}</button>`; }).join("");
   const real=pd?`<div class="gmReal"><b>Official result</b> ${pd.exact.map((n,i)=>n?`${i+1}. #${n}`:`${i+1}. not listed`).join(" · ")}${pd.extra?` · also on the podium: ${pd.podium.slice(1).map(n=>"#"+n).join(", ")}`:""}</div>`:sc?`<div class="gmReal">The result for this class is not in yet.</div>`:"";
   const hasP=c.cars.some(r=>typeof r[4]==="number"), cars=hasP?c.cars.slice().sort((a,b)=>(b[4]||0)-(a[4]||0)):c.cars;
-  const note=hasP?`<div class="gmNote">Our estimate of each car's chance to win ${esc(c.h)}, from this season's Endurance Cup points, favourites first. A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy.</div>`:"";
-  document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=r[4]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small>${r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:""}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
+  const note=hasP?`<div class="gmNote"><b>Win chances, favourites first.</b> ${esc(g.oddsAsOf||"Our own estimate.")} A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy. Longer shots score more, and each pick keeps the chance it had when you made it.</div>`:"";
+  document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=r[4]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small>${r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:""}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)} · worth ${gameExact(p)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
   document.getElementById("gmFoot").innerHTML=esc(g.asOf)+gameRecordHtml();
 }
 /* a win chance as a US money line, like a sportsbook would post it (fair line, no margin) */
 function gameLine(p){ const f=p/100, v=f>=.5?-100*f/(1-f):100*(1-f)/f, a=Math.abs(v), r=a<1000?Math.round(a/5)*5:Math.round(a/50)*50; return (v<0?"-":"+")+r; }
 function gamePick(n){
   const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), at=list.indexOf(n);
-  if(at>=0) list.splice(at,1); else if(list.length<3) list.push(n); else { toast("Remove a pick first (tap it in the slots above)"); return; }
+  if(at>=0){ list.splice(at,1); setPickP(g,gameCls,n,null); } else if(list.length<3){ list.push(n); setPickP(g,gameCls,n,carP(g,gameCls,n)); } else { toast("Remove a pick first (tap it in the slots above)"); return; }
   savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub();
 }
-function gameDrop(i){ const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(); list.splice(i,1); savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub(); }
+function gameDrop(i){ const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), gone=list.splice(i,1)[0]; setPickP(g,gameCls,gone,null); savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub(); }
 /* every weekend you have played that now has a result: one line each and a running total */
 function gameRecordHtml(){
   if(typeof ENTRIES==="undefined") return ""; let tp=0,tm=0; const rows=[];

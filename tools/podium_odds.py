@@ -1,71 +1,98 @@
 #!/usr/bin/env python3
 """Our own win-chance estimate for each car in data/entries.js (shown in "Pick your podium"). NOT betting odds.
 
-GT World Challenge Europe Endurance Cup only (the site's own standings pages). For each car:
-  rating = best Endurance Cup points among the car's three drivers, in the car's class table, divided by the class's
-           best (Pro cars use the overall Endurance Cup table, since the series has no Pro table); no points = 0
-  chance = softmax(K * rating) within the class, floored at 0.5%, then rounded.
-Team totals are NOT used: a team's points mix several cars and the entry list's team names do not match the standings
-tables (the #48 car is run by Winward but entered as Mercedes-AMG Team MANN-FILTER).
-It is a form guide from published points: it knows nothing about balance of performance, weather, tyres, pit
-strategy or who is new to the track, so the spread is deliberately wide and the favourite is never a lock.
-Usage: python3 tools/podium_odds.py [season_id]   (rewrites the cars in data/entries.js for series gtwce)
-"""
-import re, sys, html, json, math, unicodedata, subprocess, os
-K = 1.6
-SEASON = sys.argv[1] if len(sys.argv) > 1 else "26"
-TYPES = {"Pro": "0", "Gold": "81", "Silver": "82", "Bronze": "80"}   # standings class ids; Pro = overall table
+GT World Challenge Europe, from the series' own results pages (gt-world-challenge-europe.com/results/<season>/<round>/<session>).
+Within each class, chance = softmax(weight) over the class's cars, floored at 0.5%, where
 
-def get(t):
-    url = f"https://www.gt-world-challenge-europe.com/standings?filter_season_id={SEASON}&filter_standing_type={t}"
-    h = subprocess.run(["curl", "-sL", "-A", "Mozilla/5.0", url], capture_output=True, text=True).stdout
-    seg = h[h.find("POS"):]; out = []
-    for r in re.findall(r"<tr[^>]*>(.*?)</tr>", seg, flags=re.S):
+  before qualifying:  weight = FORM_C * (form - 0.5)
+  after qualifying:   weight = FORM_C2 * (form - 0.5) - GRID_A * (class qualifying position - 1)
+
+  form = the car number's average class finishing percentile in this season's earlier Endurance Cup races (1.0 = won its
+         class every time, 0.0 = last), pulled toward 0.5 (FORM_K) so one lucky race does not make a favourite; a car with no
+         earlier race counts as 0.5 (neutral).
+
+The constants come from a backtest on the four 2026 Endurance Cup races already run (17 class-races; tools/podium_backtest_fetch.py then tools/podium_backtest.py reproduce it):
+class qualifying position was by far the best predictor (log-loss 1.88 vs 2.32 for equal chances); season points, practice pace
+and past finishes added little, so before qualifying the chances are deliberately close to equal. It knows nothing about balance of
+performance, weather, tyres, strategy or driver changes. Small sample: treat it as a form guide.
+
+Usage:  python3 tools/podium_odds.py                 # before qualifying
+        python3 tools/podium_odds.py --quali          # after qualifying: also reads the finished Qualifying Combined page
+        python3 tools/podium_odds.py --quali --test nb  # print a past round's class grid (parser check), writes nothing
+        python3 tools/podium_odds.py --quali --grid-round nb  # rehearsal: apply that past round's grid (restore data/entries.js with git afterwards)
+Rewrites the cars of the series gtwce in data/entries.js (fields 5 and 6: win chance % and the basis text).
+"""
+import re, sys, html, json, math, subprocess, os, collections
+FORM_C, FORM_C2, GRID_A, FORM_K = 3.0, 0.5, 0.35, 2   # FORM_K: a car's form is pulled toward 0.5 as if it had 2 extra average races
+SEASON = "2026"
+ROUNDS = ["circuit-paul-ricard", "monza", "crowdstrike-24-hours-of-spa", "n%C3%BCrburgring"]   # the season's Endurance Cup races already run
+NOW_ROUND = "portimao"
+if "--grid-round" in sys.argv: NOW_ROUND = {"nb": "n%C3%BCrburgring", "mz": "monza", "spa": "crowdstrike-24-hours-of-spa", "rc": "circuit-paul-ricard"}[sys.argv[sys.argv.index("--grid-round") + 1]]   # rehearsal on a past round
+CLS = {"Pro Cup": "Pro", "Gold Cup": "Gold", "Silver Cup": "Silver", "Bronze Cup": "Bronze", "Pro-AM Cup": "Pro-Am"}
+args = sys.argv[1:]; QUALI = "--quali" in args; TEST = args[args.index("--test") + 1] if "--test" in args else None
+TESTMAP = {"nb": "n%C3%BCrburgring", "mz": "monza", "spa": "crowdstrike-24-hours-of-spa", "rc": "circuit-paul-ricard"}
+
+def page(rnd, sess):
+    return subprocess.run(["curl", "-sL", "-A", "Mozilla/5.0", f"https://www.gt-world-challenge-europe.com/results/{SEASON}/{rnd}/{sess}"], capture_output=True, text=True).stdout
+
+def table(h):
+    i = h.find("<table"); tb = h[i:h.find("</table>", i) + 8]; hdr = None; out = []
+    for r in re.findall(r"<tr[^>]*>(.*?)</tr>", tb, flags=re.S):
         c = [re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", x))).strip() for x in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", r, flags=re.S)]
-        if len(c) >= 3 and c[0].isdigit(): out.append((c[1], float(c[2])))
+        if c and c[0] == "Pos": hdr = c; continue
+        if hdr and len(c) == len(hdr): out.append(dict(zip(hdr, c)))
     return out
 
-def norm(s):
-    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
-    return re.sub(r"[^a-z ]", " ", re.sub(r"\s+", " ", s)).strip()
+def class_ranks(rows):
+    """{car number: (class, position within class, class size)}"""
+    cnt = collections.Counter(); out = {}
+    for r in rows:
+        if r["Pos"].isdigit() and r["Class"] in CLS: c = CLS[r["Class"]]; cnt[c] += 1; out[r["Car #"]] = [c, cnt[c]]
+    for n, v in out.items(): v.append(cnt[v[0]])
+    return out
 
-tables = {k: {"d": {norm(n): p for n, p in get(f"42_{v}_drivers")}, "t": {norm(n): p for n, p in get(f"42_{v}_teams")}} for k, v in TYPES.items()}
+if TEST:
+    g = class_ranks(table(page(TESTMAP[TEST], "qualifying-combined")))
+    for c in ["Pro", "Gold", "Silver", "Bronze"]:
+        print(c, [n for n, v in sorted(g.items(), key=lambda kv: kv[1][1]) if v[0] == c])
+    sys.exit()
+
+hist = collections.defaultdict(list)
+for rnd in ROUNDS:
+    for n, (c, pos, size) in class_ranks(table(page(rnd, "main-race"))).items():
+        hist[n].append(1 - (pos - 1) / max(1, size - 1))
+grid = class_ranks(table(page(NOW_ROUND, "qualifying-combined"))) if QUALI else {}
+if QUALI and not grid: sys.exit("No Qualifying Combined result for the current round yet.")
+
 path = os.path.join(os.path.dirname(__file__), "..", "data", "entries.js")
-src = open(path, encoding="utf8").read()
-out, cls, rows = [], None, []
+lines = open(path, encoding="utf8").read().split("\n"); res = []; buf = []; cls = None
 
-def flush(lines):
-    """lines: list of (text, cars-row) for one class -> add chance + basis"""
-    cars = [r for _, r in lines if r]
-    tb = tables[cls]; bd = max(tb["d"].values() or [1]); bt = max(tb["t"].values() or [1])
-    rs = []
-    for r in cars:
-        drivers = [norm(x) for x in r[2].split(" / ")]
-        dp = max([tb["d"].get(d, 0) for d in drivers] or [0])
-        rs.append((dp / bd, dp, 0))
-    ex = [math.exp(K * x[0]) for x in rs]; z = sum(ex)
-    pr = [max(0.005, e / z) for e in ex]; z2 = sum(pr); pr = [p / z2 for p in pr]
-    new = {}
-    for r, p, (_, dp, tp) in zip(cars, pr, rs):
-        pct = round(p * 100, 1)
-        why = f"Best driver has {dp:g} Endurance Cup points" if dp else "No Endurance Cup points this season"
-        new[r[0]] = (pct, why)
-    return new
+def flush():
+    ws = []; info = []
+    for _, row, m in buf:
+        n = row[0]; h = hist.get(n, []); form = (sum(h) + 0.5 * FORM_K) / (len(h) + FORM_K) if h else 0.5
+        g = grid.get(n)
+        last = 1 + max([v[1] for v in grid.values() if v[0] == cls] or [0])   # a car with no qualifying time is treated as starting last
+        w = (FORM_C2 if QUALI else FORM_C) * (form - 0.5) - (GRID_A * ((g[1] if g and g[0] == cls else last) - 1) if QUALI else 0)
+        ws.append(w); info.append((sum(h) / len(h) if h else 0.5, len(h), g if g and g[0] == cls else None))
+    ex = [math.exp(w) for w in ws]; z = sum(ex); pr = [max(0.005, e / z) for e in ex]; z2 = sum(pr); pr = [p / z2 for p in pr]
+    for (ln, row, m), p, (form, nh, g) in zip(buf, pr, info):
+        bits = []
+        if QUALI and not g: bits.append("No qualifying time, so counted as starting last")
+        if QUALI and g: bits.append(f"Qualified {g[1]}{'st' if g[1]==1 else 'nd' if g[1]==2 else 'rd' if g[1]==3 else 'th'} of {g[2]} in {cls}")
+        bits.append(f"averaged top {round((1-form)*100)}% of class in {nh} Endurance Cup race{'s' if nh!=1 else ''} this year" if nh else "no earlier 2026 Endurance Cup race with this number")
+        res.append(f'{m.group(1)}{json.dumps(row[:4] + [round(p*100, 1), ". ".join(bits)], ensure_ascii=False)}{m.group(3)}')
 
-lines = src.split("\n"); res = []; buf = []; cls = None
 for ln in lines:
     m = re.match(r'\s*\{ h:"(\w+)", cars:\[', ln)
-    if m:
-        cls = m.group(1); buf = []; res.append(ln); continue
+    if m: cls = m.group(1); buf = []; res.append(ln); continue
     m = re.match(r'(\s*)(\[".*\])(,?)\s*$', ln)
-    if m and cls:
-        row = json.loads(m.group(2)); buf.append((ln, row[:4], m)); continue
-    if cls and buf:
-        new = flush([(x, y) for x, y, _ in buf])
-        for _, row, mm in buf:
-            pct, why = new[row[0]]
-            res.append(f'{mm.group(1)}{json.dumps(row + [pct, why], ensure_ascii=False)}{mm.group(3)}')
-        buf = []; cls = None
+    if m and cls: buf.append((ln, json.loads(m.group(2)), m)); continue
+    if cls and buf: flush(); buf = []; cls = None
     res.append(ln)
-open(path, "w", encoding="utf8").write("\n".join(res))
-print("done")
+out = "\n".join(res)
+note = ("After qualifying (class grid from the official Qualifying Combined result): grid position now drives the chances, tilted slightly by this season's Endurance Cup finishes."
+        if QUALI else "Before qualifying: close to even, tilted slightly by this season's Endurance Cup finishes. They sharpen once qualifying is in.")
+out = re.sub(r'oddsAsOf:"[^"]*"', 'oddsAsOf:' + json.dumps(note), out, count=1)
+open(path, "w", encoding="utf8").write(out)
+print("done", "(after qualifying)" if QUALI else "(before qualifying)")

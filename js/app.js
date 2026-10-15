@@ -171,17 +171,30 @@ function renderHero(){
     <div class="num">${on?"Day "+day:n}<small>${on?`of ${e.t||1} day${(e.t||1)>1?"s":""}`:(n===1?"day to go":"days to go")}</small></div>
     <div class="name">${e.e}</div><div class="sub">${t.short} · ${fmtRange(e)}</div></button>`;
 }
-/* "Your series, next up": one card per followed series with the next race, the last result and the points leader.
-   This is what an off-week looks like -- there is always something coming and something to catch up on. */
+/* "Your series, next up": a card for each followed series whose next race is within SEASON_CARD_DAYS (or on now): the race,
+   a season opener/finale tag, and -- only while the NEXT race is in the same season as the last result -- who won last
+   and who leads. Across a season break (IMSA's Petit Le Mans -> next year's Rolex 24) last/leads are last season's news,
+   so they are left off. */
+const SEASON_CARD_DAYS=30;
+function seasonRole(c,pick){
+  const yr=pick.e.d.slice(0,4), all=[];
+  TRACKS.forEach(t=>t.events.forEach(e=>{ if(inChamp(c,e)) all.push(e.d); })); (c.stops||[]).forEach(st=>all.push(st.d));
+  const ds=[...new Set(all)].sort(), i=ds.indexOf(pick.e.d), prev=ds[i-1], next=ds[i+1];   /* only what the app knows: a missing neighbour says nothing either way */
+  if(next&&next.slice(0,4)>yr) return "Season finale";
+  if(prev&&prev.slice(0,4)<yr) return "Season opener";
+  return "";
+}
 function renderSeason(){
   const el=document.getElementById("season"); if(!el) return; const today=localToday();
   const cards=orderedChamps().filter(followed).map(c=>{
     const o=orderOf(c)[0], st=stopsOf(c)[0], pick=o&&(!st||o.e.d<=st.d)?{t:o.t.short,e:o.e}:st?{t:st.short,e:st}:null; if(!pick) return "";
-    const n=daysBetween(today,pick.e.d), when=pick.e.d<=today?"On now":n===1?"Tomorrow":`In ${n} days`;
-    const last=typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.s===c.guide).sort((a,b)=>b.d.localeCompare(a.d))[0]:null;
-    const g0=last&&last.groups[0], win0=g0?(g0.order?g0.order[0].replace(/^\d+\.\s*/,""):g0.winner):"", win=win0.includes(" — ")?win0.split(" — ").pop():win0;   /* drivers, not the car */
-    const std=standingsFor(c.guide), lead=std&&std.classes[0]&&std.classes[0].rows[0];
-    return `<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} · ${esc(fmtRange(pick.e))}</div>${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" · "+lead.pts+" pts":""}</div>`:""}</button>`; }).filter(Boolean).slice(0,4);
+    const n=daysBetween(today,pick.e.d); if(n>SEASON_CARD_DAYS) return "";
+    const when=pick.e.d<=today?"On now":n===1?"Tomorrow":`In ${n} days`, yr=pick.e.d.slice(0,4);
+    const last=typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.s===c.guide).sort((a,b)=>b.d.localeCompare(a.d))[0]:null, lastOk=last&&last.d.slice(0,4)===yr;
+    const g0=lastOk&&last.groups[0], win0=g0?(g0.order?g0.order[0].replace(/^\d+\.\s*/,""):g0.winner):"", win=win0.includes(" \u2014 ")?win0.split(" \u2014 ").pop():win0;   /* drivers, not the car */
+    const std=standingsFor(c.guide), stYr=std&&((std.asOf||"").match(/20\d\d/)||[])[0], lead=std&&(stYr?stYr===yr:lastOk)&&std.classes[0]&&std.classes[0].rows[0];
+    const role=seasonRole(c,pick);
+    return `<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`; }).filter(Boolean).slice(0,4);
   el.innerHTML=cards.length?`<div class="sect">Your series, next up</div><div class="scards">${cards.join("")}</div>`:"";
 }
 function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); }

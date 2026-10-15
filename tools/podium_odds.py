@@ -20,7 +20,8 @@ Usage:  python3 tools/podium_odds.py                 # before qualifying
         python3 tools/podium_odds.py --quali          # after qualifying: also reads the finished Qualifying Combined page
         python3 tools/podium_odds.py --quali --test nb  # print a past round's class grid (parser check), writes nothing
         python3 tools/podium_odds.py --quali --grid-round nb  # rehearsal: apply that past round's grid (restore data/entries.js with git afterwards)
-Rewrites the cars of the series gtwce in data/entries.js (fields 5 and 6: win chance % and the basis text).
+Rewrites the cars of the series gtwce in data/entries.js (fields 5-7: win chance %, the basis text and the shrunk form the app uses to
+rebuild the chances live from the qualifying grid).
 """
 import re, sys, html, json, math, subprocess, os, collections
 FORM_C, FORM_C2, GRID_A, FORM_K = 3.0, 0.5, 0.35, 2   # FORM_K: a car's form is pulled toward 0.5 as if it had 2 extra average races
@@ -74,14 +75,14 @@ def flush():
         g = grid.get(n)
         last = 1 + max([v[1] for v in grid.values() if v[0] == cls] or [0])   # a car with no qualifying time is treated as starting last
         w = (FORM_C2 if QUALI else FORM_C) * (form - 0.5) - (GRID_A * ((g[1] if g and g[0] == cls else last) - 1) if QUALI else 0)
-        ws.append(w); info.append((sum(h) / len(h) if h else 0.5, len(h), g if g and g[0] == cls else None))
+        ws.append(w); info.append((sum(h) / len(h) if h else 0.5, len(h), g if g and g[0] == cls else None, form))
     ex = [math.exp(w) for w in ws]; z = sum(ex); pr = [max(0.005, e / z) for e in ex]; z2 = sum(pr); pr = [p / z2 for p in pr]
-    for (ln, row, m), p, (form, nh, g) in zip(buf, pr, info):
+    for (ln, row, m), p, (form, nh, g, fshr) in zip(buf, pr, info):
         bits = []
         if QUALI and not g: bits.append("No qualifying time, so counted as starting last")
         if QUALI and g: bits.append(f"Qualified {g[1]}{'st' if g[1]==1 else 'nd' if g[1]==2 else 'rd' if g[1]==3 else 'th'} of {g[2]} in {cls}")
         bits.append(f"averaged top {round((1-form)*100)}% of class in {nh} Endurance Cup race{'s' if nh!=1 else ''} this year" if nh else "no earlier 2026 Endurance Cup race with this number")
-        res.append(f'{m.group(1)}{json.dumps(row[:4] + [round(p*100, 1), ". ".join(bits)], ensure_ascii=False)}{m.group(3)}')
+        res.append(f'{m.group(1)}{json.dumps(row[:4] + [round(p*100, 1), ". ".join(bits), round(fshr, 3)], ensure_ascii=False)}{m.group(3)}')
 
 for ln in lines:
     m = re.match(r'\s*\{ h:"(\w+)", cars:\[', ln)

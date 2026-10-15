@@ -867,6 +867,53 @@ async function refreshResults(){
     if(cur&&hubMode) renderHub();
   }catch(e){}
 }
+/* ---- Live results ----
+   For a series that publishes its results pages (GT World Challenge Europe so far), a small Netlify function
+   (netlify/functions/gtwce.mjs) reads them and the hub shows the latest session within about a minute: practice,
+   the qualifying class grid, the running order during the race and the final classification. An entry in data/entries.js
+   switches it on with live:{round:"<the series' round slug>"}. Nothing is stored; if the function is unreachable the card just does not show. */
+const LIVE_API=/netlify\.app$/.test(location.hostname)?"/.netlify/functions/gtwce":"https://deft-medovik-55a935.netlify.app/.netlify/functions/gtwce";
+const liveCache={}; let liveTimer=null, liveSig="";
+function liveSrc(){
+  const fo=focusAt(cur); if(!fo||typeof ENTRIES==="undefined") return null; const today=localToday();
+  return ENTRIES.find(x=>x.t===cur.id&&x.live&&x.d>=fo.d&&x.d<=fo.end&&daysBetween(today,x.d)<=1&&daysBetween(today,fo.end)>=-1)||null;
+}
+const liveData=g=>{ const c=g&&g.live&&liveCache[g.live.round]; return c?c.data:null; };
+const liveRows=(g,k)=>{ const d=liveData(g); return d&&d.sessions[k]||null; };
+function liveFetch(g){
+  const c=liveCache[g.live.round]; if(c&&Date.now()-c.t<25000) return Promise.resolve(c.data);
+  return fetch(`${LIVE_API}?round=${encodeURIComponent(g.live.round)}`).then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.sessions){ liveCache[g.live.round]={t:Date.now(),data:d}; return d; } return null; }).catch(()=>null);
+}
+function liveTick(){
+  const g=hubMode&&cur?liveSrc():null; if(!g){ clearInterval(liveTimer); liveTimer=null; return; }
+  liveFetch(g).then(d=>{ if(!d||!hubMode||cur.id!==g.t) return;
+    const sig=Object.keys(d.sessions).map(k=>k+d.sessions[k].length+(d.sessions[k][0]||{}).num).join("|")+(d.runningLabel||"");
+    if(sig!==liveSig){ liveSig=sig; renderHub(); if(sheetState==="shGame") renderGame(); } });
+}
+function liveStart(){ if(liveTimer) return; liveTick(); liveTimer=setInterval(liveTick,45000); }
+/* the most recent session that has rows, newest kind first */
+function liveBest(g){
+  const d=liveData(g); if(!d) return null; const o=[["main-race","Race result"],["race-running",`Race running order, after ${d.runningLabel||"the latest hour mark"}`],["qualifying-combined","Qualifying: starting grid"],["free-practice-3","Practice 3: best times"],["free-practice-2","Practice 2: best times"],["free-practice-1","Practice 1: best times"]];
+  const k=o.find(x=>d.sessions[x[0]]); return k?{key:k[0],title:k[1],rows:d.sessions[k[0]],at:d.fetchedAt}:null;
+}
+const LIVE_CLASSES=["Pro","Gold","Silver","Bronze"];
+function liveCardHtml(g,chev){
+  const b=liveBest(g); if(!b) return "";
+  const lines=LIVE_CLASSES.map(c=>{ const r=b.rows.filter(x=>x.cls===c).slice(0,3); if(!r.length) return ""; return `<div class="lvRow"><i>${c}</i><span><b>1</b> #${esc(r[0].num)} ${esc(r[0].team)}${r.slice(1).map((x,i)=>` · <b>${i+2}</b> #${esc(x.num)}`).join("")}</span></div>`; }).join("");
+  const t=b.at?new Date(b.at).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}):"";
+  return `<div class="hubCard hubTap" role="button" onclick="openLiveRes()"><div class="hubCardRow"><div><h4>${esc(b.title)}</h4><div class="hubSessionSub">Official results, read ${t}. Tap for every car.</div></div>${chev}</div>${lines}</div>`;
+}
+let liveResCls="Pro";
+function openLiveRes(){ renderLiveRes(); showSheet("shRes"); }
+function renderLiveRes(){
+  const g=liveSrc()||ENTRIES.find(x=>x.t===cur.id&&x.live), b=g&&liveBest(g); if(!b) return;
+  document.getElementById("rsTitle").textContent=b.title;
+  document.getElementById("rsSub").textContent=`${watchSeriesName({s:g.s})} · read from the series' official results page${b.at?" at "+new Date(b.at).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}):""}. It refreshes about every minute while this screen is open, and the series can still change a result.`;
+  const cls=LIVE_CLASSES.filter(c=>b.rows.some(x=>x.cls===c)); if(!cls.includes(liveResCls)) liveResCls=cls[0];
+  document.getElementById("rsTabs").innerHTML=cls.map(c=>`<button class="gmTab${c===liveResCls?" on":""}" onclick="liveResCls='${c}';renderLiveRes()">${c}</button>`).join("");
+  document.getElementById("rsList").innerHTML=b.rows.filter(x=>x.cls===liveResCls).map((x,i)=>`<div class="rsRow"><span class="rsPos">${i+1}</span><span class="gmNo">#${esc(x.num)}</span><span class="gmTxt"><b>${esc(x.team)}</b><small>${esc(x.drivers)}</small></span><span class="rsTime">${esc(x.time||"")}${x.gap?`<small>+${esc(x.gap)}</small>`:""}</span></div>`).join("");
+}
+
 /* ---- Pick your podium ----
    Before a race, call the top three cars in each class from the series' own entry list (data/entries.js). Picks lock at the
    race's start and are scored against data/results.js once the result is posted: 5 points for the right car in the right place,
@@ -889,12 +936,26 @@ function gameTiming(g,at){
   return at<first?{m:1.25,label:"Early bonus: +25% on every pick you lock in before qualifying starts",until:new Date(first)}:at<last?{m:1,label:"Qualifying is under way: normal points"}:{m:.75,label:"Qualifying is over: new picks score 25% less"};
 }
 const pickM=(g,cls,n)=>{ const v=(picksOf(g)._m||{})[cls+"|"+n]; return typeof v==="number"?v:1; };
-function carP(g,cls,n){ const c=g.classes.find(x=>x.h===cls), r=c&&c.cars.find(x=>x[0]===n); return r&&typeof r[4]==="number"?r[4]:null; }
+/* win chance per car number for a class: the stored estimate, or -- once the live qualifying grid is in -- rebuilt from it
+   (same model as tools/podium_odds.py: form tilt 0.5 per form point, 0.35 per grid place, 0.5% floor) */
+function gameProbs(g,cls){
+  const c=g.classes.find(x=>x.h===cls); if(!c) return null; const q=g.live?liveRows(g,"qualifying-combined"):null;
+  if(!q||!c.cars.every(r=>typeof r[6]==="number")){ const m={}; c.cars.forEach(r=>{ if(typeof r[4]==="number") m[r[0]]=r[4]; }); return m; }
+  const pos={}; let n=0; q.filter(x=>x.cls===cls).forEach(x=>{ pos[x.num]=++n; });
+  const ws=c.cars.map(r=>0.5*(r[6]-0.5)-0.35*((pos[r[0]]||n+1)-1)), ex=ws.map(Math.exp), z=ex.reduce((a,b)=>a+b,0); let pr=ex.map(e=>Math.max(0.005,e/z)); const z2=pr.reduce((a,b)=>a+b,0); pr=pr.map(p=>p/z2);
+  const m={}; c.cars.forEach((r,i)=>{ m[r[0]]=Math.round(pr[i]*1000)/10; }); return m;
+}
+function carP(g,cls,n){ const m=gameProbs(g,cls); return m&&typeof m[n]==="number"?m[n]:null; }
 function pickP(g,cls,n){ const b=(picksOf(g)._p||{})[cls+"|"+n]; return typeof b==="number"?b:carP(g,cls,n); }   /* the chance banked when picked (or the current one for older picks) */
 function setPickP(g,cls,n,p){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); const m=Object.assign({},all[k]._p), tm=Object.assign({},all[k]._m); if(p==null){ delete m[cls+"|"+n]; delete tm[cls+"|"+n]; } else { m[cls+"|"+n]=p; tm[cls+"|"+n]=gameTiming(g).m; } all[k]._p=m; all[k]._m=tm; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
 function savePicks(g,cls,list){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
 const gameNum=str=>{ const m=/#(\d+)/.exec(str||""); return m?m[1]:null; };
-function gameResult(g){ return typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===g.t&&r.d===g.d&&r.s===g.s).pop()||null:null; }
+function gameResult(g){
+  const r=typeof RESULTS!=="undefined"?RESULTS.filter(x=>x.t===g.t&&x.d===g.d&&x.s===g.s).pop()||null:null; if(r) return r;
+  const race=liveRows(g,"main-race"); if(!race) return null;   /* the official classification, read live, until the permanent result is added */
+  const by={}; race.forEach(x=>{ (by[x.cls]=by[x.cls]||[]).push(x); });
+  return {live:true,groups:Object.keys(by).map(h=>({h,order:by[h].slice(0,5).map((x,i)=>`${i+1}. #${x.num} ${x.team} — ${x.drivers}`)}))};
+}
 /* the race's settled places for one class: exact[i] = car number in place i+1 when the order was published, podium = every car known to be on it */
 function gamePodium(res,cls){
   const grp=res&&res.groups.find(x=>x.h.toLowerCase()===cls.toLowerCase()); if(!grp) return null;
@@ -941,9 +1002,9 @@ function renderGame(){
   const pd=sc&&gamePodium(sc.res,c.h), marks=(sc&&sc.per[c.h])||[], find=n=>c.cars.find(r=>r[0]===n);
   document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}" ${locked||!n?"disabled":""} onclick="gameDrop(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="open"?"?":"+"+(((sc&&sc.per[c.h+"#"])||[])[i]||0)}</em>`:n&&!locked?`<em>${gameExact(pickP(g,c.h,n),pickM(g,c.h,n))} pts</em>`:""}</button>`; }).join("");
   const real=pd?`<div class="gmReal"><b>Official result</b> ${pd.exact.map((n,i)=>n?`${i+1}. #${n}`:`${i+1}. not listed`).join(" · ")}${pd.extra?` · also on the podium: ${pd.podium.slice(1).map(n=>"#"+n).join(", ")}`:""}</div>`:sc?`<div class="gmReal">The result for this class is not in yet.</div>`:"";
-  const tm0=gameTiming(g).m, hasP=c.cars.some(r=>typeof r[4]==="number"), cars=hasP?c.cars.slice().sort((a,b)=>(b[4]||0)-(a[4]||0)):c.cars;
-  const note=hasP?`<div class="gmNote"><b>Win chances, favourites first.</b> ${esc(g.oddsAsOf||"Our own estimate.")} A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy. Longer shots score more, early picks score more, and each pick keeps the chance and bonus it had when you made it.</div>`:"";
-  document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=r[4]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small>${r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:""}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)} · worth ${gameExact(p,tm0)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
+  const tm0=gameTiming(g).m, probs=gameProbs(g,c.h)||{}, gridOn=!!(g.live&&liveRows(g,"qualifying-combined")&&c.cars.every(r=>typeof r[6]==="number")), hasP=c.cars.some(r=>typeof r[4]==="number"), cars=hasP?c.cars.slice().sort((a,b)=>(probs[b[0]]||0)-(probs[a[0]]||0)):c.cars;
+  const note=hasP?`<div class="gmNote"><b>Win chances, favourites first.</b> ${esc(gridOn?"Rebuilt from the official class grid, live from the series' qualifying result: starting position now drives the chances.":(g.oddsAsOf||"Our own estimate."))} A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy. Longer shots score more, early picks score more, and each pick keeps the chance and bonus it had when you made it.</div>`:"";
+  document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=probs[r[0]]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small>${gridOn?(()=>{ const q=liveRows(g,"qualifying-combined").filter(x=>x.cls===c.h), i=q.findIndex(x=>x.num===r[0]); return `<small class="gmWhy">${i>=0?"Qualified "+(i+1)+" of "+q.length+" in class":"No qualifying time"}</small>`; })():(r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:"")}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)} · worth ${gameExact(p,tm0)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
   document.getElementById("gmFoot").innerHTML=esc(g.asOf)+gameRecordHtml();
 }
 /* a win chance as a US money line, like a sportsbook would post it (fair line, no margin) */
@@ -1114,8 +1175,8 @@ function renderHub(){
     else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions you care about in the schedule and get an alert before each.</div></div>${chev}</div></div>`;
     if(!resultsHtml&&aw>0&&typeof RESULTS!=="undefined"){ const last=RESULTS.filter(r=>r.t===cur.id).sort((a,b)=>b.d.localeCompare(a.d))[0];
       if(last) lastHereHtml=`<div class="hubCard"><h4>Last time here</h4><div class="hubSeries">${esc(last.event)}</div>${last.groups.slice(0,2).map(g=>resultGroupHtml(g,3)).join("")}</div>`; } }
-  const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"";
-  body.innerHTML=sessionHtml+quickHtml+dayHtml+resultsHtml+gameHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
+  const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"", lv=liveSrc(), liveHtml=lv?liveCardHtml(lv,chev):""; if(lv) liveStart();
+  body.innerHTML=sessionHtml+quickHtml+dayHtml+liveHtml+resultsHtml+gameHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */

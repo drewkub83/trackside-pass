@@ -838,3 +838,11 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .plRules{margin:10px 0 0;font-size:13px;line-height:1.45;color:var(--ink-2)}
 .playCard .scNext b{font-size:20px;color:var(--ink)}
 .plGo{margin-top:14px;width:100%}
+/* Live results */
+.lvRow{display:flex;gap:10px;align-items:baseline;margin-top:8px;font-size:13px;min-width:0}
+.lvRow i{font-style:normal;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:10.5px;width:52px;flex:none;color:var(--ink)}
+.lvRow span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}.lvRow b{color:var(--ink)}
+.rsList{display:grid;gap:6px}
+.rsRow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:16px;background:var(--tint-2);min-width:0}
+.rsPos{width:18px;font-weight:800;font-size:13px;flex:none;text-align:center}
+.rsTime{flex:none;text-align:right;font-size:13px;font-weight:600;color:var(--ink)}.rsTime small{display:block;font-size:11px;font-weight:400;color:var(--ink-2)}

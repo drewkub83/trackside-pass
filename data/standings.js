@@ -92,7 +92,7 @@ const STANDINGS = [
       ] }
     ],
     note:"Pro and Masters positions below the top of each class are named from recent race reports, not an official points table -- their order isn't confirmed, and no points figures are shown for them since none were published. Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America, Sportscar365 and GT REPORT race reports from Indianapolis and both Road Atlanta races (Oct 1-2, 2026, via web search; direct site fetches were blocked in this environment). Alan Metni (Kellymoss) won the Pro-Am race at Road Atlanta Race 1, his second win of the season, but Mulcahy's title was already clinched." },
-  { s:"gtwce", asOf:"Current after round 9 of 10 in the 2026 season (Barcelona). The Portimao finale (Oct 15-18) has not been run, so no points from it are included yet.",
+  { s:"gtwce", asOf:"Current after round 9 of 10 in the 2026 season (Barcelona). Next: Portimao; no points from it are included yet.",
     classes:[
       { h:"Drivers", rows:[
         { pos:1, who:"Lucas Auer / Maro Engel", pts:131.5 },
@@ -139,6 +139,6 @@ const STANDINGS = [
         { pos:20, who:"VSR", pts:10.5 }
       ] }
     ],
-    note:"Overall GT World Challenge Europe Powered by AWS standings (Endurance and Sprint Cup combined), top 20 positions of each table. Drivers sharing a position are listed together (they share the same points). The series' own site marks the standings provisional following an appeal by Grasser Racing Team against a Zandvoort decision. Source: gt-world-challenge-europe.com/standings (Teams and Drivers 2026), read Oct 14, 2026."
+    note:"Overall GT World Challenge Europe Powered by AWS standings (Endurance and Sprint Cup combined), top 20 positions of each table. Drivers sharing a position are listed together (they share the same points). The series' own page says: Standings remain provisional following appeal #63 Grasser Racing Team Lamborghini against Decision 06 at Zandvoort. Source: gt-world-challenge-europe.com/standings (Teams and Drivers 2026), read 2026-10-15."
   }
 ];

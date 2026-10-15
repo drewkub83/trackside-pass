@@ -1,0 +1,36 @@
+# Keeps the data for live race weekends up to date with nobody's computer involved. Every 30 minutes Thu-Mon it runs
+# tools/auto_update.py, which only acts inside a race weekend's window: refreshes the entry list, rebuilds the podium-game
+# win chances once qualifying is published, imports the race classification and refreshes standings after the race.
+# Anything it changes is committed to main, and Netlify deploys main. See the header of tools/auto_update.py.
+name: Race weekend data
+on:
+  schedule:
+    - cron: "*/30 * * * 4,5,6,0,1"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: data-updates
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Update race weekend data
+        run: python3 tools/auto_update.py
+      - name: Check, commit and push
+        run: |
+          if [ -z "$(git status --porcelain data sw.js)" ]; then echo "nothing changed"; exit 0; fi
+          node --check js/app.js
+          node -e "const fs=require('fs');for(const [f,n] of [['data/entries.js','ENTRIES'],['data/results.js','RESULTS'],['data/standings.js','STANDINGS']]){const v=new Function(fs.readFileSync(f,'utf8')+';return '+n)();console.log(f,v.length);}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data sw.js
+          git commit -m "Race weekend data: automatic update"
+          git pull --rebase origin main
+          git push origin main

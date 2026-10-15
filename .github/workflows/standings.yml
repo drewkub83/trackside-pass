@@ -1,0 +1,34 @@
+# Weekly: refresh the GT World Challenge Europe standings from the series' own pages (tools/gtwce_standings.py).
+# Other series' standings are still refreshed by hand or by the weekly Claude task until they get a parser here.
+name: Weekly standings
+on:
+  schedule:
+    - cron: "17 9 * * 1"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: data-updates
+  cancel-in-progress: false
+jobs:
+  standings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Refresh GT World Challenge Europe standings
+        run: python3 tools/gtwce_standings.py
+      - name: Check, commit and push
+        run: |
+          if [ -z "$(git status --porcelain data)" ]; then echo "nothing changed"; exit 0; fi
+          python3 -c "import sys; sys.path.insert(0,'tools'); import gtwce_lib as L; L.bump_sw()"
+          node -e "const fs=require('fs');const v=new Function(fs.readFileSync('data/standings.js','utf8')+';return STANDINGS')();console.log(v.length)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data sw.js
+          git commit -m "Weekly standings: automatic GT World Challenge Europe update"
+          git pull --rebase origin main
+          git push origin main

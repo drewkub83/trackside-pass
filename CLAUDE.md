@@ -110,6 +110,8 @@ needs re-signing roughly every 7 days.
   (`window.Capacitor && window.Capacitor.isNativePlatform && ...`) and fall back to normal web behavior, since
   the exact same code also runs for any plain browser/installed-PWA visit.
 
-## Scheduled routines (claude.ai/code/routines)
-- Petit Le Mans morning update: 6:00 AM ET on Oct 1, 2 and 3, 2026. Its cron repeats yearly, so **turn it off after Oct 3, 2026.**
-- Barber GT World Challenge America one-off: Sun Sep 27, 2026, 11:00 AM CT.
+## Scheduled routines and automation
+Long-term goal: the app runs without the owner's computer. Cloud routines (claude.ai/code/routines, run in Anthropic's cloud, push to `main`) are the durable mechanism; desktop scheduled tasks only run while the Mac's Claude app is open, so treat them as backups. Cloud routines must NOT have connectors attached (clear with `clear_mcp_connections` after creating).
+- Petit Le Mans morning update (cloud, cron repeated yearly): switched OFF Oct 15, 2026. Turn it back on only for 2027 (cron `0 10 1,2,3 10 *`).
+- Portimao GT World Europe finale (Oct 16-17, 2026): cloud backups for the Friday and Saturday 6:30 AM ET "What to watch" updates (they check for the Mac task's entry first and skip if present). The Mac tasks (quali odds, race result, Friday/Saturday 6:00 AM) are primary this weekend.
+- Live results (instant): `netlify/functions/gtwce.mjs` reads GT World Europe's official results pages; the hub shows them (`liveSrc`, `data/entries.js` `live:{round}`). Runs on Netlify, no computer needed.

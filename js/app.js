@@ -921,9 +921,13 @@ function renderGame(){
   const pd=sc&&gamePodium(sc.res,c.h), marks=(sc&&sc.per[c.h])||[], find=n=>c.cars.find(r=>r[0]===n);
   document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}" ${locked||!n?"disabled":""} onclick="gameDrop(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="hit"?"+5":mk==="near"?"+2":mk==="open"?"?":"0"}</em>`:n&&!locked?"<em>×</em>":""}</button>`; }).join("");
   const real=pd?`<div class="gmReal"><b>Official result</b> ${pd.exact.map((n,i)=>n?`${i+1}. #${n}`:`${i+1}. not listed`).join(" · ")}${pd.extra?` · also on the podium: ${pd.podium.slice(1).map(n=>"#"+n).join(", ")}`:""}</div>`:sc?`<div class="gmReal">The result for this class is not in yet.</div>`:"";
-  document.getElementById("gmList").innerHTML=real+c.cars.map(r=>{ const at=mine.indexOf(r[0]); return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small></span>${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
+  const hasP=c.cars.some(r=>typeof r[4]==="number"), cars=hasP?c.cars.slice().sort((a,b)=>(b[4]||0)-(a[4]||0)):c.cars;
+  const note=hasP?`<div class="gmNote">Our estimate of each car's chance to win ${esc(c.h)}, from this season's Endurance Cup points, favourites first. A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy.</div>`:"";
+  document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=r[4]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small>${r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:""}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
   document.getElementById("gmFoot").innerHTML=esc(g.asOf)+gameRecordHtml();
 }
+/* a win chance as a US money line, like a sportsbook would post it (fair line, no margin) */
+function gameLine(p){ const f=p/100, v=f>=.5?-100*f/(1-f):100*(1-f)/f, a=Math.abs(v), r=a<1000?Math.round(a/5)*5:Math.round(a/50)*50; return (v<0?"-":"+")+r; }
 function gamePick(n){
   const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), at=list.indexOf(n);
   if(at>=0) list.splice(at,1); else if(list.length<3) list.push(n); else { toast("Remove a pick first (tap it in the slots above)"); return; }

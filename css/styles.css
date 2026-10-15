@@ -831,3 +831,7 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .gmReal{padding:10px 14px;border-radius:16px;font-size:13px;color:var(--ink-2);background:var(--tint-2)}.gmReal b{color:var(--ink)}
 .gmRecs{margin-top:16px}.gmRecs h4{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
 .gmRec{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:4px 0;color:var(--ink)}.gmRec.tot{border-top:1px solid var(--line);margin-top:4px;padding-top:8px}
+.gmNote{padding:10px 14px;border-radius:16px;font-size:12px;line-height:1.4;color:var(--ink-2);background:var(--tint-2)}
+.gmWhy{color:var(--accent)!important}
+.gmOdds{display:grid;text-align:right;flex:none}.gmOdds b{font-size:14px;font-weight:700}.gmOdds small{font-size:11px;color:var(--ink-2)}
+.gmTxt small.gmWhy{white-space:normal}

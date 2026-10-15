@@ -3,14 +3,14 @@
 (Teams and Drivers, overall, Endurance + Sprint): top 20 positions of each, drivers sharing a position listed together.
 `asOf` says which round the tables are current through (the last round with any points in its columns) and whether the
 season is complete; a "standings remain provisional" notice on the page is copied into the note.
-Usage: python3 tools/gtwce_standings.py [--season-id 26] [--season 2026] [--print]     Prints 'unchanged' or 'updated'.
-season-id is the series site's internal id for the season (26 = 2026); the season year only labels the text."""
+Usage: python3 tools/gtwce_standings.py [--season 2026] [--season-id 26] [--print]     Prints 'unchanged' or 'updated'.
+The season defaults to the current year; its id on the series site is looked up from the site's own Change Season list."""
 import sys, re, json, html, datetime, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gtwce_lib as L
 A = sys.argv[1:]
 def opt(n, d=None): return A[A.index(n) + 1] if n in A else d
-sid, year = opt("--season-id", "26"), opt("--season", "2026")
+year = opt("--season", str(datetime.date.today().year)); sid = opt("--season-id") or L.season_id(year)
 def get(kind):
     return L.fetch(f"{L.HOST}/standings?filter_season_id={sid}&filter_standing_type=0_0_{kind}")
 def parse(h):

@@ -8,7 +8,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gtwce_lib as L
 A = sys.argv[1:]
 def opt(n, d=None): return A[A.index(n) + 1] if n in A else d
-season, rnd = opt("--season", "2026"), opt("--round")
+rnd = opt("--round")
+lines = L.read("data/entries.js").split("\n"); blk = [b for b in L.entry_blocks(lines) if b[2] == rnd]
+if not blk: sys.exit("no entry with that live.round")
+season = opt("--season", blk[0][3][:4])
 h = L.fetch(f"{L.HOST}/entry-list/{season}/{L.q(rnd)}"); i = h.find("<table")
 if i < 0: print("no entry list on the page"); sys.exit(3)
 def nm(s): return " ".join("-".join(x.capitalize() if x.isupper() and len(x) > 1 else x for x in w.split("-")) if w.isupper() else w for w in s.split(" "))
@@ -21,8 +24,6 @@ for r in re.findall(r"<tr[^>]*>(.*?)</tr>", h[i:h.find("</table>", i)], flags=re
 if not cls: print("empty entry list"); sys.exit(3)
 for k in cls: cls[k].sort(key=lambda x: int(x[0]) if x[0].isdigit() else 9999)
 order = [c for c in ["Pro", "Gold", "Silver", "Bronze", "Pro-Am"] if c in cls]
-lines = L.read("data/entries.js").split("\n"); blk = [b for b in L.entry_blocks(lines) if b[2] == rnd]
-if not blk: sys.exit("no entry with that live.round")
 start, end = blk[0][0], blk[0][1]
 # the old cars (numbers + names) vs the new ones: only rewrite when something real changed
 old = [json.loads(re.match(r'\s*(\[".*\])', l).group(1))[:4] for l in lines[start:end + 1] if re.match(r'\s*\[".*\],?\s*$', l)]

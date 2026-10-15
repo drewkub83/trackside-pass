@@ -22,17 +22,17 @@ Usage:  python3 tools/podium_odds.py --round portimao                 # before q
         python3 tools/podium_odds.py --round portimao --quali --grid-round n%C3%BCrburgring   # rehearsal with a past round's grid
         python3 tools/podium_odds.py --test monza                     # print a round's class grid, writes nothing
 Rewrites the cars (fields 5-7: win chance %, basis text, shrunk form) and `oddsAsOf` of the data/entries.js entry whose live.round is
---round. Options: --season 2026 (default)."""
+--round. --season defaults to the entry's year."""
 import sys, json, math, collections, re
 sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
 import gtwce_lib as L
 FORM_C, FORM_C2, GRID_A, FORM_K = 3.0, 0.5, 0.35, 2   # FORM_K: form is pulled toward 0.5 as if the car had 2 extra average races
 A = sys.argv[1:]
 def opt(name, default=None): return A[A.index(name) + 1] if name in A else default
-SEASON, ROUND, QUALI = opt("--season", "2026"), opt("--round"), "--quali" in A
+ROUND, QUALI = opt("--round"), "--quali" in A
 
 if opt("--test"):
-    g = L.class_ranks(L.table(L.page(SEASON, opt("--test"), "qualifying-combined")))
+    g = L.class_ranks(L.table(L.page(opt("--season", "2026"), opt("--test"), "qualifying-combined")))
     for c in ["Pro", "Gold", "Silver", "Bronze"]: print(c, [n for n, v in sorted(g.items(), key=lambda kv: kv[1][1]) if v[0] == c])
     sys.exit()
 if not ROUND:   # backward compatible: with exactly one live entry, that is the round
@@ -40,17 +40,18 @@ if not ROUND:   # backward compatible: with exactly one live entry, that is the 
     if len(live) != 1: sys.exit("--round <slug> is required (there is not exactly one live entry)")
     ROUND = live[0]
 
+lines = L.read("data/entries.js").split("\n")
+blk = [b for b in L.entry_blocks(lines) if b[2] == ROUND]
+if not blk: sys.exit(f"No entry with live.round {ROUND} in data/entries.js")
+start, end = blk[0][0], blk[0][1]
+SEASON = opt("--season", blk[0][3][:4])   # the entry's year
+
 hist = collections.defaultdict(list)
 for rnd in L.endurance_done(SEASON, exclude=[ROUND]):
     for n, (c, pos, size) in L.class_ranks(L.table(L.page(SEASON, rnd, "main-race"))).items():
         hist[n].append(1 - (pos - 1) / max(1, size - 1))
 grid = L.class_ranks(L.table(L.page(SEASON, opt("--grid-round", ROUND), "qualifying-combined"))) if QUALI else {}
 if QUALI and not grid: sys.exit("No Qualifying Combined result for this round yet.")
-
-lines = L.read("data/entries.js").split("\n")
-blk = [b for b in L.entry_blocks(lines) if b[2] == ROUND]
-if not blk: sys.exit(f"No entry with live.round {ROUND} in data/entries.js")
-start, end = blk[0][0], blk[0][1]
 
 def suffix(i): return "st" if i == 1 else "nd" if i == 2 else "rd" if i == 3 else "th"
 def flush(buf, cls):
@@ -67,7 +68,7 @@ def flush(buf, cls):
         bits = []
         if QUALI and not g: bits.append("No qualifying time, so counted as starting last")
         if QUALI and g: bits.append(f"Qualified {g[1]}{suffix(g[1])} of {g[2]} in {cls}")
-        bits.append(f"averaged top {round((1 - raw) * 100)}% of class in {nh} Endurance Cup race{'s' if nh != 1 else ''} this year" if nh else "no earlier 2026 Endurance Cup race with this number")
+        bits.append(f"averaged top {round((1 - raw) * 100)}% of class in {nh} Endurance Cup race{'s' if nh != 1 else ''} this year" if nh else f"no earlier {SEASON} Endurance Cup race with this number")
         out.append(f'{m.group(1)}{json.dumps(row[:4] + [round(p * 100, 1), ". ".join(bits), round(form, 3)], ensure_ascii=False)}{m.group(3)}')
     return out
 

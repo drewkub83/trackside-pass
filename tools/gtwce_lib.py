@@ -73,3 +73,36 @@ def entry_blocks(lines):
 def bump_sw():
     s = read("sw.js"); m = re.search(r'const VERSION = "v(\d+)"', s)
     write("sw.js", s.replace(m.group(0), f'const VERSION = "v{int(m.group(1)) + 1}"', 1))
+
+# ---- season ids and the official entry-list index (used to create entries for new weekends automatically)
+MONTHS = {m: i for i, m in enumerate(["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"], 1)}
+def season_id(year, h=None):
+    """The series site's internal id for a season year (the Change Season dropdown); falls back to year-2000."""
+    h = h or fetch(f"{HOST}/entry-lists")
+    m = re.search(r'<option value="(\d+)"[^>]*>\s*%s\s*</option>' % year, h)
+    return m.group(1) if m else str(int(year) - 2000)
+
+def parse_range(txt):
+    """'14 - 18 October 2026' / '30 July 2026 - 2 August 2026' -> (date, date) or None."""
+    import datetime
+    parts = [p.strip() for p in txt.split(" - ")]
+    def one(p, month=None, year=None):
+        m = re.match(r"(\d{1,2})(?:\s+([A-Za-z]+))?(?:\s+(\d{4}))?$", p)
+        if not m: return None
+        mon = MONTHS.get((m.group(2) or month or "").lower()); yr = m.group(3) or year
+        return (int(yr), mon, int(m.group(1))) if mon and yr else None
+    if len(parts) != 2: return None
+    mm = re.match(r"\d{1,2}\s+([A-Za-z]+)(?:\s+(\d{4}))?$", parts[1])
+    if not mm: return None
+    end = one(parts[1]); start = one(parts[0], mm.group(1), mm.group(2) or (str(end[0]) if end else None))
+    if not start or not end: return None
+    return datetime.date(*start), datetime.date(*end)
+
+def entry_list_rows(year):
+    """[{slug, series, start, end, available}] from the entry-list index for a season year (all rows, Test Days included)."""
+    h = fetch(f"{HOST}/entry-lists?filter_season_id={season_id(year)}")
+    i = h.find("<table"); out = []
+    for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", h[i:h.find("</table>", i)] if i >= 0 else "", flags=re.S)[1:]:
+        c = cells(tr); m = re.search(r'href="/entry-list/%s/([^"]+)"' % year, tr); rng = parse_range(c[2]) if len(c) > 2 else None
+        if rng: out.append({"slug": html.unescape(m.group(1)) if m else None, "series": c[1], "start": rng[0], "end": rng[1], "available": bool(m)})
+    return out

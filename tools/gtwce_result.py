@@ -10,9 +10,9 @@ import sys, json, collections, re
 sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
 import gtwce_lib as L
 args = [a for a in sys.argv[1:] if not a.startswith("--")]; PRINT = "--print" in sys.argv
-season = sys.argv[sys.argv.index("--season") + 1] if "--season" in sys.argv else "2026"
-if "--season" in sys.argv: args = [a for a in args if a != season]
-rnd, track, day = args[:3]; name = args[3] if len(args) > 3 else "GT World Challenge Europe"
+season = sys.argv[sys.argv.index("--season") + 1] if "--season" in sys.argv else None
+if season: args = [a for a in args if a != season]
+rnd, track, day = args[:3]; season = season or day[:4]; name = args[3] if len(args) > 3 else "GT World Challenge Europe"
 rows = L.table(L.page(season, rnd, "main-race"))
 if not rows: print("No Main Race classification on the page yet."); sys.exit(3)
 groups = collections.OrderedDict()

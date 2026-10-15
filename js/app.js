@@ -195,7 +195,8 @@ function renderSeason(){
     const std=standingsFor(c.guide), stYr=std&&((std.asOf||"").match(/20\d\d/)||[])[0], lead=std&&(stYr?stYr===yr:lastOk)&&std.classes[0]&&std.classes[0].rows[0];
     const role=seasonRole(c,pick);
     return `<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`; }).filter(Boolean).slice(0,4);
-  el.innerHTML=cards.length?`<div class="sect">Your series, next up</div><div class="scards">${cards.join("")}</div>`:"";
+  const pc=playCardHtml();
+  el.innerHTML=cards.length||pc?`${cards.length?`<div class="sect">Your series, next up</div>`:""}<div class="scards">${cards.join("")}${pc}</div>`:"";
 }
 function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
@@ -944,11 +945,34 @@ function gamePick(n){
   savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub();
 }
 function gameDrop(i){ const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), gone=list.splice(i,1)[0]; setPickP(g,gameCls,gone,null); savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub(); }
-/* every weekend you have played that now has a result: one line each and a running total */
+/* your season: every weekend you played in a calendar year, all series together, with a running total (the Home screen card and the
+   bottom of the picker sheet). Counts only weekends that have a result; picks on this phone only. */
+function gameSeason(year){
+  const rows=[]; if(typeof ENTRIES==="undefined") return {rows,pts:0,max:0,winners:0};
+  ENTRIES.filter(g=>g.d.slice(0,4)===String(year)).forEach(g=>{ const sc=gameScore(g); if(!sc||!sc.cars) return; const t=TRACKS.find(x=>x.id===g.t);
+    const winners=g.classes.reduce((n,c)=>n+(((sc.per[c.h]||[])[0]==="hit")?1:0),0);
+    rows.push({g,sc,winners,name:`${t?t.short:g.t} · ${watchSeriesName({s:g.s})}`}); });
+  rows.sort((a,b)=>b.g.d.localeCompare(a.g.d));
+  return {rows,pts:rows.reduce((n,r)=>n+r.sc.pts,0),max:rows.reduce((n,r)=>n+r.sc.max,0),winners:rows.reduce((n,r)=>n+r.winners,0)};
+}
 function gameRecordHtml(){
-  if(typeof ENTRIES==="undefined") return ""; let tp=0,tm=0; const rows=[];
-  ENTRIES.forEach(g=>{ const sc=gameScore(g); if(!sc||!sc.cars) return; tp+=sc.pts; tm+=sc.max; const t=TRACKS.find(x=>x.id===g.t); rows.push(`<div class="gmRec"><span>${esc(t?t.short:g.t)} · ${esc(watchSeriesName({s:g.s}))}</span><b>${sc.pts}/${sc.max}</b></div>`); });
-  return rows.length?`<div class="gmRecs"><h4>Your record</h4>${rows.join("")}<div class="gmRec tot"><span>Total</span><b>${tp}/${tm}</b></div></div>`:"";
+  const y=new Date().getFullYear(), st=gameSeason(y); if(!st.rows.length) return "";
+  return `<div class="gmRecs"><h4>Your ${y} season</h4>${st.rows.map(r=>`<div class="gmRec"><span>${esc(r.name)}</span><b>${r.sc.pts}/${r.sc.max}</b></div>`).join("")}<div class="gmRec tot"><span>Total · ${st.winners} class winner${st.winners===1?"":"s"} called</span><b>${st.pts}</b></div></div>`;
+}
+/* a one-line Home card: your season total, or an invitation while a game is open */
+function playCardHtml(){
+  if(typeof ENTRIES==="undefined") return ""; const y=new Date().getFullYear(), st=gameSeason(y), today=localToday();
+  const open=ENTRIES.find(g=>{ const t=TRACKS.find(x=>x.id===g.t); return t&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4; });
+  if(!st.rows.length&&!open) return "";
+  const line=st.rows.length?`<b>${st.pts}</b> points in ${st.rows.length} weekend${st.rows.length===1?"":"s"}${open?" · a new game is open":""}`:"A game is open: call the top three in each class";
+  return `<button class="scard playCard" onclick="openPlay()"><div class="scTop"><b>Pick your podium · ${y}</b><span>${st.rows.length?"Season total":"Play"}</span></div><div class="scNext">${line}</div></button>`;
+}
+function playOpenEntry(){ const today=localToday(); return (typeof ENTRIES!=="undefined"&&ENTRIES.find(g=>TRACKS.some(x=>x.id===g.t)&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4))||null; }
+function playNow(tid){ openTrack(tid,"home").then(()=>setTimeout(openGame,150)); }
+function openPlay(){
+  const y=new Date().getFullYear(), rec=gameRecordHtml(), openG=playOpenEntry();
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Game</div><h3 id="infoTitle">Pick your podium · ${y}</h3><p class="plRules">Before each race, call the top three cars in each class from the official entry list. Picks lock at the green flag. Right car in the right place scores 5, a podium car in the wrong place 2, both multiplied for long shots (a pick keeps the win chance it had when you made it). Every series counts toward one ${y} total, and it starts again each January. Scores stay on this phone.</p>${openG?`<button class="btn primary plGo" onclick="closeInfo();playNow('${openG.t}')">Make my picks: ${esc((TRACKS.find(x=>x.id===openG.t)||{}).short||"")}</button>`:""}${rec||`<p class="plRules">No scored weekends yet this year.</p>`}`;
+  const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
 
 function renderHub(){

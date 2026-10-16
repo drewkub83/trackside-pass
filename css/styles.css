@@ -403,13 +403,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .ppcheck{margin:12px 14px 0;display:grid;gap:8px}.ppcheck .btn{padding:13px 14px;font-size:16px;width:100%}.ppcheck small{color:var(--ink-2);font-size:13px;padding:0 4px}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 14px 8px}
 .pt{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 4px 10px;border-radius:22px;background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--glass-edge);box-shadow:var(--shadow);text-align:center;min-width:0}
-.pt .ring{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:var(--tint-2);border:3px solid var(--line)}
-.pt .ring svg{width:38px;height:38px}.pt.t0 .ring svg{opacity:.3}
-.pt.t1 .ring{border-color:#D9985A}.pt.t2 .ring{border-color:#B8C2CC}.pt.t3 .ring{border-color:#F2B84B;box-shadow:0 0 14px rgba(242,184,75,.45)}
 .pt b{font-weight:500;font-size:13.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pt small{font-size:11.5px;color:var(--ink-2)}
 .bgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 14px 8px}
 .pb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 10px 14px;border-radius:24px;background:var(--glass);border:1px solid var(--glass-edge);box-shadow:var(--shadow);text-align:center;color:var(--ink)}
-.pb .medal{width:84px;height:84px}.pb .medal.locked{filter:grayscale(1);opacity:.4}.pb b{font-weight:500;font-size:15px}.pb small{font-size:12px;color:var(--ink-2);line-height:1.35}.pb.lock b{color:var(--ink-2)}
+.pb b{font-weight:500;font-size:15px}.pb small{font-size:12px;color:var(--ink-2);line-height:1.35}.pb.lock b{color:var(--ink-2)}
 .ppfoot{display:flex;gap:8px;justify-content:center;margin:14px 14px 4px}.ppfoot .btn{padding:9px 16px;font-size:14px}
 /* passport: grouped tracks and badges */
 .bar .ppmore{margin-left:auto}.bar .ppmore svg{width:20px;height:20px;fill:var(--ink)}
@@ -442,25 +439,16 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .unlock{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:rgba(10,16,14,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:ulfade .3s ease-out both}
 .ul-card{position:relative;width:min(340px,100%);padding:26px 22px 22px;border-radius:32px;background:var(--glass-strong);border:1px solid var(--glass-edge);box-shadow:0 30px 70px rgba(0,0,0,.5);text-align:center}
 .ul-stage{position:relative;width:150px;height:150px;margin:0 auto 6px}
-.ul-medal{position:absolute;inset:0;border-radius:50%;overflow:hidden;filter:drop-shadow(0 8px 18px rgba(0,0,0,.45))}
-.ul-medal .medal{width:100%;height:100%;display:block}
-.ul-shine{position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.75) 50%,transparent 62%);transform:translateX(-120%)}
 .ul-burst{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}
 .ul-burst i{position:absolute;left:0;top:0;width:8px;height:13px;margin:-6px 0 0 -4px;border-radius:2px;background:var(--c);opacity:0}
 .ul-kick{font-size:12.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent);margin-top:8px}
 .ul-card h3{font-size:24px;font-weight:500;margin-top:4px;line-height:1.15}.ul-card p{color:var(--ink-2);font-size:15px;margin:8px 0 18px;line-height:1.4}.ul-card .btn{width:100%;padding:13px;font-size:16px}
-.ul-card .ul-medal,.ul-card .ul-kick,.ul-card h3,.ul-card p,.ul-card .btn{opacity:0}
+.ul-card .ul-kick,.ul-card h3,.ul-card p,.ul-card .btn{opacity:0}
 .ul-card.go{animation:ulcard .45s cubic-bezier(.2,1.2,.4,1) both}
-.ul-card.go .ul-medal{animation:ulpop .8s .1s cubic-bezier(.2,1.5,.35,1) both}
-.ul-card.go .ul-shine{animation:ulshine 1s .75s ease-in-out both}
-.ul-card.go .mring{stroke-dasharray:100;stroke-dashoffset:100;animation:ulring .9s .25s ease-out forwards}
 .ul-card.go .ul-burst i{animation:ulconf 1.2s cubic-bezier(.15,.7,.3,1) forwards}
 .ul-card.go .ul-kick{animation:ulup .5s .55s both}.ul-card.go h3{animation:ulup .5s .65s both}.ul-card.go p{animation:ulup .5s .75s both}.ul-card.go .btn{animation:ulup .5s .9s both}
 @keyframes ulfade{from{opacity:0}to{opacity:1}}
 @keyframes ulcard{from{transform:translateY(28px) scale(.92);opacity:0}to{transform:none;opacity:1}}
-@keyframes ulpop{0%{transform:scale(.15) rotate(-40deg);opacity:0}55%{transform:scale(1.14) rotate(8deg);opacity:1}80%{transform:scale(.97) rotate(-2deg)}100%{transform:none;opacity:1}}
-@keyframes ulring{to{stroke-dashoffset:0}}
-@keyframes ulshine{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
 @keyframes ulup{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
 @keyframes ulconf{0%{transform:translate(0,0) scale(.3) rotate(0);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 46px)) rotate(var(--rot)) scale(1);opacity:0}}
 @media (prefers-reduced-motion:reduce){.ul-card.go,.ul-card.go *{animation-duration:.01s !important;animation-delay:0s !important}.ul-burst{display:none}}

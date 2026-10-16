@@ -2,12 +2,15 @@
   "name": "trackside-pass",
   "version": "1.0.0",
   "private": true,
-  "description": "Race-day companion PWA, wrapped as a personal-use iOS app with Capacitor.",
+  "description": "Race-day companion PWA, wrapped as personal-use iOS and Android apps with Capacitor.",
   "main": "sw.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "ios:sync": "cap sync ios",
-    "ios:open": "cap open ios"
+    "ios:open": "cap open ios",
+    "android:sync": "cap sync android",
+    "android:open": "cap open android",
+    "android:assets": "python3 tools/android_assets.py"
   },
   "repository": {
     "type": "git",
@@ -22,6 +25,8 @@
   },
   "homepage": "https://github.com/drewkub83/trackside-pass#readme",
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
     "@capacitor/browser": "^8.0.5",
     "@capacitor/core": "^8.5.2",
     "@capacitor/geolocation": "^8.2.3",

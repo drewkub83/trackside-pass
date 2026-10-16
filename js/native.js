@@ -29,3 +29,15 @@
     };
   }
 })();
+
+/* Android's system back button / back gesture. The app does not use browser history (screens are swapped in place),
+   so without this the first press would close the whole app. Back steps exactly like the in-app back arrow and
+   swipe-back (swipeBack in app.js: close the open card or sheet, Map/Events/Info -> Hub -> track list) and only
+   exits from the track list itself. iOS has no such button, so this is Android only. */
+(function(){
+  const c=window.Capacitor; if(!(c&&c.isNativePlatform&&c.isNativePlatform()&&c.getPlatform&&c.getPlatform()==="android")) return;
+  const A=c.Plugins&&c.Plugins.App; if(!A||!A.addListener) return;
+  const open=id=>{ const e=document.getElementById(id); return !!(e&&!e.hidden); };
+  const atRoot=()=>{ const sc=document.querySelector(".screen.on"); return (!sc||sc.id==="home")&&!open("infoModal")&&!open("sheet"); };
+  A.addListener("backButton",()=>{ if(atRoot()) A.exitApp(); else if(typeof swipeBack==="function") swipeBack(); });
+})();

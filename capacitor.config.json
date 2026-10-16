@@ -9,5 +9,15 @@
   "ios": {
     "contentInset": "never",
     "backgroundColor": "#1a1d22"
+  },
+  "android": {
+    "backgroundColor": "#1a1d22",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#C97F5F"
+    }
   }
 }

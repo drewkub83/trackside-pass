@@ -23,6 +23,28 @@ const WATCH = [
         ["#30 Team WRT BMW (Ignacio Montenegro, Amaury Cordeel, Matisse Lismont)", "The Silver Cup title is already decided in their favour (87 points to 56). They have finished second in the class three times this season but have no Endurance Cup class win yet, so a victory is the thing left to chase."]] }
     ],
     note:"Sources: the series' own standings pages (Endurance Cup tables by class and the teams table, read Oct 14), its official entry list and Main Race results for Paul Ricard, Monza, Spa and the Nürburgring, its finale news piece, and Daily Sportscar's entry-list report (Oct 14) and Dive-Bomb's preview for the title situations and the Misano appeal. The #3 line-up is new, so no form is shown for it. Several sources disagree on small details (Daily Sportscar calls the #71 an AF Corse entry; the official list says Selected Car Racing, which is used here). Standings are provisional." },
+  { t:"portimao", d:"2026-10-15", s:"gtwce", from:"2026-10-16",
+    asOf:"Current after Friday morning's Free Practice 1; FP2 and qualifying are later Friday, the race is Saturday at 5 PM track time.",
+    groups:[
+      { h:"The headline: Pro", items:[
+        ["#3 Mercedes-AMG Team Verstappen Racing (Max Verstappen, Ben Barnicoat, Chris Lulham)", "Verstappen's official GT World Challenge Europe debut: 20th overall in FP1 on a 1:43.046, about four tenths off the pace. Three minutes into the session he made contact with Ezequiel Pérez Companc's #25 Sainteloc Racing Audi at Turn 3, and the incident was still under investigation as of FP1's end (GPFans, PlanetF1, Speedweek)."],
+        ["#84 Eastalent Racing Audi (Christopher Haase, Simon Reicher, Markus Winkelhock)", "Topped FP1 outright, a 1:42.643 that beat Kelvin van der Linde's #32 Team WRT BMW by just 0.004s (GT World Challenge Europe's own FP1 report, Daily Sportscar)."],
+        ["#48 Mercedes-AMG Team MANN-FILTER (Lucas Auer, Maro Engel, Luca Stolz)", "Already Endurance Cup drivers' champions, clinched at the Nürburgring; the finale is a free swing at a win for them."],
+        ["#7 Comtoyou Aston Martin (Mattia Drudi, Nicki Thiim, Ross Gunn)", "Won the Pro class at Paul Ricard and the Nürburgring. Comtoyou are second in the Endurance Cup teams table, 26 points behind Winward, and need a perfect weekend to catch them."]] },
+      { h:"Overall titles", items:[
+        ["Lucas Auer / Maro Engel (Winward)", "Lead the full-season drivers' table on 131.5 points, 29.5 clear of the next crew, with the final round to run. The series marks the standings provisional pending an appeal over a Misano disqualification."],
+        ["Team WRT vs Winward Racing", "Team WRT lead the full-season teams table on 142.5, five points ahead of Winward on 137.5."]] },
+      { h:"Gold Cup: three crews, one title", items:[
+        ["#998 Rowe Racing BMW (Ugo De Wilde, Jens Klingmann, Tim Tramnitz)", "Lead the Endurance Cup Gold standings on 89 points, three clear of #58."],
+        ["#58 Garage 59 McLaren (Benjamin Goethe, Louis Prette, Thomas Fleming)", "Three points back on 86. #71 Selected Car Racing Ferrari (11 back) is the outside chance."],
+        ["#99 Tresor by Attempto Audi (Alex Aka and team-mates)", "Fastest Gold Cup car in FP1, 3rd overall on a 1:42.686, though it is not one of the three crews fighting for the Gold Cup title."]] },
+      { h:"Bronze Cup", items:[
+        ["#74 Kessel Racing Ferrari (Dustin Blattner and team-mates)", "Won the Bronze class at Monza and Spa. Dustin Blattner has 87 points to the #991 Paradine BMW crew's 71; Daily Sportscar and Dive-Bomb say the real fight is Blattner against that crew because of driver-eligibility rules affecting the points table's nominal leader."],
+        ["#11 Comtoyou Aston Martin (Valentin Hasse-Clot and team-mates)", "Fastest Bronze Cup car in FP1, 7th overall on a 1:42.850."]] },
+      { h:"Silver Cup", items:[
+        ["#30 Team WRT BMW (Ignacio Montenegro, Amaury Cordeel, Matisse Lismont)", "The Silver Cup title is already decided in their favour. They were also the fastest Silver Cup car in FP1, 10th overall, though still without an Endurance Cup class win this season."]] }
+    ],
+    note:"Sources: GT World Challenge Europe's own FP1 report (\"FP1: Haase fastest for Eastalaent Audi as Verstappen makes official debut at Portimão\") and results page, plus search-engine summaries of Daily Sportscar's FP1 report and GPFans/PlanetF1/Speedweek coverage of the Verstappen-Pérez Companc contact. The series' own site and Daily Sportscar could not be reached directly from this environment, so those details are relayed via published-article summaries rather than the original pages. The Eastalent crew's Portimão line-up is inferred from its season-long Endurance Cup roster (Haase/Reicher plus Winkelhock for enduros), not a Portimão-specific confirmation. Standings carried over from the Oct 15 entry are unchanged since Oct 14." },
   { t:"barber", d:"2026-09-25", s:"gtwca", asOf:"Current after Road America (Aug 30). Barber is the second-to-last round.",
     groups:[
       { h:"GT World Challenge America: Pro", items:[

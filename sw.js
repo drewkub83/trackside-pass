@@ -10,7 +10,7 @@ const FONT_CACHE = "paddock-fonts";
 const TRACKS = ["daytona","sebring","laguna-seca","watkins-glen","road-america","vir","indianapolis","road-atlanta","mid-ohio","long-beach","detroit","canadian-tire-motorsport-park","phoenix","barber","st-petersburg","arlington","cota","sonoma","indianapolis-oval","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya","portimao","brands-hatch","imola","misano","magny-cours","zandvoort","hungaroring"];
 const SHELL = [
   "./", "index.html", "css/styles.css", "js/native.js", "js/app.js", "js/passport.js", "data/series.js", "data/champs.js", "data/watch.js", "data/results.js", "data/standings.js", "data/entries.js", "manifest.webmanifest",
-  "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png", "icons/favicon.svg", "icons/favicon-32.png", "icons/pin.svg",
+  "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-192.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon.svg", "icons/favicon-32.png", "icons/pin.svg",
   ...TRACKS.map(t => "data/" + t + ".js")
 ];
 const MAPS = TRACKS.map(t => "data/maps/" + t + ".js");   /* base map + walking grid + elevation, fetched when a track is opened */

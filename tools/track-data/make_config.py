@@ -1,7 +1,7 @@
 # Write tools/street-circuits/permanent/<id>.rb for build_permanent.rb from a short spec. Corner labels come from the
 # names OpenStreetMap gives the pieces of the lap, so nothing is invented.
 #   python3 tools/track-data/make_config.py   (edit SPECS below)
-import json, math, os, re
+import json, math, os, re, sys
 HERE=os.path.dirname(os.path.abspath(__file__)); PERM=os.path.join(HERE,"..","street-circuits","permanent")+"/"; OSM=os.path.join(HERE,"..","street-circuits","osm")+"/"
 ENDURANCE="GT World Challenge Europe Powered by AWS, Endurance Cup"
 SPECS=[
@@ -54,6 +54,35 @@ SPECS=[
   blurb="The Circuit de Barcelona-Catalunya at Montmeló, near Barcelona, drawn here with the final chicane (the 16-turn layout GT World lists). It closes the 2027 GT World Challenge Europe season with an Endurance Cup round.",
   sig=None,
   events=[dict(d="2027-10-22",e="GT World Challenge Europe: Barcelona",s=ENDURANCE,t=3)]),
+
+ dict(id="misano", name="Misano World Circuit Marco Simoncelli", short="Misano", place="Misano Adriatico, Italy", tz="Europe/Rome", center=[43.9614,12.6838],
+  circuit=[1784572,624263852,624263860,624263859,624263858,624263845,624263847,624263844,624263857,624263846,624263856,624263851,624263855,624263850,624263854,624263849,624263853,624263848],
+  pit=[624348305,624348303], official="4.226 km", length="4.226 km (2.63 mi)", opened=1972, nturns=16, lap="1:33.138 (2011)",
+  rename={},
+  blurb="The Misano World Circuit Marco Simoncelli on Italy's Adriatic coast: 4.226 km and 16 turns, with the fast Curvone and the stop-and-go Variante del Parco. It hosts the Sprint Cup round of the 2027 GT World Challenge Europe season on July 16-18.",
+  sig="Curvone, Curva del Carro, Variante del Parco, Variante Arena",
+  events=[dict(d="2027-07-16",e="GT World Challenge Europe: Misano (Sprint Cup)",s="GT World Challenge Europe Powered by AWS, Sprint Cup",t=3)]),
+ dict(id="magny-cours", name="Circuit de Nevers Magny-Cours (Grand Prix circuit)", short="Magny-Cours", place="Magny-Cours, France", tz="Europe/Paris", center=[46.8642,3.1633],
+  circuit=[63951656],
+  pit=195975305, official="4.411 km", length="4.411 km (2.74 mi)", opened=1960, nturns=17, lap=None,
+  rename={"Circuit de Nevers Magny-Cours":None},
+  blurb="The Grand Prix circuit at Magny-Cours in central France: 4.411 km and 17 turns, home of the French Grand Prix from 1991 to 2008. It hosts the Sprint Cup round of the 2027 GT World Challenge Europe season on July 30 to August 1.",
+  sig=None,
+  events=[dict(d="2027-07-30",e="GT World Challenge Europe: Magny-Cours (Sprint Cup)",s="GT World Challenge Europe Powered by AWS, Sprint Cup",t=3)]),
+ dict(id="zandvoort", name="Circuit Zandvoort", short="Zandvoort", place="Zandvoort, Netherlands", tz="Europe/Amsterdam", center=[52.3888,4.5409],
+  circuit=[1311566937,1313671991,1311566939,1313671992,1311566940,1311710253,24626850,1311765615,1311802779,1311822339,1311822340,1311822341,1311879069,1311522211,1311522212,1313671989,1311522213,1313671990,1311522214,1311522215,1311522216,1311522217,1311522218,1311566938],
+  pit=38144527, official="4.307 km", length="4.307 km (2.68 mi)", opened=1948, nturns=14, lap=None,
+  rename={"CM.com Circuit Zandvoort":None},
+  blurb="Circuit Zandvoort in the dunes of the Dutch North Sea coast: 4.307 km and 14 turns, from Tarzanbocht at the end of the pit straight to the banked Hugenholtzbocht and Arie Luyendykbocht. It hosts the Sprint Cup round of the 2027 GT World Challenge Europe season on September 17-19.",
+  sig="Tarzanbocht, Hugenholtzbocht, Arie Luyendykbocht, Scheivlak",
+  events=[dict(d="2027-09-17",e="GT World Challenge Europe: Zandvoort (Sprint Cup)",s="GT World Challenge Europe Powered by AWS, Sprint Cup",t=3)]),
+ dict(id="hungaroring", name="Hungaroring", short="Hungaroring", place="Mogyor\u00f3d, near Budapest, Hungary", tz="Europe/Budapest", center=[47.5789,19.2486],
+  circuit=[231328650,1333262244],
+  pit=231417580, official="4.381 km", length="4.381 km (2.72 mi)", opened=1986, nturns=14, lap=None,
+  rename={"Hungaroring":None},
+  blurb="The Hungaroring near Budapest: 4.381 km and 14 turns in a natural bowl, a tight, twisty lap that has hosted the Hungarian Grand Prix since 1986. It hosts the Sprint Cup round of the 2027 GT World Challenge Europe season on October 1-3.",
+  sig=None,
+  events=[dict(d="2027-10-01",e="GT World Challenge Europe: Budapest (Sprint Cup)",s="GT World Challenge Europe Powered by AWS, Sprint Cup",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):
@@ -63,7 +92,9 @@ def rb(v):
     if isinstance(v,str): return json.dumps(v,ensure_ascii=False)
     if isinstance(v,list): return "["+", ".join(rb(x) for x in v)+"]"
     if isinstance(v,dict): return "{ "+", ".join(f"{rb(k)} => {rb(x)}" for k,x in v.items())+" }"
+ONLY=set(a for a in sys.argv[1:] if not a.startswith('-'))   # python3 make_config.py misano zandvoort  -> write only those (never overwrite a hand-edited config)
 for S in SPECS:
+    if ONLY and S['id'] not in ONLY: continue
     els=json.load(open(OSM+S["id"]+".json"))["elements"]; W={e["id"]:e for e in els if e.get("type")=="way"}
     labels=[]; seen=set()
     for wid in S["circuit"]:

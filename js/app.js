@@ -1038,13 +1038,11 @@ function openPlay(){
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
 
-function renderHub(){
-  if(!hubMode) return;
-  const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
-  const body=document.getElementById("hubBody"); if(!body) return;
-  const ss=sessionsResolved(), now=new Date();
-  const live=currentSession(ss,now), next=ss.find(s=>s.start>now);
-  const chev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
+/* ---- Race Day hub: one function per card, composed by renderHub() ----
+   Each card builder reads what it needs from the shared context c = {ss, now, live, next, chev, liveAll, sid, fav, resultsHtml} and returns
+   its HTML ("" when the card does not apply). The order on screen is the order they are joined in renderHub(). */
+function hubSessionCard(c){
+  const {ss,now,live,next,chev}=c;
   const sessCard=(tag,name,sub,isLive)=>`<div class="hubCard hubTap${isLive?" liveNow":""}" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${tag}</h4><div class="hubSessionName">${esc(name)}</div><div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
   let sessionHtml;
   /* every session on track right now (a common-round weekend can have two or three at once) */
@@ -1060,7 +1058,10 @@ function renderHub(){
     const sub=!fo?"No upcoming event listed":away>0?`${esc(fmtRange(fo.first))} · ${away===1?"tomorrow":"in "+away+" days"}`:"No more sessions today";
     sessionHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${fo&&away>0?"Next event":esc(cur.eventName||"This weekend")}</h4>${fo&&away>0?`<div class="hubSessionName">${esc(fo.first.e)}</div>`:""}<div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
   }
-
+  return sessionHtml;
+}
+function hubTodayStrip(c){
+  const {ss,now}=c;
   /* today at a glance: every session today as a small strip, so overlapping series (a common-round weekend
      like Barber or Road Atlanta) are visible without opening the schedule. Tapping it opens the schedule,
      same as the session card above. */
@@ -1072,13 +1073,17 @@ function renderHub(){
       return `<div class="hubChip${isLive?" live":past?" past":""}"><b>${fmtTime(s.start,cur.tz)}</b><span>${esc(shortName(s.n))}</span></div>`; }).join("");
     stripHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><h4>Today</h4><div class="hubStripSub">${today.length} session${today.length>1?"s":""} today${doneCount?` · ${doneCount} done`:""}</div><div class="hubStrip">${chips}</div></div>`;
   }
-
+  return stripHtml;
+}
+function hubWeatherCard(){
   let wxHtml="";
   if(wx&&wx.data&&wx.data.current){
     const c=wx.data.current, ro=rainOutlook(), wet=ro&&(ro.state==="now"||(ro.state==="soon"&&ro.mins<=60));
     wxHtml=`<div class="hubCard hubWxRow" role="button" onclick="openWeather()"><span class="wbig">${wxIcon(c.weather_code,c.is_day)}</span><div><div class="hubWxTemp">${tv(c.temperature_2m)}°</div><div class="hubWxDesc">${esc(wxInfo(c.weather_code)[0])}${!wet&&ro?" · "+esc(ro.text||""):""}</div>${wet?`<div class="hubWxAlert">☔ ${esc(ro.text)}</div>`:""}</div></div>`;
   }
-
+  return wxHtml;
+}
+function hubActionTiles(){
   const spot=getSpot();
   const hasKind=k=>cur.pois.some(p=>p.k===k&&!p.del);
   const tile=(on,svg,label)=>`<button onclick="${on}"><svg viewBox="0 0 24 24">${svg}</svg>${label}</button>`;
@@ -1090,7 +1095,11 @@ function renderHub(){
     ${tile(spot?"leaveHub();routeToSpot()":"leaveHub();saveSpot()",'<path d="M6 21V4M6 5h11l-2.6 4 2.6 4H6"/>',spot?"My spot":"Save my spot")}
     ${tile("leaveHub()",'<path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/>',"Full map")}
   </div>`;
-
+  return actionsHtml;
+}
+/* which series the hub is about: the one live now, else the next one up (shared by What to watch, Standings and Live timing) */
+function hubFocusSeries(c){
+  const {ss,now,live}=c;
   /* "what to watch" follows the series on track (or next on track): when MX-5 Cup takes the track, its storylines are what shows.
      Starring a series (when more than one runs the same weekend) keeps that series showing even while another is on track.
      It swaps to a live running order once that data source exists and a session is live. */
@@ -1105,20 +1114,30 @@ function renderHub(){
 
   /* off-week: no live or upcoming session to follow, so fall back to the series of the next event for standings */
   if(!sid){ const nx=CHAMPS.filter(c=>!c.optIn&&followed(c)).map(c=>({c,e:nextIn(c,cur)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)), pickS=nx.find(x=>standingsFor(x.c.guide||x.c.id))||nx[0]; if(pickS) sid=pickS.c.guide||pickS.c.id; }   /* the first series here that has standings to show */
+  return {sid,fav};
+}
+function hubWatchCard(c){
+  const {sid,fav}=c;
   const wAll=watchNow();
   let watchHtml="";
   if(wAll.length){
     const x=wAll.find(e=>e.s===sid)||wAll[0], isFav=fav===x.s, star=wAll.length>1?`<button class="hubStar${isFav?" on":""}" aria-label="${isFav?"Unstar":"Star"} ${esc(watchSeriesName(x))}" onclick="toggleFavSeries('${x.s}')"><svg viewBox="0 0 24 24"><path d="M12 3l2.9 6.2 6.6.8-5 4.6 1.4 6.6L12 18l-5.9 3.2L7.5 14.6l-5-4.6 6.6-.8z"/></svg></button>`:"";
     watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${seriesMark(x.s,24)}${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;
   }
-
+  return watchHtml;
+}
+function hubStandingsCard(c){
+  const {sid,chev}=c;
   /* championship standings for that same series -- top of each class only; tap for the full table. */
   let standingsHtml="";
   const std=sid?standingsFor(sid):null;
   if(std){
     standingsHtml=`<div class="hubCard hubTap" role="button" onclick="openStandings('${std.s}')"><div class="hubCardRow"><h4>Standings</h4>${chev}</div><p class="asof hubAsof">${esc(std.asOf)}</p>${std.classes.map(c=>`<div class="wgroup"><h4>${esc(c.h)}</h4>${c.rows.slice(0,5).map(standingsRowHtml).join("")}</div>`).join("")}</div>`;
   }
-
+  return standingsHtml;
+}
+function hubResultsCard(c){
+  const {now}=c;
   /* "how it finished": the most recently completed race (any series, within the last 6 hours) gets its own
      card right away -- before official results are added it says so plainly, and upgrades to the real
      summary automatically once a RESULTS entry (data/results.js) exists for that race. */
@@ -1137,15 +1156,21 @@ function renderHub(){
     return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res?res.groups.map(g=>resultGroupHtml(g,5)).join(""):`<div class="hubSessionSub">The race just ended -- results will show here once they're posted.</div>`}</div>`;
   }).join("");
   if(waitingRes) refreshResults();
-
+  return resultsHtml;
+}
+function hubLiveStream(c){
+  const {live,liveAll}=c;
   /* "watch live": only for a RACE of a series confirmed to stream its own races free on YouTube (data/series.js `yt`).
      The player lives in its own element above this card list (#hubLive) because the list below is rebuilt every
      30 s and rebuilding an iframe would restart the stream. See updateHubLive(). */
-  const liveSr=live?seriesFor(live.n):null;   /* used by live timing below */
   const liveRace=liveAll.find(x=>kindOf(x.n)==="race"&&(seriesFor(x.n)||{}).yt);
   updateHubLive(liveRace?seriesFor(liveRace.n):null);
   const liveStreamHtml="";
-
+  return liveStreamHtml;
+}
+function hubTimingCard(c){
+  const {sid,live}=c;
+  const liveSr=live?seriesFor(live.n):null;   /* a session is on track: show the live dot */
   /* "Live timing": same on-track-now gating as Watch live, but keyed off `timing` instead of `yt` -- most
      series have one even when they don't stream free video, so this often shows on its own. */
   /* Always there for the series in focus (not only while a session is live), so the timing page is one tap away
@@ -1157,7 +1182,10 @@ function renderHub(){
   if(timingSr&&timingSr.timing){ timingUrl=timingSr.timing; timingName=timingSr.name; }
   else { const fo=focusAt(cur); const hit=(fo?fo.group:[]).map(e=>TIMING_LINKS.find(x=>x.match.test(e.s||""))).find(Boolean); if(hit){ timingUrl=hit.url; timingName=hit.name; } }
   const liveTimingHtml=timingUrl?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingUrl}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingName)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
-
+  return liveTimingHtml;
+}
+function hubBeforeWeekend(c){
+  const {ss,now,chev,resultsHtml}=c;
   /* before the weekend: countdown actions, your starred sessions, and how it went here last time */
   let quickHtml="", dayHtml="", lastHereHtml="";
   { const fq=focusAt(cur), aw=fq?daysBetween(localToday(),fq.d):-1, upcoming=ss.filter(x=>x.end>now);
@@ -1168,6 +1196,22 @@ function renderHub(){
     else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions you care about in the schedule and get an alert before each.</div></div>${chev}</div></div>`;
     if(!resultsHtml&&aw>0&&typeof RESULTS!=="undefined"){ const last=RESULTS.filter(r=>r.t===cur.id).sort((a,b)=>b.d.localeCompare(a.d))[0];
       if(last) lastHereHtml=`<div class="hubCard"><h4>Last time here</h4><div class="hubSeries">${esc(last.event)}</div>${last.groups.slice(0,2).map(g=>resultGroupHtml(g,3)).join("")}</div>`; } }
+  return {quickHtml,dayHtml,lastHereHtml};
+}
+function renderHub(){
+  if(!hubMode) return;
+  const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
+  const body=document.getElementById("hubBody"); if(!body) return;
+  const ss=sessionsResolved(), now=new Date();
+  const live=currentSession(ss,now), next=ss.find(s=>s.start>now);
+  const chev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
+  const ctx={ss,now,live,next,chev,liveAll:ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000)};
+  const sessionHtml=hubSessionCard(ctx), stripHtml=hubTodayStrip(ctx), wxHtml=hubWeatherCard(), actionsHtml=hubActionTiles();
+  const fs=hubFocusSeries(ctx); ctx.sid=fs.sid; ctx.fav=fs.fav;
+  const watchHtml=hubWatchCard(ctx), standingsHtml=hubStandingsCard(ctx);
+  const resultsHtml=hubResultsCard(ctx); ctx.resultsHtml=resultsHtml;
+  const liveStreamHtml=hubLiveStream(ctx), liveTimingHtml=hubTimingCard(ctx);
+  const {quickHtml,dayHtml,lastHereHtml}=hubBeforeWeekend(ctx);
   const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"", lv=liveSrc(), liveHtml=lv?liveCardHtml(lv,chev):""; if(lv) liveStart();
   body.innerHTML=sessionHtml+quickHtml+dayHtml+liveHtml+resultsHtml+gameHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --

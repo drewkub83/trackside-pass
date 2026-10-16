@@ -24,11 +24,10 @@ jobs:
       - name: Check, commit and push
         run: |
           if [ -z "$(git status --porcelain data)" ]; then echo "nothing changed"; exit 0; fi
-          python3 -c "import sys; sys.path.insert(0,'tools'); import gtwce_lib as L; L.bump_sw()"
-          node -e "const fs=require('fs');const v=new Function(fs.readFileSync('data/standings.js','utf8')+';return STANDINGS')();console.log(v.length)"
+          node tools/validate.js
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data sw.js
+          git add data
           git commit -m "Weekly standings: automatic GT World Challenge Europe update"
           git pull --rebase origin main
           git push origin main

@@ -10,11 +10,11 @@ A race-day companion web app (PWA): track maps and walking directions, schedules
   rewrite a whole track go through `build_route.load()/save()`, which merge and re-split automatically. After the Ruby
   builder (`build_permanent.rb`) writes a whole file, run `python3 tools/track-data/split_tracks.py <id>`.
   Never add `base`/`route`/`elev` back into the light file. `data/series.js` series guides; `data/watch.js` "What to watch"; `data/results.js` finished-race results; `data/champs.js` standings
-- `sw.js` service worker. **Bump `VERSION` on every change** or phones keep the old files.
-- `build.sh` copies the live files into `dist/`; Netlify runs it on every push to `main`.
+- `sw.js` service worker. Its `VERSION` is set to the commit hash by `build.sh` at deploy time, so phones refresh on every deploy and nobody bumps it by hand (the `vNNN` in the source is ignored).
+- `build.sh` copies the live files into `dist/` and stamps the service-worker version; Netlify runs it on every push to `main`. It first runs `node tools/validate.js` (syntax, data loads, cross-references, sw/index/data consistency): if that fails the build fails and Netlify keeps serving the last good version. `.github/workflows/validate.yml` runs the same check on every push. Run `node tools/validate.js` before pushing data changes; `SKIP_VALIDATE=1` skips it in an emergency.
 
 ## Publishing
-Pushing to `main` deploys the site (https://deft-medovik-55a935.netlify.app). Test first, bump `sw.js` VERSION, commit, push. Ship after every change unless the user says "hold off". Cloud routines also push to `main`, so pull before editing. There are no secrets in this repo; never add any (a Netlify token lives only on the user's Mac in `tools/.netlify-token`, which is gitignored).
+Pushing to `main` deploys the site (https://deft-medovik-55a935.netlify.app). Test first (`node tools/validate.js`), commit, push. Ship after every change unless the user says "hold off". Cloud routines also push to `main`, so pull before editing. There are no secrets in this repo; never add any (a Netlify token lives only on the user's Mac in `tools/.netlify-token`, which is gitignored).
 
 ## Accuracy rule
 Never invent facts. Race facts (results, standings, points, cars, drivers) must come from published sources (imsa.com, racer.com, sportscar365.com, series sites, Porsche, etc.). Cross-check numbers. Do not use Wikipedia for numbers (its standings were wrong) -- except circuit lap records, where Wikipedia is fine (the user OK'd it). If something cannot be verified, leave it out and say so in the entry's `note`. Do not use IMSA/Alkamel live timing data: it carries an explicit no-redistribution notice.

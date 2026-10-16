@@ -155,7 +155,7 @@ function closeRaceWeek(){ document.getElementById("raceWeekModal").hidden=true; 
 function nextIn(c,t){ return t.events.filter(e=>inChamp(c,e)&&!eventDone(t,e)).sort((a,b)=>a.d.localeCompare(b.d))[0]; }
 function orderOf(c){ return TRACKS.map(t=>({t,e:nextIn(c,t)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)); }
 function stopsOf(c){ return (c.stops||[]).filter(s=>!TRACKS.some(t=>t.id===s.id)&&localToday()<=eventEnd(s)).sort((a,b)=>a.d.localeCompare(b.d)); }   /* venues without a map yet */
-const nextImsa=t=>nextIn(champ("imsa"),t), imsaOrder=()=>orderOf(champ("imsa")), imsaCurrent=()=>imsaOrder()[0]||null;   /* IMSA: the race on now, or the next one */
+const imsaOrder=()=>orderOf(champ("imsa")), imsaCurrent=()=>imsaOrder()[0]||null;   /* IMSA: the race on now, or the next one */
 /* the soonest race at each venue across every championship (home hero, passport order, weather, sun times) */
 function anyOrder(){ return TRACKS.map(t=>{ const x=CHAMPS.filter(followed).map(c=>({c,e:nextIn(c,t)})).filter(z=>z.e).sort((a,b)=>a.e.d.localeCompare(b.e.d))[0]; return x?{t,e:x.e,c:x.c}:null; }).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d)); }
 const nextAny=()=>anyOrder()[0]||null;
@@ -357,7 +357,6 @@ function hasShower(p){ return p.shower!==undefined?!!p.shower:!!cur.showers; }
 function showersAvailable(){ const ov=layoutOverrides(); return cur.pois.some(p=>{ const q=applyOv(p,ov[pid(p)]); return q.k==="rest"&&!q.del&&hasShower(q); }); }
 function syncShowerRow(){ document.getElementById("peShowerRow").hidden=document.getElementById("peKind").value!=="rest"; }
 /* shower badge on restrooms with showers; only visible while the Showers layer is on (see css .show-shwr) */
-const SHOWER='<g class="shwr" transform="translate(13,-11)"><circle r="6.5" fill="#2A8FBD" stroke="#fff" stroke-width="1.5"/><path d="M-3.4,-0.6 a3.4,3.4 0 0 1 6.8,0 z" fill="#fff"/><path d="M-2.4,1.6 v1.6 M0,1.6 v2.2 M2.4,1.6 v1.6" stroke="#fff" stroke-width="1" stroke-linecap="round"/></g>';
 function userStands(){ try{ return JSON.parse(localStorage.getItem("paddock:"+cur.id)||"[]"); }catch(e){ return []; } }
 function baseSvg(t){
   if(!t.base) return "";
@@ -507,11 +506,6 @@ function openLiveTiming(url){
   const cap=window.Capacitor;
   if(cap&&cap.isNativePlatform&&cap.isNativePlatform()&&cap.Plugins&&cap.Plugins.Browser){ cap.Plugins.Browser.open({url}); return; }
   window.open(url,"_blank");
-}
-function openLiveStream(channelId,name){
-  document.getElementById("liveTitle").textContent=name+" — live";
-  document.getElementById("liveFrame").src=`https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=1`;
-  showSheet("shLive");
 }
 /* rain radar: actual precipitation right now (RainViewer), not a forecast -- catches a storm the model-based
    rainOutlook() above hasn't recognized yet. Leaflet (map library) and its tiles are loaded only when this
@@ -800,7 +794,6 @@ function startOrientation(){ if(orientOn) return; const go=()=>{ orientOn=true; 
 function tzOffsetMs(date,tz){ const dtf=new Intl.DateTimeFormat("en-US",{timeZone:tz,hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"}); const p={}; dtf.formatToParts(date).forEach(x=>p[x.type]=x.value); const asUTC=Date.UTC(+p.year,+p.month-1,+p.day,(+p.hour)%24,+p.minute,+p.second); return asUTC-date.getTime(); }
 function localToDate(d,hm,tz){ const [y,m,dd]=d.split("-").map(Number); const [hh,mm]=hm.split(":").map(Number); const guess=new Date(Date.UTC(y,m-1,dd,hh,mm)); const off=tzOffsetMs(guess,tz); return new Date(guess.getTime()-off); }
 function fmtTime(date,tz){ tz=timesPref()==="mine"?undefined:tz; return date.toLocaleTimeString("en-US",{timeZone:tz,hour:"numeric",minute:"2-digit"}).replace(" ","\u202f"); }
-function fmtDay(d,tz){ const [y,m,dd]=d.split("-").map(Number); return new Date(Date.UTC(y,m-1,dd,12)).toLocaleDateString("en-US",{timeZone:"UTC",weekday:"long",month:"short",day:"numeric"}); }
 function sessionsResolved(){ const f=focusAt(cur); return f?sessionsOf(cur).filter(x=>x.d>=f.d&&x.d<=f.end):[]; }
 function shortName(n){ return n.replace("WeatherTech Championship","WeatherTech").replace("Michelin Pilot Challenge","Pilot Challenge").replace("VP Racing SportsCar Challenge","VP Challenge").replace(" - "," · "); }
 function relTime(ms){ const m=Math.round(ms/60000); if(m<1) return "now"; if(m<60) return `in ${m} min`; const h=Math.floor(m/60), r=m%60; if(h<24) return `in ${h}h${r?" "+r+"m":""}`; const d=Math.round(h/24); return `in ${d} day${d>1?"s":""}`; }
@@ -1384,10 +1377,6 @@ function refreshMode(show){
   document.getElementById("modeList").innerHTML=items.map(c=>`<button class="lotrow" style="--c:${KINDS[kind].c}" onclick="selectPoi(${c.i})"><i></i>${kind==="camp"?(c.p.d||c.p.n):c.p.n}${c.m!==null?`<small>${mins(c.m)} min</small>`:""}</button>`).join("")||`<div class="empty">Nothing mapped here yet.</div>`;
   if(show) showSheet("shMode");
   applyView();
-}
-function renderLotList(){
-  const ov=layoutOverrides(); const all=cur.pois.map(p=>applyOv(p,ov[pid(p)]));
-  document.getElementById("lotList").innerHTML=all.map((p,i)=>({p,i})).filter(c=>c.p.k==="park"&&!c.p.del).map(c=>{ const wm=walkMetresTo(c.p.x,c.p.y); return `<button class="lotrow" style="--c:${c.p.c||'#4B5058'}" onclick="selectPoi(${c.i})"><i></i>${c.p.n}${wm!==null?`<small>${Math.max(1,Math.round(wm/80))} min</small>`:""}</button>`; }).join("");
 }
 /* save my spot */
 let placing=false;

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Runs on a schedule (GitHub Actions: .github/workflows/race-weekend.yml; also fine by hand). For every entry in data/entries.js with
 live:{round}, i.e. a series whose results pages we can read (GT World Challenge Europe so far), it does whatever the weekend needs
-right now, then bumps sw.js VERSION if any data file changed (the workflow commits and pushes):
+right now, then reports what changed (the workflow validates, commits and pushes):
   about 8 days before an Endurance Cup weekend the app has an event for:  create its entry in data/entries.js (round name found on the
                                                            series' entry-list page) and fill the cars from the official list
   from the day before the event until the race starts:   refresh the entry list from the official page (withdrawals, swaps)
@@ -79,5 +79,5 @@ for e in entries:
         if run("gtwce_result.py", rnd, e["t"], e["d"], name, "--refresh") == 0 and not DRY and L.read("data/results.js") != before["data/results.js"]: run("gtwce_standings.py")
     else: print(f"  race ends {r_end.isoformat()}; nothing to import yet")
 changed = [f for f in before if before[f] != L.read(f)]
-if changed and not DRY: L.bump_sw(); print("changed:", ", ".join(changed), "+ sw.js")
+if changed and not DRY: print("changed:", ", ".join(changed))   # the service worker VERSION is set by build.sh, no bump needed
 else: print("changed:", ", ".join(changed) or "nothing")

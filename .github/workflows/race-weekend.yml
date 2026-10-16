@@ -25,12 +25,11 @@ jobs:
         run: python3 tools/auto_update.py
       - name: Check, commit and push
         run: |
-          if [ -z "$(git status --porcelain data sw.js)" ]; then echo "nothing changed"; exit 0; fi
-          node --check js/app.js
-          node -e "const fs=require('fs');for(const [f,n] of [['data/entries.js','ENTRIES'],['data/results.js','RESULTS'],['data/standings.js','STANDINGS']]){const v=new Function(fs.readFileSync(f,'utf8')+';return '+n)();console.log(f,v.length);}"
+          if [ -z "$(git status --porcelain data)" ]; then echo "nothing changed"; exit 0; fi
+          node tools/validate.js
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data sw.js
+          git add data
           git commit -m "Race weekend data: automatic update"
           git pull --rebase origin main
           git push origin main

@@ -18,7 +18,7 @@ TRACKS.push({
   "osm":true,
   "sfArrow":[-86.0,33.9,-179],
   "lots":[{"n":"Paddock lot","c":"#E2574C","d":"M524.0,-503.0 L559.0,-483.0 L560.0,-485.0 L562.0,-485.0 L574.0,-480.0 L575.0,-482.0 L576.0,-486.0 L564.0,-493.0 L526.0,-514.0 L525.0,-511.0 L524.0,-505.0 L524.0,-503.0 Z","x":549,"y":-494,"r":34},{"n":"Main lot","c":"#F28C28","d":null,"x":1,"y":109,"r":34},{"n":"North lot","c":"#F2C300","d":null,"x":11,"y":-257,"r":34}],
-  "sessions":[{"d":"2027-06-05","s":"12:10","e":"16:10","n":"IMSA Michelin Pilot Challenge 4-hour race"}],
+  "sessions":[],
   "tz":"America/New_York",
   "eventName":"Mid-Ohio Sports Car Challenge",
   "nturns":13,

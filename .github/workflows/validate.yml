@@ -1,0 +1,18 @@
+# Runs the same checks Netlify runs before it builds (tools/validate.js), on every push and pull request, so a bad commit (from anyone,
+# including the automatic jobs) shows up as a red cross here. Netlify itself refuses to build a version that fails these checks, so a
+# bad commit never replaces the working site.
+name: Validate
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tools/validate.js

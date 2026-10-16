@@ -87,6 +87,17 @@ if (dup.length) err(`index.html: duplicate ids ${[...new Set(dup)].join(", ")}`)
 const fontLink = ((html.match(/href="(https:\/\/fonts\.googleapis\.com\/css2[^"]+)"/) || [])[1] || "").replace(/&amp;/g, "&");
 if (!fontLink || !sw.includes(fontLink)) err("fonts: the <link> in index.html and FONT_CSS in sw.js differ, so fonts will not work offline");
 
+/* 6. every localStorage key lives in the K table at the top of js/app.js (index.html's tiny pre-paint script is the one allowed exception) */
+{
+  const appSrc = read("js/app.js"), kBlock = (appSrc.match(/const K=\{[\s\S]*?\n\};/) || [""])[0];
+  if (!kBlock) err("js/app.js: the K storage-key table is missing");
+  const rest = { "js/app.js": appSrc.replace(kBlock, "").replace(/const K_RETIRED=\[.*?\];/, ""), "js/passport.js": read("js/passport.js"), "js/native.js": read("js/native.js") };
+  for (const [f, src] of Object.entries(rest)) {
+    const hits = src.match(/["'`]paddock:[^"'`]*["'`]/g);
+    if (hits) err(`${f}: storage key literal(s) ${[...new Set(hits)].join(", ")} outside the K table: add the key to K in js/app.js and use K.name`);
+  }
+}
+
 for (const w of warns) console.log("warning: " + w);
 if (errors.length) { console.error(`\nvalidate: ${errors.length} problem(s)`); errors.forEach((e) => console.error("  x " + e)); process.exit(1); }
 console.log(`validate: ok (${Object.keys(tracks).length} tracks, ${WATCH.length} watch, ${RESULTS.length} results, ${STANDINGS.length} standings, ${ENTRIES.length} entries${warns.length ? ", " + warns.length + " warning(s)" : ""})`);

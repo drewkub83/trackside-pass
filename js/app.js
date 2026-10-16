@@ -10,6 +10,46 @@
    App shell ............... "offline support", "swipe back"
    Startup statements (renderHome(), timers, listeners) sit between the functions and rely on hoisting, so do not split
    this file without moving them all to a final boot step first. */
+/* ---------------- STORAGE KEYS ----------------
+   Every localStorage key the app uses, in one place (all of it stays on this phone). A key ending in ":" is per track: append the track id.
+   tools/validate.js fails the build if a key string of that form appears anywhere else, so a new key has to be added here and described. */
+const K={
+  theme:"paddock:theme",         /* light / dark / auto */
+  style:"paddock:style",         /* Classic or Race Control look (also read by the inline script in index.html before first paint) */
+  times:"paddock:times",         /* track time or my time */
+  units:"paddock:units",         /* legacy combined units key (migrated to wxUnits and distUnits) */
+  wxUnits:"paddock:wxUnits",       /* weather units (imperial / metric) */
+  distUnits:"paddock:distUnits",     /* distance units (imperial / metric) */
+  haptics:"paddock:haptics",       /* vibration on/off */
+  awake:"paddock:awake",         /* keep the screen awake */
+  dev:"paddock:dev",           /* developer tools on */
+  accessRoutes:"paddock:accessRoutes",  /* avoid unmarked / wooded ground in walking directions (Settings) */
+  auto:"paddock:auto",          /* open straight at the track when you arrive */
+  alerts:"paddock:alerts",        /* session alerts on/off (iPhone app) */
+  alertsSeen:"paddock:alertsSeen",    /* whether the alerts permission prompt was shown */
+  remind:"paddock:remind",        /* going-race reminders on/off */
+  goDays:"paddock:goDays",        /* how many days before a weekend the hub shows What to watch / the game */
+  going:"paddock:going",         /* races you are going to */
+  stars:"paddock:stars",         /* starred sessions */
+  picks:"paddock:picks",         /* Pick your podium picks, with the win chance and timing bonus banked per pick (_p, _m) */
+  favSeries:"paddock:favSeries",     /* the series starred on the hub */
+  followSub:"paddock:followSub",     /* support series you chose to follow */
+  unfollow:"paddock:unfollow",      /* series you switched off */
+  seriesOrder:"paddock:seriesOrder",   /* your arrangement of series on Home */
+  raceWeekShown:"paddock:raceWeekShown", /* race weeks whose banner was already shown */
+  offline:"paddock:offline",       /* set once the offline maps are saved */
+  passport:"paddock:passport",      /* passport stamps and unlocked badges */
+  pp:"paddock:pp",            /* passport check-in switch */
+  ppGroup:"paddock:ppGroup",       /* passport grouping (region / series) */
+  layout:"paddock:layout:",        /* your edits to a track's map badges, per track (+ track id) */
+  lots:"paddock:lots:",          /* parking lot tweaks, per track (+ track id) */
+  added:"paddock:added:",         /* stands you added to the map, per track (+ track id) */
+  spot:"paddock:spot:",          /* your saved spot, per track (+ track id) */
+  rev:"paddock:rev:",           /* track data revision last seen, per track (+ track id) */
+  wx:"paddock:wx:",            /* cached weather, per track (+ track id) */
+  stands:"paddock:",        /* stands added by you for a track are stored under the bare prefix + track id (older key shape) */
+};
+const K_RETIRED=["paddock:vpgap","paddock:gapAsked"];   /* removed features: cleared on startup */
 /* Map space is a 1000 x 700 box. geo = lat/lng of that box's edges so GPS can be placed on it. */
 const KINDS = {
   food:{label:"Food",c:"var(--food)"}, stand:{label:"Grandstands",c:"var(--stand)"}, gate:{label:"Gates",c:"var(--gate)"},
@@ -63,14 +103,14 @@ function focusAt(t){
   return {first:f, group, d:f.d, end:group.reduce((m,e)=>eventEnd(e)>m?eventEnd(e):m,end)};
 }
 /* races you are going to (saved on this phone). Close to the date the home tile shows your race instead of the soonest one. */
-const GO_KEY="paddock:going";
+const GO_KEY=K.going;
 function goingList(){ try{ return JSON.parse(localStorage.getItem(GO_KEY)||"[]"); }catch(e){ return []; } }
 const goKey=(t,e)=>t.id+"|"+e.d+"|"+e.e;
 function isGoing(t,e){ return goingList().includes(goKey(t,e)); }
 function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>scheduleGoingReminders(on),0); }
 /* Starred sessions: tap the star on a session to get an alert 10 minutes before it (works anywhere, not just at the track,
    because you picked that session yourself). The star list is on this phone; alerts are the iPhone app's own notifications. */
-const STAR_KEY="paddock:stars", STAR_ID_BASE=2000;
+const STAR_KEY=K.stars, STAR_ID_BASE=2000;
 const starKey=(t,s)=>`${t.id}|${s.d}|${s.s}|${s.n}`;
 function starList(){ try{ return JSON.parse(localStorage.getItem(STAR_KEY)||"[]"); }catch(e){ return []; } }
 function isStarred(t,s){ return starList().includes(starKey(t,s)); }
@@ -118,7 +158,7 @@ function nextGoing(){ const out=[]; TRACKS.forEach(t=>(t.events||[]).forEach(e=>
 /* race week: a one-time celebration banner, the first time the app is opened during the week of a
    race you've marked "going" -- from 7 days before it starts through its last day. Shown once per
    event (tracked by the same t.id|date|name key "going" already uses), never again after that. */
-const RACE_WEEK_KEY="paddock:raceWeekShown";
+const RACE_WEEK_KEY=K.raceWeekShown;
 function checkRaceWeek(){
   const g=nextGoing(); if(!g) return;
   const startIn=daysBetween(localToday(),g.e.d), endIn=daysBetween(localToday(),eventEnd(g.e));
@@ -204,7 +244,7 @@ function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort
    everywhere the series list appears. Any series never manually arranged (new ones, or on first run) sorts
    in after the arranged ones, soonest-first, so the list always has a sensible order even before you touch it. */
-const SERIES_ORDER_KEY="paddock:seriesOrder";
+const SERIES_ORDER_KEY=K.seriesOrder;
 function seriesOrderIds(){
   let saved; try{ saved=JSON.parse(LSget(SERIES_ORDER_KEY,"null")); }catch(e){ saved=null; }
   const known=new Set((saved||[]).filter(id=>CHAMPS.some(c=>c.id===id)));
@@ -261,8 +301,8 @@ function openSeries(id){ curChamp=champ(id)||CHAMPS[0]; renderSeries(); showScre
    old saved edits so they can't hide the new layout. Saved spots and added stands are kept. */
 function dropStaleEdits(){
   if(cur.rev===undefined) return;
-  try{ const k="paddock:rev:"+cur.id; if(localStorage.getItem(k)===String(cur.rev)) return;
-    localStorage.removeItem("paddock:layout:"+cur.id); localStorage.removeItem("paddock:lots:"+cur.id); localStorage.removeItem("paddock:added:"+cur.id); localStorage.setItem(k,String(cur.rev)); }catch(e){}
+  try{ const k=K.rev+cur.id; if(localStorage.getItem(k)===String(cur.rev)) return;
+    localStorage.removeItem(K.layout+cur.id); localStorage.removeItem(K.lots+cur.id); localStorage.removeItem(K.added+cur.id); localStorage.setItem(k,String(cur.rev)); }catch(e){}
 }
 /* A track's base map, walking grid and elevation live in data/maps/<id>.js (about 90% of its data) and are
    fetched when the track is opened; the service worker keeps them on the phone, so this works with no signal. */
@@ -357,7 +397,7 @@ function hasShower(p){ return p.shower!==undefined?!!p.shower:!!cur.showers; }
 function showersAvailable(){ const ov=layoutOverrides(); return cur.pois.some(p=>{ const q=applyOv(p,ov[pid(p)]); return q.k==="rest"&&!q.del&&hasShower(q); }); }
 function syncShowerRow(){ document.getElementById("peShowerRow").hidden=document.getElementById("peKind").value!=="rest"; }
 /* shower badge on restrooms with showers; only visible while the Showers layer is on (see css .show-shwr) */
-function userStands(){ try{ return JSON.parse(localStorage.getItem("paddock:"+cur.id)||"[]"); }catch(e){ return []; } }
+function userStands(){ try{ return JSON.parse(localStorage.getItem(K.stands+cur.id)||"[]"); }catch(e){ return []; } }
 function baseSvg(t){
   if(!t.base) return "";
   const b=t.base; let s="";
@@ -457,11 +497,11 @@ function addStand(){
   if(!n){ toast("Give the stand a name first."); return; }
   const pos = userPos && userPos.inside ? userPos : {x:cur.sf[0]+Math.round(Math.random()*80-40), y:cur.sf[1]+Math.round(Math.random()*80-40)};
   const list = userStands(); list.push({n,w,where:where||"Location not set",p,x:pos.x,y:pos.y});
-  try{ localStorage.setItem("paddock:"+cur.id, JSON.stringify(list)); }catch(e){}
+  try{ localStorage.setItem(K.stands+cur.id, JSON.stringify(list)); }catch(e){}
   ["fName","fWhat","fWhere"].forEach(id=>document.getElementById(id).value="");
   renderFood(); renderMap(); renderSpot(); toast("Stand added. Others at the track would see it too.");
 }
-function removeStand(i){ const list=userStands(); list.splice(i,1); try{ localStorage.setItem("paddock:"+cur.id, JSON.stringify(list)); }catch(e){} renderFood(); renderMap(); }
+function removeStand(i){ const list=userStands(); list.splice(i,1); try{ localStorage.setItem(K.stands+cur.id, JSON.stringify(list)); }catch(e){} renderFood(); renderMap(); }
 function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
 
 /* events */
@@ -548,8 +588,8 @@ async function openRadar(){
   }catch(e){ if(sheetState==="shRadar") asOf.textContent="Couldn't load the radar right now -- check your connection and try again."; }
 }
 /* the series you've starred in the Race Day hub, when more than one shares a weekend -- global, not per track */
-function favSeries(){ try{ return localStorage.getItem("paddock:favSeries")||null; }catch(e){ return null; } }
-function toggleFavSeries(id){ try{ localStorage.setItem("paddock:favSeries",favSeries()===id?"":id); }catch(e){} renderHub(); }
+function favSeries(){ try{ return localStorage.getItem(K.favSeries)||null; }catch(e){ return null; } }
+function toggleFavSeries(id){ try{ localStorage.setItem(K.favSeries,favSeries()===id?"":id); }catch(e){} renderHub(); }
 function renderWatch(){
   const sec=document.getElementById("watchSection"); if(!sec) return; const fo=focusAt(cur), title=document.getElementById("watchTitle");
   const w=watchNow();
@@ -645,7 +685,7 @@ function walkRows(){
 }
 function gridCell(x,y){ const r=cur.route; return [Math.min(r.nx-1,Math.max(0,Math.floor((x-r.x0)/r.cell))), Math.min(r.ny-1,Math.max(0,Math.floor((y-r.y0)/r.cell)))]; }
 function nearestFree(cx,cy){ const r=cur.route, rows=walkRows(); if(rows[cy][cx]!=="1") return [cx,cy]; for(let rad=1;rad<8;rad++){ for(let dx=-rad;dx<=rad;dx++) for(let dy=-rad;dy<=rad;dy++){ const X=cx+dx,Y=cy+dy; if(X>=0&&X<r.nx&&Y>=0&&Y<r.ny&&rows[Y][X]!=="1") return [X,Y]; } } return [cx,cy]; }
-const ACCESS_KEY="paddock:accessRoutes";
+const ACCESS_KEY=K.accessRoutes;
 function accessRoutes(){ try{ return localStorage.getItem(ACCESS_KEY)==="1"; }catch(e){ return false; } }
 function setAccessRoutes(v){ try{ localStorage.setItem(ACCESS_KEY,v?"1":"0"); }catch(e){} renderAccessUI(); if(routeDest!==null) computeRoute(); }
 function renderAccessUI(){ const on=accessRoutes(); document.querySelectorAll(".accessSeg").forEach(el=>{ el.innerHTML=[["0","Off"],["1","On"]].map(([k,l])=>`<button class="${(k==="1")===on?"on":""}" onclick="setAccessRoutes(${k==="1"})">${l}</button>`).join(""); }); }
@@ -914,7 +954,7 @@ function renderLiveRes(){
    at the moment you make it, and pays x sqrt(10 / chance%), kept between 0.5 and 3 (a 10% car pays x1, a 2% car about x2.2, a 30%
    car x0.58), then x1.25 for a pick locked in before qualifying starts or x0.75 for one made after it ends (gameTiming). Everything stays on this phone (paddock:picks, with the banked chances under "_p"); no accounts, no server.
    Results that only name the winner (or the winner and a podium, unordered) score only the places they actually settle. */
-const PICK_KEY="paddock:picks";
+const PICK_KEY=K.picks;
 const gameKey=g=>`${g.t}|${g.d}|${g.s}`;
 function picksAll(){ try{ return JSON.parse(localStorage.getItem(PICK_KEY)||"{}"); }catch(e){ return {}; } }
 function picksOf(g){ return picksAll()[gameKey(g)]||{}; }
@@ -1354,8 +1394,8 @@ function nearest(kind){
   showSheet("shDir"); computeRoute(); document.getElementById("dirTo").textContent=`Nearest ${label}: ${best.p.n}`;
 }
 /* lot outlines: overrides + editing */
-function lotOverrides(){ try{ return JSON.parse(localStorage.getItem("paddock:lots:"+cur.id)||"{}"); }catch(e){ return {}; } }
-function saveLot(name,pts){ const o=lotOverrides(); o[name]=pts.map(p=>[Math.round(p[0]*10)/10,Math.round(p[1]*10)/10]); try{ localStorage.setItem("paddock:lots:"+cur.id, JSON.stringify(o)); }catch(e){} }
+function lotOverrides(){ try{ return JSON.parse(localStorage.getItem(K.lots+cur.id)||"{}"); }catch(e){ return {}; } }
+function saveLot(name,pts){ const o=lotOverrides(); o[name]=pts.map(p=>[Math.round(p[0]*10)/10,Math.round(p[1]*10)/10]); try{ localStorage.setItem(K.lots+cur.id, JSON.stringify(o)); }catch(e){} }
 function parsePath(d){ return d.replace(/[MLZ]/g," ").trim().split(/\s+/).map(s=>s.split(",").map(Number)).filter(p=>p.length===2&&!isNaN(p[0])); }
 function lotPoints(l){ const o=lotOverrides()[l.n]; if(o) return o; if(l.d) return parsePath(l.d); const n=10; return Array.from({length:n},(_,i)=>[l.x+l.r*Math.cos(i/n*2*Math.PI),l.y+l.r*Math.sin(i/n*2*Math.PI)]); }
 function ptsPath(pts){ return "M"+pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L")+" Z"; }
@@ -1424,8 +1464,8 @@ function refreshMode(show){
 }
 /* save my spot */
 let placing=false;
-function getSpot(){ try{ return JSON.parse(localStorage.getItem("paddock:spot:"+cur.id)||"null"); }catch(e){ return null; } }
-function setSpot(x,y){ fieldCache=null; const s={x:Math.round(x),y:Math.round(y),t:Date.now()}; try{ localStorage.setItem("paddock:spot:"+cur.id, JSON.stringify(s)); }catch(e){} renderSpot(); if(mode) refreshMode(false); showSpot(); }
+function getSpot(){ try{ return JSON.parse(localStorage.getItem(K.spot+cur.id)||"null"); }catch(e){ return null; } }
+function setSpot(x,y){ fieldCache=null; const s={x:Math.round(x),y:Math.round(y),t:Date.now()}; try{ localStorage.setItem(K.spot+cur.id, JSON.stringify(s)); }catch(e){} renderSpot(); if(mode) refreshMode(false); showSpot(); }
 function renderSpot(){ const s=getSpot(); const btn=document.getElementById("spotBtn"); btn.classList.toggle("set",!!s); btn.classList.toggle("placing",placing); document.getElementById("mapWrap").classList.toggle("placing",placing);
   let layer=document.getElementById("spotLayer"); if(!layer) return; layer.innerHTML=s?`<g id="spotPin" transform="translate(${s.x},${s.y})"><g class="sc"><path d="M0,2 C-7,-7 -9,-11 -9,-15 a9,9 0 0 1 18,0 c0,4 -2,8 -9,17z" fill="var(--accent)" stroke="#fff" stroke-width="1.8"/><circle cy="-15" r="3.2" fill="#fff"/><text y="10" text-anchor="middle" font-size="10" font-weight="600" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke">My spot</text></g></g>`:""; applyView(); }
 function showSpot(){ const s=getSpot(); if(!s) return; const when=new Date(s.t); document.getElementById("spotText").textContent=`Saved ${when.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}. Your car, campsite, or seat, so you can find your way back.`; showSheet("shSpot"); }
@@ -1436,7 +1476,7 @@ function saveSpot(){
   placing=true; renderSpot(); closeSheet(); toast("Tap the map where your car, campsite, or seat is.");
 }
 function forgetSpot(){
-  fieldCache=null; try{ localStorage.removeItem("paddock:spot:"+cur.id); }catch(e){}
+  fieldCache=null; try{ localStorage.removeItem(K.spot+cur.id); }catch(e){}
   /* the active route can have the spot as either end -- routing TO it (routeDest==="spot") or FROM it
      (the "From" picker set to "spot"); forgetting the spot should drop the drawn line either way. */
   const fromSel=document.getElementById("dirFrom");
@@ -1446,24 +1486,24 @@ function forgetSpot(){
 function routeToSpot(){ if(!getSpot()||!cur.route){ toast("Directions aren\'t available on this track yet."); return; } routeDest="spot"; following=false; devHeading=null; const sel=document.getElementById("dirFrom"); const os=routeOrigins(); sel.innerHTML=os.map(o=>`<option value="${o.v}">${o.l}</option>`).join(""); sel.value=os[0].v; const w=document.getElementById("dirWalk"); if(w) w.textContent="Start walking"; showSheet("shDir"); computeRoute(); }
 /* developer unlock (prototype stand-in for an editor role) */
 let devTaps=0, devTimer=null;
-function isDev(){ try{ return localStorage.getItem("paddock:dev")==="1"||location.hash==="#dev"; }catch(e){ return location.hash==="#dev"; } }
+function isDev(){ try{ return localStorage.getItem(K.dev)==="1"||location.hash==="#dev"; }catch(e){ return location.hash==="#dev"; } }
 function applyDev(){ const on=isDev(); const b=document.getElementById("editBtn"); if(b) b.hidden=!on; if(!on&&editing) toggleEdit(); const hb=document.getElementById("hubPreviewBtn"); if(hb) hb.hidden=!on; }
 function devTap(){ devTaps++; clearTimeout(devTimer); devTimer=setTimeout(()=>devTaps=0,1500);
-  if(devTaps>=7){ devTaps=0; const on=!isDev(); try{ localStorage.setItem("paddock:dev",on?"1":"0"); }catch(e){} applyDev(); toast(on?"Developer tools unlocked.":"Developer tools hidden."); } }
+  if(devTaps>=7){ devTaps=0; const on=!isDev(); try{ localStorage.setItem(K.dev,on?"1":"0"); }catch(e){} applyDev(); toast(on?"Developer tools unlocked.":"Developer tools hidden."); } }
 /* edit mode: drag badges */
 let editing=false;
 document.getElementById("peKind").innerHTML=Object.entries(KINDS).filter(([k])=>k!=="shower").map(([k,v])=>`<option value="${k}">Icon: ${v.label}</option>`).join("");
-function layoutOverrides(){ try{ return JSON.parse(localStorage.getItem("paddock:layout:"+cur.id)||"{}"); }catch(e){ return {}; } }
+function layoutOverrides(){ try{ return JSON.parse(localStorage.getItem(K.layout+cur.id)||"{}"); }catch(e){ return {}; } }
 function pid(p){ return p.id||p.n; }  /* stable key for edits, so badges can share a display name */
 function applyOv(p,o){ if(!o) return p; if(Array.isArray(o)) return {...p,x:o[0],y:o[1]}; const q={...p}; if(o.x!==undefined){q.x=o.x;q.y=o.y;} if(o.n) q.n=o.n; if(o.d!==undefined) q.d=o.d; if(o.k&&KINDS[o.k]) q.k=o.k; if(o.del) q.del=true; if(o.shower!==undefined) q.shower=!!o.shower; return q; }
 function getOv(name){ const o=layoutOverrides()[name]; if(!o) return {}; return Array.isArray(o)?{x:o[0],y:o[1]}:o; }
-function putOv(name,patch){ const all=layoutOverrides(); const cur_=getOv(name); const merged={...cur_,...patch}; all[name]=merged; try{ localStorage.setItem("paddock:layout:"+cur.id, JSON.stringify(all)); }catch(e){} }
+function putOv(name,patch){ const all=layoutOverrides(); const cur_=getOv(name); const merged={...cur_,...patch}; all[name]=merged; try{ localStorage.setItem(K.layout+cur.id, JSON.stringify(all)); }catch(e){} }
 function saveOverride(name,x,y){ putOv(name,{x:Math.round(x),y:Math.round(y)}); }
 function savePoiEdit(){ if(popI===null||popI>=cur.pois.length) return; const orig=cur.pois[popI]; const n=document.getElementById("peName").value.trim(); if(!n){ toast("Name can\'t be empty."); return; } const kind=document.getElementById("peKind").value; putOv(pid(orig),{n,d:document.getElementById("peDesc").value.trim(),k:kind,shower:kind==="rest"?document.getElementById("peShower").checked:undefined}); renderMap(); renderSpot(); renderFood(); computeRoute(); selectPoi(popI); applyView(); toast("Saved."); }
 /* dev mode: add a badge (saved on this device; "Copy layout" exports it so it can be baked into the data) */
 let addingBadge=false;
-function loadAdded(){ try{ return JSON.parse(localStorage.getItem("paddock:added:"+cur.id)||"[]"); }catch(e){ return []; } }
-function saveAdded(list){ try{ localStorage.setItem("paddock:added:"+cur.id, JSON.stringify(list)); }catch(e){} }
+function loadAdded(){ try{ return JSON.parse(localStorage.getItem(K.added+cur.id)||"[]"); }catch(e){ return []; } }
+function saveAdded(list){ try{ localStorage.setItem(K.added+cur.id, JSON.stringify(list)); }catch(e){} }
 function syncPois(){ if(!cur._base) cur._base=cur.pois; cur.pois=cur._base.concat(loadAdded().map(a=>({...a,added:true}))); }
 function startAddBadge(){
   addingBadge=!addingBadge; document.getElementById("mapWrap").classList.toggle("adding",addingBadge);
@@ -1478,13 +1518,13 @@ function createBadge(x,y){
 function deletePoi(){
   if(popI===null||popI>=cur.pois.length) return; const orig=cur.pois[popI], name=document.getElementById("pcName").textContent;
   if(!confirm(`Delete "${name}" from the map?\n\n"Reset badges" brings deleted badges back.`)) return;
-  if(orig.added){ saveAdded(loadAdded().filter(a=>a.id!==orig.id)); const all=layoutOverrides(); delete all[orig.id]; try{ localStorage.setItem("paddock:layout:"+cur.id, JSON.stringify(all)); }catch(e){} syncPois(); } else putOv(pid(orig),{del:true});
+  if(orig.added){ saveAdded(loadAdded().filter(a=>a.id!==orig.id)); const all=layoutOverrides(); delete all[orig.id]; try{ localStorage.setItem(K.layout+cur.id, JSON.stringify(all)); }catch(e){} syncPois(); } else putOv(pid(orig),{del:true});
   if(routeDest===popI) clearRoute(); closeSheet(); renderMap(); renderSpot(); renderFood(); redrawLots(); applyView(); toast("Deleted.");
 }
-function revertPoiEdit(){ if(popI===null||popI>=cur.pois.length) return; const orig=cur.pois[popI]; const o=getOv(pid(orig)); delete o.n; delete o.d; delete o.k; delete o.shower; const all=layoutOverrides(); if(Object.keys(o).length) all[pid(orig)]=o; else delete all[pid(orig)]; try{ localStorage.setItem("paddock:layout:"+cur.id, JSON.stringify(all)); }catch(e){} renderMap(); renderFood(); applyView(); selectPoi(popI); toast("Name, icon and description reverted."); }
+function revertPoiEdit(){ if(popI===null||popI>=cur.pois.length) return; const orig=cur.pois[popI]; const o=getOv(pid(orig)); delete o.n; delete o.d; delete o.k; delete o.shower; const all=layoutOverrides(); if(Object.keys(o).length) all[pid(orig)]=o; else delete all[pid(orig)]; try{ localStorage.setItem(K.layout+cur.id, JSON.stringify(all)); }catch(e){} renderMap(); renderFood(); applyView(); selectPoi(popI); toast("Name, icon and description reverted."); }
 function toggleEdit(){ editing=!editing; if(!editing&&addingBadge) startAddBadge(); setTimeout(redrawLots,0); document.getElementById("editBtn").classList.toggle("on",editing); document.getElementById("editBar").hidden=!editing; document.getElementById("mapWrap").classList.toggle("editing",editing); document.getElementById("layoutOut").hidden=true; if(editing) toast("Drag badges to move them. Tap one to rename."); }
 function exportLayout(){ const o=layoutOverrides(); const ta=document.getElementById("layoutOut"); ta.hidden=false; ta.value=JSON.stringify({track:cur.id,moved:o,lots:lotOverrides(),added:loadAdded()},null,1); ta.select(); try{ navigator.clipboard&&navigator.clipboard.writeText(ta.value).then(()=>toast("Layout copied. Paste it to me in the chat.")); }catch(e){} }
-function resetLayout(){ if(!confirm("Reset all badge edits on this device?\n\nThis also removes badges you added.")) return; try{ localStorage.removeItem("paddock:layout:"+cur.id); localStorage.removeItem("paddock:lots:"+cur.id); localStorage.removeItem("paddock:added:"+cur.id); }catch(e){} syncPois(); renderMap(); renderSpot(); renderFood(); redrawLots(); applyView(); toast("Badges reset to the original layout."); }
+function resetLayout(){ if(!confirm("Reset all badge edits on this device?\n\nThis also removes badges you added.")) return; try{ localStorage.removeItem(K.layout+cur.id); localStorage.removeItem(K.lots+cur.id); localStorage.removeItem(K.added+cur.id); }catch(e){} syncPois(); renderMap(); renderSpot(); renderFood(); redrawLots(); applyView(); toast("Badges reset to the original layout."); }
 
 let view=null;
 let lastZ=0;
@@ -1669,7 +1709,7 @@ checkRaceWeek();
 /* ---- open straight at the track when you are there ----
    A web app cannot wake itself or run in the background, so this happens when you open it (or come back after a while).
    It uses one coarse, cached location fix, not continuous tracking, so it costs almost no battery. */
-const AUTO_KEY="paddock:auto";
+const AUTO_KEY=K.auto;
 function autoOn(){ try{ return localStorage.getItem(AUTO_KEY)==="1"; }catch(e){ return false; } }
 function trackAt(lat,lng,acc){
   if(acc>2500) return null; const pad=0.004;
@@ -1706,7 +1746,7 @@ renderAutoSw(); renderUnitsUI(); renderAccessUI(); autoOpen();
    passport check-in above, and the same live-session logic that drives the top pill in renderNow(). Only ever
    checked while the app is open (on load, on resume, and every 60s) -- a web app cannot wake itself up from a
    locked phone the way a native app's push notifications can. */
-const ALERT_KEY="paddock:alerts", ALERT_SEEN_KEY="paddock:alertsSeen";
+const ALERT_KEY=K.alerts, ALERT_SEEN_KEY=K.alertsSeen;
 function alertsOn(){ try{ return localStorage.getItem(ALERT_KEY)==="1"; }catch(e){ return false; } }
 function alertsSeen(){ try{ return JSON.parse(localStorage.getItem(ALERT_SEEN_KEY)||"[]"); }catch(e){ return []; } }
 function markAlertSeen(id){ try{ const s=alertsSeen(); if(!s.includes(id)) localStorage.setItem(ALERT_SEEN_KEY,JSON.stringify(s.concat(id).slice(-40))); }catch(e){} }
@@ -1808,7 +1848,7 @@ scheduleSessionAlerts();
    Separate from the at-track session alerts above: those follow where the phone IS and only cover that track; these
    follow what you CHOSE, so an event you didn't mark never reminds you, and two events on one weekend both remind only
    if you marked both. Own notification ids (REMINDER_ID_BASE and up) so neither kind cancels the other. */
-const REM_KEY="paddock:remind", REMINDER_ID_BASE=1000;
+const REM_KEY=K.remind, REMINDER_ID_BASE=1000;
 function remindersOn(){ try{ return localStorage.getItem(REM_KEY)!=="0"; }catch(e){ return true; } }
 function renderRemSw(){ const b=document.getElementById("remSw"); if(!b) return; const on=remindersOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
 async function toggleReminders(){
@@ -1844,7 +1884,7 @@ function openSettings(){
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----
    Sun times are worked out on the phone (no signal needed). At a track in the phone's own time zone it uses the
    track's position, otherwise a rough position from the time zone (good to about half an hour). */
-const THEME_KEY="paddock:theme", THEMES=[["auto","Auto"],["day","Day"],["night","Night"]];
+const THEME_KEY=K.theme, THEMES=[["auto","Auto"],["day","Day"],["night","Night"]];
 function themePref(){ try{ const v=localStorage.getItem(THEME_KEY)||"auto"; return v==="phone"?"auto":v; }catch(e){ return "auto"; } }   /* "phone" was a removed option; treat anyone who had it saved as Auto */
 function sunSpot(){
   const t=(cur&&inDetail())?cur:(nextAny()||{}).t, phoneOff=-new Date().getTimezoneOffset()*60000;
@@ -1881,7 +1921,7 @@ function renderThemeUI(p){
 }
 /* Style: "classic" (the original soft look) or "race" (Race Control: bold type, black header, orange accent). Saved on the phone;
    index.html applies it before first paint so there is no flash. */
-const STYLE_KEY="paddock:style", STYLES=[["classic","Classic"],["race","Race Control"]];
+const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"]];
 function stylePref(){ try{ return localStorage.getItem(STYLE_KEY)==="race"?"race":"classic"; }catch(e){ return "classic"; } }
 function applyStyle(){ const r=document.documentElement; if(stylePref()==="race") r.setAttribute("data-style","race"); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
 function renderStyleUI(){ const p=stylePref();
@@ -1910,7 +1950,7 @@ const WXI={
 /* Weather units and distance units are separate choices (someone might want °F with km, or °C with
    miles) but both used to be one combined toggle -- LEGACY_UNITS_KEY is read as the fallback default
    for whichever of the two a person hasn't touched yet, so nobody's existing choice gets reset. */
-const WX_UNITS_KEY="paddock:wxUnits", DIST_UNITS_KEY="paddock:distUnits", LEGACY_UNITS_KEY="paddock:units";
+const WX_UNITS_KEY=K.wxUnits, DIST_UNITS_KEY=K.distUnits, LEGACY_UNITS_KEY=K.units;
 function wxUnits(){ try{ const v=localStorage.getItem(WX_UNITS_KEY)??localStorage.getItem(LEGACY_UNITS_KEY); return v==="metric"?"metric":"us"; }catch(e){ return "us"; } }
 function distUnits(){ try{ const v=localStorage.getItem(DIST_UNITS_KEY)??localStorage.getItem(LEGACY_UNITS_KEY); return v==="metric"?"metric":"us"; }catch(e){ return "us"; } }
 const tv=f=>Math.round(wxUnits()==="metric"?(f-32)*5/9:f), wv=m=>Math.round(wxUnits()==="metric"?m*1.609:m), wu=()=>wxUnits()==="metric"?"km/h":"mph";
@@ -1939,13 +1979,13 @@ function wxUrl(t){
 async function wxFetch(t){        /* download and remember one track's forecast */
   const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),10000);
   try{ const res=await fetch(wxUrl(t),{signal:ctl.signal}); if(!res.ok) throw new Error("weather "+res.status); const data=await res.json(), at=Date.now();
-    try{ localStorage.setItem("paddock:wx:"+t.id,JSON.stringify({at,data})); }catch(e){}
+    try{ localStorage.setItem(K.wx+t.id,JSON.stringify({at,data})); }catch(e){}
     return {at,data,live:true}; } finally { clearTimeout(to); }
 }
 let wxFailed=false;
 async function loadWeather(force){
   if(!cur) return; const id=cur.id, my=++wxReq; let cached=null; wxFailed=false;
-  try{ cached=JSON.parse(localStorage.getItem("paddock:wx:"+id)||"null"); }catch(e){}
+  try{ cached=JSON.parse(localStorage.getItem(K.wx+id)||"null"); }catch(e){}
   if(cached&&cached.data&&cached.data.current){ wx=cached; renderWx(); if(!force&&Date.now()-cached.at<WX_TTL) return; }
   try{ const fresh=await wxFetch(cur); if(my!==wxReq||!cur||cur.id!==id) return; wx=fresh; renderWx(); }
   catch(e){ if(my!==wxReq||!cur||cur.id!==id) return; if(wx&&wx.data){ wx.live=false; } else wxFailed=true; renderWx(); }
@@ -1953,7 +1993,7 @@ async function loadWeather(force){
 /* while there is signal (at home, at the hotel), quietly save the forecast for the next race so it is there at the track */
 function wxPrefetch(){
   const c=nextAny(); if(!c||navigator.onLine===false) return; const t=c.t;
-  try{ const k=JSON.parse(localStorage.getItem("paddock:wx:"+t.id)||"null"); if(k&&Date.now()-k.at<30*60000) return; }catch(e){}
+  try{ const k=JSON.parse(localStorage.getItem(K.wx+t.id)||"null"); if(k&&Date.now()-k.at<30*60000) return; }catch(e){}
   wxFetch(t).catch(()=>{});
 }
 /* ---- rain nowcast: the next 4 hours in 15-minute steps (each value is the rain that fell in the 15 minutes before its time) ---- */
@@ -2036,13 +2076,13 @@ function screenInfo(){
   const sa=(s)=>probeH("height:0;padding-top:env("+s+")"), vv=window.visualViewport?`${Math.round(visualViewport.width)}×${Math.round(visualViewport.height)}`:"n/a";
   el.textContent=`Screen ${screen.width}×${screen.height} · Window ${innerWidth}×${innerHeight} · Visual ${vv} · Gap ${gapSize()} px\nMode: ${isApp()?"home-screen app":"browser tab"}\nheight 100vh ${probeH("height:100vh")} · dvh ${probeH("height:100dvh")} · lvh ${probeH("height:100lvh")} · svh ${probeH("height:100svh")}\nSafe area top ${sa("safe-area-inset-top")} · bottom ${sa("safe-area-inset-bottom")}`;
 }
-try{ localStorage.removeItem("paddock:vpgap"); localStorage.removeItem("paddock:gapAsked"); }catch(e){}
+try{ K_RETIRED.forEach(k=>localStorage.removeItem(k)); }catch(e){}
 const _openSettings=openSettings; openSettings=function(){ _openSettings(); screenInfo(); };
 
 /* offline support: the service worker (sw.js) saves the app on the phone; needs https or localhost */
 if("serviceWorker" in navigator){
   navigator.serviceWorker.addEventListener("message",e=>{
-    if(e.data&&e.data.type==="offline-ready"){ try{ if(localStorage.getItem("paddock:offline")) return; localStorage.setItem("paddock:offline","1"); }catch(_){} toast("Saved. Trackside Pass now works with no signal."); }
+    if(e.data&&e.data.type==="offline-ready"){ try{ if(localStorage.getItem(K.offline)) return; localStorage.setItem(K.offline,"1"); }catch(_){} toast("Saved. Trackside Pass now works with no signal."); }
   });
   navigator.serviceWorker.register("sw.js").catch(()=>{});
   /* a first visit that lost signal part-way saves the maps it missed the next time the app opens online */
@@ -2099,10 +2139,10 @@ function swipeTarget(){
 /* ---------------- more settings ---------------- */
 function LSget(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
 function LSset(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-function goDays(){ return +LSget("paddock:goDays","14")||14; }         /* how early the home tile and the watch list switch to your race */
-function timesPref(){ return LSget("paddock:times","track"); }        /* "track" or "mine" */
-function hiddenSeries(){ try{ return JSON.parse(LSget("paddock:unfollow","[]")); }catch(e){ return []; } }
-function followedSub(){ try{ return JSON.parse(LSget("paddock:followSub","[]")); }catch(e){ return []; } }
+function goDays(){ return +LSget(K.goDays,"14")||14; }         /* how early the home tile and the watch list switch to your race */
+function timesPref(){ return LSget(K.times,"track"); }        /* "track" or "mine" */
+function hiddenSeries(){ try{ return JSON.parse(LSget(K.unfollow,"[]")); }catch(e){ return []; } }
+function followedSub(){ try{ return JSON.parse(LSget(K.followSub,"[]")); }catch(e){ return []; } }
 /* a support series (optIn) is off unless explicitly turned on; a main series is on unless explicitly turned off */
 function followed(c){
   if(c.optIn) return followedSub().includes(c.id);
@@ -2110,23 +2150,23 @@ function followed(c){
   return !h.includes(c.id)||h.length>=mainCount;
 }
 const segHtml=(now,opts,fn)=>opts.map(([k,l])=>`<button class="${String(k)===String(now)?"on":""}" onclick="${fn}('${k}')">${l}</button>`).join("");
-function setGoDays(v){ LSset("paddock:goDays",v); renderSettingsMore(); renderHero(); if(cur) renderWatch(); }
-function setTimes(v){ LSset("paddock:times",v); renderSettingsMore(); if(cur){ renderNow(); renderSchedule(); } }
+function setGoDays(v){ LSset(K.goDays,v); renderSettingsMore(); renderHero(); if(cur) renderWatch(); }
+function setTimes(v){ LSset(K.times,v); renderSettingsMore(); if(cur){ renderNow(); renderSchedule(); } }
 function toggleFollow(id){
   const c=champ(id); if(!c) return;
-  if(c.optIn){ let s=followedSub(); s=s.includes(id)?s.filter(x=>x!==id):s.concat(id); LSset("paddock:followSub",JSON.stringify(s)); renderSettingsMore(); renderHome(); return; }
+  if(c.optIn){ let s=followedSub(); s=s.includes(id)?s.filter(x=>x!==id):s.concat(id); LSset(K.followSub,JSON.stringify(s)); renderSettingsMore(); renderHome(); return; }
   let h=hiddenSeries(); const mainCount=CHAMPS.filter(x=>!x.optIn).length;
   if(h.includes(id)) h=h.filter(x=>x!==id); else{ if(h.length>=mainCount-1){ toast("Keep at least one series"); return; } h.push(id); }
-  LSset("paddock:unfollow",JSON.stringify(h)); renderSettingsMore(); renderHome();
+  LSset(K.unfollow,JSON.stringify(h)); renderSettingsMore(); renderHome();
 }
-function toggleAwake(){ LSset("paddock:awake",LSget("paddock:awake","0")==="1"?"0":"1"); renderSettingsMore(); updateWake(); }
-function toggleHaptics(){ LSset("paddock:haptics",LSget("paddock:haptics","1")==="1"?"0":"1"); renderSettingsMore(); if(LSget("paddock:haptics","1")==="1"){ try{ navigator.vibrate&&navigator.vibrate(30); }catch(e){} } }
+function toggleAwake(){ LSset(K.awake,LSget(K.awake,"0")==="1"?"0":"1"); renderSettingsMore(); updateWake(); }
+function toggleHaptics(){ LSset(K.haptics,LSget(K.haptics,"1")==="1"?"0":"1"); renderSettingsMore(); if(LSget(K.haptics,"1")==="1"){ try{ navigator.vibrate&&navigator.vibrate(30); }catch(e){} } }
 function renderSettingsMore(){
   const q=s=>document.querySelectorAll(s), on=(id,v)=>{ const b=document.getElementById(id); if(b){ b.classList.toggle("on",v); b.setAttribute("aria-checked",v); } };
   q(".goSeg").forEach(el=>{ el.innerHTML=segHtml(goDays(),[[7,"1 week"],[14,"2 weeks"],[30,"1 month"]],"setGoDays"); });
   q(".timeSeg").forEach(el=>{ el.innerHTML=segHtml(timesPref(),[["track","Track time"],["mine","My time"]],"setTimes"); });
   const fl=document.getElementById("followList"); if(fl) fl.innerHTML=orderedChamps().map(c=>`<div class="frow" data-id="${c.id}"><button class="fhandle" aria-label="Drag to reorder ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span>${esc(c.name)}</span><button class="sw${followed(c)?" on":""}" role="switch" aria-checked="${followed(c)}" aria-label="Show ${esc(c.name)}" onclick="toggleFollow('${c.id}')"><i></i></button></div>`).join("");
-  on("awakeSw",LSget("paddock:awake","0")==="1"); on("hapSw",LSget("paddock:haptics","1")==="1");
+  on("awakeSw",LSget(K.awake,"0")==="1"); on("hapSw",LSget(K.haptics,"1")==="1");
 }
 /* drag the handle in "Series I follow" to set the order series appear everywhere: siblings slide out of the way
    as you drag past them (transform only, no DOM move yet), and the real reorder + save happens once on release. */
@@ -2180,7 +2220,7 @@ function tzNote(){
 /* keep the screen awake while the map is open (only if you turned it on and the phone supports it) */
 var wakeLock=null;
 async function updateWake(){
-  const want=LSget("paddock:awake","0")==="1"&&document.visibilityState==="visible"&&document.body.classList.contains("mapmode");
+  const want=LSget(K.awake,"0")==="1"&&document.visibilityState==="visible"&&document.body.classList.contains("mapmode");
   try{ if(want&&!wakeLock&&navigator.wakeLock){ wakeLock=await navigator.wakeLock.request("screen"); wakeLock.addEventListener("release",()=>{ wakeLock=null; }); }
        else if(!want&&wakeLock){ const w=wakeLock; wakeLock=null; await w.release(); } }catch(e){ wakeLock=null; }
 }

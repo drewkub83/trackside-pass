@@ -1,6 +1,6 @@
 /* Trackside Pass: passport, stamps and badges.
    Everything is kept on this phone (no account yet). A stamp is only earned at a track, on a day inside one of its race weekends. */
-const PP_KEY="paddock:passport", PP_ON_KEY="paddock:pp";
+const PP_KEY=K.passport, PP_ON_KEY=K.pp;
 function ppOn(){ try{ return localStorage.getItem(PP_ON_KEY)==="1"; }catch(e){ return false; } }
 function ppLoad(){ try{ const j=JSON.parse(localStorage.getItem(PP_KEY)||"null"); if(j&&Array.isArray(j.stamps)) return {stamps:j.stamps,unlocked:j.unlocked||{}}; }catch(e){} return {stamps:[],unlocked:{}}; }
 function ppSave(p){ try{ localStorage.setItem(PP_KEY,JSON.stringify(p)); }catch(e){} }
@@ -473,7 +473,7 @@ function ppNext(){
   el.querySelector(".ul-kick").textContent=legend?"Legendary stamp":"New stamp";
   const card=el.querySelector(".ul-card"); card.classList.toggle("legend",legend); card.classList.remove("go"); void card.offsetWidth; card.classList.add("go");   /* restart the animation */
   el.hidden=false; document.body.style.overflow="hidden";
-  clearTimeout(window._ppThud); window._ppThud=setTimeout(()=>{ try{ LSget("paddock:haptics","1")==="1"&&navigator.vibrate&&navigator.vibrate(d.tier==="z"?[40,50,40,50,160]:[26,40,12]); }catch(e){} },930);   /* the thud when the stamp lands */
+  clearTimeout(window._ppThud); window._ppThud=setTimeout(()=>{ try{ LSget(K.haptics,"1")==="1"&&navigator.vibrate&&navigator.vibrate(d.tier==="z"?[40,50,40,50,160]:[26,40,12]); }catch(e){} },930);   /* the thud when the stamp lands */
 }
 function closeUnlock(){ const el=document.getElementById("unlock"); el.hidden=true; document.body.style.overflow=""; ppQ=[]; }
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!document.getElementById("unlock").hidden) closeUnlock(); });
@@ -487,7 +487,7 @@ function renderPassportCard(){
   m.textContent=st.tracks?`${st.tracks} of ${st.total} tracks · ${n} badge${n===1?"":"s"}`:`Stamps and badges from race weekends`;
 }
 /* ---- passport layout: tracks grouped by region or by series, badges grouped with a "next up" list ---- */
-const PP_GROUP_KEY="paddock:ppGroup";
+const PP_GROUP_KEY=K.ppGroup;
 function ppGroupMode(){ try{ return localStorage.getItem(PP_GROUP_KEY)==="series"?"series":"region"; }catch(e){ return "region"; } }
 function ppGroup(m){ try{ localStorage.setItem(PP_GROUP_KEY,m); }catch(e){} renderPassport(); }
 function ppMenu(force){ const m=document.getElementById("ppMenu"); if(m) m.hidden=force===undefined?!m.hidden:!force; }

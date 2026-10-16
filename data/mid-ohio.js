@@ -6,7 +6,7 @@ TRACKS.push({
   "length":"2.258 mi",
   "opened":1962,
   "blurb":"A technical, rhythm-based 2.258-mile course in the Ohio farmland, with the tight Keyhole, the fast Esses, and a paddock you can walk end to end. IndyCar, IMSA Pilot Challenge, and MotoAmerica race here.",
-  "lapRecord":[{"series":"IndyCar","time":"1:05.2600","who":"Will Power","car":"Dallara DW12","year":2016,"note":"race lap record"}],
+  "lapRecord":[{"series":"IndyCar","time":"1:03.7244","who":"Scott Dixon","car":"Dallara DW12","year":2016,"note":"fastest lap of any session (practice 3, Chip Ganassi Racing)"}],
   "facts":{"Signature sections":"The Keyhole, the Esses, Thunder Valley","Lap record":"1:03.6 (IndyCar)","Best seat for value":"Keyhole hillside","Venue data":"Circuit, roads, bridges and grandstands from OpenStreetMap; gates, paddocks, hospitality and camping areas are from the official facility and RV lot maps (midohio.com), calibrated against this track’s own numbered turns.","Where to watch (IMSA fan guide)":"Turn 1 on restarts, the Keyhole (Turn 2), the elevation changes at Turns 4 and 5, the Esses (Turns 6 to 8), Thunder Valley (Turns 10 and 11) and Turn 12 before the finish. Photo spots match these, plus Competitor's Paddock."},
   "vb":[-416,-288,787,809],
   "geo":{"n":40.69573,"s":40.680281,"w":-82.646222,"e":-82.626535},

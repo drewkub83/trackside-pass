@@ -23,3 +23,5 @@ ios/DerivedData/
 # generated intermediates (elevation downloads); the baked result lives in data/<track>.js
 tools/track-data/elev-out/
 tools/track-data/__pycache__/
+tools/.gtwce_cache/
+tools/.indycar_cache/

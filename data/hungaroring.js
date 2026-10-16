@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"GT World Challenge Europe: Budapest (Sprint Cup)",
   "nturns":14,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:42.359","who":"Dries Vanthoor","car":"Audi R8 LMS","year":2017,"note":"fastest lap of any session (Blancpain GT Series Sprint Cup qualifying, #5 Belgian Audi Club Team WRT)"}]
 });

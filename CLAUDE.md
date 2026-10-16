@@ -45,6 +45,7 @@ on that track's calendar in the app (IMSA, IndyCar, GT World Challenge America/E
 Carrera Cup, MX-5, GT4, ELMS, Indy NXT...). Layouts stay apart (oval vs road course, chicane vs no chicane). `note` says whether the lap was a
 race or qualifying lap. Wikipedia is fine for circuit lap records; IMSA's class "track records" (qualifying) come from IMSA's own reports.
 Never guess a number: if a record cannot be found, leave the entry out. The Info tab shows series, time and driver (no year).
+Repeatable tools (read each series' own results, fastest lap over every session, no guessing): `tools/indycar_laprecords.py` (INDYCAR's results API, lap times exist from 2010 on; ovals publish no single qualifying laps; run `scan` once, then `best`), `tools/gtwce_laprecords.py` (GT World Challenge Europe, 2014 on, practice, qualifying, race), `tools/gtwca_laprecords.py` (GT World Challenge America, practice and qualifying only: the site has no per-car race page). These pages name a car's crew, not who set the lap: Sprint qualifying N is driven by the Nth-listed driver (Endurance qualifying too when the crew list is complete), but confirm the driver in a series report before writing `who`; for a practice lap list the crew. Check the layout (Barcelona's final chicane, Zandvoort's 2020 layout, Phoenix's 2018 re-profile, the Nurburgring Sprint circuit in 2016 all change lap times).
 
 ## Adding a new circuit (US or overseas)
 1. `tools/track-data/fetch_track_osm.py <id> <lat> <lon> [radius]` downloads the OpenStreetMap data (it uses a working Overpass

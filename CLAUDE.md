@@ -57,8 +57,10 @@ Never guess a number: if a record cannot be found, leave the entry out. The Info
    in `index.html` and `sw.js`.
 3. Run `python3 tools/track-data/split_tracks.py <id>` (the builder writes a whole file), then crossings, walking grid, elevation as in the section above. For new tracks build the grid with `build(tid, rle=True)`: the
    rows are run-length encoded (`route.rle`, decoded in `walkRows()`) to keep data files small.
-4. Fan facilities (grandstands, food, restrooms) are NOT in OpenStreetMap; they need the circuit's official fan map. Say so in the
-   track's `facts` rather than leaving the map looking complete.
+4. Grandstands: OpenStreetMap often has them (`leisure=bleachers`, `building=grandstand`) even though the first build ignores them:
+   run `python3 tools/track-data/osm_stands.py <id> --write` (named stands keep their name, unnamed ones are clustered and named after the
+   nearest corner), then nudge any badge the walking grid cannot reach. Other fan facilities (gates, food stands, restrooms, event parking)
+   are mostly NOT in OpenStreetMap and need the circuit's official fan map; say so in the track's `facts` rather than leaving the map looking complete.
 Venues of a series that have no map yet go in that series' `stops` in `data/champs.js` as "Map coming soon" (with real dates);
 a stop disappears by itself once a track with the same id exists.
 

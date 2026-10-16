@@ -1,9 +1,11 @@
 #!/bin/bash
 # Packs just the files the live app needs into ./dist (no archive, no dev files). Netlify runs this on every push to main.
+#  0. node tools/sync_tracks.js makes index.html and sw.js list exactly the tracks in data/ (a track file added without registering it still deploys).
 #  1. node tools/validate.js must pass, otherwise the build fails and Netlify keeps serving the last good version
 #     (SKIP_VALIDATE=1 skips it in an emergency).
 #  2. The service worker VERSION is set to the commit being built, so every deploy refreshes phones and nobody has to bump it by hand.
 cd "$(dirname "$0")" || exit 1
+if command -v node >/dev/null 2>&1; then node tools/sync_tracks.js || exit 1; fi   # the data folder is the source of truth for the track list
 if [ -z "$SKIP_VALIDATE" ] && command -v node >/dev/null 2>&1; then
   node tools/validate.js || { echo "validate failed: not building" >&2; exit 1; }
 fi

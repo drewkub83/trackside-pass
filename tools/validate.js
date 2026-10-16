@@ -74,10 +74,10 @@ const sw = read("sw.js"), html = read("index.html");
 const swTracks = ((sw.match(/const TRACKS = \[(.*?)\];/s) || [])[1] || "").match(/"([a-z0-9-]+)"/g) || [];
 const swSet = new Set(swTracks.map((x) => x.slice(1, -1)));
 for (const id of Object.keys(tracks)) {
-  if (!swSet.has(id)) err(`sw.js: TRACKS does not list "${id}", so it will not work offline`);
-  if (!html.includes(`data/${id}.js`)) err(`index.html: no <script> for data/${id}.js`);
+  if (!swSet.has(id)) err(`sw.js: TRACKS does not list "${id}", so it will not work offline (run: node tools/sync_tracks.js)`);
+  if (!html.includes(`data/${id}.js`)) err(`index.html: no <script> for data/${id}.js (run: node tools/sync_tracks.js)`);
 }
-for (const id of swSet) if (!tracks[id]) err(`sw.js: TRACKS lists "${id}" but data/${id}.js does not exist`);
+for (const id of swSet) if (!tracks[id]) err(`sw.js: TRACKS lists "${id}" but data/${id}.js does not exist (run: node tools/sync_tracks.js)`);
 const shell = ((sw.match(/const SHELL = \[(.*?)\n\];/s) || [])[1] || "").match(/"([^"]+\.[a-z0-9]+)"/g) || [];
 for (const q of shell) { const f = q.slice(1, -1); if (!f.startsWith("data/\" +") && !exists(f)) err(`sw.js: SHELL lists "${f}" which does not exist`); }
 for (const m of html.matchAll(/<script src="([^"]+)"/g)) if (!exists(m[1])) err(`index.html: <script src="${m[1]}"> does not exist`);

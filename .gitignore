@@ -4,7 +4,10 @@ dist/
 .DS_Store
 .claude/
 .netlify/
-tools/street-circuits/
+# street-circuit builders and per-circuit configs ARE committed (small); only the big downloads/source maps are not
+tools/street-circuits/osm/
+tools/street-circuits/maps/
+tools/street-circuits/backup/
 
 # Capacitor iOS personal-use wrapper (see CLAUDE.md "Native app wrapper").
 # ios/ itself IS committed -- it's the actual Xcode project source, not a build

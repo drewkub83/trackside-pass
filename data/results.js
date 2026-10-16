@@ -122,5 +122,56 @@ const RESULTS = [
         "3. #56 Baker Racing Audi RS3 LMS TCR — Dean Baker, Kenny Riedmann"
       ] }
     ],
-    note:"Sources: RACER (\"First-time winners wrap Michelin Pilot Challenge season at Road Atlanta\"), Frontstretch (\"Thomas Merrill, Martin Sarukhanyan Win FOX Factory 120\" and \"Consistency Brings The Grand Sport Title To AutoTechnic Racing\") and Sportscar365 (\"Circle H Wins, AutoTechnic Takes GS Title at Road Atlanta\"), Oct 2, 2026 (via web search; direct fetch was blocked in this environment). This is the season finale and runs GS and TCR together on one grid; the order above is each class's own running order, not the combined overall order. Merrill/Sarukhanyan passed Filippi's TCR-class Hyundai for the race lead with 13 minutes left and won their first Pilot Challenge race by 2.339 seconds. Krainz/McAleer clinched the 2026 GS title without winning a race this season; Filippi/Morris clinched the TCR title." }
+    note:"Sources: RACER (\"First-time winners wrap Michelin Pilot Challenge season at Road Atlanta\"), Frontstretch (\"Thomas Merrill, Martin Sarukhanyan Win FOX Factory 120\" and \"Consistency Brings The Grand Sport Title To AutoTechnic Racing\") and Sportscar365 (\"Circle H Wins, AutoTechnic Takes GS Title at Road Atlanta\"), Oct 2, 2026 (via web search; direct fetch was blocked in this environment). This is the season finale and runs GS and TCR together on one grid; the order above is each class's own running order, not the combined overall order. Merrill/Sarukhanyan passed Filippi's TCR-class Hyundai for the race lead with 13 minutes left and won their first Pilot Challenge race by 2.339 seconds. Krainz/McAleer clinched the 2026 GS title without winning a race this season; Filippi/Morris clinched the TCR title." },
+  { t:"road-atlanta", d:"2026-09-30", s:"weathertech", event:"Motul Petit Le Mans",
+    groups:[
+      { h:"GTP", order:[
+        "1. #6 Porsche Penske Motorsport Porsche 963 \u2014 Laurens Vanthoor, Kevin Estre, Matt Campbell",
+        "2. #24 BMW M Team WRT BMW M Hybrid V8 \u2014 Sheldon van der Linde, Dries Vanthoor, Robin Frijns",
+        "3. #40 Cadillac Wayne Taylor Racing Cadillac V-Series.R \u2014 Jordan Taylor, Louis Deletraz, Colton Herta"
+      ] },
+      { h:"LMP2", order:[
+        "1. #04 CrowdStrike Racing by APR ORECA LMP2 07 \u2014 Alex Quinn, George Kurtz, Toby Sowery",
+        "2. #43 Inter Europol Competition ORECA LMP2 07 \u2014 Tom Dillmann, Jeremy Clarke, Bijoy Garg"
+      ] },
+      { h:"GTD PRO", winner:"#68 Car Blanche Aston Martin Vantage GT3 Evo \u2014 Mattia Drudi, Valentin Hasse Clot, Marco Sorensen",
+        gap:"Car Blanche's first GTD PRO win, in its first Endurance Cup start in the class.",
+        podium:["#1 Paul Miller Racing BMW M4 GT3 EVO \u2014 Neil Verhagen, Connor De Phillippi (3rd, enough to clinch the class title)"] },
+      { h:"GTD", winner:"#57 Winward Racing Mercedes-AMG GT3 \u2014 Russell Ward, Philip Ellis, Indy Dontje",
+        gap:"Pole to win; Ward and Ellis took a third straight GTD title." }
+    ],
+    note:"Source: IMSA.com race recaps (Oct 3 and Oct 4, 2026) plus NBC Sports. 10-hour race, season finale. GTP: Vanthoor passed Earl Bamber's #31 Cadillac for the lead with 49 minutes left and won by 1.205 s over van der Linde; the #40 took the last podium place on the final lap, the pole-sitting #60 Acura dropped to 6th after a late energy stop. LMP2: Quinn held off Dillmann by 0.666 s. Only the positions IMSA's recaps name are listed; the rest of the GTD PRO and GTD podiums were not in the sources." },
+  { t:"barber", d:"2026-09-25", s:"gtwca", event:"GT World Challenge America at Barber",
+    groups:[
+      { h:"Pro", winner:"#12 AF Corse USA Ferrari 296 GT3 EVO \u2014 Matias Perez Companc, Frederik Schandorff",
+        gap:"Won the 3-hour race (125 laps, 3:00:36.357) after taking the combined qualifying top spot too." }
+    ],
+    note:"Source: gt-world-challenge-america.com race results (Barber, 2026), read Oct 16, 2026. The site's round page lists only each session's top car, so only the overall (Pro) winner is shown; other classes and the rest of the order were not confirmed." },
+  { t:"indianapolis", d:"2026-10-07", s:"gtwca", event:"Indianapolis 8 Hour",
+    groups:[
+      { h:"Pro-Am (overall winner)", winner:"#32 GMG Racing Porsche 911 GT3 R \u2014 Kyle Washington, Riccardo Pera, Ayhancan G\u00fcven",
+        gap:"Won overall by 56 seconds, the largest margin in the history of the Indianapolis 8 Hour. Clinched the Pro-Am drivers' title for Washington and the teams' title for GMG Racing.",
+        podium:["#69 Archangel Motorsports McLaren 720S GT3 (2nd in class and overall)"] },
+      { h:"Pro", winner:"#29 Turner Motorsport BMW M4 GT3 EVO \u2014 Justin Rothberg, Connor De Phillippi, Robby Foley",
+        gap:"Foley passed the #12 AF Corse USA Ferrari for the lead with 1h22 left and clinched the Pro title for Foley and Rothberg." },
+      { h:"Am", winner:"#11 MAD Joker Racing Mercedes-AMG GT3 EVO",
+        gap:"Held off the #163 AF Corse USA Ferrari 296 GT3 EVO (2nd); Scuderia Corsa was 3rd. AF Corse USA's Jay Schreibman took the Am title.",
+        podium:[] }
+    ],
+    note:"Sources: RACER race report (Oct 11, 2026) and gt-world-challenge-america.com results (winner of the race and the Pro superpole, driver names as listed there). Double-points finale. Other positions in each class were not confirmed, so none are listed." },
+  { t:"laguna-seca", d:"2026-09-06", s:"indycar", event:"Mission Foods Grand Prix of Monterey",
+    groups:[
+      { h:"Race", order:[
+        "1. Scott McLaughlin (Team Penske)",
+        "2. Kyle Kirkwood (Andretti Global)",
+        "3. Alexander Rossi (Ed Carpenter Racing)",
+        "4. Felix Rosenqvist (Meyer Shank Racing w/ Curb Agajanian)",
+        "5. David Malukas (Team Penske)",
+        "6. Christian Lundgaard (Arrow McLaren)",
+        "7. Marcus Armstrong (Meyer Shank Racing w/ Curb Agajanian)",
+        "8. Alex Palou (Chip Ganassi Racing)",
+        "9. Marcus Ericsson (Andretti Global)"
+      ] }
+    ],
+    note:"Source: INDYCAR.com \"Instant Recall\" (Sep 7, 2026). The 2026 season finale; McLaughlin led 87 of 95 laps from pole for his first win in 36 races, Kirkwood was 1.3739 s behind. Alex Palou's 8th place was enough: he had already clinched his fourth straight championship. Scott Dixon finished 17th in his last race with Chip Ganassi Racing. 10th place was not in the source. d is the race day (Sunday)." },
 ];

@@ -10,29 +10,23 @@
    the driver, not the car), so naming a fixed car number for someone who's since switched would be wrong --
    name the team/manufacturer instead and say so in `gap` if it's known (e.g. Laurin Heinrich below). */
 const STANDINGS = [
-  { s:"weathertech", asOf:"Current after Indianapolis (Sep 20). Petit Le Mans is the season finale.",
+  { s:"weathertech", asOf:"Final 2026 standings after Motul Petit Le Mans (Oct 3); the season is complete.",
     classes:[
       { h:"GTP", rows:[
-        { pos:1, who:"Jack Aitken (Whelen Cadillac, #31)", pts:147 },
-        { pos:2, who:"Laurin Heinrich (Porsche Penske Motorsport)", gap:"Closest championship challenger. Has driven both Penske Porsche 963s this season and moves to the #7 for Petit Le Mans." }
+        { pos:1, who:"Jack Aitken (Whelen Cadillac, #31)", gap:"2026 GTP champion, the first solo GTP driver champion; clinched on the grid at Petit Le Mans. The #31 Cadillac Whelen (Aitken, Earl Bamber, Frederik Vesti) won the team title and Cadillac the manufacturer title." }
       ] },
       { h:"LMP2", rows:[
-        { pos:1, who:"Tom Dillmann, Jeremy Clarke (Inter Europol Competition)", gap:"Leads by 4 points" },
-        { pos:2, who:"George Kurtz, Alex Quinn (CrowdStrike Racing by APR)", gap:"4 points back" },
-        { pos:3, who:"Daniel Goldburg (#22 United Autosports USA)", gap:"101 points back, mathematically alive" },
-        { pos:4, who:"PJ Hyett, Dane Cameron (#99 AO Racing)", gap:"108 points back, mathematically alive" }
+        { pos:1, who:"Alex Quinn, George Kurtz (#04 CrowdStrike Racing by APR)", gap:"2026 LMP2 champions, clinched by winning Petit Le Mans. Kurtz also won the Jim Trueman Award." },
+        { pos:2, who:"Tom Dillmann, Jeremy Clarke (#43 Inter Europol Competition)", gap:"Closest title rival; finished 2nd in the finale by 0.666 seconds." }
       ] },
       { h:"GTD PRO", rows:[
-        { pos:1, who:"Nicky Catsburg, Tommy Milner (#4 Corvette Racing)", gap:"Leads by 47 points" },
-        { pos:2, who:"Connor De Phillippi, Neil Verhagen (#1 Paul Miller Racing)", gap:"47 points back" },
-        { pos:3, who:"Andrea Caldarelli, Sandy Mitchell (Pfaff Motorsports)", gap:"53 points back (6 behind 2nd place)" }
+        { pos:1, who:"Neil Verhagen, Connor De Phillippi (#1 Paul Miller Racing)", gap:"2026 GTD PRO champions, clinched with 3rd place at Petit Le Mans." }
       ] },
       { h:"GTD", rows:[
-        { pos:1, who:"Philip Ellis, Russell Ward (#57 Winward Racing)", gap:"Leads by 6 points" },
-        { pos:2, who:"Robby Foley, Patrick Gallagher (#96 Turner Motorsport)", gap:"6 points back" }
+        { pos:1, who:"Philip Ellis, Russell Ward (#57 Winward Racing)", gap:"2026 GTD champions, a third straight title, sealed with the Petit Le Mans win." }
       ] }
     ],
-    note:"GTP is a genuine two-driver fight -- IMSA's own preview names only Aitken and Heinrich as mathematically able to win it, so no 3rd-5th is shown. GTD PRO has 7 of 9 full-season cars still mathematically alive per that same preview, but only the top 3's exact gaps were confirmed; the others weren't named precisely enough to add without guessing. Sources: IMSA's own \"Tale of the Tape\" championship preview (Sep 24) plus Sportscar365 and RACER standings reports after Indianapolis." },
+    note:"Champions only: final points totals per class were not in the sources, so none are shown (IMSA's own points sheet is Alkamel timing data, which this project does not use). Michelin Endurance Cup winners: GTP Julien Andlauer, Felipe Nasr, Laurin Heinrich (Porsche Penske); LMP2 Kurtz, Quinn, Sowery (CrowdStrike Racing by APR). Source: IMSA.com Petit Le Mans recaps, Oct 3 and Oct 4, 2026." },
   { s:"pilot", asOf:"Current after the FOX Factory 120 season finale at Road Atlanta (Oct 2); the 2026 season is complete.",
     classes:[
       { h:"GS", rows:[
@@ -140,5 +134,54 @@ const STANDINGS = [
       ] }
     ],
     note:"Overall GT World Challenge Europe Powered by AWS standings (Endurance and Sprint Cup combined), top 20 positions of each table. Drivers sharing a position are listed together (they share the same points). The series' own page says: Standings remain provisional following appeal #63 Grasser Racing Team Lamborghini against Decision 06 at Zandvoort. Source: gt-world-challenge-europe.com/standings (Teams and Drivers 2026), read 2026-10-15."
-  }
+  },
+  { s:"indycar", asOf:"Final 2026 standings after the Mission Foods Grand Prix of Monterey at Laguna Seca (Sep 6); the season is complete.",
+    classes:[
+      { h:"Drivers", rows:[
+        { pos:1, who:"Alex Palou", pts:631, gap:"6 wins. 2026 champion: fourth straight title, fifth in six years, clinched before the finale." },
+        { pos:2, who:"Kyle Kirkwood", pts:545, gap:"2 wins" },
+        { pos:3, who:"Christian Lundgaard", pts:535, gap:"2 wins" },
+        { pos:4, who:"Pato O'Ward", pts:522, gap:"3 wins" },
+        { pos:5, who:"David Malukas", pts:514 },
+        { pos:6, who:"Scott McLaughlin", pts:482, gap:"1 win, the Monterey finale" },
+        { pos:7, who:"Marcus Ericsson", pts:429, gap:"1 win" },
+        { pos:8, who:"Josef Newgarden", pts:423, gap:"2 wins" },
+        { pos:9, who:"Felix Rosenqvist", pts:412, gap:"1 win, the Indianapolis 500" },
+        { pos:10, who:"Rinus VeeKay", pts:378 },
+        { pos:11, who:"Will Power", pts:368 },
+        { pos:12, who:"Scott Dixon", pts:331 },
+        { pos:13, who:"Kyffin Simpson", pts:327 },
+        { pos:14, who:"Marcus Armstrong", pts:320 },
+        { pos:15, who:"Alexander Rossi", pts:307 }
+      ] }
+    ],
+    note:"Source: INDYCAR.com official championship standings (2026), read Oct 16, 2026; the finale report confirms the order (Kirkwood passed Lundgaard for 2nd, Ericsson passed Newgarden for 7th, VeeKay held 10th). Wins are the official wins column; Palou won the title by 86 points." },
+  { s:"gtwca", asOf:"Final 2026 standings after the Indianapolis 8 Hour (Oct 11, double points); the season is complete.",
+    classes:[
+      { h:"Pro", rows:[
+        { pos:1, who:"Robby Foley, Justin Rothberg (#29 Turner Motorsport)", pts:154, gap:"2026 Pro champions: Turner's first Pro title." },
+        { pos:2, who:"Mikael Grenier, Michai Stephens (JMF Motorsports)", pts:144 },
+        { pos:3, who:"Matias Perez Companc (AF Corse USA)", pts:141 },
+        { pos:4, who:"Frederik Schandorff (AF Corse USA)", pts:131 },
+        { pos:5, who:"Michael McCann Jr., Zachary Vanier (McCann Racing)", pts:103 },
+        { pos:6, who:"Alex Sedgwick, Cameron Lawrence (Dollahite Racing)", pts:68 }
+      ] },
+      { h:"Pro-Am", rows:[
+        { pos:1, who:"Kyle Washington (GMG Racing)", pts:142, gap:"2026 Pro-Am champion." },
+        { pos:2, who:"Dave Musial Jr., Ryan Yardley (Wright Motorsports)", pts:116, gap:"Yardley also won the SRO GT Academy title." },
+        { pos:3, who:"Aaron Telitz, Todd Coleman", pts:82 },
+        { pos:4, who:"Jason Daskalos", pts:64 },
+        { pos:5, who:"Danny Dyszelski", pts:60 },
+        { pos:6, who:"Colin Braun, Michael Clark", pts:50 }
+      ] },
+      { h:"Am", rows:[
+        { pos:1, who:"Jay Schreibman (AF Corse USA)", pts:193, gap:"2026 Am champion, his second straight." },
+        { pos:2, who:"Oswaldo Negri (AF Corse USA)", pts:150 },
+        { pos:3, who:"Benny Simonsen (AF Corse USA)", pts:93 },
+        { pos:4, who:"Mitchell Green", pts:61 },
+        { pos:5, who:"Jon Morley", pts:25 },
+        { pos:6, who:"Marc Austin, Jay Logan", pts:18 }
+      ] }
+    ],
+    note:"Driver standings by class, top 6 positions of each table; drivers who share a position share the same points (listed together). A team is named only where the series' team table or a race report confirms it. Source: gt-world-challenge-america.com standings (Drivers and Teams 2026, Pro / Pro-Am / Am), read Oct 16, 2026." }
 ];

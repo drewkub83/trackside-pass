@@ -258,7 +258,7 @@ function renderChampList(){
   const ordered=orderedChamps().filter(followed);
   const row=c=>{ const mk=typeof seriesMark==="function"?seriesMark(c.id,60):"", n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length, same=!mk&&String(c.tile).toLowerCase()===String(c.name).toLowerCase();
     return `<li><button class="track-row series${same?" same":""}" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt${mk?" mk":""}">${mk||c.tile}</span>
-      <div><h2>${c.name}</h2><div class="meta"><span class="mfull">${c.full} · </span>${n} venue${n===1?"":"s"}</div></div>
+      <div><h2>${c.name}</h2><div class="meta"><span class="mfull">${c.full}<span class="msep"> · </span></span>${n} venue${n===1?"":"s"}</div></div>
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; };
   /* once the series you follow span more than one part of the world, group them under region headings (your own
      order still rules within a region, and the regions follow whichever of your series comes first) */

@@ -746,13 +746,15 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 
 /* ---- Race Control, part 2: home tiles, info card, map badges, passport summary ---- */
 /* the four series as 2 x 2 tiles (region headings span both columns) */
-:root[data-style="race"] #champList{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 14px;list-style:none}
+:root[data-style="race"] #champList{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:12px;padding:0 14px;list-style:none}   /* every series tile the same size */
 :root[data-style="race"] #champList>li{margin:0;min-width:0}
 :root[data-style="race"] #champList>li.regionHead{display:none}
-:root[data-style="race"] #champList .track-row.series{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:4px;min-height:112px;padding:14px 16px;width:100%}
+:root[data-style="race"] #champList .track-row.series{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:4px;min-height:112px;padding:14px 16px;width:100%;height:100%}
 :root[data-style="race"] #champList .track-row.series .tile{width:auto;height:auto;padding:0;font-size:44px;line-height:1;justify-content:flex-start;display:block}
-:root[data-style="race"] #champList .track-row.series h2{font-family:var(--font);text-transform:none;letter-spacing:0;font-weight:600;font-size:15px;white-space:normal;line-height:1.15;overflow:visible}
+:root[data-style="race"] #champList .track-row.series h2{font-family:var(--font);text-transform:none;letter-spacing:0;font-weight:600;font-size:15px;white-space:normal;line-height:1.15;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 :root[data-style="race"] #champList .track-row.series.same h2{display:none}
+:root[data-style="race"] #champList .track-row.series.same .mfull{display:block;font-family:var(--font);font-weight:600;font-size:15px;line-height:1.15;color:var(--ink);margin-bottom:2px}   /* IMSA: its full name takes the place of the repeated tile name */
+:root[data-style="race"] .msep{display:none}
 :root[data-style="race"] #champList .track-row.series .mfull{display:none}
 :root[data-style="race"] #champList .track-row.series .chev{display:none}
 :root[data-style="race"] #champList .track-row.series .meta{white-space:normal;font-size:12.5px;line-height:1.25;margin:2px 0 0;overflow:visible}

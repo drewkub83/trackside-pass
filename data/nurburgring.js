@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"5.137 km (3.19 mi)",
   "opened":"1927 (Grand Prix circuit 1984)",
   "blurb":"The Grand Prix circuit at the Nürburgring in Germany's Eifel region, beside the famous Nordschleife. It hosts the Endurance Cup round of the 2027 GT World Challenge Europe season.",
+  "lapRecord":[{"series":"Formula 1","time":"1:26.225","who":"Valtteri Bottas","car":"Mercedes W11","year":2020,"note":"fastest lap ever (FP3, Eifel Grand Prix weekend); race lap record 1:28.139, Max Verstappen, 2020"}],
   "facts":{"Signature sections":"Ford-Kurve, Goodyear-Kehre, the Michael-Schumacher-S","Venue data":"Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map.","Layouts":"This map covers the Grand Prix circuit (5.137 km) and the paddock, parking and camping around it. The 20.8 km Nordschleife and the grill huts along it (such as Grillhütte Herschbroich, Reimerath and Welcherath, and Manthey Porsche Servicezentrum Meuspath) will be a separate layout."},
   "vb":[-27,280,710,710],
   "geo":{"n":50.351017,"s":50.313756,"w":6.915526,"e":6.973696},

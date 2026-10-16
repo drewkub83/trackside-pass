@@ -31,6 +31,7 @@
     <p>Every race track in one place. Find your gate, your seat, and the nearest brisket.</p>
   </header>
   <div id="hero"></div>
+  <div id="season"></div>
   <div class="sect">Series</div>
   <ul class="list" id="champList"></ul>
   <div class="sect">Your passport</div>
@@ -144,6 +145,7 @@
       <button class="pill ico" id="parkBtn" aria-label="Parking" onclick="toggleParking()"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg></button>
       <button class="pill ico" id="restBtn" aria-label="Restrooms" onclick="toggleMode('rest')"><svg viewBox="0 0 24 24" class="wc"><circle cx="7" cy="4.5" r="2"/><path d="M4.5 8h5v6H8.4v6H5.6v-6H4.5z"/><circle cx="17" cy="4.5" r="2"/><path d="M15 8h4l2 6h-1.7l.3 6h-5.2l.3-6H13z"/><path d="M12 3v18" stroke-width="1"/></svg></button>
       <button class="pill ico" id="foodBtn" aria-label="Concessions" onclick="toggleMode('food')"><svg viewBox="0 0 24 24"><path d="M4 11h16M5 11a7 7 0 0 1 14 0M3 15h18M6 15v3h12v-3"/></svg></button>
+      <button class="pill on" id="modeChip" hidden aria-label="Show everything again" onclick="clearMode()"><span></span><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="fl fl-bl"><button class="fab pin" id="spotBtn" aria-label="Save my spot" onclick="saveSpot()"><svg viewBox="0 0 24 24"><path d="M6 21V4M6 5h11l-2.6 4 2.6 4H6"/></svg></button></div>
 
@@ -181,6 +183,20 @@
         <div class="ptitle"><strong id="stName">Standings</strong></div>
         <small id="stAsOf"></small>
         <div id="stBody"></div>
+      </div>
+      <div class="sv" id="shGame" hidden>
+        <div class="ptitle"><strong id="gmTitle">Pick your podium</strong></div>
+        <small id="gmSub"></small>
+        <div class="gmTabs" id="gmTabs"></div>
+        <div class="gmSlots" id="gmSlots"></div>
+        <div class="gmList" id="gmList"></div>
+        <small class="fine" id="gmFoot"></small>
+      </div>
+      <div class="sv" id="shRes" hidden>
+        <div class="ptitle"><strong id="rsTitle">Results</strong></div>
+        <small id="rsSub"></small>
+        <div class="gmTabs" id="rsTabs"></div>
+        <div class="rsList" id="rsList"></div>
       </div>
       <div class="sv" id="shLive" hidden>
         <div class="ptitle"><strong id="liveTitle">Watch live</strong></div>
@@ -231,7 +247,7 @@
 
   <div class="panel" id="pEvents">
     <div class="bar"><button class="fab" aria-label="Back to track list" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2 dn"></h2></div>
-    <div class="section" id="schedSection" hidden><h3 id="schedTitle">This weekend</h3><p class="fine tznote" id="schedNote" hidden></p><div class="days" id="schedDays"></div><div id="schedList"></div></div>
+    <div class="section" id="schedSection" hidden><h3 id="schedTitle">This weekend</h3><p class="fine tznote" id="schedNote" hidden></p><div class="days" id="schedDays"></div><div class="schedTools" id="schedTools"></div><div id="schedList"></div></div>
     <div class="section"><h3>Season</h3><div id="eventList"></div></div>
     <p class="map-note">Sample schedule for the prototype. The real app pulls official dates and lets you add a weekend to your calendar.</p>
   </div>
@@ -308,6 +324,7 @@
 <script src="data/watch.js"></script>
 <script src="data/results.js"></script>
 <script src="data/standings.js"></script>
+<script src="data/entries.js"></script>
 <script src="data/champs.js"></script>
 <div class="unlock" id="unlock" hidden role="dialog" aria-modal="true" aria-label="New stamp" onclick="if(event.target===this)closeUnlock()">
   <div class="ul-card"><div class="ul-stage"><div class="ul-imp" id="ulMedal"></div><div class="ul-flash"></div><div class="ul-tool"><i></i></div><div class="ul-burst" id="ulBurst"></div></div>

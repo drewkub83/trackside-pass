@@ -128,8 +128,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .radarBtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .radarWrap{width:100%;height:320px;border-radius:18px;overflow:hidden;margin-top:10px;background:var(--tint-2)}
 #radarMap{width:100%;height:100%}
-.radarLegend{position:absolute;right:8px;bottom:8px;z-index:1000;background:var(--glass-strong);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:10px;padding:4px 8px;font-size:11px;color:var(--ink);display:flex;align-items:center;gap:4px;box-shadow:var(--shadow)}
-.radarLegend i{display:inline-block;width:10px;height:10px;border-radius:2px}
 .liveWrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .hubLiveRow{display:flex;align-items:center;gap:10px}
 .hubLiveDot{width:9px;height:9px;border-radius:50%;background:#4FA37A;box-shadow:0 0 0 0 rgba(79,163,122,.5);animation:livedot 1.6s ease-out infinite;flex:none}
@@ -471,9 +469,6 @@ html,body{overscroll-behavior:none}
 body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + var(--gap,0px));overflow:hidden}
 .fab.wx.off{color:var(--ink-2)}.fab.wx.off svg{opacity:.8}
 .modal,.unlock{height:calc(100% + var(--gap,0px))}
-.gapbox{position:fixed;left:14px;right:14px;top:calc(env(safe-area-inset-top) + 14px);z-index:80;padding:14px 16px;border-radius:22px;background:var(--glass-strong);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--glass-edge);box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.gapbox b{display:block;font-weight:500;font-size:16px;line-height:1.3}.gapbox small{display:block;color:var(--ink-2);font-size:13px;margin:4px 0 10px}
-.gapbox div{display:grid;grid-template-columns:1fr 1fr;gap:8px}.gapbox .btn{padding:11px 8px;font-size:15px}
 .track-row.nomap{cursor:default;opacity:.8}
 .track-row.nomap .tile svg{width:30px;height:30px;stroke:var(--ink-2);fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
 .track-row.nomap .next{font-size:12px}
@@ -606,6 +601,8 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .ivenue dd.tbd{color:var(--ink-2);font-weight:400;font-style:italic}
 .ivenue dd .lr-who{display:block;font-size:12.5px;color:var(--ink-2);font-weight:400;margin-top:1px}
 .info dl.more{margin-top:4px}
+.ivenue dd.lrs .lr+.lr{margin-top:10px}
+.ivenue dd.lrs .lr-s{display:block;font-size:12px;color:var(--ink-2);font-weight:400;text-transform:uppercase;letter-spacing:.04em}
 
 .hideSect{display:none !important}
 /* Info tab: standardized venue facts */
@@ -675,8 +672,7 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .hubLive .hubLiveStop{margin-top:10px}
 .hubLive .hubLivePlay{width:100%}
 
-/* =====================================================================================================
-   STYLE: RACE CONTROL  (Settings > Look and units > Style). Everything below only applies when
+/* ==============================================================================================   STYLE: RACE CONTROL  (Settings > Look and units > Style). Everything below only applies when
    <html data-style="race">; the classic look above is untouched. Bold condensed type, a black header with a
    checkered strip, an orange accent, and an ink-black "on track now" card. Fine-tune colours in the token blocks.
    ===================================================================================================== */
@@ -820,3 +816,66 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .hubSeries{display:flex;align-items:center;gap:8px}
 .bar .ptitle2 .smark{margin-right:10px}.bar .ptitle2{display:flex;align-items:center}
 .mhead{display:flex;align-items:center;gap:14px;margin-bottom:6px}.mhead .mkick{margin:0}.mhead h3{margin:2px 0 0}
+=======
+
+/* Info tab: each fact is a centred heading with its value(s) underneath, not a two-column grid (cramped on a phone) */
+.info dl,.ivenue dl{display:block}
+.info dt{text-align:center;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0}
+.info dd{text-align:center;margin:4px 0 0}
+.info dd+dt{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+:root[data-style="race"] .info dt{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:.4px}
+.info dl.more dd{text-align:left}   /* the More facts are full paragraphs: easier to read left-aligned */
+
+/* before the weekend: starred sessions, calendar, season cards */
+.sess{grid-template-columns:82px 1fr 36px}.sess.tap{grid-template-columns:82px 1fr 26px 36px}
+.sstar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink-2)}.sstar svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linejoin:round}
+.sstar.on{color:var(--accent)}.sstar.on svg{fill:var(--accent)}
+.schedTools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.schedTools .pill{height:38px;font-size:14px;font-weight:500}.schedTools .pill svg{width:18px;height:18px}
+.hubQuick{display:flex;gap:10px;margin:-4px 0 14px}.hubQuick button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:46px;border-radius:16px;background:var(--card);box-shadow:var(--shadow);font-size:14px;font-weight:600;color:var(--ink)}
+.hubQuick button svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.hubQuick button.on{background:var(--accent);color:#fff}.hubQuick button.on svg{stroke:#fff}
+.hubStarList{display:grid;gap:6px;margin-top:8px}.hubStarList div{display:flex;justify-content:space-between;gap:12px;font-size:14px}.hubStarList b{font-weight:600;white-space:nowrap}.hubStarList span{color:var(--ink-2);text-align:right}
+.scards{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin:0 14px 8px}
+.scard{display:block;min-width:0;text-align:left;padding:14px 16px;border-radius:20px;background:var(--card);box-shadow:var(--shadow);border-left:6px solid var(--sc,var(--accent));width:100%}
+.scard .scTop{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.scard .scTop b{font-size:16px;font-weight:700}.scard .scTop span{font-size:13px;font-weight:600;color:var(--accent);white-space:nowrap}
+.scard .scNext{margin-top:2px;font-size:14px;color:var(--ink)}
+.scard .scRow{margin-top:5px;font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.scard .scRow i{font-style:normal;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:10.5px;margin-right:7px;color:var(--ink)}
+:root[data-style="race"] .scard{background:var(--card);box-shadow:none;border:1px solid var(--line);border-left:6px solid var(--sc,var(--s-other))}
+:root[data-style="race"] .scard[data-s="gtwca"]{--sc:var(--s-gtwca)}:root[data-style="race"] .scard[data-s="gtwce"]{--sc:var(--s-gtwce)}:root[data-style="race"] .scard[data-s="imsa"]{--sc:var(--s-imsa)}:root[data-style="race"] .scard[data-s="indycar"]{--sc:var(--s-indycar)}
+:root[data-style="race"] .scard .scTop b{font-family:var(--font-d);font-weight:800;text-transform:uppercase;font-size:20px;letter-spacing:.3px}
+
+/* Pick your podium */
+.gmTabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 10px}
+.gmTab{padding:8px 14px;border-radius:999px;background:var(--tint-2);color:var(--ink);font-size:14px;font-weight:600}
+.gmTab.on{background:linear-gradient(160deg,var(--accent-2),var(--accent));color:#fff}.gmTab i{font-style:normal;font-size:11px;margin-left:6px;opacity:.7}
+.gmSlots{display:grid;gap:6px;margin-bottom:12px}
+.gmSlot{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:16px;background:var(--tint-2);text-align:left;color:var(--ink-2);font-size:14px;min-width:0}
+.gmSlot b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--card);color:var(--ink);font-size:12px;flex:none}
+.gmSlot span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gmSlot.full{color:var(--ink)}.gmSlot strong{font-weight:700}
+.gmSlot em{font-style:normal;font-weight:700;font-size:13px;flex:none}
+.gmSlot.hit{box-shadow:inset 0 0 0 2px #2e9d5b}.gmSlot.near{box-shadow:inset 0 0 0 2px #d9a21b}.gmSlot.miss{opacity:.6}
+.gmList{display:grid;gap:6px}
+.gmCar{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:16px;background:var(--tint-2);text-align:left;color:var(--ink);min-width:0}
+.gmCar.picked{box-shadow:inset 0 0 0 2px var(--accent)}
+.gmCar:disabled{opacity:.75}
+.gmNo{font-weight:800;font-size:16px;min-width:38px;flex:none}
+.gmTxt{flex:1;min-width:0;display:grid}.gmTxt b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gmTxt small{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gmCar em{font-style:normal;font-weight:800;font-size:13px;flex:none}
+.gmReal{padding:10px 14px;border-radius:16px;font-size:13px;color:var(--ink-2);background:var(--tint-2)}.gmReal b{color:var(--ink)}
+.gmRecs{margin-top:16px}.gmRecs h4{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.gmRec{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:4px 0;color:var(--ink)}.gmRec.tot{border-top:1px solid var(--line);margin-top:4px;padding-top:8px}
+.gmNote{padding:10px 14px;border-radius:16px;font-size:12px;line-height:1.4;color:var(--ink-2);background:var(--tint-2)}
+.gmWhy{color:var(--accent)!important}
+.gmOdds{display:grid;text-align:right;flex:none}.gmOdds b{font-size:14px;font-weight:700}.gmOdds small{font-size:11px;color:var(--ink-2)}
+.gmTxt small.gmWhy{white-space:normal}
+.plRules{margin:10px 0 0;font-size:13px;line-height:1.45;color:var(--ink-2)}
+.playCard .scNext b{font-size:20px;color:var(--ink)}
+.plGo{margin-top:14px;width:100%}
+/* Live results */
+.lvRow{display:flex;gap:10px;align-items:baseline;margin-top:8px;font-size:13px;min-width:0}
+.lvRow i{font-style:normal;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:10.5px;width:52px;flex:none;color:var(--ink)}
+.lvRow span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}.lvRow b{color:var(--ink)}
+.rsList{display:grid;gap:6px}
+.rsRow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:16px;background:var(--tint-2);min-width:0}
+.rsPos{width:18px;font-weight:800;font-size:13px;flex:none;text-align:center}
+.rsTime{flex:none;text-align:right;font-size:13px;font-weight:600;color:var(--ink)}.rsTime small{display:block;font-size:11px;font-weight:400;color:var(--ink-2)}

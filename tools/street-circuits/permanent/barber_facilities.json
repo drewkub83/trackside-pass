@@ -1,0 +1,25 @@
+{
+ "_source": "Facility positions read from Barber Motorsports Park's public interactive map (MotoAmerica weekend layout), 2026-09-21. Real coordinates; the IndyCar weekend layout can differ.",
+ "turns": [["T1",33.5341,-86.61819],["T2",33.53558,-86.61844],["T3",33.53549,-86.61678],["T4",33.53395,-86.61686],["T5",33.53146,-86.61994],["T6",33.53104,-86.61966],["T7",33.53174,-86.61829],["T8",33.53454,-86.61574],["T9",33.53466,-86.61481],["T10",33.53254,-86.61707],["T11",33.53181,-86.61744],["T12",33.53021,-86.62142],["T13",33.52949,-86.62232],["T14",33.52968,-86.62429],["T15",33.53096,-86.62445],["T16",33.53158,-86.62341],["T17",33.53097,-86.62224]],
+ "pois": [
+  ["Restrooms","rest","Restrooms",33.53323,-86.61973], ["Restrooms","rest","Restrooms",33.53318,-86.62134], ["Restrooms","rest","Restrooms",33.52881,-86.61743],
+  ["Showers","rest","Showers",33.53339,-86.62108,1], ["Showers","rest","Showers",33.52897,-86.61733,1],
+  ["Jumbotron","screen","Big screen",33.53121,-86.61866],
+  ["Spectator Viewing","stand","Spectator viewing area",33.53027,-86.61987], ["Spectator Viewing","stand","Spectator viewing area",33.53253,-86.62068],
+  ["Spectator Viewing","stand","Spectator viewing area",33.53156,-86.62421], ["Spectator Viewing","stand","Spectator viewing area",33.53648,-86.61786], ["Spectator Viewing","stand","Spectator viewing area",33.53207,-86.621],
+  ["ADA Viewing Area","stand","Accessible viewing area",33.53056,-86.6251], ["ADA Viewing Area","stand","Accessible viewing area",33.52982,-86.62135],
+  ["RV Hilltop Camping","camp","RV camping",33.53405,-86.62228], ["RV Upper D Camping","camp","RV camping",33.53128,-86.62715],
+  ["Food Trucks","food","Food and drink",33.53078,-86.61781],
+  ["Kid Zone","info","Kids zone",33.531,-86.61659],
+  ["Vendors and Merchandise","merch","Souvenirs and gear",33.53047,-86.61821],
+  ["Tickets","info","Tickets and will call",33.53141,-86.61534],
+  ["Podium","info","Podium",33.53238,-86.62061],
+  ["Tram Stop","info","Shuttle tram stop",33.53293,-86.61376], ["Tram Stop","info","Shuttle tram stop",33.53555,-86.61492], ["Tram Stop","info","Shuttle tram stop",33.5321,-86.62534],
+  ["Tram Stop","info","Shuttle tram stop",33.53513,-86.62087], ["Tram Stop","info","Shuttle tram stop",33.53708,-86.61828], ["Tram Stop","info","Shuttle tram stop",33.53094,-86.61509],
+  ["Tram Stop","info","Shuttle tram stop",33.53007,-86.61914], ["Tram Stop","info","Shuttle tram stop",33.52997,-86.62541]
+ ],
+ "lots": [
+  {"n":"RV Upper D Camping","poly":[[33.52957,-86.63006],[33.52921,-86.62966],[33.53109,-86.62695],[33.53216,-86.62598],[33.53234,-86.62623]]},
+  {"n":"Hilltop RV Camping","poly":[[33.53506,-86.62136],[33.53478,-86.62096],[33.53285,-86.62335],[33.53322,-86.62387]]}
+ ]
+}

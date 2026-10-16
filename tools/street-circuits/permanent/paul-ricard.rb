@@ -1,0 +1,9 @@
+{
+  id: "paul-ricard", name: "Circuit Paul Ricard", short: "Paul Ricard", place: "Le Castellet, France", tz: "Europe/Paris",
+  center: [43.2506, 5.7919], circuit: [229454179, 1282557464, 1282552677, 686700676, 686700678, 686700682, 686700685, 686700689, 686700844, 686705495, 686705498, 686705499, 1209342415, 790806550, 790806552, 686705508, 686705513, 686705515, 686705517, 1209342418, 686705519], pit: 799477739,
+  official_mi: "5.791 km", length: "5.791 km (3.60 mi)", opened: 1970, nturns: 15,
+  corner_labels: [["Courbe de Signes", 43.250109, 5.803679, true], ["Double droite du Beausset", 43.247032, 5.802492, true], ["Virage de Bendor", 43.25016, 5.802527, true], ["Courbe du Garlaban", 43.249738, 5.799978, true], ["Virage du Lac", 43.250729, 5.796982, true], ["Virage du Pont", 43.2495, 5.79626, true], ["Ligne droite des stands", 43.251287, 5.792878, true], ["\"S\" de la Verrerie", 43.254127, 5.785482, true], ["Virage de l'hotel", 43.257291, 5.779737, true], ["Virage du camp", 43.257638, 5.778131, true], ["Virage de la Sainte-Baume", 43.258647, 5.779011, true], ["Ligne droite du Mistral", 43.255437, 5.786961, true]],
+  blurb: "A 5.791 km circuit at Le Castellet in the south of France, with a long Mistral straight. It opens the 2027 GT World Challenge Europe season with a six-hour race on the Saturday evening.",
+  facts: { "Signature sections" => "The Mistral straight, Courbe de Signes, the S de la Verrerie", "Venue data" => "Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map." },
+  events: [{ "d" => "2027-04-15", "e" => "GT World Challenge Europe: Paul Ricard", "s" => "GT World Challenge Europe Powered by AWS, Endurance Cup (6 hours)", "t" => 4 }]
+}

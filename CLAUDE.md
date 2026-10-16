@@ -10,14 +10,14 @@ A race-day companion web app (PWA): track maps and walking directions, schedules
   rewrite a whole track go through `build_route.load()/save()`, which merge and re-split automatically. After the Ruby
   builder (`build_permanent.rb`) writes a whole file, run `python3 tools/track-data/split_tracks.py <id>`.
   Never add `base`/`route`/`elev` back into the light file. `data/series.js` series guides; `data/watch.js` "What to watch"; `data/results.js` finished-race results; `data/champs.js` standings
-- `sw.js` service worker. **Bump `VERSION` on every change** or phones keep the old files.
-- `build.sh` copies the live files into `dist/`; Netlify runs it on every push to `main`.
+- `sw.js` service worker. Its `VERSION` is set to the commit hash by `build.sh` at deploy time, so phones refresh on every deploy and nobody bumps it by hand (the `vNNN` in the source is ignored).
+- `build.sh` copies the live files into `dist/` and stamps the service-worker version; Netlify runs it on every push to `main`. It first runs `node tools/validate.js` (syntax, data loads, cross-references, sw/index/data consistency): if that fails the build fails and Netlify keeps serving the last good version. `.github/workflows/validate.yml` runs the same check on every push. Run `node tools/validate.js` before pushing data changes; `SKIP_VALIDATE=1` skips it in an emergency.
 
 ## Publishing
-Pushing to `main` deploys the site (https://deft-medovik-55a935.netlify.app). Test first, bump `sw.js` VERSION, commit, push. Ship after every change unless the user says "hold off". Cloud routines also push to `main`, so pull before editing. There are no secrets in this repo; never add any (a Netlify token lives only on the user's Mac in `tools/.netlify-token`, which is gitignored).
+Pushing to `main` deploys the site (https://deft-medovik-55a935.netlify.app). Test first (`node tools/validate.js`), commit, push. Ship after every change unless the user says "hold off". Cloud routines also push to `main`, so pull before editing. There are no secrets in this repo; never add any (a Netlify token lives only on the user's Mac in `tools/.netlify-token`, which is gitignored).
 
 ## Accuracy rule
-Never invent facts. Race facts (results, standings, points, cars, drivers) must come from published sources (imsa.com, racer.com, sportscar365.com, series sites, Porsche, etc.). Cross-check numbers. Do not use Wikipedia for numbers (its standings were wrong). If something cannot be verified, leave it out and say so in the entry's `note`. Do not use IMSA/Alkamel live timing data: it carries an explicit no-redistribution notice.
+Never invent facts. Race facts (results, standings, points, cars, drivers) must come from published sources (imsa.com, racer.com, sportscar365.com, series sites, Porsche, etc.). Cross-check numbers. Do not use Wikipedia for numbers (its standings were wrong) -- except circuit lap records, where Wikipedia is fine (the user OK'd it). If something cannot be verified, leave it out and say so in the entry's `note`. Do not use IMSA/Alkamel live timing data: it carries an explicit no-redistribution notice.
 
 ## Track data: walking routes, crossings, elevation (`tools/track-data/`)
 Every track has a walking grid (`route`). Three things make Directions actually work -- check all three for a new track:
@@ -32,6 +32,15 @@ Every track has a walking grid (`route`). Three things make Directions actually 
   Indianapolis road course and oval) are skipped on purpose.
 - **Check:** in the browser console, from a gate / restroom / food / parking badge, `walkMetresTo()` should reach >= 98% of a
   track's badges. Don't bump a track's `rev` for this: it wipes the user's own badge edits.
+
+## Lap records (`lapRecord` in `data/<track>.js`)
+A list, one entry per series (per class for IMSA and WEC): the series' **track record on the layout the map draws** -- the fastest lap ever
+in any session (race, qualifying, pole, even practice), whatever the year; the user does not care when it was set. Only top series that are
+on that track's calendar in the app (IMSA, IndyCar, GT World Challenge America/Europe) plus F1/MotoGP/NASCAR where they appear there, and WEC
+(not set up yet, but its venues Imola, Spa, COTA and Portimao already carry its Hypercar and LMGT3 records). No support series (Pilot Challenge,
+Carrera Cup, MX-5, GT4, ELMS, Indy NXT...). Layouts stay apart (oval vs road course, chicane vs no chicane). `note` says whether the lap was a
+race or qualifying lap. Wikipedia is fine for circuit lap records; IMSA's class "track records" (qualifying) come from IMSA's own reports.
+Never guess a number: if a record cannot be found, leave the entry out. The Info tab shows series, time and driver (no year).
 
 ## Adding a new circuit (US or overseas)
 1. `tools/track-data/fetch_track_osm.py <id> <lat> <lon> [radius]` downloads the OpenStreetMap data (it uses a working Overpass
@@ -101,6 +110,9 @@ needs re-signing roughly every 7 days.
   (`window.Capacitor && window.Capacitor.isNativePlatform && ...`) and fall back to normal web behavior, since
   the exact same code also runs for any plain browser/installed-PWA visit.
 
-## Scheduled routines (claude.ai/code/routines)
-- Petit Le Mans morning update: 6:00 AM ET on Oct 1, 2 and 3, 2026. Its cron repeats yearly, so **turn it off after Oct 3, 2026.**
-- Barber GT World Challenge America one-off: Sun Sep 27, 2026, 11:00 AM CT.
+## Scheduled routines and automation
+Long-term goal: the app runs without the owner's computer. Cloud routines (claude.ai/code/routines, run in Anthropic's cloud, push to `main`) are the durable mechanism; desktop scheduled tasks only run while the Mac's Claude app is open, so treat them as backups. Cloud routines must NOT have connectors attached (clear with `clear_mcp_connections` after creating).
+- Petit Le Mans morning update (cloud, cron repeated yearly): switched OFF Oct 15, 2026. Turn it back on only for 2027 (cron `0 10 1,2,3 10 *`).
+- Portimao GT World Europe finale (Oct 16-17, 2026): cloud backups for the Friday and Saturday 6:30 AM ET "What to watch" updates (they check for the Mac task's entry first and skip if present). The Mac tasks (quali odds, race result, Friday/Saturday 6:00 AM) are primary this weekend.
+- Live results (instant): `netlify/functions/gtwce.mjs` reads GT World Europe's official results pages; the hub shows them (`liveSrc`, `data/entries.js` `live:{round}`). Runs on Netlify, no computer needed.
+- Automation that needs no computer (GitHub Actions, `.github/workflows/`): `race-weekend.yml` (every 30 min Thu-Mon) runs `tools/auto_update.py`, which for each `data/entries.js` entry with `live:{round}` refreshes the entry list, rebuilds the podium-game win chances once qualifying is published (`tools/podium_odds.py --quali`), imports the race classification into `data/results.js` (`tools/gtwce_result.py`, re-read for 2 days to catch penalties) and refreshes standings (`tools/gtwce_standings.py`), then commits to `main`. `standings.yml` refreshes GT World Europe standings every Monday. Shared parsing is `tools/gtwce_lib.py`. New GT World Europe Endurance weekends need no manual step: about 8 days before one that the app has an event for, `auto_update.py` finds the round on the series' entry-list page, creates the `data/entries.js` entry (with `live:{round}`) and fills the cars (`tools/gtwce_entries.py`). If it cannot (no entry list yet, site layout changed), the weekend is simply skipped; you can do it by hand with `python3 tools/gtwce_entries.py --round <slug>` after adding a skeleton entry. Sprint Cup weekends are not covered (different session structure). Other series need their own parser (and a backtest for the odds) before they can be added.

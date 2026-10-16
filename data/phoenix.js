@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"1.022 mi",
   "opened":1964,
   "blurb":"A 1.022-mile oval in the desert west of Phoenix, opened in 1964. The low-banked corners and a distinctive dogleg make it one of the most unusual ovals on the schedule, and the desert setting means big open views of the mountains. IndyCar comes here for the second race of the 2027 season.",
+  "lapRecord":[{"series":"IndyCar","time":"0:19.7379","who":"Tony Kanaan","car":"Dallara DW12","year":2016,"note":"race lap record"},{"series":"NASCAR Cup","time":"0:26.450","who":"Denny Hamlin","car":"Toyota Camry","year":2019,"note":"race lap record"}],
   "facts":{"Signature sections":"The dogleg, Turns 1 and 2 beside the hillside, Turns 3 and 4 in front of the grandstand","Layout":"Oval, run counterclockwise. The grandstand, pit road and start/finish line are on the south side.","Camping":"RV and tent camping in the Flats and Trails areas west and south of the track","Venue data":"Positions from the track's public interactive map for its NASCAR weekend, so some amenities may differ on the IndyCar weekend. Check the event's own map."},
   "vb":[0,0,800,588],
   "geo":{"n":33.380941,"s":33.369118,"w":-112.323813,"e":-112.304617},

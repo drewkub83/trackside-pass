@@ -91,5 +91,54 @@ const STANDINGS = [
         { pos:4, who:"Richard Edge (ACI Motorsports)", gap:"Finished 2nd in the Masters class in Race 1 at Road Atlanta." }
       ] }
     ],
-    note:"Pro and Masters positions below the top of each class are named from recent race reports, not an official points table -- their order isn't confirmed, and no points figures are shown for them since none were published. Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America, Sportscar365 and GT REPORT race reports from Indianapolis and both Road Atlanta races (Oct 1-2, 2026, via web search; direct site fetches were blocked in this environment). Alan Metni (Kellymoss) won the Pro-Am race at Road Atlanta Race 1, his second win of the season, but Mulcahy's title was already clinched." }
+    note:"Pro and Masters positions below the top of each class are named from recent race reports, not an official points table -- their order isn't confirmed, and no points figures are shown for them since none were published. Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America, Sportscar365 and GT REPORT race reports from Indianapolis and both Road Atlanta races (Oct 1-2, 2026, via web search; direct site fetches were blocked in this environment). Alan Metni (Kellymoss) won the Pro-Am race at Road Atlanta Race 1, his second win of the season, but Mulcahy's title was already clinched." },
+  { s:"gtwce", asOf:"Current after round 9 of 10 in the 2026 season (Barcelona). Next: Portimao; no points from it are included yet.",
+    classes:[
+      { h:"Drivers", rows:[
+        { pos:1, who:"Lucas Auer / Maro Engel", pts:131.5 },
+        { pos:2, who:"Ricardo Feller / Bastian Buus", pts:102 },
+        { pos:3, who:"Kelvin Van Der Linde / Charles Weerts", pts:97 },
+        { pos:4, who:"Luca Stolz", pts:86 },
+        { pos:5, who:"Daniel Juncadella", pts:80 },
+        { pos:6, who:"Nicki Thiim", pts:75.5 },
+        { pos:7, who:"Arthur Leclerc", pts:75.5 },
+        { pos:8, who:"Thomas Neubauer", pts:65.5 },
+        { pos:9, who:"Marco Sorensen / Mattia Drudi", pts:59 },
+        { pos:10, who:"Jordan Pepper", pts:58 },
+        { pos:11, who:"Thierry Vermeulen / Ben Green", pts:56.5 },
+        { pos:12, who:"Jules Gounon", pts:53.5 },
+        { pos:13, who:"Thomas Fleming / Louis Prette", pts:51.5 },
+        { pos:14, who:"Dorian Boccolacci", pts:49.5 },
+        { pos:15, who:"Chris Lulham", pts:47.5 },
+        { pos:16, who:"Max Hesse / Valentino Rossi", pts:46.5 },
+        { pos:17, who:"Morris Schuring", pts:44 },
+        { pos:18, who:"Dean Macdonald", pts:39.5 },
+        { pos:19, who:"Ariel Levi", pts:34.5 },
+        { pos:20, who:"Benjamin Goethe", pts:32 }
+      ] },
+      { h:"Teams", rows:[
+        { pos:1, who:"Team WRT", pts:142.5 },
+        { pos:2, who:"Winward Racing", pts:137.5 },
+        { pos:3, who:"Lionspeed GP", pts:104 },
+        { pos:4, who:"2Seas Motorsport", pts:88 },
+        { pos:5, who:"AF Corse", pts:87.5 },
+        { pos:6, who:"Garage 59", pts:85.5 },
+        { pos:7, who:"Comtoyou Racing", pts:81 },
+        { pos:8, who:"Emil Frey Racing", pts:71 },
+        { pos:9, who:"Tresor Attempto Racing", pts:67.5 },
+        { pos:10, who:"Boutsen VDS", pts:66.5 },
+        { pos:11, who:"Rutronik Racing", pts:34 },
+        { pos:12, who:"Rowe Racing", pts:33 },
+        { pos:13, who:"CSA Racing", pts:30.5 },
+        { pos:14, who:"Eastalent Racing", pts:23 },
+        { pos:15, who:"Kessel Racing", pts:21 },
+        { pos:16, who:"GetSpeed", pts:19.5 },
+        { pos:17, who:"HRT Ford Racing", pts:16 },
+        { pos:18, who:"Walkenhorst Motorsport", pts:12 },
+        { pos:19, who:"Paradine Competition", pts:11 },
+        { pos:20, who:"VSR", pts:10.5 }
+      ] }
+    ],
+    note:"Overall GT World Challenge Europe Powered by AWS standings (Endurance and Sprint Cup combined), top 20 positions of each table. Drivers sharing a position are listed together (they share the same points). The series' own page says: Standings remain provisional following appeal #63 Grasser Racing Team Lamborghini against Decision 06 at Zandvoort. Source: gt-world-challenge-europe.com/standings (Teams and Drivers 2026), read 2026-10-15."
+  }
 ];

@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"2.52 mi",
   "opened":1968,
   "blurb":"A 2.52-mile, 12-turn road course in the hills of California's wine country, opened in 1968. The circuit rolls over about 160 feet of elevation change, with a long front straight, blind crests and a mix of fast sweepers and tight corners. A quarter-mile drag strip shares the property.",
+  "lapRecord":[{"series":"GT World Challenge America","time":"1:32.119","who":"Colin Braun","car":"Mercedes-AMG GT3","year":2024,"note":"GT3 race lap record on the full 2.52-mile course (IndyCar and NASCAR use shorter layouts)"}],
   "facts":{"Signature sections":"The Carousel, the Turn 7 hairpin, the long run down to the Turn 11 hairpin, and the pit straight","Elevation":"About 160 feet of elevation change","Camping":"Hillside camping around the circuit at the Carousel, Turn 7, Turn 8, Cougar Mountain, RV Terrace and 50 Acres","Also on site":"A championship drag strip and a karting center"},
   "vb":[0,0,800,932],
   "geo":{"n":38.170815,"s":38.152219,"w":-122.467629,"e":-122.447409},

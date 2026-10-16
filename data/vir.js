@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"3.27 mi",
   "opened":1957,
   "blurb":"A 3.27-mile natural-terrain road course through Virginia woodland with 17 turns, the famous Climbing Esses, and Oak Tree Corner. Fast, flowing, and one of the best driver's tracks in the country.",
+  "lapRecord":[{"series":"IMSA GTD PRO","time":"1:43.206","who":"Madison Snow","car":"BMW M4 GT3","year":2024,"note":"qualifying"},{"series":"IMSA GTD","time":"1:43.356","who":"Ross Gunn","car":"Aston Martin Vantage GT3","year":2021,"note":"qualifying"}],
   "facts":{"Signature sections":"Climbing Esses, Oak Tree, Hog Pen, Roller Coaster","Lap record":"1:38.6 (GTP)","Best seat for value":"Oak Tree or the top of the Climbing Esses","Venue data":"Circuit and roads from OpenStreetMap. Camping, showers, bleachers, ATM, fuel, water and spectator parking are from VIR's official track map (a stylized drawing, so positions are approximate); the main entrance, Guest & Track Services and the guard house are east of this map's frame.","Where to watch (IMSA fan guide)":"Son of Oak Tree (parallel to the iconic Oak Tree turn), the Roller Coaster, the Hog Pen behind the false grid, NASCAR Bend and the Left Hook near food, and the walkable backstretch."},
   "vb":[-232,-245,389,692],
   "geo":{"n":36.570885,"s":36.549906,"w":-79.215013,"e":-79.200429},

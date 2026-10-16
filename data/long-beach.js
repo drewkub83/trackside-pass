@@ -6,6 +6,7 @@ TRACKS.push({
   "length":"1.97 mi",
   "opened":1975,
   "blurb":"A temporary 1.968-mile, 11-turn street circuit that wraps around the Long Beach Convention Center and the Aquarium of the Pacific. Shoreline Drive is the fast front straight, and the rest is tight and technical. The course, grandstands and gates are rebuilt every April; this is the 2027 layout.",
+  "lapRecord":[{"series":"IndyCar","time":"1:05.3095","who":"Colton Herta","car":"Dallara IR-18","year":2022,"note":"qualifying track record (previous record 1:06.2254, Helio Castroneves, 2017)"},{"series":"IMSA GTP","time":"1:09.909","who":"Filipe Albuquerque","car":"Acura ARX-06","year":2023,"note":"qualifying"},{"series":"IMSA GTD","time":"1:17.357","who":"Parker Thompson","car":"Lexus RC F GT3","year":2024,"note":"qualifying"}],
   "facts":{"Signature sections":"Shoreline Drive front straight, Acura Turn 1, the Turn 9 to 11 hairpin section","Race weekend":"Rebuilt on city streets every spring","Best seat for value":"Grandstands along Shoreline Drive by the start/finish line","Crossings":"Pedestrian bridges at Turns 2, 5, 8, the front straight and the hairpin"},
   "events":[{"d":"2027-04-16","e":"Acura Grand Prix of Long Beach","s":"IMSA WeatherTech, 100-minute race","t":2,"support":["Porsche Carrera Cup North America"]},{"d":"2027-04-16","e":"Acura Grand Prix of Long Beach","s":"NTT INDYCAR SERIES","t":3,"support":["Porsche Carrera Cup North America"]}],
   "tz":"America/Los_Angeles",

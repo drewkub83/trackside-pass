@@ -1,0 +1,962 @@
+{
+  "id": "st-petersburg",
+  "name": "Downtown St. Petersburg Street Circuit",
+  "short": "St. Petersburg",
+  "place": "St. Petersburg, Florida",
+  "tz": "America/New_York",
+  "length": "1.8 mi",
+  "opened": 2003,
+  "blurb": "IndyCar's season opener on the downtown waterfront, with the Albert Whitted Airport runway as the front straight.",
+  "facts": {
+    "Race weekend": "Built on city streets and the airport runway every March",
+    "Front straight": "Runway 7/25 of Albert Whitted Airport",
+    "Signature sections": "Turn 1 at the end of the runway, the Bayshore Drive run to Turn 10, the Turn 13 and 14 hairpin loop",
+    "Crossings": "Pedestrian bridges at Turns 2, 3 and 6"
+  },
+  "events": [
+    {
+      "d": "2027-03-05",
+      "e": "Firestone Grand Prix of St. Petersburg",
+      "s": "NTT INDYCAR SERIES",
+      "t": 3
+    }
+  ],
+  "nturns": 14,
+  "officialMiles": 1.8,
+  "riverSouth": false,
+  "circuit": {
+    "closed": true,
+    "path": [
+      [
+        27.765223,
+        -82.629309
+      ],
+      [
+        27.764501,
+        -82.630844
+      ],
+      [
+        27.763919,
+        -82.63206
+      ],
+      [
+        27.76391,
+        -82.632194
+      ],
+      [
+        27.763938,
+        -82.632294
+      ],
+      [
+        27.763976,
+        -82.632366
+      ],
+      [
+        27.764038,
+        -82.632452
+      ],
+      [
+        27.764112,
+        -82.632532
+      ],
+      [
+        27.764176,
+        -82.632562
+      ],
+      [
+        27.764235,
+        -82.632586
+      ],
+      [
+        27.764382,
+        -82.632605
+      ],
+      [
+        27.764536,
+        -82.632599
+      ],
+      [
+        27.764698,
+        -82.632586
+      ],
+      [
+        27.764852,
+        -82.632586
+      ],
+      [
+        27.764911,
+        -82.632599
+      ],
+      [
+        27.764968,
+        -82.63264
+      ],
+      [
+        27.76501,
+        -82.63269
+      ],
+      [
+        27.765068,
+        -82.632776
+      ],
+      [
+        27.765222,
+        -82.633042
+      ],
+      [
+        27.76526,
+        -82.633114
+      ],
+      [
+        27.765284,
+        -82.633187
+      ],
+      [
+        27.765381,
+        -82.633359
+      ],
+      [
+        27.765571,
+        -82.633538
+      ],
+      [
+        27.765678,
+        -82.633675
+      ],
+      [
+        27.765723,
+        -82.633793
+      ],
+      [
+        27.765733,
+        -82.633954
+      ],
+      [
+        27.765855,
+        -82.633963
+      ],
+      [
+        27.769162,
+        -82.634
+      ],
+      [
+        27.769176,
+        -82.633536
+      ],
+      [
+        27.769188,
+        -82.633257
+      ],
+      [
+        27.769202,
+        -82.633144
+      ],
+      [
+        27.769233,
+        -82.63308
+      ],
+      [
+        27.769314,
+        -82.632999
+      ],
+      [
+        27.769402,
+        -82.63294
+      ],
+      [
+        27.770137,
+        -82.632959
+      ],
+      [
+        27.770344,
+        -82.632978
+      ],
+      [
+        27.770344,
+        -82.633414
+      ],
+      [
+        27.771217,
+        -82.633326
+      ],
+      [
+        27.771229,
+        -82.632546
+      ],
+      [
+        27.771203,
+        -82.632468
+      ],
+      [
+        27.77113,
+        -82.63235
+      ],
+      [
+        27.771049,
+        -82.632299
+      ],
+      [
+        27.770989,
+        -82.63227
+      ],
+      [
+        27.770899,
+        -82.632256
+      ],
+      [
+        27.770674,
+        -82.632294
+      ],
+      [
+        27.770467,
+        -82.632321
+      ],
+      [
+        27.769663,
+        -82.632363
+      ],
+      [
+        27.768619,
+        -82.632401
+      ],
+      [
+        27.7685,
+        -82.632377
+      ],
+      [
+        27.768343,
+        -82.632283
+      ],
+      [
+        27.768165,
+        -82.632154
+      ],
+      [
+        27.767425,
+        -82.631607
+      ],
+      [
+        27.766855,
+        -82.631156
+      ],
+      [
+        27.76648,
+        -82.630888
+      ],
+      [
+        27.766276,
+        -82.630738
+      ],
+      [
+        27.766357,
+        -82.63058
+      ],
+      [
+        27.766411,
+        -82.63044
+      ],
+      [
+        27.766582,
+        -82.629807
+      ],
+      [
+        27.766955,
+        -82.628338
+      ],
+      [
+        27.766962,
+        -82.628174
+      ],
+      [
+        27.766831,
+        -82.62767
+      ],
+      [
+        27.766865,
+        -82.627485
+      ],
+      [
+        27.767406,
+        -82.626337
+      ],
+      [
+        27.767425,
+        -82.6262
+      ],
+      [
+        27.767377,
+        -82.626066
+      ],
+      [
+        27.767282,
+        -82.625953
+      ],
+      [
+        27.767168,
+        -82.625907
+      ],
+      [
+        27.767066,
+        -82.625891
+      ],
+      [
+        27.766957,
+        -82.625923
+      ],
+      [
+        27.766874,
+        -82.62598
+      ],
+      [
+        27.766793,
+        -82.62605
+      ],
+      [
+        27.766568,
+        -82.626465
+      ]
+    ],
+    "sf": [
+      27.765223,
+      -82.629309
+    ],
+    "turns": [
+      {
+        "n": 1,
+        "lat": 27.764005,
+        "lon": -82.632406
+      },
+      {
+        "n": 2,
+        "lat": 27.765002,
+        "lon": -82.632656
+      },
+      {
+        "n": 3,
+        "lat": 27.765735,
+        "lon": -82.633954
+      },
+      {
+        "n": 4,
+        "lat": 27.769164,
+        "lon": -82.633992
+      },
+      {
+        "n": 5,
+        "lat": 27.769304,
+        "lon": -82.633004
+      },
+      {
+        "n": 6,
+        "lat": 27.770342,
+        "lon": -82.632978
+      },
+      {
+        "n": 7,
+        "lat": 27.770344,
+        "lon": -82.633414
+      },
+      {
+        "n": 8,
+        "lat": 27.771224,
+        "lon": -82.633326
+      },
+      {
+        "n": 9,
+        "lat": 27.77113,
+        "lon": -82.63235
+      },
+      {
+        "n": 10,
+        "lat": 27.766271,
+        "lon": -82.630738
+      },
+      {
+        "n": 11,
+        "lat": 27.766945,
+        "lon": -82.628292
+      },
+      {
+        "n": 12,
+        "lat": 27.76685,
+        "lon": -82.627568
+      },
+      {
+        "n": 13,
+        "lat": 27.767411,
+        "lon": -82.626125
+      },
+      {
+        "n": 14,
+        "lat": 27.766926,
+        "lon": -82.625932
+      }
+    ],
+    "pit": [
+      [
+        27.7667365158464,
+        -82.62617558240892
+      ],
+      [
+        27.7665086733443,
+        -82.62695342302324
+      ],
+      [
+        27.76645171264426,
+        -82.62719213962556
+      ],
+      [
+        27.766430352374044,
+        -82.62747645378114
+      ],
+      [
+        27.766371018268117,
+        -82.62767761945724
+      ],
+      [
+        27.764627,
+        -82.63139
+      ],
+      [
+        27.764579,
+        -82.631492
+      ],
+      [
+        27.764558,
+        -82.631561
+      ],
+      [
+        27.764565,
+        -82.631658
+      ],
+      [
+        27.764593,
+        -82.631736
+      ],
+      [
+        27.764674,
+        -82.631894
+      ],
+      [
+        27.764859,
+        -82.632251
+      ],
+      [
+        27.764952,
+        -82.632449
+      ],
+      [
+        27.765025,
+        -82.632599
+      ],
+      [
+        27.76508,
+        -82.632736
+      ],
+      [
+        27.765101,
+        -82.632817
+      ]
+    ]
+  },
+  "pois": [
+    {
+      "n": "Gate 1",
+      "k": "gate",
+      "d": "Main entrance, 1st Ave SE and 1st St SE",
+      "lat": 27.770337,
+      "lon": -82.633844
+    },
+    {
+      "n": "Gate 5",
+      "k": "gate",
+      "d": "Entrance at 5th Ave S",
+      "lat": 27.765718,
+      "lon": -82.634823
+    },
+    {
+      "n": "Gate 8",
+      "k": "gate",
+      "d": "Credentials and RV Club wristbands only",
+      "lat": 27.762763,
+      "lon": -82.633111
+    },
+    {
+      "n": "Credential Gate",
+      "k": "gate",
+      "d": "",
+      "lat": 27.765132,
+      "lon": -82.633938
+    },
+    {
+      "n": "Ticket Booth (Gate 1)",
+      "k": "info",
+      "d": "",
+      "lat": 27.770066,
+      "lon": -82.633841
+    },
+    {
+      "n": "Ticket Booth and Will Call (Gate 5)",
+      "k": "info",
+      "d": "",
+      "lat": 27.765775,
+      "lon": -82.635371
+    },
+    {
+      "n": "First Aid",
+      "k": "med",
+      "d": "",
+      "lat": 27.766853,
+      "lon": -82.628547
+    },
+    {
+      "n": "First Aid",
+      "k": "med",
+      "d": "Next to Al Lang Stadium",
+      "lat": 27.768788,
+      "lon": -82.633279
+    },
+    {
+      "n": "First Aid",
+      "k": "med",
+      "d": "By the Media Center",
+      "lat": 27.767035,
+      "lon": -82.632307
+    },
+    {
+      "n": "First Aid",
+      "k": "med",
+      "d": "Near the airport terminal",
+      "lat": 27.764879,
+      "lon": -82.633599
+    },
+    {
+      "n": "Video Board",
+      "k": "screen",
+      "d": "",
+      "lat": 27.765431,
+      "lon": -82.628662
+    },
+    {
+      "n": "Video Board",
+      "k": "screen",
+      "d": "",
+      "lat": 27.766566,
+      "lon": -82.630143
+    },
+    {
+      "n": "Video Board",
+      "k": "screen",
+      "d": "",
+      "lat": 27.766452,
+      "lon": -82.630566
+    },
+    {
+      "n": "Video Board",
+      "k": "screen",
+      "d": "Turn 10",
+      "lat": 27.766518,
+      "lon": -82.630797
+    },
+    {
+      "n": "Video Board",
+      "k": "screen",
+      "d": "",
+      "lat": 27.764619,
+      "lon": -82.630379
+    },
+    {
+      "n": "Video Board",
+      "k": "screen",
+      "d": "Turn 1",
+      "lat": 27.763893,
+      "lon": -82.631913
+    },
+    {
+      "n": "Video Board",
+      "k": "screen",
+      "d": "Turns 5 to 6",
+      "lat": 27.769354,
+      "lon": -82.633045
+    },
+    {
+      "n": "Video Board",
+      "k": "screen",
+      "d": "Speed Zone",
+      "lat": 27.769331,
+      "lon": -82.632557
+    },
+    {
+      "n": "Official Merchandise",
+      "k": "merch",
+      "d": "",
+      "lat": 27.766418,
+      "lon": -82.629306
+    },
+    {
+      "n": "Official Merchandise",
+      "k": "merch",
+      "d": "Festival Plaza",
+      "lat": 27.76662,
+      "lon": -82.631287
+    },
+    {
+      "n": "Official Merchandise",
+      "k": "merch",
+      "d": "",
+      "lat": 27.7654,
+      "lon": -82.631663
+    },
+    {
+      "n": "Official Merchandise",
+      "k": "merch",
+      "d": "Beer Garden side",
+      "lat": 27.769115,
+      "lon": -82.63345
+    },
+    {
+      "n": "Information",
+      "k": "info",
+      "d": "Pioneer Park",
+      "lat": 27.77045,
+      "lon": -82.633009
+    },
+    {
+      "n": "Bridge (Turn 6)",
+      "k": "cross",
+      "d": "Firestone pedestrian bridge over the circuit",
+      "lat": 27.770344,
+      "lon": -82.633026
+    },
+    {
+      "n": "Bridge (Turn 3)",
+      "k": "cross",
+      "d": "Firestone pedestrian bridge over the circuit",
+      "lat": 27.765721,
+      "lon": -82.633793
+    },
+    {
+      "n": "Bridge (Turn 2)",
+      "k": "cross",
+      "d": "Velo pedestrian bridge over the circuit",
+      "lat": 27.765237,
+      "lon": -82.633074
+    },
+    {
+      "n": "Accessible Crossing (Turn 11)",
+      "k": "cross",
+      "d": "Accessible crossing, times are posted by the event",
+      "lat": 27.766957,
+      "lon": -82.628134
+    },
+    {
+      "n": "Grandstand PL 3",
+      "k": "stand",
+      "d": "Pit lane grandstand",
+      "lat": 27.766034,
+      "lon": -82.628764
+    },
+    {
+      "n": "Grandstand PL 4",
+      "k": "stand",
+      "d": "Pit lane grandstand",
+      "lat": 27.765768,
+      "lon": -82.62929
+    },
+    {
+      "n": "Grandstand PL 5",
+      "k": "stand",
+      "d": "Pit lane grandstand",
+      "lat": 27.76545,
+      "lon": -82.62996
+    },
+    {
+      "n": "Grandstand PL 6",
+      "k": "stand",
+      "d": "Pit lane grandstand",
+      "lat": 27.765146,
+      "lon": -82.630636
+    },
+    {
+      "n": "Grandstand PL 7",
+      "k": "stand",
+      "d": "Pit lane grandstand",
+      "lat": 27.76479,
+      "lon": -82.631414
+    },
+    {
+      "n": "Turn 1 Grandstand",
+      "k": "stand",
+      "d": "",
+      "lat": 27.764225,
+      "lon": -82.632776
+    },
+    {
+      "n": "Turn 10 Grandstand",
+      "k": "stand",
+      "d": "",
+      "lat": 27.766224,
+      "lon": -82.630577
+    },
+    {
+      "n": "Beer Garden (Turn 4)",
+      "k": "food",
+      "d": "Beer garden",
+      "lat": 27.76909,
+      "lon": -82.633827
+    },
+    {
+      "n": "Beer Garden and Victory Garden",
+      "k": "food",
+      "d": "Beer garden with general admission viewing",
+      "lat": 27.764719,
+      "lon": -82.631618
+    },
+    {
+      "n": "Firestone Fan Experience",
+      "k": "info",
+      "d": "",
+      "lat": 27.766727,
+      "lon": -82.629048
+    },
+    {
+      "n": "Trackside Suites",
+      "k": "info",
+      "d": "Trackside suites along pit lane",
+      "lat": 27.765901,
+      "lon": -82.629333
+    },
+    {
+      "n": "Festival Plaza",
+      "k": "info",
+      "d": "",
+      "lat": 27.766687,
+      "lon": -82.631614
+    },
+    {
+      "n": "Dali Museum",
+      "k": "info",
+      "d": "Salvador Dali Museum",
+      "lat": 27.766006,
+      "lon": -82.631451
+    },
+    {
+      "n": "Media Center",
+      "k": "info",
+      "d": "St. Pete Clearwater Media Center at the Mahaffey Theater",
+      "lat": 27.767243,
+      "lon": -82.632163
+    },
+    {
+      "n": "Victory Circle",
+      "k": "info",
+      "d": "Victory Circle and the Dan Wheldon monument",
+      "lat": 27.765085,
+      "lon": -82.632192
+    },
+    {
+      "n": "Firestone INDYCAR Paddock",
+      "k": "info",
+      "d": "",
+      "lat": 27.766078,
+      "lon": -82.632845
+    },
+    {
+      "n": "INDYCAR Paddock",
+      "k": "info",
+      "d": "",
+      "lat": 27.765612,
+      "lon": -82.63217
+    },
+    {
+      "n": "Team and Corporate Hospitality",
+      "k": "info",
+      "d": "",
+      "lat": 27.766645,
+      "lon": -82.633467
+    },
+    {
+      "n": "Pass Redemption and Customer Service",
+      "k": "info",
+      "d": "",
+      "lat": 27.766836,
+      "lon": -82.632396
+    },
+    {
+      "n": "Horse Soldier Waterside Club",
+      "k": "info",
+      "d": "",
+      "lat": 27.767097,
+      "lon": -82.627991
+    },
+    {
+      "n": "Yacht Club Entrance",
+      "k": "gate",
+      "d": "Must have parking pass and event ticket",
+      "lat": 27.771283,
+      "lon": -82.632158
+    },
+    {
+      "n": "Airport Terminal",
+      "k": "info",
+      "d": "Albert Whitted Airport terminal",
+      "lat": 27.76471,
+      "lon": -82.633324
+    },
+    {
+      "n": "Speed Zone",
+      "k": "stand",
+      "d": "General admission viewing",
+      "lat": 27.769819,
+      "lon": -82.632465
+    },
+    {
+      "n": "Speed Zone",
+      "k": "stand",
+      "d": "General admission viewing",
+      "lat": 27.7692,
+      "lon": -82.632687
+    },
+    {
+      "n": "Pioneer Park",
+      "k": "stand",
+      "d": "General admission viewing",
+      "lat": 27.770866,
+      "lon": -82.632892
+    },
+    {
+      "n": "South Paddock",
+      "k": "info",
+      "d": "",
+      "lat": 27.764263,
+      "lon": -82.63077
+    },
+    {
+      "n": "South Paddock",
+      "k": "info",
+      "d": "",
+      "lat": 27.763478,
+      "lon": -82.632571
+    },
+    {
+      "n": "Al Lang Stadium",
+      "k": "info",
+      "d": "",
+      "lat": 27.76812,
+      "lon": -82.633078
+    }
+  ],
+  "lots": [
+    {
+      "n": "Yellow Parking",
+      "c": "#e0f000",
+      "poly": [
+        [
+          27.765393,
+          -82.627809
+        ],
+        [
+          27.766475,
+          -82.625599
+        ],
+        [
+          27.766343,
+          -82.625417
+        ],
+        [
+          27.764472,
+          -82.625427
+        ],
+        [
+          27.764482,
+          -82.627809
+        ],
+        [
+          27.765384,
+          -82.62782
+        ]
+      ]
+    },
+    {
+      "n": "Green Parking",
+      "c": "#34c200",
+      "poly": [
+        [
+          27.764218,
+          -82.634029
+        ],
+        [
+          27.764247,
+          -82.633959
+        ],
+        [
+          27.763668,
+          -82.633967
+        ],
+        [
+          27.763663,
+          -82.634072
+        ],
+        [
+          27.764211,
+          -82.634069
+        ]
+      ]
+    },
+    {
+      "n": "Blue Parking",
+      "c": "#29B6F6",
+      "poly": [
+        [
+          27.767176,
+          -82.63537
+        ],
+        [
+          27.767114,
+          -82.63537
+        ],
+        [
+          27.767121,
+          -82.634102
+        ],
+        [
+          27.767185,
+          -82.634102
+        ]
+      ]
+    },
+    {
+      "n": "Yacht Parking",
+      "c": "#ff5900",
+      "poly": [
+        [
+          27.769955,
+          -82.630904
+        ],
+        [
+          27.769395,
+          -82.630894
+        ],
+        [
+          27.769385,
+          -82.630271
+        ],
+        [
+          27.769846,
+          -82.630266
+        ],
+        [
+          27.769874,
+          -82.630628
+        ],
+        [
+          27.769952,
+          -82.630902
+        ]
+      ]
+    }
+  ],
+  "style": {
+    "smooth": 1
+  }
+}

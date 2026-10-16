@@ -68,6 +68,52 @@ function goingList(){ try{ return JSON.parse(localStorage.getItem(GO_KEY)||"[]")
 const goKey=(t,e)=>t.id+"|"+e.d+"|"+e.e;
 function isGoing(t,e){ return goingList().includes(goKey(t,e)); }
 function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>scheduleGoingReminders(on),0); }
+/* Starred sessions: tap the star on a session to get an alert 10 minutes before it (works anywhere, not just at the track,
+   because you picked that session yourself). The star list is on this phone; alerts are the iPhone app's own notifications. */
+const STAR_KEY="paddock:stars", STAR_ID_BASE=2000;
+const starKey=(t,s)=>`${t.id}|${s.d}|${s.s}|${s.n}`;
+function starList(){ try{ return JSON.parse(localStorage.getItem(STAR_KEY)||"[]"); }catch(e){ return []; } }
+function isStarred(t,s){ return starList().includes(starKey(t,s)); }
+function toggleStar(i){
+  const s=sessionsResolved()[i]; if(!s) return; const k=starKey(cur,s), on=!starList().includes(k);
+  let l=starList().filter(x=>x!==k); if(on) l.push(k); try{ localStorage.setItem(STAR_KEY,JSON.stringify(l.slice(-80))); }catch(e){}
+  renderSchedule(); if(hubMode) renderHub();
+  toast(on?(nativeNotifier()?"Starred. You'll get an alert 10 minutes before.":"Starred. It shows in your day on the hub."):"Removed from your sessions.");
+  scheduleStarAlerts(on);
+}
+async function scheduleStarAlerts(ask){
+  const LN=nativeNotifier(); if(!LN) return;
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=STAR_ID_BASE);
+  if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
+  const now=Date.now(), lead=SESSION_ALERT_LEAD_MIN*60000, out=[];
+  starList().forEach(k=>{ const [tid,d,st,...nm]=k.split("|"), t=TRACKS.find(x=>x.id===tid), n=nm.join("|"), s=t&&sessionsOf(t).find(x=>x.d===d&&x.s===st&&x.n===n);
+    if(s&&s.start.getTime()-lead>now) out.push({t,s}); });
+  if(!out.length) return;
+  let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
+  out.sort((a,b)=>a.s.start-b.s.start);
+  await LN.schedule({notifications:out.slice(0,40).map(({t,s},i)=>({id:STAR_ID_BASE+i,title:shortName(s.n),body:`${t.short} · starts in ${SESSION_ALERT_LEAD_MIN} minutes`,sound:"racecar.caf",schedule:{at:new Date(s.start.getTime()-lead)},extra:{track:t.id}}))});
+}
+/* Add to calendar: a .ics file with one event per session and a 10-minute alarm, shared with the phone's own Calendar app. */
+const icsDate=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+const icsEsc=x=>String(x).replace(/\\/g,"\\\\").replace(/;/g,"\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+const icsFold=l=>{ let o="",b=l; while(b.length>73){ o+=b.slice(0,73)+"\r\n "; b=b.slice(73); } return o+b; };
+function buildIcs(t,list,evName){
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Trackside Pass//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH"], stamp=icsDate(new Date());
+  list.forEach(s=>{ L.push("BEGIN:VEVENT",`UID:${starKey(t,s).replace(/[^A-Za-z0-9]/g,"")}@tracksidepass`,`DTSTAMP:${stamp}`,`DTSTART:${icsDate(s.start)}`,`DTEND:${icsDate(s.end)}`,`SUMMARY:${icsEsc(shortName(s.n))}`,`LOCATION:${icsEsc(t.name+", "+t.place)}`,`DESCRIPTION:${icsEsc(evName+". Times shown in your calendar's own time zone.")}`,"BEGIN:VALARM","TRIGGER:-PT10M","ACTION:DISPLAY",`DESCRIPTION:${icsEsc(shortName(s.n)+" starts in 10 minutes")}`,"END:VALARM","END:VEVENT"); });
+  L.push("END:VCALENDAR"); return L.map(icsFold).join("\r\n")+"\r\n";
+}
+async function deliverIcs(name,text){
+  try{ const file=new File([text],name,{type:"text/calendar"}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:name}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  const url=URL.createObjectURL(new Blob([text],{type:"text/calendar"})), a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000);
+  toast("Calendar file ready. Open it to add the sessions.");
+}
+function addToCalendar(scope){
+  const now=new Date(), all=sessionsResolved().filter(s=>s.end>now), list=scope==="mine"?all.filter(s=>isStarred(cur,s)):all;
+  if(!list.length){ toast(scope==="mine"?"Star a session first.":"No upcoming sessions to add."); return; }
+  const fo=focusAt(cur), ev=fo?[...new Set(fo.group.map(e=>e.e))].join(" · "):cur.eventName||cur.name;
+  deliverIcs(`${cur.id}-${list[0].d}.ics`,buildIcs(cur,list,ev));
+}
+function hubToggleGoing(){ const fo=focusAt(cur); if(!fo) return; const on=!isGoing(cur,fo.first); setGoing(cur,fo.first,on); renderHub(); renderHero(); toast(on?`You're going: ${cur.short}`:"Removed from your races"); }
 function nextGoing(){ const out=[]; TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(isGoing(t,e)&&!eventDone(t,e)) out.push({t,e}); })); return out.sort((a,b)=>a.e.d.localeCompare(b.e.d))[0]||null; }
 /* race week: a one-time celebration banner, the first time the app is opened during the week of a
    race you've marked "going" -- from 7 days before it starts through its last day. Shown once per
@@ -109,7 +155,7 @@ function closeRaceWeek(){ document.getElementById("raceWeekModal").hidden=true; 
 function nextIn(c,t){ return t.events.filter(e=>inChamp(c,e)&&!eventDone(t,e)).sort((a,b)=>a.d.localeCompare(b.d))[0]; }
 function orderOf(c){ return TRACKS.map(t=>({t,e:nextIn(c,t)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)); }
 function stopsOf(c){ return (c.stops||[]).filter(s=>!TRACKS.some(t=>t.id===s.id)&&localToday()<=eventEnd(s)).sort((a,b)=>a.d.localeCompare(b.d)); }   /* venues without a map yet */
-const nextImsa=t=>nextIn(champ("imsa"),t), imsaOrder=()=>orderOf(champ("imsa")), imsaCurrent=()=>imsaOrder()[0]||null;   /* IMSA: the race on now, or the next one */
+const imsaOrder=()=>orderOf(champ("imsa")), imsaCurrent=()=>imsaOrder()[0]||null;   /* IMSA: the race on now, or the next one */
 /* the soonest race at each venue across every championship (home hero, passport order, weather, sun times) */
 function anyOrder(){ return TRACKS.map(t=>{ const x=CHAMPS.filter(followed).map(c=>({c,e:nextIn(c,t)})).filter(z=>z.e).sort((a,b)=>a.e.d.localeCompare(b.e.d))[0]; return x?{t,e:x.e,c:x.c}:null; }).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d)); }
 const nextAny=()=>anyOrder()[0]||null;
@@ -125,7 +171,34 @@ function renderHero(){
     <div class="num">${on?"Day "+day:n}<small>${on?`of ${e.t||1} day${(e.t||1)>1?"s":""}`:(n===1?"day to go":"days to go")}</small></div>
     <div class="name">${e.e}</div><div class="sub">${t.short} · ${fmtRange(e)}</div></button>`;
 }
-function renderHome(){ renderHero(); renderChampList(); if(curChamp) renderSeries(); }
+/* "Your series, next up": a card for each followed series whose next race is within SEASON_CARD_DAYS (or on now): the race,
+   a season opener/finale tag, and -- only while the NEXT race is in the same season as the last result -- who won last
+   and who leads. Across a season break (IMSA's Petit Le Mans -> next year's Rolex 24) last/leads are last season's news,
+   so they are left off. */
+const SEASON_CARD_DAYS=30;
+function seasonRole(c,pick){
+  const yr=pick.e.d.slice(0,4), all=[];
+  TRACKS.forEach(t=>t.events.forEach(e=>{ if(inChamp(c,e)) all.push(e.d); })); (c.stops||[]).forEach(st=>all.push(st.d));
+  const ds=[...new Set(all)].sort(), i=ds.indexOf(pick.e.d), prev=ds[i-1], next=ds[i+1];   /* only what the app knows: a missing neighbour says nothing either way */
+  if(next&&next.slice(0,4)>yr) return "Season finale";
+  if(prev&&prev.slice(0,4)<yr) return "Season opener";
+  return "";
+}
+function renderSeason(){
+  const el=document.getElementById("season"); if(!el) return; const today=localToday();
+  const cards=orderedChamps().filter(followed).map(c=>{
+    const o=orderOf(c)[0], st=stopsOf(c)[0], pick=o&&(!st||o.e.d<=st.d)?{t:o.t.short,e:o.e}:st?{t:st.short,e:st}:null; if(!pick) return "";
+    const n=daysBetween(today,pick.e.d); if(n>SEASON_CARD_DAYS) return "";
+    const when=pick.e.d<=today?"On now":n===1?"Tomorrow":`In ${n} days`, yr=pick.e.d.slice(0,4);
+    const last=typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.s===c.guide).sort((a,b)=>b.d.localeCompare(a.d))[0]:null, lastOk=last&&last.d.slice(0,4)===yr;
+    const g0=lastOk&&last.groups[0], win0=g0?(g0.order?g0.order[0].replace(/^\d+\.\s*/,""):g0.winner):"", win=win0.includes(" \u2014 ")?win0.split(" \u2014 ").pop():win0;   /* drivers, not the car */
+    const std=standingsFor(c.guide), stYr=std&&((std.asOf||"").match(/20\d\d/)||[])[0], lead=std&&(stYr?stYr===yr:lastOk)&&std.classes[0]&&std.classes[0].rows[0];
+    const role=seasonRole(c,pick);
+    return `<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`; }).filter(Boolean).slice(0,4);
+  const pc=playCardHtml();
+  el.innerHTML=cards.length||pc?`${cards.length?`<div class="sect">Your series, next up</div>`:""}<div class="scards">${cards.join("")}${pc}</div>`:"";
+}
+function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
 function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e.d,s&&s.d].filter(Boolean).sort()[0]||"9999-99-99"; }
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort
@@ -284,7 +357,6 @@ function hasShower(p){ return p.shower!==undefined?!!p.shower:!!cur.showers; }
 function showersAvailable(){ const ov=layoutOverrides(); return cur.pois.some(p=>{ const q=applyOv(p,ov[pid(p)]); return q.k==="rest"&&!q.del&&hasShower(q); }); }
 function syncShowerRow(){ document.getElementById("peShowerRow").hidden=document.getElementById("peKind").value!=="rest"; }
 /* shower badge on restrooms with showers; only visible while the Showers layer is on (see css .show-shwr) */
-const SHOWER='<g class="shwr" transform="translate(13,-11)"><circle r="6.5" fill="#2A8FBD" stroke="#fff" stroke-width="1.5"/><path d="M-3.4,-0.6 a3.4,3.4 0 0 1 6.8,0 z" fill="#fff"/><path d="M-2.4,1.6 v1.6 M0,1.6 v2.2 M2.4,1.6 v1.6" stroke="#fff" stroke-width="1" stroke-linecap="round"/></g>';
 function userStands(){ try{ return JSON.parse(localStorage.getItem("paddock:"+cur.id)||"[]"); }catch(e){ return []; } }
 function baseSvg(t){
   if(!t.base) return "";
@@ -435,11 +507,6 @@ function openLiveTiming(url){
   if(cap&&cap.isNativePlatform&&cap.isNativePlatform()&&cap.Plugins&&cap.Plugins.Browser){ cap.Plugins.Browser.open({url}); return; }
   window.open(url,"_blank");
 }
-function openLiveStream(channelId,name){
-  document.getElementById("liveTitle").textContent=name+" — live";
-  document.getElementById("liveFrame").src=`https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=1`;
-  showSheet("shLive");
-}
 /* rain radar: actual precipitation right now (RainViewer), not a forecast -- catches a storm the model-based
    rainOutlook() above hasn't recognized yet. Leaflet (map library) and its tiles are loaded only when this
    is opened, never on every page load, and the map is torn down on close (see closeSheet) so it never sits
@@ -522,9 +589,13 @@ function toggleGoingRow(i){ const e=evRows[i]; if(!e) return; const on=!isGoing(
    is its own field on the track (cur.lapRecord), because it is specific to the exact layout that file draws —
    a venue with more than one layout (an oval vs. its road course) gets a separate track id with its own record. */
 function bestViewPois(){ const ov=layoutOverrides(); return cur.pois.map(p=>applyOv(p,ov[pid(p)])).filter(p=>p.k==="view"&&!p.del); }
+/* lapRecord can also be a list, one per major series ({series, time, who, car, year, note}), for a venue
+   several championships share -- each one's record stands on its own, they aren't comparable. The list shows
+   only series, time and driver (year/car/note stay in the data as the source record). */
 function lapRecordHtml(){
   const r = cur.lapRecord; if(!r) return `<dd class="tbd">Not added yet</dd>`;
   if(typeof r === "string") return `<dd>${esc(r)}</dd>`;
+  if(Array.isArray(r)) return `<dd class="lrs">${r.map(x=>`<div class="lr"><span class="lr-s">${esc(x.series)}</span>${esc(x.time)}<span class="lr-who">${esc(x.who||"")}</span></div>`).join("")}</dd>`;
   return `<dd>${esc(r.time)}<span class="lr-who">${esc([r.who,r.car,r.year].filter(Boolean).join(" · "))}${r.note?` — ${esc(r.note)}`:""}</span></dd>`;
 }
 function renderInfo(){
@@ -540,7 +611,7 @@ function renderInfo(){
   ];
   document.getElementById("iVenue").innerHTML = rows.map(([k,v])=>`<dt>${k}</dt>${v?`<dd>${esc(String(v))}</dd>`:`<dd class="tbd">Not added yet</dd>`}`).join("")
     + `<dt>Best views</dt>${views.length?`<dd>${views.map(p=>esc(p.n)).join("<br>")}<span class="lr-who">Marked on the map with an eye icon</span></dd>`:`<dd class="tbd">Not added yet</dd>`}`
-    + `<dt>Lap record</dt>${lapRecordHtml()}`;
+    + `<dt>Lap record${Array.isArray(cur.lapRecord)?"s":""}</dt>${lapRecordHtml()}`;
   const skip = new Set(["Signature section","Signature sections","Signature","Length"]);
   const rest = Object.entries(facts).filter(([k])=>!skip.has(k));
   document.getElementById("iFacts").innerHTML = rest.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
@@ -723,7 +794,6 @@ function startOrientation(){ if(orientOn) return; const go=()=>{ orientOn=true; 
 function tzOffsetMs(date,tz){ const dtf=new Intl.DateTimeFormat("en-US",{timeZone:tz,hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"}); const p={}; dtf.formatToParts(date).forEach(x=>p[x.type]=x.value); const asUTC=Date.UTC(+p.year,+p.month-1,+p.day,(+p.hour)%24,+p.minute,+p.second); return asUTC-date.getTime(); }
 function localToDate(d,hm,tz){ const [y,m,dd]=d.split("-").map(Number); const [hh,mm]=hm.split(":").map(Number); const guess=new Date(Date.UTC(y,m-1,dd,hh,mm)); const off=tzOffsetMs(guess,tz); return new Date(guess.getTime()-off); }
 function fmtTime(date,tz){ tz=timesPref()==="mine"?undefined:tz; return date.toLocaleTimeString("en-US",{timeZone:tz,hour:"numeric",minute:"2-digit"}).replace(" ","\u202f"); }
-function fmtDay(d,tz){ const [y,m,dd]=d.split("-").map(Number); return new Date(Date.UTC(y,m-1,dd,12)).toLocaleDateString("en-US",{timeZone:"UTC",weekday:"long",month:"short",day:"numeric"}); }
 function sessionsResolved(){ const f=focusAt(cur); return f?sessionsOf(cur).filter(x=>x.d>=f.d&&x.d<=f.end):[]; }
 function shortName(n){ return n.replace("WeatherTech Championship","WeatherTech").replace("Michelin Pilot Challenge","Pilot Challenge").replace("VP Racing SportsCar Challenge","VP Challenge").replace(" - "," · "); }
 function relTime(ms){ const m=Math.round(ms/60000); if(m<1) return "now"; if(m<60) return `in ${m} min`; const h=Math.floor(m/60), r=m%60; if(h<24) return `in ${h}h${r?" "+r+"m":""}`; const d=Math.round(h/24); return `in ${d} day${d>1?"s":""}`; }
@@ -790,6 +860,184 @@ async function refreshResults(){
     if(cur&&hubMode) renderHub();
   }catch(e){}
 }
+/* ---- Live results ----
+   For a series that publishes its results pages (GT World Challenge Europe so far), a small Netlify function
+   (netlify/functions/gtwce.mjs) reads them and the hub shows the latest session within about a minute: practice,
+   the qualifying class grid, the running order during the race and the final classification. An entry in data/entries.js
+   switches it on with live:{round:"<the series' round slug>"}. Nothing is stored; if the function is unreachable the card just does not show. */
+const LIVE_API=/netlify\.app$/.test(location.hostname)?"/.netlify/functions/gtwce":"https://deft-medovik-55a935.netlify.app/.netlify/functions/gtwce";
+const liveCache={}; let liveTimer=null, liveSig="";
+function liveSrc(){
+  const fo=focusAt(cur); if(!fo||typeof ENTRIES==="undefined") return null; const today=localToday();
+  return ENTRIES.find(x=>x.t===cur.id&&x.live&&x.d>=fo.d&&x.d<=fo.end&&daysBetween(today,x.d)<=1&&daysBetween(today,fo.end)>=-1)||null;
+}
+const liveData=g=>{ const c=g&&g.live&&liveCache[g.live.round]; return c?c.data:null; };
+const liveRows=(g,k)=>{ const d=liveData(g); return d&&d.sessions[k]||null; };
+function liveFetch(g){
+  const c=liveCache[g.live.round]; if(c&&Date.now()-c.t<25000) return Promise.resolve(c.data);
+  return fetch(`${LIVE_API}?round=${encodeURIComponent(g.live.round)}`).then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.sessions){ liveCache[g.live.round]={t:Date.now(),data:d}; return d; } return null; }).catch(()=>null);
+}
+function liveTick(){
+  const g=hubMode&&cur?liveSrc():null; if(!g){ clearInterval(liveTimer); liveTimer=null; return; }
+  liveFetch(g).then(d=>{ if(!d||!hubMode||cur.id!==g.t) return;
+    const sig=Object.keys(d.sessions).map(k=>k+d.sessions[k].length+(d.sessions[k][0]||{}).num).join("|")+(d.runningLabel||"");
+    if(sig!==liveSig){ liveSig=sig; renderHub(); if(sheetState==="shGame") renderGame(); } });
+}
+function liveStart(){ if(liveTimer) return; liveTick(); liveTimer=setInterval(liveTick,45000); }
+/* the most recent session that has rows, newest kind first */
+function liveBest(g){
+  const d=liveData(g); if(!d) return null; const o=[["main-race","Race result"],["race-running",`Race running order, after ${d.runningLabel||"the latest hour mark"}`],["qualifying-combined","Qualifying: starting grid"],["free-practice-3","Practice 3: best times"],["free-practice-2","Practice 2: best times"],["free-practice-1","Practice 1: best times"]];
+  const k=o.find(x=>d.sessions[x[0]]); return k?{key:k[0],title:k[1],rows:d.sessions[k[0]],at:d.fetchedAt}:null;
+}
+const LIVE_CLASSES=["Pro","Gold","Silver","Bronze"];
+function liveCardHtml(g,chev){
+  const b=liveBest(g); if(!b) return "";
+  const lines=LIVE_CLASSES.map(c=>{ const r=b.rows.filter(x=>x.cls===c).slice(0,3); if(!r.length) return ""; return `<div class="lvRow"><i>${c}</i><span><b>1</b> #${esc(r[0].num)} ${esc(r[0].team)}${r.slice(1).map((x,i)=>` · <b>${i+2}</b> #${esc(x.num)}`).join("")}</span></div>`; }).join("");
+  const t=b.at?new Date(b.at).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}):"";
+  return `<div class="hubCard hubTap" role="button" onclick="openLiveRes()"><div class="hubCardRow"><div><h4>${esc(b.title)}</h4><div class="hubSessionSub">Official results, read ${t}. Tap for every car.</div></div>${chev}</div>${lines}</div>`;
+}
+let liveResCls="Pro";
+function openLiveRes(){ renderLiveRes(); showSheet("shRes"); }
+function renderLiveRes(){
+  const g=liveSrc()||ENTRIES.find(x=>x.t===cur.id&&x.live), b=g&&liveBest(g); if(!b) return;
+  document.getElementById("rsTitle").textContent=b.title;
+  document.getElementById("rsSub").textContent=`${watchSeriesName({s:g.s})} · read from the series' official results page${b.at?" at "+new Date(b.at).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}):""}. It refreshes about every minute while this screen is open, and the series can still change a result.`;
+  const cls=LIVE_CLASSES.filter(c=>b.rows.some(x=>x.cls===c)); if(!cls.includes(liveResCls)) liveResCls=cls[0];
+  document.getElementById("rsTabs").innerHTML=cls.map(c=>`<button class="gmTab${c===liveResCls?" on":""}" onclick="liveResCls='${c}';renderLiveRes()">${c}</button>`).join("");
+  document.getElementById("rsList").innerHTML=b.rows.filter(x=>x.cls===liveResCls).map((x,i)=>`<div class="rsRow"><span class="rsPos">${i+1}</span><span class="gmNo">#${esc(x.num)}</span><span class="gmTxt"><b>${esc(x.team)}</b><small>${esc(x.drivers)}</small></span><span class="rsTime">${esc(x.time||"")}${x.gap?`<small>+${esc(x.gap)}</small>`:""}</span></div>`).join("");
+}
+
+/* ---- Pick your podium ----
+   Before a race, call the top three cars in each class from the series' own entry list (data/entries.js). Picks lock at the
+   race's start and are scored against data/results.js once the result is posted: 5 points for the right car in the right place,
+   2 for a podium car in the wrong place, both times a long-shot multiplier: every pick banks the car's win chance (data/entries.js)
+   at the moment you make it, and pays x sqrt(10 / chance%), kept between 0.5 and 3 (a 10% car pays x1, a 2% car about x2.2, a 30%
+   car x0.58), then x1.25 for a pick locked in before qualifying starts or x0.75 for one made after it ends (gameTiming). Everything stays on this phone (paddock:picks, with the banked chances under "_p"); no accounts, no server.
+   Results that only name the winner (or the winner and a podium, unordered) score only the places they actually settle. */
+const PICK_KEY="paddock:picks";
+const gameKey=g=>`${g.t}|${g.d}|${g.s}`;
+function picksAll(){ try{ return JSON.parse(localStorage.getItem(PICK_KEY)||"{}"); }catch(e){ return {}; } }
+function picksOf(g){ return picksAll()[gameKey(g)]||{}; }
+const gameMult=p=>Math.min(3,Math.max(.5,Math.sqrt(10/(p>0?p:10))));
+const gameExact=(p,t=1)=>Math.round(5*gameMult(p)*t), gameNear=(p,t=1)=>Math.round(2*gameMult(p)*t);
+/* timing: lock a pick in before qualifying starts for +25%; picks made once qualifying is over score -25% (the grid is a big hint).
+   Games with no qualifying session score at x1. The factor is stored with the pick ("_m"), like the banked win chance. */
+function gameTiming(g,at){
+  at=at||Date.now(); const qs=sessionsOf(cur).filter(s=>{ const sr=seriesFor(s.n); return cur.id===g.t&&sr&&sr.id===g.s&&kindOf(s.n)==="qualifying"&&s.d>=g.d&&s.d<=eventEnd({d:g.d,t:9}); });
+  if(!qs.length) return {m:1,label:""};
+  const first=Math.min(...qs.map(s=>+s.start)), last=Math.max(...qs.map(s=>+s.end));
+  return at<first?{m:1.25,label:"Early bonus: +25% on every pick you lock in before qualifying starts",until:new Date(first)}:at<last?{m:1,label:"Qualifying is under way: normal points"}:{m:.75,label:"Qualifying is over: new picks score 25% less"};
+}
+const pickM=(g,cls,n)=>{ const v=(picksOf(g)._m||{})[cls+"|"+n]; return typeof v==="number"?v:1; };
+/* win chance per car number for a class: the stored estimate, or -- once the live qualifying grid is in -- rebuilt from it
+   (same model as tools/podium_odds.py: form tilt 0.5 per form point, 0.35 per grid place, 0.5% floor) */
+function gameProbs(g,cls){
+  const c=g.classes.find(x=>x.h===cls); if(!c) return null; const q=g.live?liveRows(g,"qualifying-combined"):null;
+  if(!q||!c.cars.every(r=>typeof r[6]==="number")){ const m={}; c.cars.forEach(r=>{ if(typeof r[4]==="number") m[r[0]]=r[4]; }); return m; }
+  const pos={}; let n=0; q.filter(x=>x.cls===cls).forEach(x=>{ pos[x.num]=++n; });
+  const ws=c.cars.map(r=>0.5*(r[6]-0.5)-0.35*((pos[r[0]]||n+1)-1)), ex=ws.map(Math.exp), z=ex.reduce((a,b)=>a+b,0); let pr=ex.map(e=>Math.max(0.005,e/z)); const z2=pr.reduce((a,b)=>a+b,0); pr=pr.map(p=>p/z2);
+  const m={}; c.cars.forEach((r,i)=>{ m[r[0]]=Math.round(pr[i]*1000)/10; }); return m;
+}
+function carP(g,cls,n){ const m=gameProbs(g,cls); return m&&typeof m[n]==="number"?m[n]:null; }
+function pickP(g,cls,n){ const b=(picksOf(g)._p||{})[cls+"|"+n]; return typeof b==="number"?b:carP(g,cls,n); }   /* the chance banked when picked (or the current one for older picks) */
+function setPickP(g,cls,n,p){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); const m=Object.assign({},all[k]._p), tm=Object.assign({},all[k]._m); if(p==null){ delete m[cls+"|"+n]; delete tm[cls+"|"+n]; } else { m[cls+"|"+n]=p; tm[cls+"|"+n]=gameTiming(g).m; } all[k]._p=m; all[k]._m=tm; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
+function savePicks(g,cls,list){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
+const gameNum=str=>{ const m=/#(\d+)/.exec(str||""); return m?m[1]:null; };
+function gameResult(g){
+  const r=typeof RESULTS!=="undefined"?RESULTS.filter(x=>x.t===g.t&&x.d===g.d&&x.s===g.s).pop()||null:null; if(r) return r;
+  const race=liveRows(g,"main-race"); if(!race) return null;   /* the official classification, read live, until the permanent result is added */
+  const by={}; race.forEach(x=>{ (by[x.cls]=by[x.cls]||[]).push(x); });
+  return {live:true,groups:Object.keys(by).map(h=>({h,order:by[h].slice(0,5).map((x,i)=>`${i+1}. #${x.num} ${x.team} — ${x.drivers}`)}))};
+}
+/* the race's settled places for one class: exact[i] = car number in place i+1 when the order was published, podium = every car known to be on it */
+function gamePodium(res,cls){
+  const grp=res&&res.groups.find(x=>x.h.toLowerCase()===cls.toLowerCase()); if(!grp) return null;
+  if(grp.order){ const exact=grp.order.slice(0,3).map(gameNum); return {exact,podium:exact.filter(Boolean)}; }
+  const w=gameNum(grp.winner), rest=(grp.podium||[]).map(gameNum).filter(Boolean);
+  return {exact:[w],podium:[w].concat(rest).filter(Boolean),extra:rest.length};
+}
+function gameScore(g){
+  const res=gameResult(g); if(!res) return null; const picks=picksOf(g); let pts=0,max=0,cars=0;
+  const per={};
+  g.classes.forEach(c=>{ const pk=picks[c.h]; const pd=gamePodium(res,c.h); if(!pk||!pd) return; const marks=[];
+    const gain=[];
+    pk.forEach((n,i)=>{ const p=pickP(g,c.h,n), tm=pickM(g,c.h,n), ex=gameExact(p,tm), ne=gameNear(p,tm); let got=0;
+      if(pd.exact[i]!==undefined&&pd.exact[i]!==null){ max+=ex; const ok=pd.exact[i]===n; if(ok){ got=ex; marks.push("hit"); } else if(pd.podium.includes(n)){ got=ne; marks.push("near"); } else marks.push("miss"); }
+      else if(pd.podium.includes(n)){ got=ne; max+=ne; marks.push("near"); } else marks.push(pd.exact[i]===null||pd.extra!==undefined||pd.exact.length<3?"open":"miss");
+      pts+=got; gain.push(got); });
+    per[c.h]=marks; per[c.h+"#"]=gain; cars+=pk.length; });
+  return {pts,max,per,cars,res};
+}
+/* the entry list for the weekend in focus (null when we have none, or it is not time yet) */
+function gameNow(){
+  const fo=focusAt(cur); if(!fo||typeof ENTRIES==="undefined"||daysBetween(localToday(),fo.d)>goDays()) return null;
+  return ENTRIES.find(x=>x.t===cur.id&&x.d>=fo.d&&x.d<=fo.end)||null;
+}
+function gameLock(g){   /* when the race starts: picks freeze then (or as soon as a result exists) */
+  const race=sessionsOf(cur).filter(s=>{ const sr=seriesFor(s.n); return sr&&sr.id===g.s&&kindOf(s.n)==="race"&&s.d>=g.d; })[0];
+  return race||null;
+}
+const gameLocked=g=>{ const l=gameLock(g); return !!gameResult(g)||(l&&l.start<=new Date()); };
+let gameG=null, gameCls=null;
+function gameCardHtml(g,chev){
+  const sc=gameScore(g), pk=picksOf(g), done=g.classes.filter(c=>(pk[c.h]||[]).length===3).length, locked=gameLocked(g), lock=gameLock(g);
+  const line=sc?`You scored <b>${sc.pts}</b> of ${sc.max} possible points.`:locked?(done?"Picks are locked. Your score comes after the race.":"The race has started, so picks are closed."):done?`${done} of ${g.classes.length} classes picked${lock?` · locks at the start of the race, ${fmtWhen(lock.start,cur.tz)}`:""}`:"Call the top three in each class before the race. Scored against the real result, on this phone only.";
+  return `<div class="hubCard hubTap" role="button" onclick="openGame()"><div class="hubCardRow"><div><h4>Pick your podium</h4><div class="hubSessionSub">${line}</div></div>${chev}</div></div>`;
+}
+function openGame(){
+  const g=gameNow(); if(!g) return; gameG=g; if(!gameCls||!g.classes.some(c=>c.h===gameCls)) gameCls=g.classes[0].h; renderGame(); showSheet("shGame");
+}
+function renderGame(){
+  const g=gameG; if(!g) return; const locked=gameLocked(g), sc=gameScore(g), lock=gameLock(g), pk=picksOf(g), c=g.classes.find(x=>x.h===gameCls), mine=pk[c.h]||[];
+  document.getElementById("gmTitle").textContent=`${watchSeriesName({s:g.s})}: pick your podium`;
+  document.getElementById("gmSub").textContent=sc?`Scored against the official result: ${sc.pts} of ${sc.max} points.`:locked?"Picks are locked.":`Tap cars to fill 1st, 2nd and 3rd in each class. Picks lock at the start of the race${lock?`, ${fmtWhen(lock.start,cur.tz)}`:""}.${gameTiming(g).label?" "+gameTiming(g).label+".":""}`;
+  document.getElementById("gmTabs").innerHTML=g.classes.map(x=>{ const n=(pk[x.h]||[]).length; return `<button class="gmTab${x.h===gameCls?" on":""}" onclick="gameCls='${x.h}';renderGame()">${esc(x.h)}${n?`<i>${n}/3</i>`:""}</button>`; }).join("");
+  const pd=sc&&gamePodium(sc.res,c.h), marks=(sc&&sc.per[c.h])||[], find=n=>c.cars.find(r=>r[0]===n);
+  document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}" ${locked||!n?"disabled":""} onclick="gameDrop(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="open"?"?":"+"+(((sc&&sc.per[c.h+"#"])||[])[i]||0)}</em>`:n&&!locked?`<em>${gameExact(pickP(g,c.h,n),pickM(g,c.h,n))} pts</em>`:""}</button>`; }).join("");
+  const real=pd?`<div class="gmReal"><b>Official result</b> ${pd.exact.map((n,i)=>n?`${i+1}. #${n}`:`${i+1}. not listed`).join(" · ")}${pd.extra?` · also on the podium: ${pd.podium.slice(1).map(n=>"#"+n).join(", ")}`:""}</div>`:sc?`<div class="gmReal">The result for this class is not in yet.</div>`:"";
+  const tm0=gameTiming(g).m, probs=gameProbs(g,c.h)||{}, gridOn=!!(g.live&&liveRows(g,"qualifying-combined")&&c.cars.every(r=>typeof r[6]==="number")), hasP=c.cars.some(r=>typeof r[4]==="number"), cars=hasP?c.cars.slice().sort((a,b)=>(probs[b[0]]||0)-(probs[a[0]]||0)):c.cars;
+  const note=hasP?`<div class="gmNote"><b>Win chances, favourites first.</b> ${esc(gridOn?"Rebuilt from the official class grid, live from the series' qualifying result: starting position now drives the chances.":(g.oddsAsOf||"Our own estimate."))} A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy. Longer shots score more, early picks score more, and each pick keeps the chance and bonus it had when you made it.</div>`:"";
+  document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=probs[r[0]]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small>${gridOn?(()=>{ const q=liveRows(g,"qualifying-combined").filter(x=>x.cls===c.h), i=q.findIndex(x=>x.num===r[0]); return `<small class="gmWhy">${i>=0?"Qualified "+(i+1)+" of "+q.length+" in class":"No qualifying time"}</small>`; })():(r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:"")}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)} · worth ${gameExact(p,tm0)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
+  document.getElementById("gmFoot").innerHTML=esc(g.asOf)+gameRecordHtml();
+}
+/* a win chance as a US money line, like a sportsbook would post it (fair line, no margin) */
+function gameLine(p){ const f=p/100, v=f>=.5?-100*f/(1-f):100*(1-f)/f, a=Math.abs(v), r=a<1000?Math.round(a/5)*5:Math.round(a/50)*50; return (v<0?"-":"+")+r; }
+function gamePick(n){
+  const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), at=list.indexOf(n);
+  if(at>=0){ list.splice(at,1); setPickP(g,gameCls,n,null); } else if(list.length<3){ list.push(n); setPickP(g,gameCls,n,carP(g,gameCls,n)); } else { toast("Remove a pick first (tap it in the slots above)"); return; }
+  savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub();
+}
+function gameDrop(i){ const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), gone=list.splice(i,1)[0]; setPickP(g,gameCls,gone,null); savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub(); }
+/* your season: every weekend you played in a calendar year, all series together, with a running total (the Home screen card and the
+   bottom of the picker sheet). Counts only weekends that have a result; picks on this phone only. */
+function gameSeason(year){
+  const rows=[]; if(typeof ENTRIES==="undefined") return {rows,pts:0,max:0,winners:0};
+  ENTRIES.filter(g=>g.d.slice(0,4)===String(year)).forEach(g=>{ const sc=gameScore(g); if(!sc||!sc.cars) return; const t=TRACKS.find(x=>x.id===g.t);
+    const winners=g.classes.reduce((n,c)=>n+(((sc.per[c.h]||[])[0]==="hit")?1:0),0);
+    rows.push({g,sc,winners,name:`${t?t.short:g.t} · ${watchSeriesName({s:g.s})}`}); });
+  rows.sort((a,b)=>b.g.d.localeCompare(a.g.d));
+  return {rows,pts:rows.reduce((n,r)=>n+r.sc.pts,0),max:rows.reduce((n,r)=>n+r.sc.max,0),winners:rows.reduce((n,r)=>n+r.winners,0)};
+}
+function gameRecordHtml(){
+  const y=new Date().getFullYear(), st=gameSeason(y); if(!st.rows.length) return "";
+  return `<div class="gmRecs"><h4>Your ${y} season</h4>${st.rows.map(r=>`<div class="gmRec"><span>${esc(r.name)}</span><b>${r.sc.pts}/${r.sc.max}</b></div>`).join("")}<div class="gmRec tot"><span>Total · ${st.winners} class winner${st.winners===1?"":"s"} called</span><b>${st.pts}</b></div></div>`;
+}
+/* a one-line Home card: your season total, or an invitation while a game is open */
+function playCardHtml(){
+  if(typeof ENTRIES==="undefined") return ""; const y=new Date().getFullYear(), st=gameSeason(y), today=localToday();
+  const open=ENTRIES.find(g=>{ const t=TRACKS.find(x=>x.id===g.t); return t&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4; });
+  if(!st.rows.length&&!open) return "";
+  const line=st.rows.length?`<b>${st.pts}</b> points in ${st.rows.length} weekend${st.rows.length===1?"":"s"}${open?" · a new game is open":""}`:"A game is open: call the top three in each class";
+  return `<button class="scard playCard" onclick="openPlay()"><div class="scTop"><b>Pick your podium · ${y}</b><span>${st.rows.length?"Season total":"Play"}</span></div><div class="scNext">${line}</div></button>`;
+}
+function playOpenEntry(){ const today=localToday(); return (typeof ENTRIES!=="undefined"&&ENTRIES.find(g=>TRACKS.some(x=>x.id===g.t)&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4))||null; }
+function playNow(tid){ openTrack(tid,"home").then(()=>setTimeout(openGame,150)); }
+function openPlay(){
+  const y=new Date().getFullYear(), rec=gameRecordHtml(), openG=playOpenEntry();
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Game</div><h3 id="infoTitle">Pick your podium · ${y}</h3><p class="plRules">Before each race, call the top three cars in each class from the official entry list. Picks lock at the green flag. Right car in the right place scores 5, a podium car in the wrong place 2, both multiplied for long shots (a pick keeps the win chance it had when you made it). Lock picks in before qualifying starts for 25% more; picks made after qualifying score 25% less. Every series counts toward one ${y} total, and it starts again each January. Scores stay on this phone.</p>${openG?`<button class="btn primary plGo" onclick="closeInfo();playNow('${openG.t}')">Make my picks: ${esc((TRACKS.find(x=>x.id===openG.t)||{}).short||"")}</button>`:""}${rec||`<p class="plRules">No scored weekends yet this year.</p>`}`;
+  const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
+}
+
 function renderHub(){
   if(!hubMode) return;
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
@@ -855,6 +1103,8 @@ function renderHub(){
   if(fav&&cand.some(c=>{ const sr=seriesFor(c.n); return sr&&sr.id===fav; })) sid=fav;
   else for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
 
+  /* off-week: no live or upcoming session to follow, so fall back to the series of the next event for standings */
+  if(!sid){ const nx=CHAMPS.filter(c=>!c.optIn&&followed(c)).map(c=>({c,e:nextIn(c,cur)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)), pickS=nx.find(x=>standingsFor(x.c.guide||x.c.id))||nx[0]; if(pickS) sid=pickS.c.guide||pickS.c.id; }   /* the first series here that has standings to show */
   const wAll=watchNow();
   let watchHtml="";
   if(wAll.length){
@@ -908,7 +1158,18 @@ function renderHub(){
   else { const fo=focusAt(cur); const hit=(fo?fo.group:[]).map(e=>TIMING_LINKS.find(x=>x.match.test(e.s||""))).find(Boolean); if(hit){ timingUrl=hit.url; timingName=hit.name; } }
   const liveTimingHtml=timingUrl?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingUrl}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingName)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
 
-  body.innerHTML=sessionHtml+resultsHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+liveStreamHtml;
+  /* before the weekend: countdown actions, your starred sessions, and how it went here last time */
+  let quickHtml="", dayHtml="", lastHereHtml="";
+  { const fq=focusAt(cur), aw=fq?daysBetween(localToday(),fq.d):-1, upcoming=ss.filter(x=>x.end>now);
+    if(fq&&aw>0){ const going=isGoing(cur,fq.first);
+      quickHtml=`<div class="hubQuick"><button class="${going?"on":""}" aria-pressed="${going}" onclick="hubToggleGoing()"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>${going?"I'm going":"I'm going?"}</button>${upcoming.length?`<button onclick="addToCalendar('all')">${CAL_SVG}Add to calendar</button>`:""}</div>`; }
+    const mine=upcoming.filter(x=>isStarred(cur,x));
+    if(mine.length) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><h4>Your sessions</h4>${chev}</div><div class="hubStarList">${mine.slice(0,6).map(x=>`<div><b>${fmtWhen(x.start,cur.tz)}</b><span>${esc(shortName(x.n))}</span></div>`).join("")}</div><p class="asof hubAsof">${nativeNotifier()?"You'll get an alert 10 minutes before each one.":"Star more in the schedule."}</p></div>`;
+    else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions you care about in the schedule and get an alert before each.</div></div>${chev}</div></div>`;
+    if(!resultsHtml&&aw>0&&typeof RESULTS!=="undefined"){ const last=RESULTS.filter(r=>r.t===cur.id).sort((a,b)=>b.d.localeCompare(a.d))[0];
+      if(last) lastHereHtml=`<div class="hubCard"><h4>Last time here</h4><div class="hubSeries">${esc(last.event)}</div>${last.groups.slice(0,2).map(g=>resultGroupHtml(g,3)).join("")}</div>`; } }
+  const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"", lv=liveSrc(), liveHtml=lv?liveCardHtml(lv,chev):""; if(lv) liveStart();
+  body.innerHTML=sessionHtml+quickHtml+dayHtml+liveHtml+resultsHtml+gameHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */
@@ -918,11 +1179,13 @@ function renderHub(){
     if(target) stripEl.scrollLeft=Math.max(0,target.offsetLeft-stripEl.offsetLeft);
   }
 }
+const CAL_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>';
 function renderSchedule(){
   tzNote();
   renderWatch();
   const sec=document.getElementById("schedSection"); const ss=sessionsResolved(), fo=focusAt(cur);
   if(!fo){ sec.hidden=true; return; }
+  document.getElementById("schedTools").innerHTML="";
   const names=[...new Set(fo.group.map(e=>e.e))].join(" · ");
   if(!ss.length){       /* the next weekend has no session times yet */
     const on=fo.d<=localToday(), when=fo.group.length>1?fmtRange({d:fo.d,t:daysBetween(fo.d,fo.end)+1}):fmtRange(fo.first);
@@ -939,7 +1202,10 @@ function renderSchedule(){
   document.getElementById("schedList").innerHTML=ss.map((s,i)=>({s,i})).filter(x=>x.s.d===schedDay).map(({s,i})=>{ const live=s.start<=now&&now<s.end, past=s.end<=now, sr=seriesFor(s.n);
     const chips=sr&&sr.cars.length>1?`<span class="chips">${sr.cars.map(chipHtml).join("")}</span>`:"";
     const inner=`<div class="st">${fmtTime(s.start,cur.tz)}${s.est?"":`<small>to ${fmtTime(s.end,cur.tz)}</small>`}</div><div class="sn">${s.n}${live?"<em>On track now</em>":(!past&&s.start-now<36e5?`<em>${relTime(s.start-now)}</em>`:"")}${chips}</div>${sr?`<span class="ib" aria-hidden="true">i</span>`:""}`;
-    return sr?`<button class="sess tap ${live?"live":past?"past":""}" onclick="showInfo(${i})" aria-label="About ${esc(s.n)}">${inner}</button>`:`<div class="sess ${live?"live":past?"past":""}">${inner}</div>`; }).join("");
+    const on=isStarred(cur,s), star=past||live?"":`<button class="sstar${on?" on":""}" aria-pressed="${on}" aria-label="${on?"Remove from my sessions":"Alert me before this session"}" onclick="event.stopPropagation();toggleStar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></button>`;
+    return sr?`<div class="sess tap ${live?"live":past?"past":""}" role="button" tabindex="0" onclick="showInfo(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showInfo(${i})}" aria-label="About ${esc(s.n)}">${inner}${star}</div>`:`<div class="sess ${live?"live":past?"past":""}">${inner}${star}</div>`; }).join("");
+  const mineN=ss.filter(x=>x.end>now&&isStarred(cur,x)).length, soonN=ss.filter(x=>x.end>now).length;
+  document.getElementById("schedTools").innerHTML=soonN?`<button class="pill" onclick="addToCalendar('all')">${CAL_SVG}Add weekend to calendar</button>${mineN?`<button class="pill" onclick="addToCalendar('mine')">${CAL_SVG}My ${mineN} session${mineN>1?"s":""}</button>`:""}`:"";
 }
 /* ---- series guide (data/series.js) ---- */
 function seriesFor(name){ return SERIES.find(s=>s.match.test(name))||null; }
@@ -1070,13 +1336,16 @@ function toggleParking(){
 /* focus modes: Restrooms and Camping work like Parking: only the relevant badges show */
 let mode=null, modeAt=0;
 /* modes that just filter the map to one kind and highlight the closest one, no popup card */
-const QUIET_MODES=["rest","food","merch"];
+const QUIET_MODES=["rest","food","merch","view"];
 function setMode(m){
   clearNear(); mode=m; const w=document.getElementById("mapWrap"); if(!w) return;
   w.classList.toggle("m-rest",m==="rest"); w.classList.toggle("m-camp",m==="camp"); w.classList.toggle("m-food",m==="food"); w.classList.toggle("m-merch",m==="merch"); w.classList.toggle("m-view",m==="view");
   document.getElementById("restBtn").classList.toggle("on",m==="rest");
   document.getElementById("foodBtn").classList.toggle("on",m==="food");
+  /* Merch and Best views have no button on the map (they open from the hub), so while one is on, a small chip says so and clears it */
+  const chip=document.getElementById("modeChip"); if(chip){ const lab={merch:"Merch",view:"Best views"}[m]; chip.hidden=!lab; if(lab) chip.firstElementChild.textContent=lab; }
 }
+function clearMode(){ setMode(null); closeSheet(); applyView(); }
 function toggleMode(m){
   if(mode===m){ setMode(null); closeSheet(); applyView(); return; }
   if(parking) toggleParking();
@@ -1108,10 +1377,6 @@ function refreshMode(show){
   document.getElementById("modeList").innerHTML=items.map(c=>`<button class="lotrow" style="--c:${KINDS[kind].c}" onclick="selectPoi(${c.i})"><i></i>${kind==="camp"?(c.p.d||c.p.n):c.p.n}${c.m!==null?`<small>${mins(c.m)} min</small>`:""}</button>`).join("")||`<div class="empty">Nothing mapped here yet.</div>`;
   if(show) showSheet("shMode");
   applyView();
-}
-function renderLotList(){
-  const ov=layoutOverrides(); const all=cur.pois.map(p=>applyOv(p,ov[pid(p)]));
-  document.getElementById("lotList").innerHTML=all.map((p,i)=>({p,i})).filter(c=>c.p.k==="park"&&!c.p.del).map(c=>{ const wm=walkMetresTo(c.p.x,c.p.y); return `<button class="lotrow" style="--c:${c.p.c||'#4B5058'}" onclick="selectPoi(${c.i})"><i></i>${c.p.n}${wm!==null?`<small>${Math.max(1,Math.round(wm/80))} min</small>`:""}</button>`; }).join("");
 }
 /* save my spot */
 let placing=false;
@@ -1481,7 +1746,7 @@ async function scheduleSessionAlerts(forcedTrack){
   if(display!=="granted") display=(await LN.requestPermissions()).display;
   if(display!=="granted") return;
   const now=Date.now(), leadMs=SESSION_ALERT_LEAD_MIN*60000, end=eventEnd(e);
-  const sessions=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=end&&s.start.getTime()-leadMs>now);
+  const sessions=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=end&&s.start.getTime()-leadMs>now&&!isStarred(t,s));   /* starred ones already have their own alert */
   const pending=await LN.getPending(), mine=pending.notifications.filter(n=>n.id<REMINDER_ID_BASE);   /* leave the going-race reminders alone */
   if(mine.length) await LN.cancel({notifications:mine.map(n=>({id:n.id}))});
   if(!sessions.length) return;
@@ -1509,7 +1774,7 @@ async function toggleReminders(){
 }
 async function scheduleGoingReminders(ask){
   const LN=nativeNotifier(); if(!LN) return;
-  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=REMINDER_ID_BASE);
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=REMINDER_ID_BASE&&n.id<STAR_ID_BASE);
   if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
   if(!remindersOn()) return;
   const evs=[]; goingList().forEach(k=>{ const [tid,d,...nm]=k.split("|"), t=TRACKS.find(x=>x.id===tid), e=t&&t.events.find(x=>x.d===d&&x.e===nm.join("|")); if(t&&e&&!eventDone(t,e)) evs.push({t,e}); });
@@ -1526,7 +1791,7 @@ async function scheduleGoingReminders(ask){
   if(out.length) await LN.schedule({notifications:out});
 }
 (function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.track) openTrack(x.track,"home"); }); })();
-scheduleGoingReminders(false);
+scheduleGoingReminders(false); scheduleStarAlerts(false);
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){

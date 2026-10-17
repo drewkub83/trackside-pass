@@ -413,7 +413,7 @@ function renderMap(){ limits=null; document.getElementById("mapWrap").classList.
   const ov=layoutOverrides();
   const all = t.pois.map(p=>applyOv(p,ov[pid(p)])).concat(us.map(s=>({k:"food",n:s.n,x:s.x,y:s.y})));
   document.getElementById("mapHolder").innerHTML = `
-  <svg viewBox="${t.vb.join(" ")}" id="mapSvg" role="img" aria-label="Venue map of ${t.short}">
+  <svg viewBox="${t.vb.join(" ")}" id="mapSvg"${t.lw?` style="--lw:${t.lw}"`:""} role="img" aria-label="Venue map of ${t.short}">
     <defs><pattern id="grass" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="var(--grass)"/><circle cx="6" cy="6" r="1" fill="var(--grass-2)" opacity=".35"/><circle cx="19" cy="17" r="1" fill="var(--grass-2)" opacity=".35"/></pattern></defs>
     <rect x="${t.vb[0]}" y="${t.vb[1]}" width="${t.vb[2]}" height="${t.vb[3]}" fill="url(#grass)"/>
     ${baseSvg(t)}

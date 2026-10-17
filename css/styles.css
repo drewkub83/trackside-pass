@@ -226,12 +226,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .map-wrap svg .b-grandstand,.map-wrap svg .b-bleachers{fill:var(--stand);opacity:.5}
 .map-wrap svg .b-raceway_area{fill:var(--asphalt-2);opacity:.45}
 .map-wrap svg .l-stream{stroke:var(--water);stroke-width:2;fill:none}
-.map-wrap svg .l-primary{stroke:var(--road);stroke-width:7;fill:none;stroke-linecap:round}
-.map-wrap svg .l-primary-e{stroke:var(--road-2);stroke-width:9;fill:none;stroke-linecap:round}
-.map-wrap svg .l-residential{stroke:var(--road);stroke-width:4.5;fill:none;stroke-linecap:round}
-.map-wrap svg .l-residential-e{stroke:var(--road-2);stroke-width:6;fill:none;stroke-linecap:round}
-.map-wrap svg .l-service{stroke:var(--road);stroke-width:2.6;fill:none;stroke-linecap:round}
-.map-wrap svg .l-service-e{stroke:var(--road-2);stroke-width:3.6;fill:none;stroke-linecap:round}
+.map-wrap svg .l-primary{stroke:var(--road);stroke-width:calc(7px*var(--lw,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-primary-e{stroke:var(--road-2);stroke-width:calc(9px*var(--lw,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-residential{stroke:var(--road);stroke-width:calc(4.5px*var(--lw,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-residential-e{stroke:var(--road-2);stroke-width:calc(6px*var(--lw,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-service{stroke:var(--road);stroke-width:calc(2.6px*var(--lw,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-service-e{stroke:var(--road-2);stroke-width:calc(3.6px*var(--lw,1));fill:none;stroke-linecap:round}
 .map-wrap svg .l-track{stroke:#C9A877;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .map-wrap svg .l-track-e{stroke:#94764B;stroke-width:3.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .map-wrap svg .l-bridge{stroke:var(--road);stroke-width:3;fill:none}

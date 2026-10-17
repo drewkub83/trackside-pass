@@ -1,5 +1,6 @@
 /* Which video is live on a YouTube channel right now. The app used to embed youtube.com/embed/live_stream?channel=…,
    which YouTube no longer plays reliably, so the hub asks this first and embeds the actual video id instead.
+   It also says whether the channel lets that video play inside other sites/apps (embeddable).
    It reads the channel's public /live page (the same page "Open in YouTube" goes to), only for a well-formed channel
    id, and caches the answer for 60 s so many phones cost YouTube one request. GET /.netlify/functions/ytlive?ch=UC… */
 export default async (req) => {
@@ -11,7 +12,14 @@ export default async (req) => {
     const h = r.ok ? await r.text() : "";
     const id = (h.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/watch\?v=([\w-]{11})"/) || [])[1] || null;
     const live = !!id && /"isLiveNow":true|"isLive":true/.test(h);
-    return new Response(JSON.stringify({ ch, id: live ? id : null, live }), { headers: head });
+    /* A channel can forbid playback outside YouTube; the embed then just says "This video is unavailable".
+       The watch page says so ("playableInEmbed":false) and YouTube's oEmbed answers 401 for such videos. */
+    let embeddable = live && !/"playableInEmbed":false/.test(h);
+    if (embeddable) {
+      const o = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent("https://www.youtube.com/watch?v=" + id)}`).catch(() => null);
+      if (o && (o.status === 401 || o.status === 403)) embeddable = false;
+    }
+    return new Response(JSON.stringify({ ch, id: live ? id : null, live, embeddable }), { headers: head });
   } catch (e) {
     return new Response(JSON.stringify({ ch, id: null, live: false, error: "could not reach YouTube" }), { status: 502, headers: head });
   }

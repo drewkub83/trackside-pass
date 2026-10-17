@@ -868,12 +868,14 @@ function exitHub(){ hubLive.want=false; if(hubLive.playing) stopHubLive(); hubMo
 /* Inline live stream in the Race Day hub. State survives the hub's 30 s re-render: the iframe is only touched when
    the channel changes. Starting it needs a tap (no data used on a weak signal); once started it follows the series
    from one race to the next until you stop it or leave the hub. */
-let hubLive={ch:null,name:"",want:false,playing:false,vid:null,looking:false};
+let hubLive={ch:null,name:"",want:false,playing:false,vid:null,embed:true,looking:false};
 /* YouTube no longer reliably plays embed/live_stream?channel=…, so ask our function (netlify/functions/ytlive.mjs)
-   for the video that is live right now and embed that. If it can't tell, fall back to the channel embed. */
+   for the video that is live right now and embed that. Some channels forbid playback outside YouTube (the embed
+   only says "This video is unavailable"); then, or when no live video can be found, offer YouTube itself instead,
+   which in the iPhone app opens in the in-app browser sheet. */
 async function resolveHubLive(){
   const ch=hubLive.ch; if(!ch||hubLive.looking) return; hubLive.looking=true; hubLive.vid=null;
-  try{ const r=await fetch((/netlify\.app$/.test(location.hostname)?"":"https://deft-medovik-55a935.netlify.app")+"/.netlify/functions/ytlive?ch="+encodeURIComponent(ch)); const j=r.ok?await r.json():{}; if(hubLive.ch===ch) hubLive.vid=j.id||""; }
+  try{ const r=await fetch((/netlify\.app$/.test(location.hostname)?"":"https://deft-medovik-55a935.netlify.app")+"/.netlify/functions/ytlive?ch="+encodeURIComponent(ch)); const j=r.ok?await r.json():{}; if(hubLive.ch===ch){ hubLive.vid=j.id||""; hubLive.embed=j.embeddable!==false; } }
   catch(e){ if(hubLive.ch===ch) hubLive.vid=""; }
   hubLive.looking=false;
   const box=document.getElementById("hubLive"); if(box&&hubLive.playing&&hubLive.ch===ch) box.innerHTML=hubLiveHtml();
@@ -882,20 +884,23 @@ function updateHubLive(sr){
   const box=document.getElementById("hubLive"); if(!box) return;
   if(!sr||!sr.yt){ if(hubLive.playing){ box.innerHTML=""; hubLive.playing=false; } hubLive.ch=null; box.hidden=true; return; }
   const changed=sr.yt!==hubLive.ch; hubLive.name=sr.name;
-  if(changed){ hubLive.ch=sr.yt; hubLive.vid=null; hubLive.playing=hubLive.want; box.innerHTML=hubLiveHtml(); if(hubLive.playing) resolveHubLive(); }
+  if(changed){ hubLive.ch=sr.yt; hubLive.vid=null; hubLive.embed=true; hubLive.playing=hubLive.want; box.innerHTML=hubLiveHtml(); if(hubLive.playing) resolveHubLive(); }
   else if(!hubLive.playing) box.innerHTML=hubLiveHtml();   /* not playing: cheap to refresh; playing: leave the iframe alone */
   box.hidden=false;
 }
+function hubLiveUrl(){ return hubLive.vid?`https://www.youtube.com/watch?v=${hubLive.vid}`:`https://www.youtube.com/channel/${hubLive.ch}/live`; }
+function openHubLiveYouTube(){ openLiveTiming(hubLiveUrl()); }
 function hubLiveHtml(){
   const head=`<div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Live now: ${esc(hubLive.name)} race</h4></div>`;
-  /* referrerpolicy: YouTube now refuses to play embeds that arrive with no referrer (its "Error 153"), which an app web view can do */
-  const src=hubLive.vid?`https://www.youtube.com/embed/${hubLive.vid}?autoplay=1&playsinline=1&rel=0`:`https://www.youtube.com/embed/live_stream?channel=${hubLive.ch}&autoplay=1&playsinline=1`;
-  if(hubLive.playing&&hubLive.vid===null) return head+`<div class="liveWrap"><div class="liveFinding" style="position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:14px">Finding the stream…</div></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button>`;
-  if(hubLive.playing) return head+`<div class="liveWrap"><iframe src="${src}" title="${esc(hubLive.name)} live" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button> <a class="hubLiveOpen" href="https://www.youtube.com/channel/${hubLive.ch}/live" target="_blank" rel="noopener" style="margin-left:12px;font-size:13px">Not playing? Open in YouTube</a>`;
-  return head+`<div class="hubSessionSub" style="margin:4px 0 10px">Free on the series' YouTube channel.</div><button class="btn primary hubLivePlay" onclick="playHubLive()">Watch here</button> <a class="hubLiveOpen" href="https://www.youtube.com/channel/${hubLive.ch}/live" target="_blank" rel="noopener" style="margin-left:12px;font-size:13px">Open in YouTube</a>`;
+  const yt=(label,cls)=>`<button class="btn ${cls} hubLiveOpen" onclick="openHubLiveYouTube()">${label}</button>`;
+  if(!hubLive.playing) return head+`<div class="hubSessionSub" style="margin:4px 0 10px">Free on the series' YouTube channel.</div><button class="btn primary hubLivePlay" onclick="playHubLive()">Watch here</button> `+yt("Open in YouTube","quiet");
+  if(hubLive.vid===null) return head+`<div class="liveWrap"><div class="liveFinding" style="position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:14px">Finding the stream…</div></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button>`;
+  if(!hubLive.vid||!hubLive.embed) return head+`<div class="hubSessionSub" style="margin:4px 0 10px">${hubLive.vid?"The series only lets this stream play on YouTube itself, not inside other apps.":"Couldn't find the live video from here."}</div>`+yt("Watch on YouTube","primary")+` <button class="btn quiet hubLiveStop" onclick="stopHubLive()">Close</button>`;
+  /* referrerpolicy: YouTube refuses to play embeds that arrive with no referrer (its "Error 153"), which an app web view can do */
+  return head+`<div class="liveWrap"><iframe src="https://www.youtube.com/embed/${hubLive.vid}?autoplay=1&playsinline=1&rel=0" title="${esc(hubLive.name)} live" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button> `+yt("Not playing? Open in YouTube","quiet");
 }
 function playHubLive(){ hubLive.want=true; hubLive.playing=true; document.getElementById("hubLive").innerHTML=hubLiveHtml(); if(hubLive.vid===null) resolveHubLive(); }
-function stopHubLive(){ hubLive.want=false; hubLive.playing=false; hubLive.vid=null; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }
+function stopHubLive(){ hubLive.want=false; hubLive.playing=false; hubLive.vid=null; hubLive.embed=true; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }
 /* Results get added to data/results.js minutes after a race ends. While the hub is showing "results will show here
    once they're posted", re-fetch that one file (straight from the network, at most once a minute) and swap the
    entries in place -- no app update or reload needed. Offline or failing fetches are ignored. */

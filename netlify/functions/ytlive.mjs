@@ -3,7 +3,8 @@
    asks this first and embeds the actual video id instead. GET /.netlify/functions/ytlive?ch=UC…
    - With the YT_API_KEY environment variable set in Netlify (Site configuration > Environment variables; never put
      the key in this repo), it uses YouTube's official Data API: the channel's uploads playlist (live streams appear
-     there while live) and then those videos' live status. 2 quota units per call, of 10,000 a day.
+     there while live) and those videos' live status (2 quota units of 10,000 a day); only if that finds nothing,
+     YouTube's live search (100 units).
    - Without a key it reads the channel's public /live page, which YouTube often answers with a bot check when the
      request comes from a server; `why` then says so.
    Cached 60 s so many phones cost YouTube one request. */
@@ -11,17 +12,28 @@ const json = (o, status, head) => new Response(JSON.stringify(o), { status, head
 
 async function viaApi(ch, key) {
   const api = "https://www.googleapis.com/youtube/v3/";
-  const pl = await fetch(`${api}playlistItems?part=contentDetails&maxResults=10&playlistId=UU${ch.slice(2)}&key=${key}`);
+  const pick = async (ids, how) => {
+    if (!ids.length) return null;
+    const v = await fetch(`${api}videos?part=snippet,status,liveStreamingDetails&id=${ids.slice(0, 50).join(",")}&key=${key}`);
+    if (!v.ok) return { id: null, live: false, embeddable: false, why: `youtube api answered ${v.status}` };
+    const live = ((await v.json()).items || []).filter((x) => x.snippet && x.snippet.liveBroadcastContent === "live")
+      .sort((a, b) => String((b.liveStreamingDetails || {}).actualStartTime).localeCompare(String((a.liveStreamingDetails || {}).actualStartTime)));
+    if (!live.length) return null;
+    const x = live[0], embeddable = !(x.status && x.status.embeddable === false);
+    return { id: x.id, live: true, embeddable, title: x.snippet.title, found: how, why: embeddable ? "ok" : "channel blocks embedding" };
+  };
+  /* 1) the channel's uploads playlist, 50 newest (2 quota units). A race stream is often scheduled days ahead, so it
+        sits below newer clips; 10 was not enough for a busy channel like GT World. */
+  const pl = await fetch(`${api}playlistItems?part=contentDetails&maxResults=50&playlistId=UU${ch.slice(2)}&key=${key}`);
   if (!pl.ok) return { id: null, live: false, embeddable: false, why: `youtube api answered ${pl.status}` };
   const ids = ((await pl.json()).items || []).map((i) => i.contentDetails && i.contentDetails.videoId).filter(Boolean);
-  if (!ids.length) return { id: null, live: false, embeddable: false, why: "no videos on the channel" };
-  const v = await fetch(`${api}videos?part=snippet,status,liveStreamingDetails&id=${ids.join(",")}&key=${key}`);
-  if (!v.ok) return { id: null, live: false, embeddable: false, why: `youtube api answered ${v.status}` };
-  const live = ((await v.json()).items || []).filter((x) => x.snippet && x.snippet.liveBroadcastContent === "live")
-    .sort((a, b) => String((b.liveStreamingDetails || {}).actualStartTime).localeCompare(String((a.liveStreamingDetails || {}).actualStartTime)));
-  if (!live.length) return { id: null, live: false, embeddable: false, why: "nothing live on the channel" };
-  const x = live[0], embeddable = !(x.status && x.status.embeddable === false);
-  return { id: x.id, live: true, embeddable, title: x.snippet.title, why: embeddable ? "ok" : "channel blocks embedding" };
+  const a = await pick(ids, "uploads");
+  if (a) return a;
+  /* 2) YouTube's own "live now on this channel" search (100 units of the 10,000 a day; only reached when 1 found nothing) */
+  const sr = await fetch(`${api}search?part=id&channelId=${ch}&eventType=live&type=video&maxResults=5&key=${key}`);
+  if (!sr.ok) return { id: null, live: false, embeddable: false, why: `youtube api search answered ${sr.status}` };
+  const sids = ((await sr.json()).items || []).map((i) => i.id && i.id.videoId).filter(Boolean);
+  return (await pick(sids, "search")) || { id: null, live: false, embeddable: false, why: "nothing live on the channel" };
 }
 
 async function viaPage(ch) {

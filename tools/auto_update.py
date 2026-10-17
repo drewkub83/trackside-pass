@@ -86,6 +86,24 @@ for e in entries:
         name = (ev or {}).get("e", "GT World Challenge Europe")   # --refresh: keep re-reading for 2 days, post-race penalties can move the order
         if run("gtwce_result.py", rnd, e["t"], e["d"], name, "--refresh") == 0 and not DRY and L.read("data/results.js") != before["data/results.js"]: run("gtwce_standings.py")
     else: print(f"  race ends {r_end.isoformat()}; nothing to import yet")
+# Source check: can THIS machine (GitHub's runner, in production) read each series' own site? Written to data/automation-status.json, only when a state
+# changes (so it does not commit every run); GitHub hides run logs from signed-out visitors, this file is how the owner (and Claude) can see it.
+def probe_sources():
+    import urllib.request, json as _j
+    def ok(url, must):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Trackside Pass data tools)"}), timeout=30) as r:
+                return "ok" if must in r.read().decode("utf-8", "replace") else "unexpected page"
+        except Exception as e: return "unreachable: " + str(e)[:80]
+    st = {"indycar": ok("https://www.indycar.com/api/results/SeasonDropDown?id=b856a4f1-e85c-4fac-8c36-fd58d962227a", '"Events"'),
+          "gtwca": ok("https://www.gt-world-challenge-america.com/results/%d" % now.year, "/results/"),
+          "gtwce": ok("https://www.gt-world-challenge-europe.com/results/%d" % now.year, "/results/")}
+    f = "data/automation-status.json"
+    try: old = _j.loads(L.read(f)).get("sources")
+    except Exception: old = None
+    print("sources:", st)
+    if st != old and not DRY: L.write(f, _j.dumps({"note": "Written by tools/auto_update.py when a source's state changes: whether the job's machine could read each series' own site.", "sources": st, "firstSeen": now.date().isoformat()}, indent=1) + "\n")
+probe_sources()
 # IndyCar and GT World Challenge America have their own readers (results, standings, lap records); each only acts on races of the last 10 days at venues the app has an event for
 for script in ("indycar_update.py", "gtwca_update.py"): run(script)
 before_tracks = None

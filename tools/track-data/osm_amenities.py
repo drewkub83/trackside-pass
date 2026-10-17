@@ -2,7 +2,7 @@
 """Adds fan-relevant amenities that OpenStreetMap already has near a circuit as badges: toilets, showers, drinking water, restaurants, fast food, pubs,
 bars and cafes, information points, the police station and museums, caravan sites. Complements osm_stands.py (grandstands). Useful where the
 OSM mapping is dense (Nurburgring); at other circuits it finds little and the official fan map is still the source.
-  python3 tools/track-data/osm_amenities.py <track-id> [--radius 110] [--write]
+  python3 tools/track-data/osm_amenities.py <track-id> [--radius 110] [--only "Name 1|Name 2"] [--write]
 Reads tools/street-circuits/osm/<id>.json (download with fetch_track_osm.py), keeps objects within --radius map units of the circuit path
 (default 110, about 600 m at the Nurburgring's scale), skips what the track already has (same kind within 5 units, or the same name within 12),
 names badges from OSM (an unnamed one gets its type), and writes them with the source in the description. Check reachability afterwards."""
@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_route as B
 A = sys.argv[1:]; tid = A[0]; WRITE = "--write" in A
 RADIUS = float(A[A.index("--radius") + 1]) if "--radius" in A else 110.0
+ONLY = set(x.strip() for x in A[A.index("--only") + 1].split("|")) if "--only" in A else None   # keep only these names (e.g. "Restaurant Viena|Drinking water"): leaves out VIP hospitality and places outside the fan area
 T = B.load(tid); g = T["geo"]; vb = T["vb"]
 els = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "street-circuits", "osm", tid + ".json")))["elements"]
 pts = [(float(x), float(y)) for x, y in re.findall(r"([-\d.]+),([-\d.]+)", T["path"])]
@@ -38,6 +39,7 @@ for e in els:
     x, y = XY(*c)
     if not (vb[0] <= x <= vb[0] + vb[2] and vb[1] <= y <= vb[1] + vb[3]) or dpath(x, y) > RADIUS: continue
     kind, generic = KINDS[key]; name = t.get("name") or generic
+    if ONLY is not None and name not in ONLY: continue
     if any((p["k"] == kind and math.hypot(p["x"] - x, p["y"] - y) < 5) or (t.get("name") and p["n"] == name and math.hypot(p["x"] - x, p["y"] - y) < 12) for p in T["pois"] + new):
         skipped += 1; continue
     base = slug(name); i = base; n = 2

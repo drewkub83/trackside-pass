@@ -19,7 +19,9 @@ export default async (req) => {
       const o = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent("https://www.youtube.com/watch?v=" + id)}`).catch(() => null);
       if (o && (o.status === 401 || o.status === 403)) embeddable = false;
     }
-    return new Response(JSON.stringify({ ch, id: live ? id : null, live, embeddable }), { headers: head });
+    /* why: a short diagnosis for when the hub can't find the stream (YouTube sometimes answers servers with a bot check) */
+    const why = !r.ok ? `youtube answered ${r.status}` : /confirm you.{0,8}re not a bot|consent\.youtube\.com/i.test(h) ? "youtube asked for a bot check / consent" : !id ? "no live video on the channel page" : !live ? "video found but not live" : embeddable ? "ok" : "channel blocks embedding";
+    return new Response(JSON.stringify({ ch, id: live ? id : null, live, embeddable, why }), { headers: head });
   } catch (e) {
     return new Response(JSON.stringify({ ch, id: null, live: false, error: "could not reach YouTube" }), { status: 502, headers: head });
   }

@@ -12,7 +12,7 @@
    GT World Challenge Europe (gt-world-challenge-europe.com calendar, checked Oct 7, 2026). */
 /* the day schedules, lists of cars and drivers to watch and support races were last checked (shown in Settings). Update it whenever they are refreshed. */
 const DATA_UPDATED = "2026-10-07";
-const REGIONS = { na:"North America", eu:"Europe" };   /* add a key here (and region:"…" on its series) when a new part of the world is added */
+const REGIONS = { na:"North America", eu:"Europe", world:"Worldwide" };   /* add a key here (and region:"…" on its series) when a new part of the world is added */
 const CHAMPS = [
   { id:"imsa", region:"na", name:"IMSA", tile:"IMSA", full:"WeatherTech SportsCar Championship", match:/IMSA/i, skip:/test/i, guide:"weathertech",
     note:"Every venue on the 2027 IMSA WeatherTech schedule, including the Long Beach and Detroit street circuits and Canadian Tire Motorsport Park, plus Mid-Ohio." },
@@ -49,4 +49,28 @@ const CHAMPS = [
     note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },
   { id:"hsr", region:"na", name:"HSR", tile:"HSR", full:"Historic Sportscar Racing", match:/HSR/i, optIn:true,
     note:"Vintage and historic sports and race cars, with its own race weekends at Daytona, Sebring, Road Atlanta and Watkins Glen. Dates come from HSR's published schedule; several are still provisional and can change." }
+  ,{ id:"f1", region:"world", name:"Formula 1", tile:"F1", full:"FIA Formula One World Championship", match:/Formula 1/i, guide:"f1",
+    note:"The 2026 season has six races left, starting at Austin (Oct 23-25), where Mercedes' Kimi Antonelli leads the drivers' championship by 102 points. The 2027 calendar, announced Sep 16, 2026, has 24 Grands Prix from Bahrain (Mar 12-14) to Abu Dhabi (Dec 10-12), with Portimão returning and Spain moving to Madrid. Dates in the Middle East can still change. Circuits show Map coming soon until their maps are added.",
+    stops:[
+      { id:"mexico-city", short:"Mexico City", place:"Mexico City, Mexico", kind:"Road course", e:"Mexico City Grand Prix", d:"2026-10-30", t:3 },
+      { id:"interlagos", short:"São Paulo", place:"São Paulo, Brazil", kind:"Road course", e:"São Paulo Grand Prix", d:"2026-11-06", t:3 },
+      { id:"las-vegas", short:"Las Vegas", place:"Las Vegas, Nevada", kind:"Street circuit", e:"Las Vegas Grand Prix", d:"2026-11-19", t:3 },
+      { id:"lusail", short:"Qatar", place:"Lusail, Qatar", kind:"Road course", e:"Qatar Grand Prix", d:"2026-11-27", t:3 },
+      { id:"yas-marina", short:"Abu Dhabi", place:"Abu Dhabi, UAE", kind:"Road course", e:"Abu Dhabi Grand Prix", d:"2026-12-04", t:3 },
+      { id:"bahrain", short:"Bahrain", place:"Sakhir, Bahrain", kind:"Road course", e:"Bahrain Grand Prix", d:"2027-03-12", t:3 },
+      { id:"jeddah", short:"Saudi Arabia", place:"Jeddah, Saudi Arabia", kind:"Street circuit", e:"Saudi Arabian Grand Prix", d:"2027-03-19", t:3 },
+      { id:"melbourne", short:"Australia", place:"Melbourne, Australia", kind:"Street circuit", e:"Australian Grand Prix", d:"2027-04-02", t:3 },
+      { id:"suzuka", short:"Japan", place:"Suzuka, Japan", kind:"Road course", e:"Japanese Grand Prix", d:"2027-04-09", t:3 },
+      { id:"shanghai", short:"China", place:"Shanghai, China", kind:"Road course", e:"Chinese Grand Prix", d:"2027-04-16", t:3 },
+      { id:"miami", short:"Miami", place:"Miami Gardens, Florida", kind:"Road course", e:"Miami Grand Prix", d:"2027-04-30", t:3 },
+      { id:"montreal", short:"Canada", place:"Montréal, Canada", kind:"Road course", e:"Canadian Grand Prix", d:"2027-05-21", t:3 },
+      { id:"monaco", short:"Monaco", place:"Monte Carlo, Monaco", kind:"Street circuit", e:"Monaco Grand Prix", d:"2027-06-04", t:3 },
+      { id:"silverstone", short:"Great Britain", place:"Silverstone, England", kind:"Road course", e:"British Grand Prix", d:"2027-07-02", t:3 },
+      { id:"red-bull-ring", short:"Austria", place:"Spielberg, Austria", kind:"Road course", e:"Austrian Grand Prix", d:"2027-07-09", t:3 },
+      { id:"monza", short:"Italy", place:"Monza, Italy", kind:"Road course", e:"Italian Grand Prix", d:"2027-09-03", t:3 },
+      { id:"madrid", short:"Spain", place:"Madrid, Spain", kind:"Street circuit", e:"Spanish Grand Prix", d:"2027-09-10", t:3 },
+      { id:"baku", short:"Azerbaijan", place:"Baku, Azerbaijan", kind:"Street circuit", e:"Azerbaijan Grand Prix", d:"2027-09-24", t:3 },
+      { id:"istanbul", short:"Turkey", place:"Istanbul, Turkey", kind:"Road course", e:"Turkish Grand Prix", d:"2027-10-01", t:3 },
+      { id:"marina-bay", short:"Singapore", place:"Singapore", kind:"Street circuit", e:"Singapore Grand Prix", d:"2027-10-08", t:3 }
+    ] }
 ];

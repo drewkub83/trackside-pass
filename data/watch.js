@@ -5,6 +5,24 @@
    later from (for example after qualifying): the newest entry whose from has arrived replaces the older one. Old entries stay as history.
    Facts are only what published race reports and standings said. Refresh this before each weekend. */
 const WATCH = [
+  { t:"cota", d:"2026-10-23", s:"f1", asOf:"Current on Oct 16, a week before practice: the standings are after the Singapore Grand Prix (17 races done, six to go), and the weekend's session times are formula1.com's.",
+    groups:[
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads the championship by 102 points with six races left and eight wins this season. He can clinch the title in Austin only if he wins, George Russell finishes ninth or lower and Lewis Hamilton finishes fifth or lower; a second place leaves it open."],
+        ["George Russell (Mercedes)", "Antonelli's team-mate is second on 238 points with three wins (Australia, Austria, Azerbaijan). He keeps the title fight going unless Antonelli wins and he finishes ninth or lower."]
+      ] },
+      { h:"The chasers", items:[
+        ["Lewis Hamilton (Ferrari)", "Third on 229 points. If Antonelli wins, a Hamilton finish in the top four keeps Antonelli from clinching. He holds the record for Austin wins, five between 2012 and 2017."],
+        ["Max Verstappen (Red Bull Racing)", "Won the last two races, in Bahrain and Singapore, and is fourth on 221. He won at COTA in 2023 after starting sixth."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 215 points and winner of the British GP. His 1:36.169 from 2019 is still the official race lap record at COTA."],
+        ["Lando Norris (McLaren)", "Sixth on 201 points with two wins this year, in Hungary and the Netherlands. McLaren and Red Bull Racing are only seven points apart in the fight for third in the constructors' championship."]
+      ] },
+      { h:"What to look for", items:[
+        ["Three practice sessions, no sprint", "Austin has two practice sessions on Friday (12:30 and 16:00 local) and a third on Saturday at 12:30, then qualifying at 16:00. The race is Sunday at 15:00. With no sprint, practice is the only time the teams get to learn the car on this track."],
+        ["Where the track decides things", "Turn 1 is a climb into a broad corner with difficult braking, turns 3 to 6 are a fast sequence where a messy entry hurts the next change of direction, and the stadium section at turns 12 to 15 rewards placing the car precisely. Turns 15 and 16 are a good place for close racing."]
+      ] }
+    ],
+    note:"Sources: formula1.com (2026 standings and race results, read Oct 16, 2026; the Austin timetable and the circuit's official race lap record), GrandPrix.com, 'How Antonelli can clinch the 2026 title in Austin' (Oct 11, 2026), and GrandPrix247's Austin preview for the circuit notes. Hamilton's and Verstappen's COTA records are from Motorsport Week's race-week guide." },
   { t:"portimao", d:"2026-10-15", s:"gtwce", asOf:"Current on Oct 15, before practice: the 61-car entry list is official and the standings are after round 9 (Barcelona). The 3-hour race is Saturday, Oct 17, 5 PM track time.",
     groups:[
       { h:"The headline: Pro", items:[

@@ -228,6 +228,26 @@ const SERIES = [
   rule:"Follow your favorite team or driver, and check the timing screens for results in this series.",
   fine:"A short spectator summary of the series. For official details, see GTAmerica.us."
 }
+  ,{
+    id:"f1", match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
+    name:"Formula 1", tag:"The top of single-seater racing",
+    blurb:"The FIA Formula One World Championship, the highest level of single-seater racing. Eleven teams run two cars each at Grands Prix on circuits around the world, and every team designs and builds its own car, so the pace of the car matters as much as the driver. There are two titles: drivers and constructors (teams). 2026 brought a new generation of cars and two new teams, Audi and Cadillac.",
+    cars:[
+      {n:"F1", full:"Formula 1 car", type:"Open-wheel, built by each team", c:"#E10600", fg:"#FFFFFF", pace:"Fastest",
+       text:"Each team designs and builds its own car within the FIA's technical rules, and the teams use power units from a handful of manufacturers. The cars are the fastest circuit racing cars in the world, with very high cornering speeds from their wings and tires.",
+       spot:"Open wheels, a single seat with the driver's helmet visible, and large front and rear wings. Team colors and the driver numbers are how you tell them apart."}
+    ],
+    rule:"There are no classes to sort out: all 22 cars race for the same result. Follow your driver or team, and note that the teams' two cars score points for both the driver standings and the constructors' championship.",
+    watch:{
+      practice:"Teams learn the track and try tires and settings. On a normal weekend there are three practice sessions; on a sprint weekend there is only one. Lap times matter less than what the teams are testing.",
+      qualifying:"A knockout in three parts that cuts the slowest cars after each, ending with the fastest ten fighting for pole position. It sets the grid for the race, and passing is hard at many circuits, so it matters.",
+      race:"About 300 km on a normal weekend. Tire choice and pit stops usually decide the order, and a safety car can reshuffle everything. The winner gets 25 points."
+    },
+    specials:[
+      {match:/Sprint/i, title:"Sprint weekend", text:"A short race of about 100 km on Saturday with points for the top eight. A sprint weekend has a compressed schedule, with one practice session and a separate sprint qualifying, and the usual qualifying and Grand Prix still follow."}
+    ],
+    fine:"A spectator summary based on Formula 1's published rules. For official details, see formula1.com."
+  }
 ];
 
 /* Official live-timing pages for series that have event listings but no SERIES guide yet (F1, NASCAR). Matched

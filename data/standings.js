@@ -183,5 +183,47 @@ const STANDINGS = [
         { pos:6, who:"Marc Austin, Jay Logan", pts:18 }
       ] }
     ],
-    note:"Driver standings by class, top 6 positions of each table; drivers who share a position share the same points (listed together). A team is named only where the series' team table or a race report confirms it. Source: gt-world-challenge-america.com standings (Drivers and Teams 2026, Pro / Pro-Am / Am), read Oct 16, 2026." }
+    note:"Driver standings by class, top 6 positions of each table; drivers who share a position share the same points (listed together). A team is named only where the series' team table or a race report confirms it. Source: gt-world-challenge-america.com standings (Drivers and Teams 2026, Pro / Pro-Am / Am), read Oct 16, 2026." },
+  { s:"f1", asOf:"Current after the Singapore Grand Prix (Oct 11, 2026): 17 races are done and six remain, starting at Austin on Oct 25.",
+    classes:[
+      { h:"Drivers", rows:[
+        { pos:1, who:"Kimi Antonelli (Mercedes)", pts:340 },
+        { pos:2, who:"George Russell (Mercedes)", pts:238 },
+        { pos:3, who:"Lewis Hamilton (Ferrari)", pts:229 },
+        { pos:4, who:"Max Verstappen (Red Bull Racing)", pts:221 },
+        { pos:5, who:"Charles Leclerc (Ferrari)", pts:215 },
+        { pos:6, who:"Lando Norris (McLaren)", pts:201 },
+        { pos:7, who:"Oscar Piastri (McLaren)", pts:138 },
+        { pos:8, who:"Isack Hadjar (Red Bull Racing)", pts:97 },
+        { pos:9, who:"Liam Lawson (Racing Bulls)", pts:75 },
+        { pos:10, who:"Pierre Gasly (Alpine)", pts:41 },
+        { pos:11, who:"Arvid Lindblad (Racing Bulls)", pts:38 },
+        { pos:12, who:"Franco Colapinto (Alpine)", pts:27 },
+        { pos:13, who:"Oliver Bearman (Haas)", pts:23 },
+        { pos:14, who:"Nico Hülkenberg (Audi)", pts:13 },
+        { pos:15, who:"Gabriel Bortoleto (Audi)", pts:10 },
+        { pos:16, who:"Esteban Ocon (Haas)", pts:7 },
+        { pos:16, who:"Fernando Alonso (Aston Martin)", pts:7 },
+        { pos:16, who:"Carlos Sainz (Williams)", pts:7 },
+        { pos:19, who:"Alexander Albon (Williams)", pts:5 },
+        { pos:20, who:"Yuki Tsunoda (Racing Bulls)", pts:1 },
+        { pos:21, who:"Lance Stroll (Aston Martin)", pts:0 },
+        { pos:21, who:"Valtteri Bottas (Cadillac)", pts:0 },
+        { pos:21, who:"Sergio Pérez (Cadillac)", pts:0 }
+      ] },
+      { h:"Constructors", rows:[
+        { pos:1, who:"Mercedes", pts:578 },
+        { pos:2, who:"Ferrari", pts:444 },
+        { pos:3, who:"McLaren", pts:339 },
+        { pos:4, who:"Red Bull Racing", pts:332 },
+        { pos:5, who:"Racing Bulls", pts:100 },
+        { pos:6, who:"Alpine", pts:68 },
+        { pos:7, who:"Haas", pts:30 },
+        { pos:8, who:"Audi", pts:23 },
+        { pos:9, who:"Williams", pts:12 },
+        { pos:10, who:"Aston Martin", pts:7 },
+        { pos:11, who:"Cadillac", pts:0 }
+      ] }
+    ],
+    note:"Source: formula1.com official 2026 drivers' and teams' standings, read Oct 16, 2026. Drivers on the same points share a position; the order within a tie follows the official table." }
 ];

@@ -11,6 +11,7 @@ if [ -z "$SKIP_VALIDATE" ] && command -v node >/dev/null 2>&1; then
 fi
 rm -rf dist && mkdir dist
 cp -R index.html sw.js manifest.webmanifest css js data icons dist/
+[ -d downloads ] && cp -R downloads dist/   # the sideloadable Android app (see CLAUDE.md, Android wrapper)
 V="${COMMIT_REF:-$(git rev-parse HEAD 2>/dev/null)}"; V="${V:0:8}"; [ -z "$V" ] && V="$(date +%y%m%d%H%M)"
 sed -i.bak "s/^const VERSION = \"[^\"]*\"/const VERSION = \"$V\"/" dist/sw.js && rm -f dist/sw.js.bak
 grep -q "^const VERSION = \"$V\"" dist/sw.js || { echo "could not set the service worker version" >&2; exit 1; }

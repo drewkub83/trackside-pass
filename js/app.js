@@ -1198,12 +1198,15 @@ function hubResultsCard(c){
   if(waitingRes) refreshResults();
   return resultsHtml;
 }
+const STREAM_TAIL_MIN=20;
 function hubLiveStream(c){
-  const {live,liveAll}=c;
+  const {ss,now}=c;
   /* "watch live": only for a RACE of a series confirmed to stream its own races free on YouTube (data/series.js `yt`).
      The player lives in its own element above this card list (#hubLive) because the list below is rebuilt every
-     30 s and rebuilding an iframe would restart the stream. See updateHubLive(). */
-  const liveRace=liveAll.find(x=>kindOf(x.n)==="race"&&(seriesFor(x.n)||{}).yt);
+     30 s and rebuilding an iframe would restart the stream. See updateHubLive().
+     Unlike the session cards (which drop a session 10 minutes before its end) the stream stays up through the whole race, the
+     last minutes are the ones that matter, and for STREAM_TAIL_MIN after the scheduled end, since races run over and the podium follows. */
+  const liveRace=ss.find(x=>x.start<=now&&now<(+x.end)+STREAM_TAIL_MIN*60000&&kindOf(x.n)==="race"&&(seriesFor(x.n)||{}).yt);
   updateHubLive(liveRace?seriesFor(liveRace.n):null);
   const liveStreamHtml="";
   return liveStreamHtml;

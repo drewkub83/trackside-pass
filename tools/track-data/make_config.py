@@ -112,6 +112,12 @@ SPECS=[
   blurb="Yas Marina Circuit on Yas Island, Abu Dhabi: 5.281 km and 16 turns, with the pit lane exit running through a tunnel under the track. It hosts the season-ending Abu Dhabi Grand Prix on Dec 4-6, 2026, with the race starting at 17:00 local time and finishing under floodlights.",
   sig=None,
   events=[dict(d="2026-12-04",e="Abu Dhabi Grand Prix",s="Formula 1",t=3),dict(d="2027-12-10",e="Abu Dhabi Grand Prix",s="Formula 1",t=3)]),
+ dict(id="las-vegas", name="Las Vegas Strip Circuit", short="Las Vegas", place="Las Vegas, Nevada", tz="America/Los_Angeles", center=[36.1147,-115.1700],
+  circuit=[9000001], pit=[1223479152], official="6.201 km", length="6.201 km (3.853 mi)", opened=2023, nturns=17, lap=None,
+  rename={"Las Vegas Strip Circuit (bacinger/f1-circuits outline)":None},
+  blurb="The Las Vegas Strip Circuit: 6.201 km and 17 turns on public roads, down Las Vegas Boulevard past the Bellagio, Caesars Palace and the Sphere. A night race for the Las Vegas Grand Prix on Nov 19-21, 2026, with the race starting at 20:00 local time on Saturday.",
+  sig=None,
+  events=[dict(d="2026-11-19",e="Las Vegas Grand Prix",s="Formula 1",t=3),dict(d="2027-11-18",e="Las Vegas Grand Prix",s="Formula 1",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

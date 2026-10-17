@@ -3,7 +3,7 @@
  "sources": {
   "indycar": "ok",
   "gtwca": "ok",
-  "gtwce": "ok"
+  "gtwce": "unreachable: <urlopen error timed out>"
  },
  "firstSeen": "2026-10-17"
 }

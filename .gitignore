@@ -25,3 +25,7 @@ tools/track-data/elev-out/
 tools/track-data/__pycache__/
 tools/.gtwce_cache/
 tools/.indycar_cache/
+
+# Android Studio per-machine files
+android/.idea/
+android/gradle/gradle-daemon-jvm.properties

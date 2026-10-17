@@ -86,7 +86,7 @@ const STANDINGS = [
       ] }
     ],
     note:"Pro and Masters positions below the top of each class are named from recent race reports, not an official points table -- their order isn't confirmed, and no points figures are shown for them since none were published. Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America, Sportscar365 and GT REPORT race reports from Indianapolis and both Road Atlanta races (Oct 1-2, 2026, via web search; direct site fetches were blocked in this environment). Alan Metni (Kellymoss) won the Pro-Am race at Road Atlanta Race 1, his second win of the season, but Mulcahy's title was already clinched." },
-  { s:"gtwce", asOf:"Current after round 9 of 10 in the 2026 season (Barcelona). Next: Portimao; no points from it are included yet.",
+  { s:"gtwce", asOf:"Current after the final round of the 2026 season (Portimao): the season is complete.",
     classes:[
       { h:"Drivers", rows:[
         { pos:1, who:"Lucas Auer / Maro Engel", pts:131.5 },
@@ -102,10 +102,10 @@ const STANDINGS = [
         { pos:11, who:"Thierry Vermeulen / Ben Green", pts:56.5 },
         { pos:12, who:"Jules Gounon", pts:53.5 },
         { pos:13, who:"Thomas Fleming / Louis Prette", pts:51.5 },
-        { pos:14, who:"Dorian Boccolacci", pts:49.5 },
+        { pos:14, who:"Dorian Boccolacci", pts:50.5 },
         { pos:15, who:"Chris Lulham", pts:47.5 },
         { pos:16, who:"Max Hesse / Valentino Rossi", pts:46.5 },
-        { pos:17, who:"Morris Schuring", pts:44 },
+        { pos:17, who:"Morris Schuring", pts:45 },
         { pos:18, who:"Dean Macdonald", pts:39.5 },
         { pos:19, who:"Ariel Levi", pts:34.5 },
         { pos:20, who:"Benjamin Goethe", pts:32 }
@@ -120,7 +120,7 @@ const STANDINGS = [
         { pos:7, who:"Comtoyou Racing", pts:81 },
         { pos:8, who:"Emil Frey Racing", pts:71 },
         { pos:9, who:"Tresor Attempto Racing", pts:67.5 },
-        { pos:10, who:"Boutsen VDS", pts:66.5 },
+        { pos:10, who:"Boutsen VDS", pts:67.5 },
         { pos:11, who:"Rutronik Racing", pts:34 },
         { pos:12, who:"Rowe Racing", pts:33 },
         { pos:13, who:"CSA Racing", pts:30.5 },
@@ -133,7 +133,7 @@ const STANDINGS = [
         { pos:20, who:"VSR", pts:10.5 }
       ] }
     ],
-    note:"Overall GT World Challenge Europe Powered by AWS standings (Endurance and Sprint Cup combined), top 20 positions of each table. Drivers sharing a position are listed together (they share the same points). The series' own page says: Standings remain provisional following appeal #63 Grasser Racing Team Lamborghini against Decision 06 at Zandvoort. Source: gt-world-challenge-europe.com/standings (Teams and Drivers 2026), read 2026-10-15."
+    note:"Overall GT World Challenge Europe Powered by AWS standings (Endurance and Sprint Cup combined), top 20 positions of each table. Drivers sharing a position are listed together (they share the same points). The series' own page says: Standings remain provisional following appeal #63 Grasser Racing Team Lamborghini against Decision 06 at Zandvoort. Source: gt-world-challenge-europe.com/standings (Teams and Drivers 2026), read 2026-10-17."
   },
   { s:"indycar", asOf:"Final 2026 standings after the Mission Foods Grand Prix of Monterey at Laguna Seca (Sep 6); the season is complete.",
     classes:[

@@ -11,6 +11,38 @@
      - the older winner/gap/podium shape (a single winner line plus an optional couple of names below it),
        kept for entries where only the winner was confirmed. */
 const RESULTS = [
+  { t:"portimao", d:"2026-10-15", s:"gtwce", event:"GT World Challenge Europe: Portimão (Endurance Cup finale)",
+    groups:[
+      { h:"Pro", order:[
+        "1. #17 Mercedes-AMG Team GetSpeed Mercedes-AMG GT3 EVO — Ralf Aron, Maximilian Götz, Fabian Schiller",
+        "2. #80 Lionspeed GP Porsche 911 GT3 R EVO — Ricardo Feller, Thomas Preining, Bastian Buus",
+        "3. #2 Boutsen VDS Porsche 911 GT3 R EVO — Morris Schuring, Dorian Boccolacci, Alessio Picariello",
+        "4. #59 Garage 59 McLaren 720S GT3 EVO — Joseph Loake, Dean Macdonald, Jack Hawksworth",
+        "5. #3 Mercedes-AMG Team Verstappen Racing Mercedes-AMG GT3 EVO — Ben Barnicoat, Chris Lulham, Max Verstappen"
+      ] },
+      { h:"Gold", order:[
+        "1. #71 Selected Car Racing Ferrari 296 GT3 EVO — Frederik Schandorff, Malte Ebdrup, Simon Birch",
+        "2. #998 Rowe Racing BMW M4 GT3 EVO — Ugo De Wilde, Tim Tramnitz, Jens Klingmann",
+        "3. #60 JMW Motorsport Ferrari 296 GT3 EVO — Casper Stevenson, Giacomo Altoe, Konsta Lappalainen",
+        "4. #58 Garage 59 McLaren 720S GT3 EVO — Thomas Fleming, Louis Prette, Benjamin Goethe",
+        "5. #4 Optimum Motorsport McLaren 720S GT3 EVO — Freddie Tomlinson, Harry George, Adam Smalley"
+      ] },
+      { h:"Silver", order:[
+        "1. #30 Team WRT BMW M4 GT3 EVO — Amaury Cordeel, Matisse Lismont, Ignacio Montenegro",
+        "2. #6 GetSpeed Team Bartone Bros Mercedes-AMG GT3 EVO — Anthony Bartone, Aurelien Panis, Cesar Gazeau",
+        "3. #66 Tresor Attempto Racing Audi R8 LMS GT3 EVO II — Sebastian Øgaard, Rocco Mazzola, Ariel Levi",
+        "4. #5 Optimum Motorsport McLaren 720S GT3 EVO — Dante Rappange, Guilherme Oliveira, Mikey Porter",
+        "5. #65 HRT Ford Racing Ford Mustang GT3 EVO — Maxime Oosten, Nicolas Baert, Eduardo Coseteng"
+      ] },
+      { h:"Bronze", order:[
+        "1. #222 2Seas Motorsport Mercedes-AMG GT3 EVO — Kiern Jewiss, Charles Dawson, Reece Barr",
+        "2. #87 Winward Racing Mercedes-AMG GT3 EVO — Gabriele Piana, Rinat Salikhov, Marvin Dienst",
+        "3. #42 Oman Racing by Century Motorsport BMW M4 GT3 EVO — Javier Sagrera, Ahmad Al Harthy, Calan Williams",
+        "4. #991 Paradine Competition BMW M4 GT3 EVO — James Kellett, Darren Leung, Robert De Haan",
+        "5. #74 Kessel Racing Ferrari 296 GT3 EVO — Dustin Blattner, Lorenzo Patrese, Dennis Marschall"
+      ] }
+    ],
+    note:"Source: the series' official Main Race classification, https://www.gt-world-challenge-europe.com/results/2026/portimao/main-race (top five per class)." },
   { t:"indianapolis", d:"2026-09-18", s:"weathertech", event:"TireRack.com Battle on the Bricks",
     groups:[
       { h:"GTP", winner:"#24 BMW M Team WRT BMW M Hybrid V8 — Sheldon van der Linde, Dries Vanthoor",

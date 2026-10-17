@@ -10,30 +10,41 @@
    Cached 60 s so many phones cost YouTube one request. */
 const json = (o, status, head) => new Response(JSON.stringify(o), { status, headers: head });
 
+/* Channels like GT World run the same race in several commentary languages at once, each its own live video,
+   with the language in the title, e.g. "LIVE | Race | Portimão | … (Nederlands)". Prefer English: a title that says
+   English, else one with no other language tag; another language only if nothing else is live. */
+const OTHER_LANG = /\b(nederlands|dutch|deutsch|german|fran[cç]ais|french|italiano|italian|espa[nñ]ol|spanish|portugu[eê]s|portuguese|polski|t[uü]rk[cç]e|magyar|[cč]e[sš]tina|dansk|svenska|norsk|suomi|русский|中文|日本語|한국어|العربية)\b/i;
+const rank = (t) => (/\benglish\b|\(en\)/i.test(t) ? 0 : OTHER_LANG.test(t) ? 2 : 1);
+
 async function viaApi(ch, key) {
   const api = "https://www.googleapis.com/youtube/v3/";
-  const pick = async (ids, how) => {
-    if (!ids.length) return null;
+  let err = null;
+  const liveOf = async (ids) => {
+    if (!ids.length) return [];
     const v = await fetch(`${api}videos?part=snippet,status,liveStreamingDetails&id=${ids.slice(0, 50).join(",")}&key=${key}`);
-    if (!v.ok) return { id: null, live: false, embeddable: false, why: `youtube api answered ${v.status}` };
-    const live = ((await v.json()).items || []).filter((x) => x.snippet && x.snippet.liveBroadcastContent === "live")
-      .sort((a, b) => String((b.liveStreamingDetails || {}).actualStartTime).localeCompare(String((a.liveStreamingDetails || {}).actualStartTime)));
-    if (!live.length) return null;
-    const x = live[0], embeddable = !(x.status && x.status.embeddable === false);
-    return { id: x.id, live: true, embeddable, title: x.snippet.title, found: how, why: embeddable ? "ok" : "channel blocks embedding" };
+    if (!v.ok) { err = `youtube api answered ${v.status}`; return []; }
+    return ((await v.json()).items || []).filter((x) => x.snippet && x.snippet.liveBroadcastContent === "live");
   };
   /* 1) the channel's uploads playlist, 50 newest (2 quota units). A race stream is often scheduled days ahead, so it
         sits below newer clips; 10 was not enough for a busy channel like GT World. */
   const pl = await fetch(`${api}playlistItems?part=contentDetails&maxResults=50&playlistId=UU${ch.slice(2)}&key=${key}`);
   if (!pl.ok) return { id: null, live: false, embeddable: false, why: `youtube api answered ${pl.status}` };
   const ids = ((await pl.json()).items || []).map((i) => i.contentDetails && i.contentDetails.videoId).filter(Boolean);
-  const a = await pick(ids, "uploads");
-  if (a) return a;
-  /* 2) YouTube's own "live now on this channel" search (100 units of the 10,000 a day; only reached when 1 found nothing) */
-  const sr = await fetch(`${api}search?part=id&channelId=${ch}&eventType=live&type=video&maxResults=5&key=${key}`);
-  if (!sr.ok) return { id: null, live: false, embeddable: false, why: `youtube api search answered ${sr.status}` };
-  const sids = ((await sr.json()).items || []).map((i) => i.id && i.id.videoId).filter(Boolean);
-  return (await pick(sids, "search")) || { id: null, live: false, embeddable: false, why: "nothing live on the channel" };
+  let live = await liveOf(ids), found = "uploads";
+  /* 2) nothing live there, or only other-language feeds: YouTube's "live now on this channel" search
+        (100 units of the 10,000 a day, so only when needed) */
+  if (!live.some((x) => rank(x.snippet.title) < 2)) {
+    const sr = await fetch(`${api}search?part=id&channelId=${ch}&eventType=live&type=video&maxResults=10&key=${key}`);
+    if (sr.ok) {
+      const sids = ((await sr.json()).items || []).map((i) => i.id && i.id.videoId).filter((id) => id && !live.some((x) => x.id === id));
+      const more = await liveOf(sids);
+      if (more.length) { live = live.concat(more); found = live.length > more.length ? "uploads+search" : "search"; }
+    } else if (!live.length) err = `youtube api search answered ${sr.status}`;
+  }
+  if (!live.length) return { id: null, live: false, embeddable: false, why: err || "nothing live on the channel" };
+  live.sort((a, b) => rank(a.snippet.title) - rank(b.snippet.title) || String((b.liveStreamingDetails || {}).actualStartTime).localeCompare(String((a.liveStreamingDetails || {}).actualStartTime)));
+  const x = live[0], embeddable = !(x.status && x.status.embeddable === false);
+  return { id: x.id, live: true, embeddable, title: x.snippet.title, found, others: live.length - 1, why: embeddable ? "ok" : "channel blocks embedding" };
 }
 
 async function viaPage(ch) {
@@ -53,7 +64,7 @@ async function viaPage(ch) {
 
 export default async (req) => {
   const ch = new URL(req.url).searchParams.get("ch") || "";
-  const head = { "content-type": "application/json", "access-control-allow-origin": "*", "netlify-cdn-cache-control": "public, max-age=60, stale-while-revalidate=60", "cache-control": "public, max-age=30" };
+  const head = { "content-type": "application/json; charset=utf-8", "access-control-allow-origin": "*", "netlify-cdn-cache-control": "public, max-age=60, stale-while-revalidate=60", "cache-control": "public, max-age=30" };
   if (!/^UC[\w-]{22}$/.test(ch)) return json({ error: "bad channel id" }, 400, head);
   const key = (globalThis.Netlify && Netlify.env && Netlify.env.get("YT_API_KEY")) || process.env.YT_API_KEY || "";
   try {

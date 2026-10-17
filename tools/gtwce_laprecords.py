@@ -44,13 +44,13 @@ def collect(tracks, first=2014):
                     if v and 55 < v < 400:
                         best[t].append((v, r["Time"], y, rnd, s, r.get("Car #", ""), r.get("Team", ""), r.get("Car", ""), r.get("Drivers", ""), r.get("Class", "")))
     return best
-LAYOUT = {"zandvoort": 2020, "nurburgring": 2017, "paul-ricard": 2019}   # first year of the layout the map draws; Barcelona is skipped (the map shows the chicane layout, the series has raced without it since 2023)
+LAYOUT = {"zandvoort": 2020, "nurburgring": 2017, "paul-ricard": 2019, "barcelona-catalunya": 2023}   # first year of the layout the map draws (Barcelona: no final chicane, since 2023)
 def weekend(rnd, track, year, dry=False):
     """Lowers the venue's GT World Challenge Europe lapRecord row if a session of this weekend beat it (used by tools/auto_update.py during a race weekend).
     Driver credit: qualifying N is driven by the N-th listed driver when the crew list is complete (checked against series reports); otherwise the crew."""
     import dataio as D
     year = int(year)
-    if track == "barcelona-catalunya" or year < LAYOUT.get(track, 0): return
+    if year < LAYOUT.get(track, 0): return
     best = None
     for s in sessions(year, rnd):
         for r in g.table(cached_fresh(f"{g.HOST}/results/{year}/{g.q(rnd)}/{s}")):

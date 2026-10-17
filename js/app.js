@@ -879,8 +879,8 @@ function updateHubLive(sr){
 }
 function hubLiveHtml(){
   const head=`<div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Live now: ${esc(hubLive.name)} race</h4></div>`;
-  if(hubLive.playing) return head+`<div class="liveWrap"><iframe src="https://www.youtube-nocookie.com/embed/live_stream?channel=${hubLive.ch}&autoplay=1&playsinline=1" title="${esc(hubLive.name)} live" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button>`;
-  return head+`<div class="hubSessionSub" style="margin:4px 0 10px">Free on the series' YouTube channel.</div><button class="btn primary hubLivePlay" onclick="playHubLive()">Watch here</button>`;
+  if(hubLive.playing) return head+`<div class="liveWrap"><iframe src="https://www.youtube-nocookie.com/embed/live_stream?channel=${hubLive.ch}&autoplay=1&playsinline=1" title="${esc(hubLive.name)} live" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button> <a class="hubLiveOpen" href="https://www.youtube.com/channel/${hubLive.ch}/live" target="_blank" rel="noopener" style="margin-left:12px;font-size:13px">Not playing? Open in YouTube</a>`;
+  return head+`<div class="hubSessionSub" style="margin:4px 0 10px">Free on the series' YouTube channel.</div><button class="btn primary hubLivePlay" onclick="playHubLive()">Watch here</button> <a class="hubLiveOpen" href="https://www.youtube.com/channel/${hubLive.ch}/live" target="_blank" rel="noopener" style="margin-left:12px;font-size:13px">Open in YouTube</a>`;
 }
 function playHubLive(){ hubLive.want=true; hubLive.playing=true; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }
 function stopHubLive(){ hubLive.want=false; hubLive.playing=false; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }

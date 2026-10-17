@@ -1,0 +1,9 @@
+{
+ "note": "Written by tools/auto_update.py when a source's state changes: whether the job's machine could read each series' own site.",
+ "sources": {
+  "indycar": "ok",
+  "gtwca": "ok",
+  "gtwce": "ok"
+ },
+ "firstSeen": "2026-10-17"
+}

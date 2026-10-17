@@ -8,6 +8,9 @@ right now, then reports what changed (the workflow validates, commits and pushes
   once qualifying is published:                           rebuild the win chances from the class grid (tools/podium_odds.py --quali)
   25 minutes after the race is scheduled to end:           add the classification to data/results.js (re-read on later runs, so a post-race
                                                            penalty is picked up), then refresh the standings
+  all weekend:                                             lower the venue's lap record if any session beat it (tools/gtwce_laprecords.py --weekend logic)
+  every run:                                               tools/indycar_update.py and tools/gtwca_update.py (IndyCar and GT World Challenge America: race result,
+                                                           standings, lap records, for races of the last 10 days at venues the app has an event for)
 Idempotent: running it again changes nothing. Options: --now 2026-10-17T20:00:00Z (pretend), --dry-run (say what would run).
 Needs node (reads the data files) and python 3.9+."""
 import sys, os, json, re, subprocess, datetime
@@ -70,7 +73,12 @@ for e in entries:
     if races: race = max(races, key=lambda s: s["d"] + s["e"]); r_start, r_end = when(race["d"], race["s"], tk["tz"]), when(race["d"], race["e"], tk["tz"])
     else:   # the app has no session times for this weekend yet: treat the last event day as race day
         print("  no race session in the app's schedule; assuming the last day of the event"); r_start, r_end = when(end.isoformat(), "00:00", tk["tz"]), when(end.isoformat(), "23:00", tk["tz"])
-    rnd = e["live"]["round"]; quali = bool(L.table(L.page(e["d"][:4], rnd, "qualifying-combined"))) if now >= r_start - datetime.timedelta(days=2) else False
+    rnd = e["live"]["round"]
+    if not DRY and now >= when(e["d"], "00:00", tk["tz"]):
+        try:
+            import gtwce_laprecords as LR; LR.weekend(rnd, e["t"], e["d"][:4])   # lap records: any session of the weekend that beats the stored one
+        except Exception as err: print("  lap records skipped:", err)
+    quali = bool(L.table(L.page(e["d"][:4], rnd, "qualifying-combined"))) if now >= r_start - datetime.timedelta(days=2) else False
     if now < r_start:
         if not e["oddsAsOf"].startswith("After qualifying") and quali: run("podium_odds.py", "--round", rnd, "--quali")
         else: run("gtwce_entries.py", "--round", rnd, *(["--quali"] if e["oddsAsOf"].startswith("After qualifying") else []))
@@ -78,6 +86,9 @@ for e in entries:
         name = (ev or {}).get("e", "GT World Challenge Europe")   # --refresh: keep re-reading for 2 days, post-race penalties can move the order
         if run("gtwce_result.py", rnd, e["t"], e["d"], name, "--refresh") == 0 and not DRY and L.read("data/results.js") != before["data/results.js"]: run("gtwce_standings.py")
     else: print(f"  race ends {r_end.isoformat()}; nothing to import yet")
+# IndyCar and GT World Challenge America have their own readers (results, standings, lap records); each only acts on races of the last 10 days at venues the app has an event for
+for script in ("indycar_update.py", "gtwca_update.py"): run(script)
+before_tracks = None
 changed = [f for f in before if before[f] != L.read(f)]
 if changed and not DRY: print("changed:", ", ".join(changed))   # the service worker VERSION is set by build.sh, no bump needed
 else: print("changed:", ", ".join(changed) or "nothing")

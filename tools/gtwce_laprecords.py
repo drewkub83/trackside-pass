@@ -44,6 +44,26 @@ def collect(tracks, first=2014):
                     if v and 55 < v < 400:
                         best[t].append((v, r["Time"], y, rnd, s, r.get("Car #", ""), r.get("Team", ""), r.get("Car", ""), r.get("Drivers", ""), r.get("Class", "")))
     return best
+LAYOUT = {"zandvoort": 2020, "nurburgring": 2017, "paul-ricard": 2019}   # first year of the layout the map draws; Barcelona is skipped (the map shows the chicane layout, the series has raced without it since 2023)
+def weekend(rnd, track, year, dry=False):
+    """Lowers the venue's GT World Challenge Europe lapRecord row if a session of this weekend beat it (used by tools/auto_update.py during a race weekend).
+    Driver credit: qualifying N is driven by the N-th listed driver when the crew list is complete (checked against series reports); otherwise the crew."""
+    import dataio as D
+    year = int(year)
+    if track == "barcelona-catalunya" or year < LAYOUT.get(track, 0): return
+    best = None
+    for s in sessions(year, rnd):
+        for r in g.table(cached_fresh(f"{g.HOST}/results/{year}/{g.q(rnd)}/{s}")):
+            v = secs(r.get("Time", "")) if r.get("Time") else None
+            if v and 55 < v < 400 and (best is None or v < best[0]): best = (v, s, r)
+    if not best: return
+    v, s, r = best; crew = [x.strip() for x in r.get("Drivers", "").split(",") if x.strip()]
+    m = re.fullmatch(r"qualifying-(\d)", s); n = int(m.group(1)) if m else 0
+    who = crew[n - 1] if n and n <= len(crew) and len(crew) >= 2 else " / ".join(crew)
+    D.set_record(track, "GT World Challenge Europe", D.fmt(v, 3), who, r.get("Car", ""), int(year),
+                 f'fastest lap of any session ({s.replace("-", " ")}, #{r.get("Car #", "")} {r.get("Team", "")}); driver credited by qualifying order, check against the series report', dec=3, dry=dry)
+def cached_fresh(url):   # a live weekend's pages change: never use the on-disk cache for them
+    return g.fetch(url)
 if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if not a.startswith("--")]; first = int(sys.argv[sys.argv.index("--from") + 1]) if "--from" in sys.argv else 2014
     top = int(sys.argv[sys.argv.index("--top") + 1]) if "--top" in sys.argv else 5

@@ -422,7 +422,7 @@ function renderMap(){ limits=null; document.getElementById("mapWrap").classList.
     <path id="trackPath" d="${t.path}" fill="none" stroke="var(--track)" stroke-width="${t.tw||7}" stroke-linejoin="round"/>
     ${t.sfArrow?`<g class="sfa" transform="translate(${t.sfArrow[0]},${t.sfArrow[1]}) rotate(${t.sfArrow[2]})"><g class="sc noturn"><path d="M-9,0 H6 M1,-5 L6,0 L1,5" fill="none" stroke="#16181B" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/><path d="M-9,0 H6 M1,-5 L6,0 L1,5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></g>`:""}
     <g class="sf" transform="translate(${t.sf[0]},${t.sf[1]}) rotate(${t.sfArrow?t.sfArrow[2]:0})"><rect x="-2.4" y="-5.5" width="4.8" height="11" fill="#fff"/><rect x="-2.4" y="-5.5" width="2.4" height="2.75" fill="#16181B"/><rect x="0" y="-2.75" width="2.4" height="2.75" fill="#16181B"/><rect x="-2.4" y="0" width="2.4" height="2.75" fill="#16181B"/><rect x="0" y="2.75" width="2.4" height="2.75" fill="#16181B"/></g>
-    ${(t.labels||[]).map(([x,y,l])=>`<g class="cl" transform="translate(${x},${y})"><g class="sc"><text text-anchor="middle" font-size="12" font-weight="600" fill="var(--ink)" stroke="var(--paper)" stroke-width="3" paint-order="stroke">${l}</text></g></g>`).join("")}
+    ${(t.labels||[]).map(([x,y,l,s])=>`<g class="cl${s==="lm"?" lm":""}" transform="translate(${x},${y})"><g class="sc"><text text-anchor="middle" font-size="12" font-weight="600" fill="var(--ink)" stroke="var(--paper)" stroke-width="3" paint-order="stroke">${l}</text></g></g>`).join("")}
     <g id="lotLayer" style="display:${parking?'':'none'}">${lotLayerSvg(t)}</g>
     <g id="routeLayer"></g>
     <g id="spotLayer"></g>

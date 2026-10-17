@@ -869,3 +869,6 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .rsRow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:16px;background:var(--tint-2);min-width:0}
 .rsPos{width:18px;font-weight:800;font-size:13px;flex:none;text-align:center}
 .rsTime{flex:none;text-align:right;font-size:13px;font-weight:600;color:var(--ink)}.rsTime small{display:block;font-size:11px;font-weight:400;color:var(--ink-2)}
+
+/* landmark names on the map (hotels, the Sphere...): a 4th item "lm" in a track's labels */
+.map-wrap svg .cl.lm text{font-size:11px;font-weight:500;font-style:italic;fill:var(--ink-2)}

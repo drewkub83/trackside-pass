@@ -32,6 +32,9 @@ const K={
   going:"paddock:going",         /* races you are going to */
   stars:"paddock:stars",         /* starred sessions */
   picks:"paddock:picks",         /* Pick your podium picks, with the win chance and timing bonus banked per pick (_p, _m) */
+  session:"paddock:session",       /* the signed-in session (js/account.js): tokens, never exported in backups */
+  unsynced:"paddock:unsynced",     /* picks changed on this phone that the server has not received yet */
+  acctHint:"paddock:acct",         /* the profile (name, invite code) kept for offline display */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
   followSub:"paddock:followSub",     /* support series you chose to follow */
   unfollow:"paddock:unfollow",      /* series you switched off */
@@ -1059,16 +1062,16 @@ function renderGame(){
   const tm0=gameTiming(g).m, probs=gameProbs(g,c.h)||{}, gridOn=!!(g.live&&liveRows(g,"qualifying-combined")&&c.cars.every(r=>typeof r[6]==="number")), hasP=c.cars.some(r=>typeof r[4]==="number"), cars=hasP?c.cars.slice().sort((a,b)=>(probs[b[0]]||0)-(probs[a[0]]||0)):c.cars;
   const note=hasP?`<div class="gmNote"><b>Win chances, favourites first.</b> ${esc(gridOn?"Rebuilt from the official class grid, live from the series' qualifying result: starting position now drives the chances.":(g.oddsAsOf||"Our own estimate."))} A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy. Longer shots score more, early picks score more, and each pick keeps the chance and bonus it had when you made it.</div>`:"";
   document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=probs[r[0]]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc([r[2],r[3]].filter(Boolean).join(" · "))}</small>${gridOn?(()=>{ const q=liveRows(g,"qualifying-combined").filter(x=>x.cls===c.h), i=q.findIndex(x=>x.num===r[0]); return `<small class="gmWhy">${i>=0?"Qualified "+(i+1)+" of "+q.length+" in class":"No qualifying time"}</small>`; })():(r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:"")}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)} · worth ${gameExact(p,tm0)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
-  document.getElementById("gmFoot").innerHTML=esc(g.asOf)+`<div><button class="btn quiet gmHow" onclick="openPoints()">How points work</button></div>`+gameRecordHtml();
+  document.getElementById("gmFoot").innerHTML=esc(g.asOf)+`<div class="gmLinks"><button class="btn quiet gmHow" onclick="openPoints()">How points work</button>${accountButtons(g)}</div>`+gameRecordHtml();
 }
 /* a win chance as a US money line, like a sportsbook would post it (fair line, no margin) */
 function gameLine(p){ const f=p/100, v=f>=.5?-100*f/(1-f):100*(1-f)/f, a=Math.abs(v), r=a<1000?Math.round(a/5)*5:Math.round(a/50)*50; return (v<0?"-":"+")+r; }
 function gamePick(n){
   const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), at=list.indexOf(n);
   if(at>=0){ list.splice(at,1); setPickP(g,gameCls,n,null); } else if(list.length<3){ list.push(n); setPickP(g,gameCls,n,carP(g,gameCls,n)); } else { toast("Remove a pick first (tap it in the slots above)"); return; }
-  savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub();
+  savePicks(g,gameCls,list); if(typeof acctAfterPick==="function") acctAfterPick(g,gameCls); renderGame(); if(hubMode) renderHub();
 }
-function gameDrop(i){ const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), gone=list.splice(i,1)[0]; setPickP(g,gameCls,gone,null); savePicks(g,gameCls,list); renderGame(); if(hubMode) renderHub(); }
+function gameDrop(i){ const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), gone=list.splice(i,1)[0]; setPickP(g,gameCls,gone,null); savePicks(g,gameCls,list); if(typeof acctAfterPick==="function") acctAfterPick(g,gameCls); renderGame(); if(hubMode) renderHub(); }
 /* your season: every weekend you played in a calendar year, all series together, with a running total (the Home screen card and the
    bottom of the picker sheet). Counts only weekends that have a result; picks on this phone only. */
 function gameSeason(year){
@@ -1090,6 +1093,12 @@ function playCardHtml(){
   if(!st.rows.length&&!open) return "";
   const line=st.rows.length?`<b>${st.pts}</b> points in ${st.rows.length} weekend${st.rows.length===1?"":"s"}${open?" · a new game is open":""}`:"A game is open: call the top three in each class";
   return `<button class="scard playCard" onclick="openPlay()"><div class="scTop"><b>Pick your podium · ${y}</b><span>${st.rows.length?"Season total":"Play"}</span></div><div class="scNext">${line}</div></button>`;
+}
+/* Leaderboard / Account buttons (js/account.js): only once the Supabase project is configured there */
+function accountButtons(g){
+  if(typeof sbOn!=="function"||!sbOn()) return "";
+  const started=g&&gameLock(g)&&gameLock(g).start<=new Date(), signed=typeof sbSession==="function"&&sbSession();
+  return `<button class="btn quiet gmHow" onclick="openBoard()">Leaderboard</button><button class="btn quiet gmHow" onclick="openAccount()">${signed?"Account and friends":"Sign in"}</button>${signed&&started?`<button class="btn quiet gmHow" onclick="openFriendPicks('${gameKey(g)}')">Friends' picks</button>`:""}`;
 }
 /* "How points work": every number here is computed with the same functions that score a pick, so the page can't drift from the game */
 function pointsHtml(){
@@ -1120,7 +1129,7 @@ function playOpenEntry(){ const today=localToday(); return (typeof ENTRIES!=="un
 function playNow(tid){ openTrack(tid,"home").then(()=>setTimeout(openGame,150)); }
 function openPlay(){
   const y=new Date().getFullYear(), rec=gameRecordHtml(), openG=playOpenEntry();
-  document.getElementById("infoBody").innerHTML=`<div class="mkick">Game</div><h3 id="infoTitle">Pick your podium · ${y}</h3><p class="plRules">Before each race, call the top three cars in each class from the official entry list. Picks lock at the green flag. Right car in the right place scores 5, a podium car in the wrong place 2, both multiplied for long shots (a pick keeps the win chance it had when you made it). Lock picks in before qualifying starts for 25% more; picks made after qualifying score 25% less. Every series counts toward one ${y} total, and it starts again each January. Scores stay on this phone.</p><button class="btn quiet gmHow" onclick="openPoints()">How points work</button>${openG?`<button class="btn primary plGo" onclick="closeInfo();playNow('${openG.t}')">Make my picks: ${esc((TRACKS.find(x=>x.id===openG.t)||{}).short||"")}</button>`:""}${rec||`<p class="plRules">No scored weekends yet this year.</p>`}`;
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Game</div><h3 id="infoTitle">Pick your podium · ${y}</h3><p class="plRules">Before each race, call the top three cars in each class from the official entry list. Picks lock at the green flag. Right car in the right place scores 5, a podium car in the wrong place 2, both multiplied for long shots (a pick keeps the win chance it had when you made it). Lock picks in before qualifying starts for 25% more; picks made after qualifying score 25% less. Every series counts toward one ${y} total, and it starts again each January. Scores stay on this phone.</p><div class="gmLinks"><button class="btn quiet gmHow" onclick="openPoints()">How points work</button>${accountButtons()}</div>${openG?`<button class="btn primary plGo" onclick="closeInfo();playNow('${openG.t}')">Make my picks: ${esc((TRACKS.find(x=>x.id===openG.t)||{}).short||"")}</button>`:""}${rec||`<p class="plRules">No scored weekends yet this year.</p>`}`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
 

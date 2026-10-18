@@ -178,7 +178,7 @@ async function acctDelete() {
 let lb = { scope: "friends", series: "", game: "", rows: null, err: "" };
 function boardGames() { return (typeof ENTRIES === "undefined" ? [] : ENTRIES).filter(g => typeof gameResult === "function" && gameResult(g) && g.d.slice(0, 4) === String(new Date().getFullYear())).sort((a, b) => b.d.localeCompare(a.d)); }
 async function openBoard() {
-  if (!sbOn()) return; await acctLoad();
+  if (!sbOn()) return; acctOpenModal(acctWrap(`<h3 id="infoTitle">Leaderboard</h3><p class="plRules">Loading…</p>`)); await acctLoad();
   if (!sbSession() || !acct.profile) { acctOpenModal(acctWrap(`<h3 id="infoTitle">Leaderboard</h3><p class="plRules">Sign in and choose a name to join the leaderboards.</p>${acctBtn("Sign in", "openAccount()")}`)); return; }
   lb.rows = null; lb.err = ""; boardRender(); boardLoad();
 }
@@ -187,7 +187,9 @@ async function boardLoad() {
   catch (e) { lb.rows = null; lb.err = e.status ? e.message : "Offline: the leaderboard needs a signal."; }
   boardRender();
 }
+function acctShow() { const m = document.getElementById("infoModal"); if (m.hidden) { m.hidden = false; document.body.style.overflow = "hidden"; m.querySelector(".mcard").scrollTop = 0; } }
 function boardRender() {
+  acctShow();
   const seg = (items, cur, on) => `<div class="gmTabs lbTabs">${items.map(([v, l]) => `<button class="gmTab${v === cur ? " on" : ""}" onclick="${on}('${v}')">${sbEsc(l)}</button>`).join("")}</div>`;
   const ser = [...new Set((typeof ENTRIES === "undefined" ? [] : ENTRIES).map(g => g.s))].map(s => [s, typeof watchSeriesName === "function" ? watchSeriesName({ s }) : s]);
   const gm = boardGames();

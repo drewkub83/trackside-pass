@@ -2,7 +2,7 @@
 # tools/auto_update.py, which only acts inside a race weekend's window: refreshes the entry list, rebuilds the podium-game
 # win chances once qualifying is published, imports the race classification and refreshes standings after the race. It also runs
 # tools/indycar_update.py and tools/gtwca_update.py (IndyCar and GT World Challenge America results, standings and lap records).
-# Anything it changes is committed to main, and Netlify deploys main. See the header of tools/auto_update.py.
+# Anything it changes is committed to main, and Cloudflare deploys main. See the header of tools/auto_update.py.
 name: Race weekend data
 on:
   schedule:
@@ -34,3 +34,8 @@ jobs:
           git commit -m "Race weekend data: automatic update [deploy]"
           git pull --rebase origin main
           git push origin main
+      - name: Publish the games to Supabase (picks lock, banking and scoring happen there)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/sync_games.mjs

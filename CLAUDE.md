@@ -68,6 +68,9 @@ Repeatable tools (read each series' own results, fastest lap over every session,
 Venues of a series that have no map yet go in that series' `stops` in `data/champs.js` as "Map coming soon" (with real dates);
 a stop disappears by itself once a track with the same id exists.
 
+## Accounts, friends and leaderboards (Supabase, Oct 2026)
+Optional, local-first. The project is `https://hspehgxhksctfegcfgyv.supabase.co` (public URL; the publishable key goes in `SB` at the top of `js/account.js`; the service-role key lives ONLY in GitHub secrets, never here or in chat). `supabase/schema.sql` is the whole database (tables, row-level security, `save_picks()`, `leaderboard()` ...); re-run it in the Supabase SQL editor after changing it (it is idempotent). Picks are written only through `save_picks()`, which locks at the race start and banks the server's win chance and timing bonus; scoring in SQL equals `gameScore()` in `js/app.js` (parity-tested on 4,000 random cases: if you change the scoring in one, change the other). `tools/sync_games.mjs` publishes `data/entries.js`, `data/results.js` and each track's session times to the `games` table (workflow `sync-games.yml`, also run by `race-weekend.yml`; secrets `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`). Never delete a game row: it cascades to everybody's picks. Sign-in emails go through Resend (domain tracksidepass.com) with the Magic Link and Confirm signup templates containing `{{ .Token }}`. `privacy.html` is the draft policy and terms (contact privacy@tracksidepass.com needs Cloudflare Email Routing).
+
 ## Race Day hub is the landing page
 Opening any track lands on the Hub tab (`enterHub()` in `openTrackNow`); Map is the second tab, then Events and Info. The back arrow and swipe-back step Map/Events/Info -> Hub -> track list (`goHome`). Off-season the hub's top card shows the next event and its date.
 

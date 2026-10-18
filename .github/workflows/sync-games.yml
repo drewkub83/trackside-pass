@@ -1,0 +1,30 @@
+# Publishes the Pick-your-podium games (entry lists, win chances, race and qualifying times, official results) to Supabase with
+# tools/sync_games.mjs, so the server can lock picks at the start of the race, bank the win chance and score from the result.
+# Runs when a person pushes data changes, every 6 hours (which also keeps a free Supabase project from pausing for inactivity),
+# and on demand (Actions tab > Run workflow). The race-weekend job runs the same step after its own commits, because pushes made
+# with the built-in token do not start other workflows. Needs the repository secrets SUPABASE_URL and SUPABASE_SERVICE_KEY.
+name: Sync games to Supabase
+on:
+  push:
+    branches: [main]
+    paths: ["data/**", "tools/sync_games.mjs"]
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch: {}
+concurrency:
+  group: sync-games
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Sync
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node tools/sync_games.mjs

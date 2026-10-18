@@ -50,7 +50,14 @@ const text = (n: any) => n.type === "friend_request" ? ["Friend request", `${n.d
 
 Deno.serve(async (req) => {
   if (!Deno.env.get("PUSH_SECRET") || req.headers.get("x-push-secret") !== Deno.env.get("PUSH_SECRET")) return new Response("no", { status: 401 });
-  const { id } = await req.json().catch(() => ({}));
+  const body = await req.json().catch(() => ({}));
+  if (body.ping) {   // a configuration check (needs the secret): which secrets exist and whether the keys can be read; sends nothing
+    const have = (k: string) => !!Deno.env.get(k), res: Record<string, unknown> = { PUSH_SECRET: true, APNS_KEY: have("APNS_KEY"), APNS_KEY_ID: have("APNS_KEY_ID"), APNS_TEAM_ID: have("APNS_TEAM_ID"), APNS_TOPIC: have("APNS_TOPIC"), FCM_SERVICE_ACCOUNT: have("FCM_SERVICE_ACCOUNT") };
+    try { await apnsToken(); res.apnsKeyReadable = true; } catch (e) { res.apnsKeyReadable = String(e).slice(0, 120); }
+    try { if (have("FCM_SERVICE_ACCOUNT")) { await fcmToken(JSON.parse(Deno.env.get("FCM_SERVICE_ACCOUNT")!)); res.fcmLogin = true; } } catch (e) { res.fcmLogin = String(e).slice(0, 160); }
+    return new Response(JSON.stringify(res), { headers: { "Content-Type": "application/json" } });
+  }
+  const { id } = body;
   if (!Number.isInteger(id)) return new Response("bad request", { status: 400 });
   const n = (await (await rest(`notifications?id=eq.${id}&select=id,user_id,type,data`)).json())[0];
   if (!n) return new Response("gone", { status: 404 });

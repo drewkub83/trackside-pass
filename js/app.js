@@ -868,6 +868,10 @@ function exitHub(){ hubLive.want=false; if(hubLive.playing) stopHubLive(); hubMo
 /* Inline live stream in the Race Day hub. State survives the hub's 30 s re-render: the iframe is only touched when
    the channel changes. Starting it needs a tap (no data used on a weak signal); once started it follows the series
    from one race to the next until you stop it or leave the hub. */
+/* Server functions (netlify/functions/*.mjs, wrapped for Cloudflare Pages in functions/api/*.js): Netlify serves them under /.netlify/functions/, Cloudflare
+   Pages under /api/. SITE is where the app is hosted; a local test or a file:// page borrows the functions from there. */
+const SITE="https://deft-medovik-55a935.netlify.app";
+function fnUrl(n){ const h=location.hostname; if(/netlify\.app$/.test(h)) return `/.netlify/functions/${n}`; if(/^(localhost|127\.0\.0\.1)$/.test(h)||location.protocol==="file:") return `${SITE}/.netlify/functions/${n}`; return `/api/${n}`; }
 let hubLive={ch:null,name:"",want:false,playing:false,vid:null,embed:true,looking:false};
 /* YouTube no longer reliably plays embed/live_stream?channel=…, so ask our function (netlify/functions/ytlive.mjs)
    for the video that is live right now and embed that. Some channels forbid playback outside YouTube (the embed
@@ -875,7 +879,7 @@ let hubLive={ch:null,name:"",want:false,playing:false,vid:null,embed:true,lookin
    which in the iPhone app opens in the in-app browser sheet. */
 async function resolveHubLive(){
   const ch=hubLive.ch; if(!ch||hubLive.looking) return; hubLive.looking=true; hubLive.vid=null;
-  try{ const r=await fetch((/netlify\.app$/.test(location.hostname)?"":"https://deft-medovik-55a935.netlify.app")+"/.netlify/functions/ytlive?ch="+encodeURIComponent(ch)); const j=r.ok?await r.json():{}; if(hubLive.ch===ch){ hubLive.vid=j.id||""; hubLive.embed=j.embeddable!==false; } }
+  try{ const r=await fetch(fnUrl("ytlive")+"?ch="+encodeURIComponent(ch)); const j=r.ok?await r.json():{}; if(hubLive.ch===ch){ hubLive.vid=j.id||""; hubLive.embed=j.embeddable!==false; } }
   catch(e){ if(hubLive.ch===ch) hubLive.vid=""; }
   hubLive.looking=false;
   const box=document.getElementById("hubLive"); if(box&&hubLive.playing&&hubLive.ch===ch) box.innerHTML=hubLiveHtml();
@@ -922,7 +926,6 @@ async function refreshResults(){
    (netlify/functions/gtwce.mjs) reads them and the hub shows the latest session within about a minute: practice,
    the qualifying class grid, the running order during the race and the final classification. An entry in data/entries.js
    switches it on with live:{round:"<the series' round slug>"}. Nothing is stored; if the function is unreachable the card just does not show. */
-const LIVE_API=/netlify\.app$/.test(location.hostname)?"/.netlify/functions/gtwce":"https://deft-medovik-55a935.netlify.app/.netlify/functions/gtwce";
 const liveCache={}; let liveTimer=null, liveSig="";
 function liveSrc(){
   const fo=focusAt(cur); if(!fo||typeof ENTRIES==="undefined") return null; const today=localToday();
@@ -932,7 +935,7 @@ const liveData=g=>{ const c=g&&g.live&&liveCache[g.live.round]; return c?c.data:
 const liveRows=(g,k)=>{ const d=liveData(g); return d&&d.sessions[k]||null; };
 function liveFetch(g){
   const c=liveCache[g.live.round]; if(c&&Date.now()-c.t<25000) return Promise.resolve(c.data);
-  return fetch(`${LIVE_API}?round=${encodeURIComponent(g.live.round)}`).then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.sessions){ liveCache[g.live.round]={t:Date.now(),data:d}; return d; } return null; }).catch(()=>null);
+  return fetch(`${fnUrl("gtwce")}?round=${encodeURIComponent(g.live.round)}`).then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.sessions){ liveCache[g.live.round]={t:Date.now(),data:d}; return d; } return null; }).catch(()=>null);
 }
 function liveTick(){
   const g=hubMode&&cur?liveSrc():null; if(!g){ clearInterval(liveTimer); liveTimer=null; return; }

@@ -62,11 +62,11 @@ async function viaPage(ch) {
   return { id: live ? id : null, live, embeddable, why };
 }
 
-export default async (req) => {
+export default async (req, env) => {   // env: Cloudflare Pages passes its variables here; on Netlify the second argument is a context object
   const ch = new URL(req.url).searchParams.get("ch") || "";
   const head = { "content-type": "application/json; charset=utf-8", "access-control-allow-origin": "*", "netlify-cdn-cache-control": "public, max-age=60, stale-while-revalidate=60", "cache-control": "public, max-age=30" };
   if (!/^UC[\w-]{22}$/.test(ch)) return json({ error: "bad channel id" }, 400, head);
-  const key = (globalThis.Netlify && Netlify.env && Netlify.env.get("YT_API_KEY")) || process.env.YT_API_KEY || "";
+  const key = (env && env.YT_API_KEY) || (globalThis.Netlify && Netlify.env && Netlify.env.get("YT_API_KEY")) || (typeof process !== "undefined" && process.env && process.env.YT_API_KEY) || "";
   try {
     const out = key ? await viaApi(ch, key) : await viaPage(ch);
     return json({ ch, source: key ? "api" : "page", ...out }, 200, head);

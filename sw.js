@@ -74,7 +74,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   const isFont = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com";
   if (url.origin !== location.origin && !isFont) return;
-  if (url.origin === location.origin && url.pathname.startsWith("/.netlify/")) return;   /* live results: always straight from the network */
+  if (url.origin === location.origin && (url.pathname.startsWith("/.netlify/") || url.pathname.startsWith("/api/"))) return;   /* live results: always straight from the network */
   if (url.origin === location.origin && url.pathname.startsWith("/downloads/")) return;   /* the Android installer: a plain download, never cached by the app */
   /* results are posted minutes after a race ends, so try the network first (cached copy only when offline) */
   if (url.origin === location.origin && /\/data\/(results|entries)\.js$/.test(url.pathname)) {

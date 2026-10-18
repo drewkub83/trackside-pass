@@ -2,6 +2,9 @@
 [build]
   command = "bash build.sh"
   publish = "dist"
+  # Every production deploy costs 15 Netlify credits, so a push only deploys when its commit message contains [deploy]
+  # (or when someone presses "Trigger deploy" in Netlify). Exit 0 = skip the build, exit 1 = build.
+  ignore = '! git log -1 --pretty=%B | grep -qi "\\[deploy\\]"'
 
 [functions]
   directory = "netlify/functions"

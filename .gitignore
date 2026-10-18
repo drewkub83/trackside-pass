@@ -29,3 +29,4 @@ tools/.indycar_cache/
 # Android Studio per-machine files
 android/.idea/
 android/gradle/gradle-daemon-jvm.properties
+.wrangler/

@@ -36,6 +36,9 @@ const K={
   unsynced:"paddock:unsynced",     /* picks changed on this phone that the server has not received yet */
   acctHint:"paddock:acct",         /* the profile (name, invite code) kept for offline display */
   notifSeen:"paddock:notifSeen",   /* the newest friend notification already announced on this phone */
+  pushToken:"paddock:pushToken",   /* this phone's push token (iPhone/Android app) */
+  pushOff:"paddock:pushOff",       /* set when you switched phone notifications off */
+  pushAsked:"paddock:pushAsked",   /* the one-time offer to turn notifications on was shown */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
   followSub:"paddock:followSub",     /* support series you chose to follow */
   unfollow:"paddock:unfollow",      /* series you switched off */

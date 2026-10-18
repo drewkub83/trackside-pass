@@ -33,7 +33,8 @@ async function sbRpc(name, args) {
 }
 const sbSendCode = email => sbJson("/auth/v1/otp", { method: "POST", headers: { apikey: SB.key, "Content-Type": "application/json" }, body: JSON.stringify({ email, create_user: true }) });
 async function sbVerify(email, token) { const j = await sbJson("/auth/v1/verify", { method: "POST", headers: { apikey: SB.key, "Content-Type": "application/json" }, body: JSON.stringify({ type: "email", email, token }) }); sbStore(sbShape(j)); return j; }
-async function sbSignOut() { const s = sbSession(); sbStore(null); try { localStorage.removeItem(K.acctHint); } catch (e) {} if (s) fetch(SB.url + "/auth/v1/logout", { method: "POST", headers: { apikey: SB.key, Authorization: "Bearer " + s.access_token } }).catch(() => {}); }
+async function sbSignOut() { const s = sbSession(); try { const t = localStorage.getItem(K.pushToken); if (t && s) await sbRpc("unregister_push_token", { p_token: t }); } catch (e) {}   // this phone stops getting this account's pushes
+  sbStore(null); try { localStorage.removeItem(K.acctHint); } catch (e) {} if (s) fetch(SB.url + "/auth/v1/logout", { method: "POST", headers: { apikey: SB.key, Authorization: "Bearer " + s.access_token } }).catch(() => {}); }
 
 /* ---- the profile (display name, invite code) kept for offline display ---- */
 let acct = { profile: null, friends: [], req: { incoming: [], outgoing: [], notifications: [], unread: 0 }, msg: "", busy: false, step: "email", email: "", loaded: false };
@@ -98,7 +99,7 @@ function acctMsg() { return acct.msg ? `<p class="plRules acMsg">${sbEsc(acct.ms
 async function openAccount() {
   if (!sbOn()) return;
   acct.msg = ""; acctOpenModal(acctWrap(`<h3 id="infoTitle">Account</h3><p class="plRules">Loading…</p>`));
-  await acctLoad(); acctRender();
+  await acctLoad(); acct.push = await pushState(); acctRender();
   if (acct.req && acct.req.notifications.some(n => !n.read && n.type === "friend_accepted")) sbRpc("mark_notifications_read").then(() => { acct.req.notifications.forEach(n => { if (n.type === "friend_accepted") n.read = true; }); acctBadge(); }).catch(() => {});   // shown once, then cleared
 }
 function acctRender() {
@@ -135,6 +136,7 @@ function acctRender() {
            <p class="plRules">Your code, for friends who prefer to type it:</p><div class="acCode sel">${sbEsc(p.invite_code || "")}</div>
            <div class="acRow"><input class="acIn" id="acFriend" maxlength="12" autocapitalize="characters" placeholder="Their code" onkeydown="if(event.key==='Enter')acctAdd()">${acctBtn("Send request", "acctAdd()")}</div>
          </details>
+         ${pushPlugin() ? `<h4 class="ptH">Notifications</h4><label class="acCheck"><input type="checkbox" ${acct.push === "on" ? "checked" : ""} onchange="acctPushToggle(this.checked)"> Notify me about friend requests</label>${acct.push === "denied" ? `<p class="plRules fine">Notifications are blocked for Trackside Pass. Allow them in your phone's Settings, then come back.</p>` : ""}` : ""}
          <h4 class="ptH">Privacy</h4>
          <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Let other players find me and show me on the Everyone leaderboard</label>
          <p class="plRules fine">Friends always see you. Nobody sees your email. Friends can see your picks once a race has started.</p>
@@ -161,7 +163,7 @@ async function acctName() {
   const v = (document.getElementById("acName").value || "").trim();
   if (!/^[A-Za-z0-9][A-Za-z0-9 _.-]{1,18}[A-Za-z0-9]$/.test(v)) { acct.msg = "3 to 20 characters: letters, numbers, spaces, dots, dashes or underscores."; return acctRender(); }
   try { acct.profile = await sbRpc("create_profile", { p_name: v }); hintSet(acct.profile); acct.msg = ""; acct.friends = []; } catch (e) { acct.msg = e.message; }
-  acctRender();
+  acctRender(); if (acct.profile) setTimeout(acctOfferPush, 600);
 }
 async function acctAdd() {
   const v = (document.getElementById("acFriend").value || "").trim(); if (!v) return;
@@ -232,6 +234,42 @@ async function acctDelete() {
   await sbSignOut(); acct = { profile: null, friends: [], msg: "Your account was deleted.", busy: false, step: "email", email: "", loaded: true }; acctRender();
 }
 
+/* ---- phone notifications (iPhone and Android app only: APNs / Firebase, sent by the `push` edge function when a notification row is created) ---- */
+const pushPlugin = () => { const C = window.Capacitor; return (C && C.isNativePlatform && C.isNativePlatform() && C.Plugins && C.Plugins.PushNotifications) || null; };
+let pushWired = false;
+function pushWire(P) {
+  if (pushWired) return; pushWired = true;
+  P.addListener("registration", async t => { try { await sbRpc("register_push_token", { p_token: t.value, p_platform: window.Capacitor.getPlatform() }); localStorage.setItem(K.pushToken, t.value); } catch (e) {} });
+  P.addListener("registrationError", e => console.log("push registration failed", e && e.error));
+  P.addListener("pushNotificationReceived", () => acctPoll(false));                                   // the app is open: refresh the inbox and the red dot
+  P.addListener("pushNotificationActionPerformed", () => { acctPoll(false); openAccount(); });          // tapped from the lock screen: open the requests
+}
+/* returns "on" | "off" (not asked yet or switched off) | "denied" (blocked in the phone's settings) | "unavailable" (web, or not signed in) */
+async function pushOn(ask) {
+  const P = pushPlugin(); if (!P || !sbSession()) return "unavailable"; pushWire(P);
+  try {
+    let p = await P.checkPermissions();
+    if (p.receive !== "granted") { if (p.receive === "denied") return "denied"; if (!ask) return "off"; p = await P.requestPermissions(); }
+    if (p.receive !== "granted") return "denied";
+    try { localStorage.removeItem(K.pushOff); } catch (e) {}
+    await P.register(); return "on";
+  } catch (e) { return "off"; }
+}
+async function pushState() {
+  const P = pushPlugin(); if (!P) return "unavailable"; if (!sbSession()) return "off";
+  try { const p = await P.checkPermissions(); if (p.receive === "denied") return "denied"; return (p.receive === "granted" && !localStorage.getItem(K.pushOff)) ? "on" : "off"; } catch (e) { return "off"; }
+}
+async function acctPushToggle(on) {
+  if (on) { acct.push = await pushOn(true); acct.msg = acct.push === "on" ? "Notifications are on." : acct.push === "denied" ? "" : "Could not turn notifications on."; }
+  else { try { localStorage.setItem(K.pushOff, "1"); const t = localStorage.getItem(K.pushToken); if (t) await sbRpc("unregister_push_token", { p_token: t }); } catch (e) {} acct.push = "off"; acct.msg = "Notifications are off. You will still see requests inside the app."; }
+  acctRender();
+}
+async function acctOfferPush() {                       // once, after the profile is created
+  if (!pushPlugin() || localStorage.getItem(K.pushAsked)) return;
+  try { localStorage.setItem(K.pushAsked, "1"); } catch (e) {}
+  if (confirm("Get a notification when someone sends you a friend request, or accepts yours?")) { acct.push = await pushOn(true); acctRender(); }
+}
+
 /* ---- leaderboard ---- */
 let lb = { scope: "friends", series: "", game: "", rows: null, err: "" };
 function boardGames() { return (typeof ENTRIES === "undefined" ? [] : ENTRIES).filter(g => typeof gameResult === "function" && gameResult(g) && g.d.slice(0, 4) === String(new Date().getFullYear())).sort((a, b) => b.d.localeCompare(a.d)); }
@@ -282,4 +320,5 @@ async function openFriendPicks(gk) {
 
 /* the app calls these from its own screens */
 function acctAppOpen() { if (sbOn() && sbSession()) acctPull(); }
-document.addEventListener("DOMContentLoaded", () => { const r = document.getElementById("acctRow"); if (r && sbOn()) r.hidden = false; if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); } });
+/* a phone that already said yes to notifications keeps its token fresh at every start */
+document.addEventListener("DOMContentLoaded", () => { const r = document.getElementById("acctRow"); if (r && sbOn()) r.hidden = false; if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); if (!localStorage.getItem(K.pushOff)) setTimeout(() => pushOn(false), 3500); } });

@@ -436,3 +436,55 @@ language sql stable security definer set search_path = public as $$
 $$;
 revoke all on function public.friend_picks(text) from public, anon;
 grant execute on function public.friend_picks(text) to authenticated;
+
+---------------------------------------------------------------- push notifications (iPhone: APNs, Android: Firebase Cloud Messaging)
+-- Phones register a device token; every new row in `notifications` calls the `push` edge function (supabase/functions/push/index.ts), which sends it.
+create table if not exists public.push_tokens (
+  token      text primary key,
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  platform   text not null check (platform in ('ios', 'android')),
+  updated_at timestamptz not null default now()
+);
+create index if not exists push_tokens_user on public.push_tokens (user_id);
+alter table public.push_tokens enable row level security;     -- no policies: only the functions below and the service role touch it
+revoke all on public.push_tokens from anon, authenticated;
+
+create or replace function public.register_push_token(p_token text, p_platform text) returns void language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  if p_platform not in ('ios', 'android') or char_length(coalesce(p_token, '')) < 20 or char_length(p_token) > 400 then raise exception 'Bad token' using errcode = '22023'; end if;
+  insert into public.push_tokens(token, user_id, platform) values (p_token, auth.uid(), p_platform)
+    on conflict (token) do update set user_id = auth.uid(), platform = p_platform, updated_at = now();   -- a phone that changes account moves its token
+end $$;
+revoke all on function public.register_push_token(text, text) from public, anon;
+grant execute on function public.register_push_token(text, text) to authenticated;
+
+create or replace function public.unregister_push_token(p_token text) returns void language sql security definer set search_path = public as $$
+  delete from public.push_tokens where token = p_token and user_id = auth.uid()
+$$;
+revoke all on function public.unregister_push_token(text) from public, anon;
+grant execute on function public.unregister_push_token(text) to authenticated;
+
+-- the shared secret between this trigger and the edge function lives in a table the app can never read
+create schema if not exists private;
+revoke all on schema private from public, anon, authenticated;
+create table if not exists private.config (key text primary key, value text not null);
+revoke all on private.config from public, anon, authenticated;
+
+create or replace function private.notify_push() returns trigger language plpgsql security definer set search_path = public, private as $$
+declare sec text;
+begin
+  select value into sec from private.config where key = 'push_secret';
+  if sec is null then return new; end if;                       -- not set up yet: the in-app notices still work
+  perform net.http_post(url := 'https://hspehgxhksctfegcfgyv.supabase.co/functions/v1/push',
+                        headers := jsonb_build_object('Content-Type', 'application/json', 'x-push-secret', sec),
+                        body := jsonb_build_object('id', new.id));
+  return new;
+exception when others then return new;                          -- a push problem must never block the notification itself
+end $$;
+drop trigger if exists notifications_push on public.notifications;
+create trigger notifications_push after insert on public.notifications for each row execute function private.notify_push();
+do $$ begin
+  if exists (select 1 from pg_available_extensions where name = 'pg_net') then create extension if not exists pg_net; end if;
+exception when others then null;
+end $$;

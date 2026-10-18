@@ -3,7 +3,7 @@
   "appName": "Trackside Pass",
   "webDir": "www-shell",
   "server": {
-    "url": "https://deft-medovik-55a935.netlify.app",
+    "url": "https://tracksidepass.com",
     "cleartext": false
   },
   "ios": {

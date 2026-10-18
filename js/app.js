@@ -870,8 +870,8 @@ function exitHub(){ hubLive.want=false; if(hubLive.playing) stopHubLive(); hubMo
    from one race to the next until you stop it or leave the hub. */
 /* Server functions (netlify/functions/*.mjs, wrapped for Cloudflare Pages in functions/api/*.js): Netlify serves them under /.netlify/functions/, Cloudflare
    Pages under /api/. SITE is where the app is hosted; a local test or a file:// page borrows the functions from there. */
-const SITE="https://deft-medovik-55a935.netlify.app";
-function fnUrl(n){ const h=location.hostname; if(/netlify\.app$/.test(h)) return `/.netlify/functions/${n}`; if(/^(localhost|127\.0\.0\.1)$/.test(h)||location.protocol==="file:") return `${SITE}/.netlify/functions/${n}`; return `/api/${n}`; }
+const SITE="https://tracksidepass.com";
+function fnUrl(n){ const h=location.hostname; if(/netlify\.app$/.test(h)) return `/.netlify/functions/${n}`; if(/^(localhost|127\.0\.0\.1)$/.test(h)||location.protocol==="file:") return `${SITE}/api/${n}`; return `/api/${n}`; }
 let hubLive={ch:null,name:"",want:false,playing:false,vid:null,embed:true,looking:false};
 /* YouTube no longer reliably plays embed/live_stream?channel=…, so ask our function (netlify/functions/ytlive.mjs)
    for the video that is live right now and embed that. Some channels forbid playback outside YouTube (the embed

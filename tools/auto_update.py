@@ -97,7 +97,8 @@ def probe_sources():
         except Exception as e: return "unreachable: " + str(e)[:80]
     st = {"indycar": ok("https://www.indycar.com/api/results/SeasonDropDown?id=b856a4f1-e85c-4fac-8c36-fd58d962227a", '"Events"'),
           "gtwca": ok("https://www.gt-world-challenge-america.com/results/%d" % now.year, "/results/"),
-          "gtwce": ok("https://www.gt-world-challenge-europe.com/results/%d" % now.year, "/results/")}
+          "gtwce": ok("https://www.gt-world-challenge-europe.com/results/%d" % now.year, "/results/"),
+          "f1": ok("https://api.jolpi.ca/ergast/f1/%d.json?limit=1" % now.year, "RaceTable")}
     f = "data/automation-status.json"
     try: old = _j.loads(L.read(f)).get("sources")
     except Exception: old = None
@@ -105,7 +106,7 @@ def probe_sources():
     if st != old and not DRY: L.write(f, _j.dumps({"note": "Written by tools/auto_update.py when a source's state changes: whether the job's machine could read each series' own site.", "sources": st, "firstSeen": now.date().isoformat()}, indent=1) + "\n")
 probe_sources()
 # IndyCar and GT World Challenge America have their own readers (results, standings, lap records); each only acts on races of the last 10 days at venues the app has an event for
-for script in ("indycar_update.py", "gtwca_update.py"): run(script)
+for script in ("indycar_update.py", "gtwca_update.py", "f1_update.py"): run(script)
 before_tracks = None
 changed = [f for f in before if before[f] != L.read(f)]
 if changed and not DRY: print("changed:", ", ".join(changed))   # the service worker VERSION is set by build.sh, no bump needed

@@ -75,5 +75,33 @@ const ENTRIES = [
         ["999", "GetSpeed Team PCX Racing", "Patrick Charlaix / Jordan Boisson / Marvin Klein", "Mercedes-AMG GT3 EVO", 0.5, "Qualified 16th of 17 in Bronze. averaged top 40% of class in 1 Endurance Cup race this year", 0.533]
       ] }
     ],
-    note:"Source: gt-world-challenge-europe.com/entry-list/2026/portimao. Classes are the series' own Pro, Gold, Silver and Bronze." }
+    note:"Source: gt-world-challenge-europe.com/entry-list/2026/portimao. Classes are the series' own Pro, Gold, Silver and Bronze." },
+  { t:"cota", d:"2026-10-23", s:"f1", oddsAsOf:"Before qualifying: recent form only (average points over each driver's last 6 races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Drivers who started the Singapore Grand Prix, with their official race numbers (Jolpica F1 API, a mirror of the FIA classification). Late changes are possible.",
+    classes:[
+      { h:"Race", cars:[
+        ["12", "Kimi Antonelli", "Mercedes", "", 34.6, "averaged 18.5 points a race over the last 6 Grands Prix", 0.74],
+        ["3", "Max Verstappen", "Red Bull Racing", "", 24.0, "averaged 16.8 points a race over the last 6 Grands Prix", 0.673],
+        ["63", "George Russell", "Mercedes", "", 7.7, "averaged 11.7 points a race over the last 6 Grands Prix", 0.467],
+        ["1", "Lando Norris", "McLaren", "", 6.6, "averaged 11.0 points a race over the last 6 Grands Prix", 0.44],
+        ["16", "Charles Leclerc", "Ferrari", "", 6.2, "averaged 10.7 points a race over the last 6 Grands Prix", 0.427],
+        ["6", "Isack Hadjar", "Red Bull Racing", "", 4.0, "averaged 8.7 points a race over the last 6 Grands Prix", 0.347],
+        ["44", "Lewis Hamilton", "Ferrari", "", 3.8, "averaged 8.5 points a race over the last 6 Grands Prix", 0.34],
+        ["81", "Oscar Piastri", "McLaren", "", 2.6, "averaged 6.7 points a race over the last 6 Grands Prix", 0.267],
+        ["30", "Liam Lawson", "Racing Bulls", "", 1.5, "averaged 4.3 points a race over the last 6 Grands Prix", 0.173],
+        ["41", "Arvid Lindblad", "Racing Bulls", "", 1.0, "averaged 2.2 points a race over the last 6 Grands Prix", 0.087],
+        ["27", "Nico Hülkenberg", "Audi", "", 0.8, "averaged 1.5 points a race over the last 6 Grands Prix", 0.06],
+        ["43", "Franco Colapinto", "Alpine", "", 0.8, "averaged 1.3 points a race over the last 6 Grands Prix", 0.053],
+        ["10", "Pierre Gasly", "Alpine", "", 0.8, "averaged 1.2 points a race over the last 6 Grands Prix", 0.047],
+        ["14", "Fernando Alonso", "Aston Martin", "", 0.7, "averaged 1.0 points a race over the last 6 Grands Prix", 0.04],
+        ["31", "Esteban Ocon", "Haas", "", 0.7, "averaged 0.7 points a race over the last 6 Grands Prix", 0.027],
+        ["87", "Oliver Bearman", "Haas", "", 0.6, "averaged 0.3 points a race over the last 6 Grands Prix", 0.013],
+        ["55", "Carlos Sainz", "Williams", "", 0.6, "averaged 0.2 points a race over the last 6 Grands Prix", 0.007],
+        ["11", "Sergio Pérez", "Cadillac", "", 0.6, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["23", "Alexander Albon", "Williams", "", 0.6, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["77", "Valtteri Bottas", "Cadillac", "", 0.6, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["18", "Lance Stroll", "Aston Martin", "", 0.6, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["5", "Gabriel Bortoleto", "Audi", "", 0.6, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
+      ] }
+    ],
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-20. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

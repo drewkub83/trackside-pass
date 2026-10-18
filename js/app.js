@@ -1038,7 +1038,7 @@ const gameLocked=g=>{ const l=gameLock(g); return !!gameResult(g)||(l&&l.start<=
 let gameG=null, gameCls=null;
 function gameCardHtml(g,chev){
   const sc=gameScore(g), pk=picksOf(g), done=g.classes.filter(c=>(pk[c.h]||[]).length===3).length, locked=gameLocked(g), lock=gameLock(g);
-  const line=sc?`You scored <b>${sc.pts}</b> of ${sc.max} possible points.`:locked?(done?"Picks are locked. Your score comes after the race.":"The race has started, so picks are closed."):done?`${done} of ${g.classes.length} classes picked${lock?` · locks at the start of the race, ${fmtWhen(lock.start,cur.tz)}`:""}`:"Call the top three in each class before the race. Scored against the real result, on this phone only.";
+  const line=sc?`You scored <b>${sc.pts}</b> of ${sc.max} possible points.`:locked?(done?"Picks are locked. Your score comes after the race.":"The race has started, so picks are closed."):done?`${g.classes.length>1?`${done} of ${g.classes.length} classes picked`:"Your podium is picked"}${lock?` · locks at the start of the race, ${fmtWhen(lock.start,cur.tz)}`:""}`:(g.classes.length>1?"Call the top three in each class before the race.":"Call the top three drivers before the race.")+" Scored against the real result, on this phone only.";
   return `<div class="hubCard hubTap" role="button" onclick="openGame()"><div class="hubCardRow"><div><h4>Pick your podium</h4><div class="hubSessionSub">${line}</div></div>${chev}</div></div>`;
 }
 function openGame(){
@@ -1047,15 +1047,16 @@ function openGame(){
 function renderGame(){
   const g=gameG; if(!g) return; const locked=gameLocked(g), sc=gameScore(g), lock=gameLock(g), pk=picksOf(g), c=g.classes.find(x=>x.h===gameCls), mine=pk[c.h]||[];
   document.getElementById("gmTitle").textContent=`${watchSeriesName({s:g.s})}: pick your podium`;
-  document.getElementById("gmSub").textContent=sc?`Scored against the official result: ${sc.pts} of ${sc.max} points.`:locked?"Picks are locked.":`Tap cars to fill 1st, 2nd and 3rd in each class. Picks lock at the start of the race${lock?`, ${fmtWhen(lock.start,cur.tz)}`:""}.${gameTiming(g).label?" "+gameTiming(g).label+".":""}`;
-  document.getElementById("gmTabs").innerHTML=g.classes.map(x=>{ const n=(pk[x.h]||[]).length; return `<button class="gmTab${x.h===gameCls?" on":""}" onclick="gameCls='${x.h}';renderGame()">${esc(x.h)}${n?`<i>${n}/3</i>`:""}</button>`; }).join("");
+  document.getElementById("gmSub").textContent=sc?`Scored against the official result: ${sc.pts} of ${sc.max} points.`:locked?"Picks are locked.":`Tap ${g.classes.length>1?"cars":"drivers"} to fill 1st, 2nd and 3rd${g.classes.length>1?" in each class":""}. Picks lock at the start of the race${lock?`, ${fmtWhen(lock.start,cur.tz)}`:""}.${gameTiming(g).label?" "+gameTiming(g).label+".":""}`;
+  const tabsEl=document.getElementById("gmTabs"); tabsEl.hidden=g.classes.length<2;
+  tabsEl.innerHTML=g.classes.map(x=>{ const n=(pk[x.h]||[]).length; return `<button class="gmTab${x.h===gameCls?" on":""}" onclick="gameCls='${x.h}';renderGame()">${esc(x.h)}${n?`<i>${n}/3</i>`:""}</button>`; }).join("");
   const pd=sc&&gamePodium(sc.res,c.h), marks=(sc&&sc.per[c.h])||[], find=n=>c.cars.find(r=>r[0]===n);
   document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}" ${locked||!n?"disabled":""} onclick="gameDrop(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="open"?"?":"+"+(((sc&&sc.per[c.h+"#"])||[])[i]||0)}</em>`:n&&!locked?`<em>${gameExact(pickP(g,c.h,n),pickM(g,c.h,n))} pts</em>`:""}</button>`; }).join("");
   const real=pd?`<div class="gmReal"><b>Official result</b> ${pd.exact.map((n,i)=>n?`${i+1}. #${n}`:`${i+1}. not listed`).join(" · ")}${pd.extra?` · also on the podium: ${pd.podium.slice(1).map(n=>"#"+n).join(", ")}`:""}</div>`:sc?`<div class="gmReal">The result for this class is not in yet.</div>`:"";
   const tm0=gameTiming(g).m, probs=gameProbs(g,c.h)||{}, gridOn=!!(g.live&&liveRows(g,"qualifying-combined")&&c.cars.every(r=>typeof r[6]==="number")), hasP=c.cars.some(r=>typeof r[4]==="number"), cars=hasP?c.cars.slice().sort((a,b)=>(probs[b[0]]||0)-(probs[a[0]]||0)):c.cars;
   const note=hasP?`<div class="gmNote"><b>Win chances, favourites first.</b> ${esc(gridOn?"Rebuilt from the official class grid, live from the series' qualifying result: starting position now drives the chances.":(g.oddsAsOf||"Our own estimate."))} A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy. Longer shots score more, early picks score more, and each pick keeps the chance and bonus it had when you made it.</div>`:"";
-  document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=probs[r[0]]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc(r[2])} · ${esc(r[3])}</small>${gridOn?(()=>{ const q=liveRows(g,"qualifying-combined").filter(x=>x.cls===c.h), i=q.findIndex(x=>x.num===r[0]); return `<small class="gmWhy">${i>=0?"Qualified "+(i+1)+" of "+q.length+" in class":"No qualifying time"}</small>`; })():(r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:"")}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)} · worth ${gameExact(p,tm0)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
-  document.getElementById("gmFoot").innerHTML=esc(g.asOf)+gameRecordHtml();
+  document.getElementById("gmList").innerHTML=real+note+cars.map(r=>{ const at=mine.indexOf(r[0]), p=probs[r[0]]; return `<button class="gmCar${at>=0?" picked":""}" ${locked?"disabled":""} onclick="gamePick('${r[0]}')"><span class="gmNo">#${esc(r[0])}</span><span class="gmTxt"><b>${esc(r[1])}</b><small>${esc([r[2],r[3]].filter(Boolean).join(" · "))}</small>${gridOn?(()=>{ const q=liveRows(g,"qualifying-combined").filter(x=>x.cls===c.h), i=q.findIndex(x=>x.num===r[0]); return `<small class="gmWhy">${i>=0?"Qualified "+(i+1)+" of "+q.length+" in class":"No qualifying time"}</small>`; })():(r[5]?`<small class="gmWhy">${esc(r[5])}</small>`:"")}</span>${typeof p==="number"?`<span class="gmOdds"><b>~${p<10?p.toFixed(1):Math.round(p)}%</b><small>${gameLine(p)} · worth ${gameExact(p,tm0)}</small></span>`:""}${at>=0?`<em>${at+1}</em>`:""}</button>`; }).join("");
+  document.getElementById("gmFoot").innerHTML=esc(g.asOf)+`<div><button class="btn quiet gmHow" onclick="openPoints()">How points work</button></div>`+gameRecordHtml();
 }
 /* a win chance as a US money line, like a sportsbook would post it (fair line, no margin) */
 function gameLine(p){ const f=p/100, v=f>=.5?-100*f/(1-f):100*(1-f)/f, a=Math.abs(v), r=a<1000?Math.round(a/5)*5:Math.round(a/50)*50; return (v<0?"-":"+")+r; }
@@ -1087,11 +1088,36 @@ function playCardHtml(){
   const line=st.rows.length?`<b>${st.pts}</b> points in ${st.rows.length} weekend${st.rows.length===1?"":"s"}${open?" · a new game is open":""}`:"A game is open: call the top three in each class";
   return `<button class="scard playCard" onclick="openPlay()"><div class="scTop"><b>Pick your podium · ${y}</b><span>${st.rows.length?"Season total":"Play"}</span></div><div class="scNext">${line}</div></button>`;
 }
+/* "How points work": every number here is computed with the same functions that score a pick, so the page can't drift from the game */
+function pointsHtml(){
+  const chances=[40,30,20,10,5,2,1], trow=p=>`<tr><td>${p}%</td><td>x${gameMult(p).toFixed(2)}</td><td>${gameExact(p)}</td><td>${gameNear(p)}</td></tr>`;
+  const ex=(p,t)=>gameExact(p,t);
+  return `<div class="mkick">Game</div><h3 id="infoTitle">How points work</h3>
+  <h4 class="ptH">1. The basics</h4>
+  <p class="plRules">Before a race, call the top three in each class (the top three drivers in Formula 1) from the series' official entry list. Each pick scores on its own against the official result:</p>
+  <p class="plRules"><b>5 points</b> for the right car or driver in the right place.<br><b>2 points</b> for someone who finished on the podium, but not where you put them.<br><b>0</b> for anyone else.</p>
+  <h4 class="ptH">2. Long shots pay more</h4>
+  <p class="plRules">Every pick keeps the win chance our model gave that car at the moment you picked it. Those 5 and 2 points are then multiplied by sqrt(10 / chance), never below x0.5 or above x3. A 10% car pays exactly x1, a favourite pays less and a long shot pays more.</p>
+  <table class="ptTable"><tr><th>Win chance</th><th>Multiplier</th><th>Right place</th><th>Podium, wrong place</th></tr>${chances.map(trow).join("")}</table>
+  <p class="plRules fine">The table shows picks made while qualifying is under way (normal points). The win chances are a form guide, not betting odds: they know nothing about balance of performance, weather or strategy.</p>
+  <h4 class="ptH">3. Early picks pay more</h4>
+  <p class="plRules">When the weekend has a qualifying session, the points are multiplied again by when you made the pick:</p>
+  <table class="ptTable"><tr><th>When you lock it in</th><th>Multiplier</th></tr><tr><td>Before qualifying starts</td><td>x1.25</td></tr><tr><td>While qualifying is under way</td><td>x1</td></tr><tr><td>After qualifying has finished</td><td>x0.75</td></tr></table>
+  <p class="plRules">A series with no qualifying session scores at x1.</p>
+  <h4 class="ptH">4. A worked example</h4>
+  <p class="plRules">You pick a 2% long shot to win before qualifying and they win: 5 x ${gameMult(2).toFixed(2)} x 1.25 = <b>${ex(2,1.25)} points</b>. Pick the 30% favourite before qualifying and they win: 5 x ${gameMult(30).toFixed(2)} x 1.25 = <b>${ex(30,1.25)} points</b>. The same favourite picked after qualifying, with the grid known: <b>${ex(30,.75)} points</b>.</p>
+  <h4 class="ptH">5. The rules</h4>
+  <p class="plRules"><b>Picks lock</b> at the start of the race (or as soon as a result exists) and cannot be changed after that. You can change a pick any time before, but the win chance and the timing multiplier are the ones from the moment you made the new pick.<br><b>Scored from the official result</b>, usually minutes after the flag. If the series later changes the classification (a penalty), the score updates.<br><b>Partial results:</b> if a result only names the winner, only that place is scored until the full podium is known.<br><b>Races with a sprint:</b> only the main race scores.<br><b>Your season total</b> adds every weekend you play across all series, and starts again each January. Scores are kept on this phone for now.</p>`;
+}
+function openPoints(){
+  document.getElementById("infoBody").innerHTML=pointsHtml();
+  const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
+}
 function playOpenEntry(){ const today=localToday(); return (typeof ENTRIES!=="undefined"&&ENTRIES.find(g=>TRACKS.some(x=>x.id===g.t)&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4))||null; }
 function playNow(tid){ openTrack(tid,"home").then(()=>setTimeout(openGame,150)); }
 function openPlay(){
   const y=new Date().getFullYear(), rec=gameRecordHtml(), openG=playOpenEntry();
-  document.getElementById("infoBody").innerHTML=`<div class="mkick">Game</div><h3 id="infoTitle">Pick your podium · ${y}</h3><p class="plRules">Before each race, call the top three cars in each class from the official entry list. Picks lock at the green flag. Right car in the right place scores 5, a podium car in the wrong place 2, both multiplied for long shots (a pick keeps the win chance it had when you made it). Lock picks in before qualifying starts for 25% more; picks made after qualifying score 25% less. Every series counts toward one ${y} total, and it starts again each January. Scores stay on this phone.</p>${openG?`<button class="btn primary plGo" onclick="closeInfo();playNow('${openG.t}')">Make my picks: ${esc((TRACKS.find(x=>x.id===openG.t)||{}).short||"")}</button>`:""}${rec||`<p class="plRules">No scored weekends yet this year.</p>`}`;
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Game</div><h3 id="infoTitle">Pick your podium · ${y}</h3><p class="plRules">Before each race, call the top three cars in each class from the official entry list. Picks lock at the green flag. Right car in the right place scores 5, a podium car in the wrong place 2, both multiplied for long shots (a pick keeps the win chance it had when you made it). Lock picks in before qualifying starts for 25% more; picks made after qualifying score 25% less. Every series counts toward one ${y} total, and it starts again each January. Scores stay on this phone.</p><button class="btn quiet gmHow" onclick="openPoints()">How points work</button>${openG?`<button class="btn primary plGo" onclick="closeInfo();playNow('${openG.t}')">Make my picks: ${esc((TRACKS.find(x=>x.id===openG.t)||{}).short||"")}</button>`:""}${rec||`<p class="plRules">No scored weekends yet this year.</p>`}`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
 

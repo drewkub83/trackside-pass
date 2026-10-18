@@ -24,8 +24,8 @@ const RESULTS = [
         "1. #71 Selected Car Racing Ferrari 296 GT3 EVO — Frederik Schandorff, Malte Ebdrup, Simon Birch",
         "2. #998 Rowe Racing BMW M4 GT3 EVO — Ugo De Wilde, Tim Tramnitz, Jens Klingmann",
         "3. #60 JMW Motorsport Ferrari 296 GT3 EVO — Casper Stevenson, Giacomo Altoe, Konsta Lappalainen",
-        "4. #58 Garage 59 McLaren 720S GT3 EVO — Thomas Fleming, Louis Prette, Benjamin Goethe",
-        "5. #4 Optimum Motorsport McLaren 720S GT3 EVO — Freddie Tomlinson, Harry George, Adam Smalley"
+        "4. #4 Optimum Motorsport McLaren 720S GT3 EVO — Freddie Tomlinson, Harry George, Adam Smalley",
+        "5. #99 Tresor Attempto Racing Audi R8 LMS GT3 EVO II — Dylan Pereira, Andrea Frassineti, Alex Aka"
       ] },
       { h:"Silver", order:[
         "1. #30 Team WRT BMW M4 GT3 EVO — Amaury Cordeel, Matisse Lismont, Ignacio Montenegro",

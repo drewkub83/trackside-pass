@@ -250,21 +250,18 @@ drop policy if exists notifications_own on public.notifications;
 create policy notifications_own on public.notifications for select to authenticated using (user_id = auth.uid());
 revoke insert, update, delete on public.notifications from anon, authenticated;
 
--- send a request (or, if they already asked you, accept theirs): {"status": "sent" | "friends" | "already_friends" | "already_sent", "name": ...}
-create or replace function public.add_friend(p_code text) returns jsonb language plpgsql security definer set search_path = public as $$
-declare uid uuid := auth.uid(); other uuid; oname text; myname text; req public.friend_requests;
+-- the shared logic: uid asks other. Returns {"status": "sent" | "friends" | "already_friends" | "already_sent", "name": ...}; if they had already asked uid, that is a yes.
+create or replace function public._request_friend(uid uuid, other uuid) returns jsonb language plpgsql security definer set search_path = public as $$
+declare oname text; myname text; req public.friend_requests;
 begin
-  if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
   select display_name into myname from public.profiles where id = uid;
   if myname is null then raise exception 'Choose a display name first' using errcode = '22023'; end if;
-  select i.user_id into other from public.invites i where i.code = upper(btrim(p_code));
-  if other is null then raise exception 'No one has that code' using errcode = '22023'; end if;
-  if other = uid then raise exception 'That is your own code' using errcode = '22023'; end if;
   select display_name into oname from public.profiles where id = other;
+  if oname is null then raise exception 'No such player' using errcode = '22023'; end if;
+  if other = uid then raise exception 'That is you' using errcode = '22023'; end if;
   if exists (select 1 from public.friendships where user_a = least(uid, other) and user_b = greatest(uid, other)) then
     return jsonb_build_object('status', 'already_friends', 'name', oname);
   end if;
-  -- they already asked you: that is a yes
   if exists (select 1 from public.friend_requests where from_user = other and to_user = uid and status = 'pending') then
     insert into public.friendships(user_a, user_b) values (least(uid, other), greatest(uid, other)) on conflict do nothing;
     delete from public.friend_requests where (from_user = other and to_user = uid) or (from_user = uid and to_user = other);
@@ -283,8 +280,44 @@ begin
   insert into public.notifications(user_id, type, data) values (other, 'friend_request', jsonb_build_object('from', uid, 'name', myname));
   return jsonb_build_object('status', 'sent', 'name', oname);
 end $$;
+revoke all on function public._request_friend(uuid, uuid) from public, anon, authenticated;
+
+-- ask a player you found by name
+create or replace function public.request_friend(p_to uuid) returns jsonb language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  return public._request_friend(auth.uid(), p_to);
+end $$;
+revoke all on function public.request_friend(uuid) from public, anon;
+grant execute on function public.request_friend(uuid) to authenticated;
+
+-- ask the owner of an invite code (optional: for someone who shares a code instead of a name)
+create or replace function public.add_friend(p_code text) returns jsonb language plpgsql security definer set search_path = public as $$
+declare other uuid;
+begin
+  if auth.uid() is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  select i.user_id into other from public.invites i where i.code = upper(btrim(p_code));
+  if other is null then raise exception 'No one has that code' using errcode = '22023'; end if;
+  return public._request_friend(auth.uid(), other);
+end $$;
 revoke all on function public.add_friend(text) from public, anon;
 grant execute on function public.add_friend(text) to authenticated;
+
+-- find players by (part of) their display name: at least 3 letters, 10 results, only players who allow it (the same switch as the Everyone leaderboard)
+create or replace function public.search_players(p_q text) returns table (id uuid, display_name text, relation text)
+language sql stable security definer set search_path = public as $$
+  select p.id, p.display_name,
+         case when exists (select 1 from public.friendships f where f.user_a = least(auth.uid(), p.id) and f.user_b = greatest(auth.uid(), p.id)) then 'friend'
+              when exists (select 1 from public.friend_requests r where r.from_user = auth.uid() and r.to_user = p.id and r.status = 'pending') then 'sent'
+              when exists (select 1 from public.friend_requests r where r.from_user = p.id and r.to_user = auth.uid() and r.status = 'pending') then 'incoming'
+              else 'none' end
+  from public.profiles p
+  where auth.uid() is not null and p.id <> auth.uid() and p.show_global and char_length(replace(replace(lower(btrim(p_q)), '%', ''), '_', '')) >= 3
+    and lower(p.display_name) like '%' || replace(replace(lower(btrim(p_q)), '%', ''), '_', '') || '%'
+  order by (lower(p.display_name) like lower(btrim(p_q)) || '%') desc, lower(p.display_name) limit 10
+$$;
+revoke all on function public.search_players(text) from public, anon;
+grant execute on function public.search_players(text) to authenticated;
 
 -- accept or decline a request someone sent you
 create or replace function public.respond_request(p_from uuid, p_accept boolean) returns jsonb language plpgsql security definer set search_path = public as $$

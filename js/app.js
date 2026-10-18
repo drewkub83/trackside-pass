@@ -1092,7 +1092,7 @@ function playCardHtml(){
   if(typeof ENTRIES==="undefined") return ""; const y=new Date().getFullYear(), st=gameSeason(y), today=localToday();
   const open=ENTRIES.find(g=>{ const t=TRACKS.find(x=>x.id===g.t); return t&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4; });
   if(!st.rows.length&&!open) return "";
-  const line=st.rows.length?`<b>${st.pts}</b> points in ${st.rows.length} weekend${st.rows.length===1?"":"s"}${open?" · a new game is open":""}`:"A game is open: call the top three in each class";
+  const line=st.rows.length?`<b>${st.pts}</b> points in ${st.rows.length} weekend${st.rows.length===1?"":"s"}${open?" · a new game is open":""}`:"A game is open: call the podium before the race";
   return `<button class="scard playCard" onclick="openPlay()"><div class="scTop"><b>Pick your podium · ${y}</b><span>${st.rows.length?"Season total":"Play"}</span></div><div class="scNext">${line}</div></button>`;
 }
 /* Leaderboard / Account buttons (js/account.js): only once the Supabase project is configured there */

@@ -123,18 +123,20 @@ function acctRender() {
          ${news.map(n => `<div class="acNote">${sbEsc(n.name)} accepted your friend request.</div>`).join("")}
          ${rq.incoming.length ? `<h4 class="ptH">Friend requests (${rq.incoming.length})</h4>${rq.incoming.map(r => `<div class="acFriend"><span><b>${sbEsc(r.name)}</b> wants to be friends</span><span><button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button><button class="acX" onclick="acctRespond('${r.id}',false)">Decline</button></span></div>`).join("")}` : ""}
          ${acctBtn("Leaderboard", "openBoard()")}
-         <h4 class="ptH">Invite a friend</h4>
-         <p class="plRules">Send them your code. When they type it in you get a friend request, and once you accept you see each other on the Friends leaderboard.</p>
-         <div class="acCode sel">${sbEsc(p.invite_code || "")}</div>
-         <div class="acRow">${acctBtn("Share my code", "acctShare()", "quiet")}</div>
          <h4 class="ptH">Add a friend</h4>
-         <p class="plRules">Type the code a friend sent you. They get a request and have to accept it.</p>
-         <div class="acRow"><input class="acIn" id="acFriend" maxlength="12" autocapitalize="characters" placeholder="Their code" onkeydown="if(event.key==='Enter')acctAdd()">${acctBtn("Add", "acctAdd()")}</div>
+         <input class="acIn" id="acFind" autocomplete="off" autocapitalize="none" placeholder="Search by name" oninput="acctFind(this.value)">
+         <div id="acResults" class="acResults"></div>
          ${rq.outgoing.length ? `<h4 class="ptH">Waiting for an answer</h4>${rq.outgoing.map(r => `<div class="acFriend"><span>${sbEsc(r.name)}</span><button class="acX" onclick="acctCancel('${r.id}')">Cancel</button></div>`).join("")}` : ""}
          <h4 class="ptH">Friends (${fr.length})</h4>
          ${fr.length ? fr.map(f => `<div class="acFriend"><span>${sbEsc(f.display_name)}</span><button class="acX" aria-label="Remove ${sbEsc(f.display_name)}" onclick="acctRemove('${f.id}')">Remove</button></div>`).join("") : `<p class="plRules">No friends yet.</p>`}
+         <h4 class="ptH">Friend not on Trackside Pass yet?</h4>
+         <div class="acRow">${acctBtn("Send them the app", "acctShare()", "quiet")}</div>
+         <details class="acCodeBox"><summary>Use a friend code instead</summary>
+           <p class="plRules">Your code, for friends who prefer to type it:</p><div class="acCode sel">${sbEsc(p.invite_code || "")}</div>
+           <div class="acRow"><input class="acIn" id="acFriend" maxlength="12" autocapitalize="characters" placeholder="Their code" onkeydown="if(event.key==='Enter')acctAdd()">${acctBtn("Send request", "acctAdd()")}</div>
+         </details>
          <h4 class="ptH">Privacy</h4>
-         <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Show me on the Everyone leaderboard</label>
+         <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Let other players find me and show me on the Everyone leaderboard</label>
          <p class="plRules fine">Friends always see you. Nobody sees your email. Friends can see your picks once a race has started.</p>
          <h4 class="ptH">Your account</h4>
          ${acctBtn("Sign out", "acctOut()", "quiet")}${acctBtn("Delete my account", "acctDelete()", "quiet acDanger")}
@@ -170,9 +172,27 @@ async function acctAdd() {
   } catch (e) { acct.msg = e.message; }
   acctRender();
 }
+let findTimer = null, findSeq = 0;
+function acctFind(v) {
+  clearTimeout(findTimer); const box = document.getElementById("acResults"); if (!box) return;
+  v = (v || "").trim(); if (v.length < 3) { box.innerHTML = v ? `<p class="plRules fine">Type at least 3 letters.</p>` : ""; return; }
+  box.innerHTML = `<p class="plRules fine">Searching…</p>`;
+  findTimer = setTimeout(async () => {
+    const my = ++findSeq; let rows;
+    try { rows = await sbRpc("search_players", { p_q: v }); } catch (e) { if (my === findSeq && box) box.innerHTML = `<p class="plRules fine">${sbEsc(e.status ? e.message : "Offline: searching needs a signal.")}</p>`; return; }
+    if (my !== findSeq) return;
+    const btn = r => r.relation === "friend" ? `<span class="acTag">Friends</span>` : r.relation === "sent" ? `<span class="acTag">Requested</span>` : r.relation === "incoming" ? `<button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button>` : `<button class="btn primary acMini" onclick="acctAsk('${r.id}')">Add</button>`;
+    box.innerHTML = rows.length ? rows.map(r => `<div class="acFriend"><span>${sbEsc(r.display_name)}</span>${btn(r)}</div>`).join("") : `<p class="plRules fine">No one found. They may have a different spelling, or have chosen not to be found. You can send them the app below.</p>`;
+  }, 350);
+}
+async function acctAsk(id) {
+  try { const r = await sbRpc("request_friend", { p_to: id }); acct.msg = r.status === "sent" ? `Request sent to ${r.name}.` : r.status === "friends" ? `You and ${r.name} are now friends.` : r.status === "already_sent" ? `Waiting for ${r.name} to answer.` : `You and ${r.name} are already friends.`; acct.friends = await sbRpc("my_friends"); await acctRequests(); }
+  catch (e) { acct.msg = e.message; }
+  const q = (document.getElementById("acFind") || {}).value; acctRender(); const f = document.getElementById("acFind"); if (f && q) { f.value = q; acctFind(q); }
+}
 async function acctRespond(id, yes) {
   try { const r = await sbRpc("respond_request", { p_from: id, p_accept: !!yes }); acct.msg = yes ? `You and ${r.name} are now friends.` : "Request declined. They are not told."; acct.friends = await sbRpc("my_friends"); await acctRequests(); } catch (e) { acct.msg = e.message; }
-  acctRender();
+  const q = (document.getElementById("acFind") || {}).value; acctRender(); const f = document.getElementById("acFind"); if (f && q) { f.value = q; acctFind(q); }
 }
 async function acctCancel(id) { try { await sbRpc("cancel_request", { p_to: id }); acct.msg = "Request cancelled."; await acctRequests(); } catch (e) { acct.msg = e.message; } acctRender(); }
 /* friend requests and the notices that go with them: loaded when you open the account, and polled while the app is open */
@@ -198,9 +218,9 @@ async function acctPoll(announce) {
 }
 function acctStartPolling() { if (acctPolling || !sbOn()) return; acctPolling = setInterval(acctPoll, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden) acctPoll(); }); }
 async function acctRemove(id) { if (!confirm("Remove this friend?")) return; try { await sbRpc("remove_friend", { p_friend: id }); acct.friends = await sbRpc("my_friends"); acct.msg = ""; } catch (e) { acct.msg = e.message; } acctRender(); }
-async function acctGlobal(on) { try { const t = await sbToken(); await sbJson("/rest/v1/profiles?id=eq." + sbSession().uid, { method: "PATCH", headers: { apikey: SB.key, Authorization: "Bearer " + t, "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify({ show_global: !!on }) }); acct.profile.show_global = !!on; hintSet(acct.profile); acct.msg = on ? "You are on the Everyone leaderboard." : "You are hidden from the Everyone leaderboard."; } catch (e) { acct.msg = e.message; } acctRender(); }
+async function acctGlobal(on) { try { const t = await sbToken(); await sbJson("/rest/v1/profiles?id=eq." + sbSession().uid, { method: "PATCH", headers: { apikey: SB.key, Authorization: "Bearer " + t, "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify({ show_global: !!on }) }); acct.profile.show_global = !!on; hintSet(acct.profile); acct.msg = on ? "Other players can find you and you are on the Everyone leaderboard." : "You are hidden from search and from the Everyone leaderboard."; } catch (e) { acct.msg = e.message; } acctRender(); }
 function acctShare() {
-  const code = acct.profile && acct.profile.invite_code, text = `Join me on Trackside Pass: pick the podium each race weekend. My friend code is ${code}. https://tracksidepass.com`;
+  const nm = acct.profile && acct.profile.display_name, text = `Join me on Trackside Pass and pick the podium each race weekend. Search for "${nm}" to add me as a friend. https://tracksidepass.com`;
   if (navigator.share) navigator.share({ title: "Trackside Pass", text }).catch(() => {});
   else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { acct.msg = "Copied. Paste it into a message."; acctRender(); }).catch(() => {});
 }

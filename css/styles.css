@@ -906,3 +906,5 @@ img,svg{-webkit-user-drag:none}
 .fab.gear{position:relative}.fab.gear.dot::after{content:"";position:absolute;top:6px;right:6px;width:10px;height:10px;border-radius:50%;background:var(--kerb);border:2px solid var(--paper)}
 .acNote{margin:10px 0 0;padding:11px 14px;border-radius:14px;background:var(--tint);font-size:14px}
 .acMini{padding:7px 14px;font-size:13px;margin:0 6px 0 0}
+.acResults{margin-top:6px}.acTag{font-size:12px;color:var(--ink-2);padding:6px 4px}
+.acCodeBox{margin-top:14px;font-size:14px}.acCodeBox summary{cursor:pointer;color:var(--ink-2)}

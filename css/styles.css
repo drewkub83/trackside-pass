@@ -880,3 +880,9 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .ptTable td{padding:6px 6px 6px 0;border-top:1px solid var(--line)}
 .plRules.fine{font-size:11.5px}
 .gmHow{margin:12px 0 0}
+
+/* It behaves like an app, not a web page: no text highlighting, no long-press copy/preview callout, no tap flash; text you type and anything marked .sel (an invite code, say) stays selectable */
+html{-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+body{-webkit-user-select:none;user-select:none}
+input,textarea,[contenteditable],.sel,.sel *{-webkit-user-select:text;user-select:text}
+img,svg{-webkit-user-drag:none}

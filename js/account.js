@@ -4,7 +4,7 @@
    from the official result and ranks you against your friends and everyone else (schema and rules: supabase/schema.sql; tested in tools/sync_games.mjs's
    sibling tests). Plain fetch to Supabase's REST endpoints, no library. Loaded after js/app.js, shares its globals (K, picksAll, gameKey, ENTRIES, esc, toast ...).
    Everything is off until SB.url and SB.key (the project URL and its public "anon" key: safe to ship, the database rules decide what anyone can do) are set. */
-const SB = { url: "", key: "" };
+const SB = { url: "https://hspehgxhksctfegcfgyv.supabase.co", key: "sb_publishable_wWDezKw6jjcELQ3Mvjz5qQ_9CA5rF_l" };   // both public by design: the database rules decide what anyone can do
 const sbOn = () => !!(SB.url && SB.key);
 const sbEsc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 

@@ -35,6 +35,7 @@ const K={
   session:"paddock:session",       /* the signed-in session (js/account.js): tokens, never exported in backups */
   unsynced:"paddock:unsynced",     /* picks changed on this phone that the server has not received yet */
   acctHint:"paddock:acct",         /* the profile (name, invite code) kept for offline display */
+  notifSeen:"paddock:notifSeen",   /* the newest friend notification already announced on this phone */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
   followSub:"paddock:followSub",     /* support series you chose to follow */
   unfollow:"paddock:unfollow",      /* series you switched off */

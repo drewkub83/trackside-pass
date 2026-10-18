@@ -36,13 +36,13 @@ async function sbVerify(email, token) { const j = await sbJson("/auth/v1/verify"
 async function sbSignOut() { const s = sbSession(); sbStore(null); try { localStorage.removeItem(K.acctHint); } catch (e) {} if (s) fetch(SB.url + "/auth/v1/logout", { method: "POST", headers: { apikey: SB.key, Authorization: "Bearer " + s.access_token } }).catch(() => {}); }
 
 /* ---- the profile (display name, invite code) kept for offline display ---- */
-let acct = { profile: null, friends: [], msg: "", busy: false, step: "email", email: "", loaded: false };
+let acct = { profile: null, friends: [], req: { incoming: [], outgoing: [], notifications: [], unread: 0 }, msg: "", busy: false, step: "email", email: "", loaded: false };
 function hintGet() { try { return JSON.parse(localStorage.getItem(K.acctHint) || "null"); } catch (e) { return null; } }
 function hintSet(p) { try { if (p) localStorage.setItem(K.acctHint, JSON.stringify(p)); else localStorage.removeItem(K.acctHint); } catch (e) {} }
 async function acctLoad() {
   if (!sbOn() || !sbSession()) { acct.profile = null; acct.friends = []; acct.loaded = true; return; }
   acct.profile = hintGet(); acct.loaded = true;
-  try { acct.profile = await sbRpc("my_profile"); hintSet(acct.profile); acct.friends = acct.profile ? await sbRpc("my_friends") : []; }
+  try { acct.profile = await sbRpc("my_profile"); hintSet(acct.profile); acct.friends = acct.profile ? await sbRpc("my_friends") : []; if (acct.profile) await acctRequests(); }
   catch (e) { acct.msg = e.status ? e.message : "Offline: showing what was saved on this phone."; }
 }
 
@@ -99,6 +99,7 @@ async function openAccount() {
   if (!sbOn()) return;
   acct.msg = ""; acctOpenModal(acctWrap(`<h3 id="infoTitle">Account</h3><p class="plRules">Loading…</p>`));
   await acctLoad(); acctRender();
+  if (acct.req && acct.req.notifications.some(n => !n.read && n.type === "friend_accepted")) sbRpc("mark_notifications_read").then(() => { acct.req.notifications.forEach(n => { if (n.type === "friend_accepted") n.read = true; }); acctBadge(); }).catch(() => {});   // shown once, then cleared
 }
 function acctRender() {
   const s = sbSession(); const m = document.getElementById("infoModal"); if (m.hidden) return;
@@ -116,14 +117,20 @@ function acctRender() {
          <input class="acIn" id="acName" maxlength="20" autocomplete="nickname" placeholder="Display name" onkeydown="if(event.key==='Enter')acctName()">${acctMsg()}${acctBtn("Create my profile", "acctName()")}${acctBtn("Sign out", "acctOut()", "quiet")}`;
   } else {
     const p = acct.profile, fr = acct.friends || [];
+    const rq = acct.req || { incoming: [], outgoing: [], notifications: [] };
+    const news = rq.notifications.filter(n => n.type === "friend_accepted" && !n.read);
     h = `<h3 id="infoTitle">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p>${acctMsg()}
+         ${news.map(n => `<div class="acNote">${sbEsc(n.name)} accepted your friend request.</div>`).join("")}
+         ${rq.incoming.length ? `<h4 class="ptH">Friend requests (${rq.incoming.length})</h4>${rq.incoming.map(r => `<div class="acFriend"><span><b>${sbEsc(r.name)}</b> wants to be friends</span><span><button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button><button class="acX" onclick="acctRespond('${r.id}',false)">Decline</button></span></div>`).join("")}` : ""}
          ${acctBtn("Leaderboard", "openBoard()")}
          <h4 class="ptH">Invite a friend</h4>
-         <p class="plRules">Send them your code. When they type it in, you are friends and see each other on the Friends leaderboard.</p>
+         <p class="plRules">Send them your code. When they type it in you get a friend request, and once you accept you see each other on the Friends leaderboard.</p>
          <div class="acCode sel">${sbEsc(p.invite_code || "")}</div>
          <div class="acRow">${acctBtn("Share my code", "acctShare()", "quiet")}</div>
          <h4 class="ptH">Add a friend</h4>
+         <p class="plRules">Type the code a friend sent you. They get a request and have to accept it.</p>
          <div class="acRow"><input class="acIn" id="acFriend" maxlength="12" autocapitalize="characters" placeholder="Their code" onkeydown="if(event.key==='Enter')acctAdd()">${acctBtn("Add", "acctAdd()")}</div>
+         ${rq.outgoing.length ? `<h4 class="ptH">Waiting for an answer</h4>${rq.outgoing.map(r => `<div class="acFriend"><span>${sbEsc(r.name)}</span><button class="acX" onclick="acctCancel('${r.id}')">Cancel</button></div>`).join("")}` : ""}
          <h4 class="ptH">Friends (${fr.length})</h4>
          ${fr.length ? fr.map(f => `<div class="acFriend"><span>${sbEsc(f.display_name)}</span><button class="acX" aria-label="Remove ${sbEsc(f.display_name)}" onclick="acctRemove('${f.id}')">Remove</button></div>`).join("") : `<p class="plRules">No friends yet.</p>`}
          <h4 class="ptH">Privacy</h4>
@@ -144,7 +151,7 @@ async function acctEmail() {
 async function acctCode() {
   const t = (document.getElementById("acCode").value || "").replace(/\s/g, ""); if (!/^\d{6,10}$/.test(t)) { acct.msg = "Type the numbers from the email."; return acctRender(); }
   acct.msg = "Checking…"; acctRender();
-  try { await sbVerify(acct.email, t); acct.msg = ""; acct.step = "email"; await acctLoad(); acctPull(); }
+  try { await sbVerify(acct.email, t); acct.msg = ""; acct.step = "email"; await acctLoad(); acctPull(); acctStartPolling(); }
   catch (e) { acct.msg = /expired|invalid/i.test(e.message) ? "That code is wrong or has expired. Ask for a new one." : e.message; }
   acctRender();
 }
@@ -156,9 +163,40 @@ async function acctName() {
 }
 async function acctAdd() {
   const v = (document.getElementById("acFriend").value || "").trim(); if (!v) return;
-  try { const r = await sbRpc("add_friend", { p_code: v }); acct.msg = `You and ${r.friend} are now friends.`; acct.friends = await sbRpc("my_friends"); } catch (e) { acct.msg = e.message; }
+  try {
+    const r = await sbRpc("add_friend", { p_code: v });
+    acct.msg = r.status === "sent" ? `Request sent to ${r.name}. They will be asked to accept.` : r.status === "friends" ? `You and ${r.name} are now friends.` : r.status === "already_sent" ? `You already asked ${r.name}: waiting for an answer.` : `You and ${r.name} are already friends.`;
+    acct.friends = await sbRpc("my_friends"); await acctRequests();
+  } catch (e) { acct.msg = e.message; }
   acctRender();
 }
+async function acctRespond(id, yes) {
+  try { const r = await sbRpc("respond_request", { p_from: id, p_accept: !!yes }); acct.msg = yes ? `You and ${r.name} are now friends.` : "Request declined. They are not told."; acct.friends = await sbRpc("my_friends"); await acctRequests(); } catch (e) { acct.msg = e.message; }
+  acctRender();
+}
+async function acctCancel(id) { try { await sbRpc("cancel_request", { p_to: id }); acct.msg = "Request cancelled."; await acctRequests(); } catch (e) { acct.msg = e.message; } acctRender(); }
+/* friend requests and the notices that go with them: loaded when you open the account, and polled while the app is open */
+async function acctRequests() {
+  const r = await sbRpc("my_requests"); acct.req = r; acctBadge(); return r;
+}
+function acctBadge() {
+  const n = (acct.req && (acct.req.incoming.length + acct.req.notifications.filter(x => x.type === "friend_accepted" && !x.read).length)) || 0;
+  const g = document.querySelector(".fab.gear"); if (g) g.classList.toggle("dot", n > 0);
+  const r = document.getElementById("acctRow"); if (r) { const b = r.querySelector("b"); if (b) b.textContent = n ? `Account and leaderboard (${n} new)` : "Account and leaderboard"; }
+}
+let acctPolling = null;
+async function acctPoll(announce) {
+  if (!sbOn() || !sbSession() || document.hidden) return;
+  let r; try { r = await acctRequests(); } catch (e) { return; }
+  let seen = 0; try { seen = +localStorage.getItem(K.notifSeen) || 0; } catch (e) {}
+  const fresh = r.notifications.filter(n => n.id > seen && !n.read).sort((a, b) => a.id - b.id);
+  if (fresh.length) {
+    try { localStorage.setItem(K.notifSeen, String(fresh[fresh.length - 1].id)); } catch (e) {}
+    if (announce !== false && typeof toast === "function") fresh.forEach(n => toast(n.type === "friend_request" ? `${n.name} sent you a friend request` : `${n.name} accepted your friend request`));
+  }
+  const m = document.getElementById("infoModal"); if (m && !m.hidden && document.getElementById("infoBody").querySelector(".acFriend, .acCode")) { acct.friends = await sbRpc("my_friends").catch(() => acct.friends); acctRender(); }
+}
+function acctStartPolling() { if (acctPolling || !sbOn()) return; acctPolling = setInterval(acctPoll, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden) acctPoll(); }); }
 async function acctRemove(id) { if (!confirm("Remove this friend?")) return; try { await sbRpc("remove_friend", { p_friend: id }); acct.friends = await sbRpc("my_friends"); acct.msg = ""; } catch (e) { acct.msg = e.message; } acctRender(); }
 async function acctGlobal(on) { try { const t = await sbToken(); await sbJson("/rest/v1/profiles?id=eq." + sbSession().uid, { method: "PATCH", headers: { apikey: SB.key, Authorization: "Bearer " + t, "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify({ show_global: !!on }) }); acct.profile.show_global = !!on; hintSet(acct.profile); acct.msg = on ? "You are on the Everyone leaderboard." : "You are hidden from the Everyone leaderboard."; } catch (e) { acct.msg = e.message; } acctRender(); }
 function acctShare() {
@@ -166,7 +204,7 @@ function acctShare() {
   if (navigator.share) navigator.share({ title: "Trackside Pass", text }).catch(() => {});
   else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { acct.msg = "Copied. Paste it into a message."; acctRender(); }).catch(() => {});
 }
-async function acctOut() { await sbSignOut(); acct = { profile: null, friends: [], msg: "You are signed out. Your picks stay on this phone.", busy: false, step: "email", email: "", loaded: true }; acctRender(); }
+async function acctOut() { await sbSignOut(); acct = { profile: null, friends: [], req: { incoming: [], outgoing: [], notifications: [], unread: 0 }, msg: "You are signed out. Your picks stay on this phone.", busy: false, step: "email", email: "", loaded: true }; acctBadge(); acctRender(); }
 async function acctDelete() {
   if (!confirm("Delete your account? Your profile, picks and friendships are removed from the server for good. Picks on this phone stay.")) return;
   if (!confirm("This cannot be undone. Delete it?")) return;
@@ -224,4 +262,4 @@ async function openFriendPicks(gk) {
 
 /* the app calls these from its own screens */
 function acctAppOpen() { if (sbOn() && sbSession()) acctPull(); }
-document.addEventListener("DOMContentLoaded", () => { const r = document.getElementById("acctRow"); if (r && sbOn()) r.hidden = false; if (sbOn() && sbSession()) setTimeout(acctPull, 1500); });
+document.addEventListener("DOMContentLoaded", () => { const r = document.getElementById("acctRow"); if (r && sbOn()) r.hidden = false; if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); } });

@@ -219,19 +219,118 @@ $$;
 revoke all on function public.my_profile() from public, anon;
 grant execute on function public.my_profile() to authenticated;
 
+---------------------------------------------------------------- friend requests and notifications
+-- Entering a friend code sends a REQUEST to the code's owner; friendship exists only once they accept. Notifications (an in-app inbox that a push
+-- sender can read later: new rows are the queue) tell the owner about the request and the sender when it is accepted.
+create table if not exists public.friend_requests (
+  from_user  uuid not null references auth.users(id) on delete cascade,
+  to_user    uuid not null references auth.users(id) on delete cascade,
+  status     text not null default 'pending' check (status in ('pending', 'declined')),
+  created_at timestamptz not null default now(),
+  primary key (from_user, to_user),
+  check (from_user <> to_user)
+);
+create index if not exists friend_requests_to on public.friend_requests (to_user);
+alter table public.friend_requests enable row level security;
+drop policy if exists friend_requests_own on public.friend_requests;
+create policy friend_requests_own on public.friend_requests for select to authenticated using (auth.uid() in (from_user, to_user));
+revoke insert, update, delete on public.friend_requests from anon, authenticated;
+
+create table if not exists public.notifications (
+  id         bigint generated always as identity primary key,
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  type       text not null,                           -- 'friend_request' | 'friend_accepted'
+  data       jsonb not null default '{}'::jsonb,      -- {"from": uuid, "name": text}
+  created_at timestamptz not null default now(),
+  read_at    timestamptz
+);
+create index if not exists notifications_user on public.notifications (user_id, created_at desc);
+alter table public.notifications enable row level security;
+drop policy if exists notifications_own on public.notifications;
+create policy notifications_own on public.notifications for select to authenticated using (user_id = auth.uid());
+revoke insert, update, delete on public.notifications from anon, authenticated;
+
+-- send a request (or, if they already asked you, accept theirs): {"status": "sent" | "friends" | "already_friends" | "already_sent", "name": ...}
 create or replace function public.add_friend(p_code text) returns jsonb language plpgsql security definer set search_path = public as $$
-declare uid uuid := auth.uid(); other uuid; nm text;
+declare uid uuid := auth.uid(); other uuid; oname text; myname text; req public.friend_requests;
 begin
   if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  select display_name into myname from public.profiles where id = uid;
+  if myname is null then raise exception 'Choose a display name first' using errcode = '22023'; end if;
   select i.user_id into other from public.invites i where i.code = upper(btrim(p_code));
   if other is null then raise exception 'No one has that code' using errcode = '22023'; end if;
   if other = uid then raise exception 'That is your own code' using errcode = '22023'; end if;
-  insert into public.friendships(user_a, user_b) values (least(uid, other), greatest(uid, other)) on conflict do nothing;
-  select display_name into nm from public.profiles where id = other;
-  return jsonb_build_object('friend', nm);
+  select display_name into oname from public.profiles where id = other;
+  if exists (select 1 from public.friendships where user_a = least(uid, other) and user_b = greatest(uid, other)) then
+    return jsonb_build_object('status', 'already_friends', 'name', oname);
+  end if;
+  -- they already asked you: that is a yes
+  if exists (select 1 from public.friend_requests where from_user = other and to_user = uid and status = 'pending') then
+    insert into public.friendships(user_a, user_b) values (least(uid, other), greatest(uid, other)) on conflict do nothing;
+    delete from public.friend_requests where (from_user = other and to_user = uid) or (from_user = uid and to_user = other);
+    insert into public.notifications(user_id, type, data) values (other, 'friend_accepted', jsonb_build_object('from', uid, 'name', myname));
+    return jsonb_build_object('status', 'friends', 'name', oname);
+  end if;
+  select * into req from public.friend_requests where from_user = uid and to_user = other;
+  if found then
+    if req.status = 'pending' then return jsonb_build_object('status', 'already_sent', 'name', oname); end if;
+    if req.created_at > now() - interval '7 days' then raise exception 'That request was declined. Try again in a week.' using errcode = '22023'; end if;
+    update public.friend_requests set status = 'pending', created_at = now() where from_user = uid and to_user = other;
+  else
+    if (select count(*) from public.friend_requests where from_user = uid and status = 'pending') >= 20 then raise exception 'You have 20 requests waiting. Cancel one first.' using errcode = '22023'; end if;
+    insert into public.friend_requests(from_user, to_user) values (uid, other);
+  end if;
+  insert into public.notifications(user_id, type, data) values (other, 'friend_request', jsonb_build_object('from', uid, 'name', myname));
+  return jsonb_build_object('status', 'sent', 'name', oname);
 end $$;
 revoke all on function public.add_friend(text) from public, anon;
 grant execute on function public.add_friend(text) to authenticated;
+
+-- accept or decline a request someone sent you
+create or replace function public.respond_request(p_from uuid, p_accept boolean) returns jsonb language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid(); myname text; fname text;
+begin
+  if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  if not exists (select 1 from public.friend_requests where from_user = p_from and to_user = uid and status = 'pending') then
+    raise exception 'That request is no longer there' using errcode = '22023';
+  end if;
+  select display_name into myname from public.profiles where id = uid;
+  select display_name into fname from public.profiles where id = p_from;
+  if p_accept then
+    insert into public.friendships(user_a, user_b) values (least(uid, p_from), greatest(uid, p_from)) on conflict do nothing;
+    delete from public.friend_requests where from_user = p_from and to_user = uid;
+    insert into public.notifications(user_id, type, data) values (p_from, 'friend_accepted', jsonb_build_object('from', uid, 'name', myname));
+  else
+    update public.friend_requests set status = 'declined', created_at = now() where from_user = p_from and to_user = uid;   -- the sender is not told
+  end if;
+  update public.notifications set read_at = now() where user_id = uid and type = 'friend_request' and data->>'from' = p_from::text and read_at is null;
+  return jsonb_build_object('status', case when p_accept then 'accepted' else 'declined' end, 'name', fname);
+end $$;
+revoke all on function public.respond_request(uuid, boolean) from public, anon;
+grant execute on function public.respond_request(uuid, boolean) to authenticated;
+
+create or replace function public.cancel_request(p_to uuid) returns void language sql security definer set search_path = public as $$
+  delete from public.friend_requests where from_user = auth.uid() and to_user = p_to
+$$;
+revoke all on function public.cancel_request(uuid) from public, anon;
+grant execute on function public.cancel_request(uuid) to authenticated;
+
+-- requests waiting for me, requests I sent that are still waiting, and my recent notifications
+create or replace function public.my_requests() returns jsonb language sql stable security definer set search_path = public as $$
+  select jsonb_build_object(
+    'incoming', coalesce((select jsonb_agg(jsonb_build_object('id', r.from_user, 'name', p.display_name, 'at', r.created_at) order by r.created_at) from public.friend_requests r join public.profiles p on p.id = r.from_user where r.to_user = auth.uid() and r.status = 'pending'), '[]'::jsonb),
+    'outgoing', coalesce((select jsonb_agg(jsonb_build_object('id', r.to_user, 'name', p.display_name, 'at', r.created_at) order by r.created_at) from public.friend_requests r join public.profiles p on p.id = r.to_user where r.from_user = auth.uid() and r.status = 'pending'), '[]'::jsonb),
+    'notifications', coalesce((select jsonb_agg(jsonb_build_object('id', n.id, 'type', n.type, 'name', n.data->>'name', 'at', n.created_at, 'read', n.read_at is not null) order by n.created_at desc) from (select * from public.notifications where user_id = auth.uid() order by created_at desc limit 20) n), '[]'::jsonb),
+    'unread', (select count(*) from public.notifications where user_id = auth.uid() and read_at is null))
+$$;
+revoke all on function public.my_requests() from public, anon;
+grant execute on function public.my_requests() to authenticated;
+
+create or replace function public.mark_notifications_read() returns void language sql security definer set search_path = public as $$
+  update public.notifications set read_at = now() where user_id = auth.uid() and read_at is null
+$$;
+revoke all on function public.mark_notifications_read() from public, anon;
+grant execute on function public.mark_notifications_read() to authenticated;
 
 create or replace function public.remove_friend(p_friend uuid) returns void language sql security definer set search_path = public as $$
   delete from public.friendships where least(auth.uid(), p_friend) = user_a and greatest(auth.uid(), p_friend) = user_b

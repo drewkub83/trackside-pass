@@ -33,14 +33,20 @@
   </header>
   <div id="hero"></div>
   <div id="season"></div>
-  <div class="sect">Series</div>
-  <ul class="list" id="champList"></ul>
   <div class="sect">Your passport</div>
   <ul class="list">
     <li><button class="track-row series" onclick="openPassport()"><span class="tile pp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span>
       <div><h2>Passport</h2><div class="meta" id="ppMeta">Stamps and badges from race weekends</div></div>
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>
   </ul>
+</section>
+
+<!-- SERIES (a tab: every series) -->
+<section class="screen" id="seriesList">
+  <div class="bar"><h2 class="ptitle2">Series</h2><button class="fab setbtn" aria-label="Settings" onclick="openSettings()"><svg viewBox="0 0 24 24"><path d="M4 7h8M18 7h2M4 12h2M12 12h8M4 17h9M19 17h1"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="12" r="2.2"/><circle cx="16" cy="17" r="2.2"/></svg></button></div>
+  <ul class="list" id="champList"></ul>
+  <div class="sect">All tracks</div>
+  <div class="atBox" id="allTracks"></div>
 </section>
 
 <!-- PICK YOUR PODIUM (a tab of the home bar) -->
@@ -134,7 +140,7 @@
 
 <!-- SERIES: tracks in order of that series' next race -->
 <section class="screen" id="series">
-  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2" id="serTitle"></h2></div>
+  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen(seriesBack)"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2" id="serTitle"></h2></div>
   <div class="sect">Ordered by next race</div>
   <ul class="list" id="trackList"></ul>
   <div class="soon" id="serNote"></div>
@@ -292,7 +298,8 @@
 </section>
 
 <nav class="tabs hometabs" id="homeTabs" hidden>
-  <button data-t="home" onclick="homeTab('home')"><svg viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h13l-3 4 3 4H5"/></svg>Series</button>
+  <button data-t="home" onclick="homeTab('home')"><svg viewBox="0 0 24 24"><path d="M3.5 11 12 3.5 20.5 11"/><path d="M5.5 9.5V20h13V9.5M10 20v-6h4v6"/></svg>Home</button>
+  <button data-t="seriesList" onclick="homeTab('seriesList')"><svg viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg>Series</button>
   <button data-t="play" onclick="homeTab('play')"><svg viewBox="0 0 24 24"><path d="M3 21h18M4 21v-6h5v6M9.5 21V8h5v13M15 21v-9h5v9"/></svg>Podium</button>
   <button data-t="board" onclick="homeTab('board')"><svg viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5M12 13v4M8.5 20h7M10 17h4"/></svg>Leaders</button>
   <button data-t="account" id="acctTab" onclick="homeTab('account')"><svg class="acIcon" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.8 3.6-5.6 7-5.6s6.2 1.8 7 5.6"/></svg><span class="acIni" hidden></span>Account</button>

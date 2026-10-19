@@ -242,10 +242,9 @@ function renderSeason(){
     const std=standingsFor(c.guide), stYr=std&&((std.asOf||"").match(/20\d\d/)||[])[0], lead=std&&(stYr?stYr===yr:lastOk)&&std.classes[0]&&std.classes[0].rows[0];
     const role=seasonRole(c,pick);
     return `<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`; }).filter(Boolean).slice(0,4);
-  const pc=playCardHtml();
-  el.innerHTML=cards.length||pc?`${cards.length?`<div class="sect">Your series, next up</div>`:""}<div class="scards">${cards.join("")}${pc}</div>`:"";
+  el.innerHTML=cards.length?`<div class="sect">Your series, next up</div><div class="scards">${cards.join("")}</div>`:"";
 }
-function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
+function renderHome(){ renderHero(); renderSeason(); renderChampList(); renderAllTracks(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
 function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e.d,s&&s.d].filter(Boolean).sort()[0]||"9999-99-99"; }
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort
@@ -271,6 +270,20 @@ function renderChampList(){
      order still rules within a region, and the regions follow whichever of your series comes first) */
   const regions=[...new Set(ordered.map(c=>c.region||"na"))];
   el.innerHTML=regions.length<2?ordered.map(row).join(""):regions.map(r=>`<li class="regionHead">${REGIONS[r]||r}</li>`+ordered.filter(c=>(c.region||"na")===r).map(row).join("")).join("");
+}
+/* the Series tab's "All tracks" table: every track grouped by country, countries A to Z (the country is the last part of the track's place; US states and a few UK names are folded into their country) */
+const US_STATES=new Set("Alabama Alaska Arizona Arkansas California Colorado Connecticut Delaware Florida Georgia Hawaii Idaho Illinois Indiana Iowa Kansas Kentucky Louisiana Maine Maryland Massachusetts Michigan Minnesota Mississippi Missouri Montana Nebraska Nevada New-Hampshire New-Jersey New-Mexico New-York North-Carolina North-Dakota Ohio Oklahoma Oregon Pennsylvania Rhode-Island South-Carolina South-Dakota Tennessee Texas Utah Vermont Virginia Washington West-Virginia Wisconsin Wyoming".split(" ").map(s=>s.replace(/-/g," ")));
+const CANADA_PROV=new Set(["Ontario","Quebec","British Columbia","Alberta","Nova Scotia","Manitoba","Saskatchewan"]);
+function countryOf(t){
+  const last=String(t.place||"").split(",").pop().trim();
+  if(US_STATES.has(last)) return "United States"; if(CANADA_PROV.has(last)) return "Canada";
+  return ({England:"United Kingdom",Scotland:"United Kingdom",Wales:"United Kingdom",UAE:"United Arab Emirates"})[last]||last||"Other";
+}
+function renderAllTracks(){
+  const el=document.getElementById("allTracks"); if(!el||typeof TRACKS==="undefined") return; const by={};
+  TRACKS.forEach(t=>{ (by[countryOf(t)]=by[countryOf(t)]||[]).push(t); });
+  const place=t=>{ const p=String(t.place||"").split(","); return p.length>1?p.slice(0,-1).join(",").trim():""; };
+  el.innerHTML=Object.keys(by).sort((x,z)=>x.localeCompare(z)).map(c=>`<div class="atHead">${esc(c)}<span>${by[c].length}</span></div>`+by[c].sort((x,z)=>x.short.localeCompare(z.short)).map(t=>`<button class="atRow" onclick="openTrack('${t.id}','seriesList')"><b>${esc(t.short)}</b><span>${esc(place(t))}</span></button>`).join("")).join("");
 }
 let curChamp=null, serRows=[];
 function toggleGoingSeries(i){ const r=serRows[i]; if(!r) return; const on=!isGoing(r.t,r.e); setGoing(r.t,r.e,on); renderSeries(); renderHero(); toast(on?`You're going: ${r.t.short}`:"Removed from your races"); }
@@ -301,15 +314,22 @@ function renderSeries(){
 let backTo="series";
 function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id)); window.scrollTo(0,0); syncMapMode(); syncHomeTabs(id); }
 /* the home bar (Series, Podium, Leaders, Account) is shown on those four pages only */
-const HOME_TABS=["home","play","board","account"];
+const HOME_TABS=["home","seriesList","play","board","account"];
 function syncHomeTabs(id){
   const nav=document.getElementById("homeTabs"); if(!nav) return; const show=HOME_TABS.includes(id), acc=typeof sbOn==="function"&&sbOn();
   nav.hidden=!show; document.body.classList.toggle("hastabs",show);
   nav.querySelectorAll("button").forEach(b=>{ const t=b.dataset.t; b.hidden=(t==="board"||t==="account")&&!acc; b.classList.toggle("on",t===id); });
+  const pb=nav.querySelector('[data-t="play"]'); if(pb) pb.classList.toggle("dot2",podiumOpen());
 }
-function homeTab(id){ if(id==="play"){ renderPlay(); showScreen("play"); } else if(id==="board"&&typeof openBoard==="function") openBoard(); else if(id==="account"&&typeof openAccount==="function") openAccount(); else showScreen(id); }
+/* a quiet dot on the Podium tab while a game is open and you have not finished your picks */
+function podiumOpen(){
+  if(typeof ENTRIES==="undefined"||typeof TRACKS==="undefined") return false; const today=localToday();
+  try{ return ENTRIES.some(g=>TRACKS.some(x=>x.id===g.t)&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&!gameLocked(g)&&g.classes.some(c=>(picksOf(g)[c.h]||[]).length<3)); }catch(e){ return false; }
+}
+function homeTab(id){ if(id==="home"){ renderHome(); showScreen("home"); } else if(id==="play"){ renderPlay(); showScreen("play"); } else if(id==="board"&&typeof openBoard==="function") openBoard(); else if(id==="account"&&typeof openAccount==="function") openAccount(); else showScreen(id); }
 function syncMapMode(){ const d=document.getElementById("detail"), m=document.getElementById("pMap"); document.body.classList.toggle("mapmode",!!(d&&m&&d.classList.contains("on")&&m.classList.contains("on"))); updateWake(); }
-function openSeries(id){ curChamp=champ(id)||CHAMPS[0]; renderSeries(); showScreen("series"); }
+let seriesBack="seriesList";   /* where the series page returns to: the Series tab, or Home when opened from a "next up" card */
+function openSeries(id){ const on=document.querySelector(".screen.on"); seriesBack=on&&on.id==="home"?"home":"seriesList"; curChamp=champ(id)||CHAMPS[0]; renderSeries(); showScreen("series"); }
 
 /* ---------------- DETAIL ---------------- */
 /* Each time a track's data is re-issued with edits baked in (its `rev` goes up), forget this device's
@@ -362,7 +382,7 @@ function goHome(){
      leaves for the track list. (Swiping back does the same.) */
   const sc=document.querySelector(".screen.on"), pn=sc&&sc.id==="detail"&&sc.querySelector(".panel.on");
   if(pn&&!(hubMode&&pn.id==="pMap")){ if(pn.id==="pMap") backToHub(); else document.getElementById("hubTabBtn").click(); return; }
-  renderHome(); stopGps(); showScreen(backTo);
+  renderHome(); stopGps(); if(backTo==="play") renderPlay(); showScreen(backTo);
 }
 function tab(btn){
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b===btn));
@@ -1098,14 +1118,6 @@ function gameRecordHtml(){
   const y=new Date().getFullYear(), st=gameSeason(y); if(!st.rows.length) return "";
   return `<div class="gmRecs"><h4>Your ${y} season</h4>${st.rows.map(r=>`<div class="gmRec"><span>${esc(r.name)}</span><b>${r.sc.pts}/${r.sc.max}</b></div>`).join("")}<div class="gmRec tot"><span>Total · ${st.winners} class winner${st.winners===1?"":"s"} called</span><b>${st.pts}</b></div></div>`;
 }
-/* a one-line Home card: your season total, or an invitation while a game is open */
-function playCardHtml(){
-  if(typeof ENTRIES==="undefined") return ""; const y=new Date().getFullYear(), st=gameSeason(y), today=localToday();
-  const open=ENTRIES.find(g=>{ const t=TRACKS.find(x=>x.id===g.t); return t&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4; });
-  if(!st.rows.length&&!open) return "";
-  const line=st.rows.length?`<b>${st.pts}</b> points in ${st.rows.length} weekend${st.rows.length===1?"":"s"}${open?" · a new game is open":""}`:"A game is open: call the podium before the race";
-  return `<button class="scard playCard" onclick="openPlay()"><div class="scTop"><b>Pick your podium · ${y}</b><span>${st.rows.length?"Season total":"Play"}</span></div><div class="scNext">${line}</div></button>`;
-}
 /* Leaderboard / Account buttons (js/account.js): only once the Supabase project is configured there */
 function accountButtons(g){
   if(typeof sbOn!=="function"||!sbOn()) return "";
@@ -1137,8 +1149,7 @@ function openPoints(){
   document.getElementById("infoBody").innerHTML=pointsHtml();
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
-function playOpenEntry(){ const today=localToday(); return (typeof ENTRIES!=="undefined"&&ENTRIES.find(g=>TRACKS.some(x=>x.id===g.t)&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4))||null; }
-function playNow(tid){ openTrack(tid,"home").then(()=>setTimeout(openGame,150)); }
+function playNow(tid){ openTrack(tid,"play").then(()=>setTimeout(openGame,150)); }
 function openPlay(){ renderPlay(); showScreen("play"); }
 /* the Podium tab: your season, the games that are open, and what you scored */
 function renderPlay(){
@@ -2184,7 +2195,7 @@ function swipeBack(){
   if(hubBack()) return;
   const sh=document.getElementById("sheet"); if(sh&&!sh.hidden){ closeSheet(); return; }
   const sc=document.querySelector(".screen.on"); if(!sc||sc.id==="home") return;
-  if(["play","board","account"].includes(sc.id)){ showScreen("home"); return; }
+  if(["seriesList","play","board","account"].includes(sc.id)){ showScreen("home"); return; }
   /* the detail screen's tabs are Hub/Map/Events/Info: one swipe from Map/Events/Info goes back to the hub, and a
      second swipe from the hub exits to the track list (goHome does both). */
   if(sc.id==="detail"){ goHome(); return; }

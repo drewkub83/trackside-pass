@@ -926,3 +926,16 @@ body.hastabs .screen.on{padding-bottom:104px}
 .plCard b{display:block;font-size:17px;font-weight:600}.plCard small{display:block;margin-top:3px;font-size:13px;color:var(--ink-2)}
 .plCard .plGo{float:right;font-size:13px;color:var(--accent);font-weight:600}
 .plTotal{display:flex;gap:10px;margin-top:12px}.plTotal div{flex:1;padding:14px 16px;border-radius:20px;background:var(--tint)}.plTotal b{display:block;font-size:30px;font-weight:300}.plTotal small{font-size:12px;color:var(--ink-2)}
+
+/* no double-tap zoom (pinch still works; the map handles its own gestures) */
+html{touch-action:manipulation}
+.hometabs button.dot2::after{content:"";position:absolute;top:7px;right:9px;width:9px;height:9px;border-radius:50%;background:var(--yellow);border:2px solid var(--nav)}
+.hometabs button.on.dot2::after{display:none}
+.hometabs button{padding:0 12px}.hometabs button.on{padding:0 16px 0 14px}
+
+/* Series tab: the compact All tracks table, grouped by country */
+.atBox{padding:0 22px 120px}
+.atHead{display:flex;justify-content:space-between;align-items:baseline;margin:16px 2px 4px;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-2)}
+.atHead span{font-weight:400;opacity:.7}
+.atRow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;width:100%;padding:10px 4px;border-top:1px solid var(--line);font:inherit;font-size:15px;color:var(--ink);text-align:left}
+.atRow b{font-weight:500}.atRow span{font-size:13px;color:var(--ink-2);text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

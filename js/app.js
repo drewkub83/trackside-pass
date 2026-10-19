@@ -1249,6 +1249,12 @@ function hubWatchCard(c){
   }
   return watchHtml;
 }
+/* friends who checked in at this track today (their passports, synced): shown only when there are some */
+function hubFriendsCard(){
+  const rows=typeof acctFriendsHere==="function"?acctFriendsHere():[]; if(!rows.length) return "";
+  const tm=ms=>{ try{ return new Date(Number(ms)).toLocaleTimeString([],{hour:"numeric",minute:"2-digit",timeZone:cur.tz}); }catch(e){ return ""; } };
+  return `<div class="hubCard hubFriends"><h4>Friends here</h4>${rows.map(f=>`<div class="acFriend"><button class="lbBtn" aria-label="Open ${esc(f.display_name)}'s passport" onclick="openPassportOf('${f.user_id}','')">${esc(f.display_name)}</button><small>checked in ${esc(tm(f.since))}</small></div>`).join("")}</div>`;
+}
 function hubStandingsCard(c){
   const {sid,chev}=c;
   /* championship standings for that same series -- top of each class only; tap for the full table. */
@@ -1339,7 +1345,7 @@ function renderHub(){
   const liveStreamHtml=hubLiveStream(ctx), liveTimingHtml=hubTimingCard(ctx);
   const {quickHtml,dayHtml,lastHereHtml}=hubBeforeWeekend(ctx);
   const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"", lv=liveSrc(), liveHtml=lv?liveCardHtml(lv,chev):""; if(lv) liveStart();
-  body.innerHTML=sessionHtml+quickHtml+dayHtml+liveHtml+resultsHtml+gameHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
+  body.innerHTML=sessionHtml+hubFriendsCard()+quickHtml+dayHtml+liveHtml+resultsHtml+gameHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */

@@ -506,6 +506,47 @@ end $$;
 revoke all on function public.passport_of(uuid) from public, anon;
 grant execute on function public.passport_of(uuid) to authenticated;
 
+-- friends checked in at a track today (a friend's stamp for that track and that track-local day): the hub's "Friends here" card. Friends only, even for public accounts.
+create or replace function public.friends_at(p_track text, p_day text) returns table (user_id uuid, display_name text, since bigint)
+language plpgsql stable security definer set search_path = public as $$
+declare uid uuid := auth.uid();
+begin
+  if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  if p_track !~ '^[a-z0-9-]{1,40}$' or p_day !~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' then raise exception 'Bad track or day' using errcode = '22023'; end if;
+  return query
+    select pr.id, pr.display_name, min((e->>'at')::bigint)
+    from public.friendships f
+    join public.profiles pr on pr.id = case when f.user_a = uid then f.user_b else f.user_a end
+    join public.passports pp on pp.user_id = pr.id
+    cross join lateral jsonb_array_elements(pp.stamps) e
+    where uid in (f.user_a, f.user_b) and e->>'t' = p_track and e->>'day' = p_day
+    group by pr.id, pr.display_name order by min((e->>'at')::bigint), lower(pr.display_name) limit 50;
+end $$;
+revoke all on function public.friends_at(text, text) from public, anon;
+grant execute on function public.friends_at(text, text) to authenticated;
+
+-- the recap's "with friends": race weekends (same track, same weekend) that you and each friend both checked in at, in a calendar year
+create or replace function public.friends_shared(p_year int) returns table (user_id uuid, display_name text, t text, ev text)
+language plpgsql stable security definer set search_path = public as $$
+declare uid uuid := auth.uid();
+begin
+  if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  return query
+    with me as (
+      select distinct e->>'t' as t, e->>'ev' as ev from public.passports p, jsonb_array_elements(p.stamps) e
+      where p.user_id = uid and e->>'ev' like p_year::text || '-%'
+    ), fr as (
+      select case when f.user_a = uid then f.user_b else f.user_a end as id from public.friendships f where uid in (f.user_a, f.user_b)
+    )
+    select distinct pr.id, pr.display_name, m.t, m.ev
+    from fr join public.profiles pr on pr.id = fr.id join public.passports pp on pp.user_id = fr.id
+    cross join lateral jsonb_array_elements(pp.stamps) fe
+    join me m on m.t = fe.value->>'t' and m.ev = fe.value->>'ev'
+    order by pr.display_name, m.ev, m.t;
+end $$;
+revoke all on function public.friends_shared(int) from public, anon;
+grant execute on function public.friends_shared(int) to authenticated;
+
 ---------------------------------------------------------------- push notifications (iPhone: APNs, Android: Firebase Cloud Messaging)
 -- Phones register a device token; every new row in `notifications` calls the `push` edge function (supabase/functions/push/index.ts), which sends it.
 create table if not exists public.push_tokens (

@@ -118,7 +118,7 @@ function acctRender() {
          ${acctMsg()}${acctBtn("Email me a code", "acctEmail()")}<p class="plRules fine">By signing in you accept the <a href="privacy.html" target="_blank" rel="noopener">privacy policy and terms</a>. The game works without an account too.</p>`;
   } else if (!acct.profile) {
     h = `<h3 class="acH">Choose your name</h3><p class="plRules">This is what friends and the leaderboard show: 3 to 20 letters, numbers, spaces, dots, dashes or underscores. Not your email.</p>
-         <input class="acIn" id="acName" maxlength="20" autocomplete="nickname" placeholder="Display name" onkeydown="if(event.key==='Enter')acctName()">${acctMsg()}${acctBtn("Create my profile", "acctName()")}${acctBtn("Sign out", "acctOut()", "quiet")}`;
+         <input class="acIn" id="acName" maxlength="20" autocomplete="nickname" placeholder="Display name" onkeydown="if(event.key==='Enter')acctName()"><label class="acCheck"><input type="checkbox" id="acPub" checked> Public account: anyone can find me, see me on the Everyone leaderboard and open my passport. Untick for friends only; you can change it any time.</label>${acctMsg()}${acctBtn("Create my profile", "acctName()")}${acctBtn("Sign out", "acctOut()", "quiet")}`;
   } else {
     const p = acct.profile, fr = acct.friends || [];
     const rq = acct.req || { incoming: [], outgoing: [], notifications: [] };
@@ -126,7 +126,7 @@ function acctRender() {
     h = `<h3 class="acH">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p>${acctMsg()}
          ${news.map(n => `<div class="acNote">${sbEsc(n.name)} accepted your friend request.</div>`).join("")}
          ${rq.incoming.length ? `<h4 class="ptH">Friend requests (${rq.incoming.length})</h4>${rq.incoming.map(r => `<div class="acFriend"><span><b>${sbEsc(r.name)}</b> wants to be friends</span><span><button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button><button class="acX" onclick="acctRespond('${r.id}',false)">Decline</button></span></div>`).join("")}` : ""}
-         ${acctBtn("Leaderboard", "openBoard()")}
+         ${acctBtn("Leaderboard", "openBoard()")}${acctBtn("Your " + new Date().getFullYear() + " recap", "openRecap()", "quiet")}
          <h4 class="ptH">Add a friend</h4>
          <input class="acIn" id="acFind" autocomplete="off" autocapitalize="none" placeholder="Search by name" oninput="acctFind(this.value)">
          <div id="acResults" class="acResults"></div>
@@ -140,8 +140,8 @@ function acctRender() {
          <h4 class="ptH">Friend not on Trackside Pass yet?</h4>
          <div class="acRow">${acctBtn("Send them the app", "acctShare()", "quiet")}</div>
          <h4 class="ptH">Privacy</h4>
-         <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Let other players find me and show me on the Everyone leaderboard</label>
-         <p class="plRules fine">Friends always see you. Nobody sees your email. Friends can see your picks once a race has started. Anyone who can see you can also open your passport: your tracks, stamps and badges.</p>
+         <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Public account: anyone can find me, see me on the Everyone leaderboard and open my passport</label>
+         <p class="plRules fine">Switched off, only friends can find you, see your score and open your passport. Friends can also see your picks once a race has started, and that you are at a track on a race weekend. Nobody sees your email.</p>
          <h4 class="ptH">Your account</h4>
          ${acctBtn("Sign out", "acctOut()", "quiet")}${acctBtn("Delete my account", "acctDelete()", "quiet acDanger")}
          <p class="plRules fine">Deleting removes your profile, picks and friendships from the server for good. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>`;
@@ -164,7 +164,9 @@ async function acctCode() {
 async function acctName() {
   const v = (document.getElementById("acName").value || "").trim();
   if (!/^[A-Za-z0-9][A-Za-z0-9 _.-]{1,18}[A-Za-z0-9]$/.test(v)) { acct.msg = "3 to 20 characters: letters, numbers, spaces, dots, dashes or underscores."; return acctRender(); }
+  const pub = !document.getElementById("acPub") || document.getElementById("acPub").checked;
   try { acct.profile = await sbRpc("create_profile", { p_name: v }); hintSet(acct.profile); acct.msg = ""; acct.friends = []; } catch (e) { acct.msg = e.message; }
+  if (acct.profile && !pub) await acctGlobal(false);
   acctRender(); if (acct.profile) { setTimeout(acctOfferPush, 600); acctPassportSync(); }
 }
 async function acctAdd() {
@@ -221,7 +223,7 @@ async function acctPoll(announce) {
 }
 function acctStartPolling() { if (acctPolling || !sbOn()) return; acctPolling = setInterval(acctPoll, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden) acctPoll(); }); }
 async function acctRemove(id) { if (!confirm("Remove this friend?")) return; try { await sbRpc("remove_friend", { p_friend: id }); acct.friends = await sbRpc("my_friends"); acct.msg = ""; } catch (e) { acct.msg = e.message; } acctRender(); }
-async function acctGlobal(on) { try { const t = await sbToken(); await sbJson("/rest/v1/profiles?id=eq." + sbSession().uid, { method: "PATCH", headers: { apikey: SB.key, Authorization: "Bearer " + t, "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify({ show_global: !!on }) }); acct.profile.show_global = !!on; hintSet(acct.profile); acct.msg = on ? "Other players can find you and you are on the Everyone leaderboard." : "You are hidden from search and from the Everyone leaderboard."; } catch (e) { acct.msg = e.message; } acctRender(); }
+async function acctGlobal(on) { try { const t = await sbToken(); await sbJson("/rest/v1/profiles?id=eq." + sbSession().uid, { method: "PATCH", headers: { apikey: SB.key, Authorization: "Bearer " + t, "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify({ show_global: !!on }) }); acct.profile.show_global = !!on; hintSet(acct.profile); acct.msg = on ? "Your account is public: anyone can find you, see you on the Everyone leaderboard and open your passport." : "Friends only: nobody else can find you or open your passport."; } catch (e) { acct.msg = e.message; } acctRender(); }
 function acctShare() {
   const nm = acct.profile && acct.profile.display_name, text = `Join me on Trackside Pass and pick the podium each race weekend. Search for "${nm}" to add me as a friend. https://tracksidepass.com`;
   if (navigator.share) navigator.share({ title: "Trackside Pass", text }).catch(() => {});
@@ -285,6 +287,55 @@ async function acctPassportSync() {
   } catch (e) { /* offline or no profile yet: it goes next time */ }
   finally { ppSyncing = false; if (ppAgain) { ppAgain = false; setTimeout(acctPassportSync, 500); } }
 }
+/* friends checked in at the track the hub is showing, today (track time): cached, refreshed in the background at most every 2 minutes */
+let fh = { key: "", rows: [], at: 0, busy: false };
+function acctFriendsHere() {
+  if (!sbOn() || !sbSession() || typeof cur === "undefined" || !cur || typeof activeEvent !== "function" || !activeEvent(cur) || !(acct.friends || []).length) return [];
+  const day = trackToday(cur), key = cur.id + "|" + day;
+  if (fh.key !== key) fh = { key, rows: [], at: 0, busy: false };
+  if (!fh.busy && Date.now() - fh.at > 120000) {
+    fh.busy = true; fh.at = Date.now();
+    sbRpc("friends_at", { p_track: cur.id, p_day: day }).then(rows => {
+      const same = JSON.stringify(rows.map(r => r.user_id)) === JSON.stringify(fh.rows.map(r => r.user_id)); fh.rows = rows; fh.busy = false;
+      if (!same && typeof hubMode !== "undefined" && hubMode && fh.key === key) renderHub();
+    }).catch(() => { fh.busy = false; });
+  }
+  return fh.rows;
+}
+/* ---- recap: your year, and who you shared race weekends with ---- */
+function recapStats(p, y) {
+  const yr = String(y), mine = p.stamps.filter(s => String(s.day).startsWith(yr)), before = new Set(p.stamps.filter(s => String(s.day) < yr + "-01-01").map(s => s.t));
+  const tracks = [...new Set(mine.map(s => s.t))], wk = {}; mine.forEach(s => { (wk[s.t] = wk[s.t] || new Set()).add(s.ev); });
+  const top = Object.entries(wk).sort((a, b) => b[1].size - a[1].size)[0];
+  const lo = new Date(y, 0, 1).getTime(), hi = new Date(y + 1, 0, 1).getTime();
+  return { tracks, weekends: Object.values(wk).reduce((n, s) => n + s.size, 0), days: new Set(mine.map(s => s.t + "|" + s.day)).size,
+    fresh: tracks.filter(t => !before.has(t)).length, badges: Object.entries(p.unlocked).filter(([k, v]) => !k.startsWith("t:") && v >= lo && v < hi).length, top: top ? { t: top[0], n: top[1].size } : null };
+}
+function recapWeekend(t, ev) {
+  const tr = TRACKS.find(x => x.id === t), e = tr && tr.events.find(x => x.d === ev), d = new Date(ev + "T12:00:00");
+  return `${sbEsc(tr ? tr.short : t)} · ${sbEsc(e ? e.e : "race weekend")} <small>${d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</small>`;
+}
+async function openRecap() {
+  if (!sbOn()) return; const y = new Date().getFullYear(), box = document.getElementById("rcBody");
+  box.innerHTML = `<h3 class="acH">${y}</h3><p class="plRules">Loading…</p>`; showScreen("recap");
+  await acctPassportSync();                                   // so your friends see this weekend's check-ins and you see theirs
+  let shared = null, rows = null; try { [shared, rows] = await Promise.all([sbRpc("friends_shared", { p_year: y }), sbRpc("leaderboard", { p_scope: "friends", p_year: y, p_series: null, p_game: null })]); } catch (e) {}
+  const st = recapStats(ppLoad(), y), me = (rows || []).find(r => r.is_me), done = new Date() >= new Date(y, 11, 1);
+  const tile = (n, l) => `<div class="rcT"><b>${n}</b><span>${l}</span></div>`;
+  const by = {}; (shared || []).forEach(r => { (by[r.display_name] = by[r.display_name] || []).push(r); });
+  const pals = Object.entries(by).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
+  const pt = st.top ? TRACKS.find(x => x.id === st.top.t) : null;
+  const text = `My ${y} on Trackside Pass: ${st.tracks.length} track${st.tracks.length === 1 ? "" : "s"}, ${st.weekends} race weekend${st.weekends === 1 ? "" : "s"}, ${st.badges} badge${st.badges === 1 ? "" : "s"}${me && Number(me.points) ? `, ${me.points} podium points` : ""}. https://tracksidepass.com`;
+  window.rcText = text;
+  box.innerHTML = `<h3 class="acH">${y} ${done ? "recap" : "so far"}</h3><p class="plRules">${done ? "Your season at the track." : "Your season so far. It updates as you check in and make picks."}</p>
+    ${st.weekends ? `<div class="rcGrid">${tile(st.tracks.length, "track" + (st.tracks.length === 1 ? "" : "s"))}${tile(st.weekends, "race weekend" + (st.weekends === 1 ? "" : "s"))}${tile(st.days, "day" + (st.days === 1 ? "" : "s") + " checked in")}${tile(st.fresh, "new track" + (st.fresh === 1 ? "" : "s"))}${tile(st.badges, "badge" + (st.badges === 1 ? "" : "s") + " earned")}${me ? tile(me.points, "podium points") : ""}</div>
+      ${pt ? `<p class="plRules">Most visited: <b>${sbEsc(pt.short)}</b>, ${st.top.n} weekend${st.top.n === 1 ? "" : "s"}.</p>` : ""}` : `<p class="plRules">No check-ins yet this year. Stamps are earned at a track during a race weekend.</p>${me ? `<div class="rcGrid">${tile(me.points, "podium points")}</div>` : ""}`}
+    <h4 class="ptH">With friends</h4>
+    ${shared === null ? `<p class="plRules">Offline: friends need a signal.</p>` : pals.length ? pals.map(([n, rs]) => `<div class="rcPal"><b>${sbEsc(n)}</b><span>${rs.length} weekend${rs.length === 1 ? "" : "s"} together</span>${rs.map(r => `<div class="rcWk">${recapWeekend(r.t, r.ev)}</div>`).join("")}</div>`).join("") : `<p class="plRules">No shared weekends yet. When you and a friend both check in at the same race weekend, it shows up here.</p>`}
+    ${rows && rows.some(r => Number(r.points) > 0) ? `<h4 class="ptH">Pick your podium, among friends</h4><div class="lbList">${rows.slice(0, 5).map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span><span class="lbName">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><b>${r.points}</b></div>`).join("")}</div>` : ""}
+    <div class="acRow">${acctBtn("Share my " + y, "rcShare()", "quiet")}</div>`;
+}
+function rcShare() { const text = window.rcText || ""; if (navigator.share) navigator.share({ title: "Trackside Pass", text }).catch(() => {}); else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { if (typeof toast === "function") toast("Copied. Paste it into a message."); }).catch(() => {}); }
 let fpBack = "board";
 async function openPassportOf(id, name) {
   if (!sbOn()) return;

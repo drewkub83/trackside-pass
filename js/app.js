@@ -2203,17 +2203,18 @@ function swipeTarget(){
 (function(){
   const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
   let sx=0,sy=0,t0=0,armed=false,dragging=false,el=null;
-  const reset=()=>{ if(el){ el.style.transition=""; el.style.transform=""; el.style.boxShadow=""; } el=null; dragging=false; };
+  const sw=on=>document.documentElement.classList.toggle("swiping",on);   /* while a screen is dragged aside, nothing may scroll or widen the page (iOS shrinks the whole page to fit it) */
+  const reset=()=>{ if(el){ el.style.transition=""; el.style.transform=""; el.style.boxShadow=""; el.style.willChange=""; } el=null; dragging=false; sw(false); };
   document.addEventListener("touchstart",e=>{
     const t=e.touches[0]; armed=e.touches.length===1&&t.clientX<=22; sx=t.clientX; sy=t.clientY; t0=Date.now();
     if(armed){ el=swipeTarget(); if(!el) armed=false; }
   },{passive:true});
   document.addEventListener("touchmove",e=>{
     if(!armed||!el) return; const t=e.touches[0], dx=t.clientX-sx, dy=t.clientY-sy;
-    if(!dragging){ if(Math.hypot(dx,dy)<6) return; if(dx<0||Math.abs(dy)>Math.abs(dx)*1.2){ armed=false; return; } dragging=true; el.style.transition="none"; el.style.willChange="transform"; }
+    if(!dragging){ if(Math.hypot(dx,dy)<6) return; if(dx<0||Math.abs(dy)>Math.abs(dx)*1.2){ armed=false; return; } dragging=true; sw(true); el.style.transition="none"; el.style.willChange="transform"; }
     const x=Math.max(0,Math.min(dx,innerWidth));
     if(reduced){ return; }   /* still tracks the gesture; just skips the visual drag */
-    el.style.transform=`translateX(${x}px)`; el.style.boxShadow="-14px 0 34px rgba(0,0,0,.16)";
+    el.style.transform=`translate3d(${x}px,0,0)`; el.style.boxShadow="-14px 0 34px rgba(0,0,0,.16)";
   },{passive:true});
   document.addEventListener("touchend",e=>{
     if(!armed){ reset(); return; } armed=false;
@@ -2222,8 +2223,9 @@ function swipeTarget(){
     if(!dragging){ if(commit) swipeBack(); return; }
     if(reduced){ const e2=el; reset(); if(commit) swipeBack(); return; }
     const e2=el; e2.style.transition="transform .26s cubic-bezier(.22,.61,.36,1)";
-    if(commit){ e2.style.transform=`translateX(${innerWidth}px)`; e2.addEventListener("transitionend",function done(){ e2.removeEventListener("transitionend",done); e2.style.transition=""; e2.style.transform=""; e2.style.boxShadow=""; e2.style.willChange=""; swipeBack(); },{once:true}); }
-    else{ e2.style.transform="translateX(0px)"; e2.addEventListener("transitionend",function done(){ e2.removeEventListener("transitionend",done); e2.style.transition=""; e2.style.boxShadow=""; e2.style.willChange=""; },{once:true}); }
+    const after=fn=>{ let done=false; const go=()=>{ if(done) return; done=true; e2.removeEventListener("transitionend",go); fn(); }; e2.addEventListener("transitionend",go); setTimeout(go,420); };   /* the timer covers a transition that never fires (hidden tab, reduced motion) */
+    if(commit){ e2.style.transform=`translate3d(${innerWidth}px,0,0)`; after(()=>{ e2.style.transition=""; e2.style.transform=""; e2.style.boxShadow=""; e2.style.willChange=""; swipeBack(); sw(false); }); }
+    else{ e2.style.transform="translate3d(0,0,0)"; after(()=>{ e2.style.transition=""; e2.style.transform=""; e2.style.boxShadow=""; e2.style.willChange=""; sw(false); }); }
     el=null; dragging=false;
   },{passive:true});
   document.addEventListener("touchcancel",()=>{ armed=false; reset(); },{passive:true});

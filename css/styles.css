@@ -953,3 +953,8 @@ html{touch-action:manipulation}
 .pgrid,.bgrid.three{gap:10px}.pgrid.mini,.bgrid.mini{gap:8px}
 .pgrid>*,.bgrid.three>*{flex:0 0 calc((100% - 20px)/3);min-width:0}
 .pgrid.mini>*,.bgrid.mini>*{flex:0 0 calc((100% - 24px)/4)}
+
+/* the page never scrolls sideways; while a screen is being dragged aside for swipe-back it also cannot be widened (iOS would shrink the whole page to fit the overflow) */
+html,body{overflow-x:hidden}
+@supports (overflow:clip){html,body{overflow-x:clip}}
+html.swiping,html.swiping body{overflow:hidden}

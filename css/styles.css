@@ -947,3 +947,9 @@ html{touch-action:manipulation}
 .rcPal{padding:12px 0;border-top:1px solid var(--line)}.rcPal b{font-size:16px}.rcPal>span{float:right;font-size:13px;color:var(--ink-2)}
 .rcWk{font-size:14px;margin-top:6px;clear:both}.rcWk small{color:var(--ink-2);font-size:12.5px;margin-left:4px}
 .hubFriends .acFriend small{color:var(--ink-2);font-size:12.5px}.hubFriends .acFriend:first-of-type{border-top:0}
+
+/* passport: a last row with fewer stamps than columns stays centred (it used to hug the left edge) */
+.pgrid,.bgrid.three,.pgrid.mini,.bgrid.mini{display:flex;flex-wrap:wrap;justify-content:center}
+.pgrid,.bgrid.three{gap:10px}.pgrid.mini,.bgrid.mini{gap:8px}
+.pgrid>*,.bgrid.three>*{flex:0 0 calc((100% - 20px)/3);min-width:0}
+.pgrid.mini>*,.bgrid.mini>*{flex:0 0 calc((100% - 24px)/4)}

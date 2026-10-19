@@ -130,16 +130,15 @@ function acctRender() {
          <h4 class="ptH">Add a friend</h4>
          <input class="acIn" id="acFind" autocomplete="off" autocapitalize="none" placeholder="Search by name" oninput="acctFind(this.value)">
          <div id="acResults" class="acResults"></div>
+         <details class="acCodeBox"><summary>Use a friend code instead</summary>
+           <p class="plRules">Your code, for friends who prefer to type it:</p><div class="acCode sel">${sbEsc(p.invite_code || "")}</div>
+           <div class="acRow"><input class="acIn" id="acFriend" maxlength="12" autocapitalize="characters" placeholder="Their code" onkeydown="if(event.key==='Enter')acctAdd()">${acctBtn("Send request", "acctAdd()")}</div>
+         </details>
          ${rq.outgoing.length ? `<h4 class="ptH">Waiting for an answer</h4>${rq.outgoing.map(r => `<div class="acFriend"><span>${sbEsc(r.name)}</span><button class="acX" onclick="acctCancel('${r.id}')">Cancel</button></div>`).join("")}` : ""}
          <h4 class="ptH">Friends (${fr.length})</h4>
          ${fr.length ? fr.map(f => `<div class="acFriend"><span>${sbEsc(f.display_name)}</span><button class="acX" aria-label="Remove ${sbEsc(f.display_name)}" onclick="acctRemove('${f.id}')">Remove</button></div>`).join("") : `<p class="plRules">No friends yet.</p>`}
          <h4 class="ptH">Friend not on Trackside Pass yet?</h4>
          <div class="acRow">${acctBtn("Send them the app", "acctShare()", "quiet")}</div>
-         <details class="acCodeBox"><summary>Use a friend code instead</summary>
-           <p class="plRules">Your code, for friends who prefer to type it:</p><div class="acCode sel">${sbEsc(p.invite_code || "")}</div>
-           <div class="acRow"><input class="acIn" id="acFriend" maxlength="12" autocapitalize="characters" placeholder="Their code" onkeydown="if(event.key==='Enter')acctAdd()">${acctBtn("Send request", "acctAdd()")}</div>
-         </details>
-         ${pushPlugin() ? `<h4 class="ptH">Notifications</h4><label class="acCheck"><input type="checkbox" ${acct.push === "on" ? "checked" : ""} onchange="acctPushToggle(this.checked)"> Notify me about friend requests</label>${acct.push === "denied" ? `<p class="plRules fine">Notifications are blocked for Trackside Pass. Allow them in your phone's Settings, then come back.</p>` : ""}` : ""}
          <h4 class="ptH">Privacy</h4>
          <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Let other players find me and show me on the Everyone leaderboard</label>
          <p class="plRules fine">Friends always see you. Nobody sees your email. Friends can see your picks once a race has started.</p>

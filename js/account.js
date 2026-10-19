@@ -136,12 +136,12 @@ function acctRender() {
          </details>
          ${rq.outgoing.length ? `<h4 class="ptH">Waiting for an answer</h4>${rq.outgoing.map(r => `<div class="acFriend"><span>${sbEsc(r.name)}</span><button class="acX" onclick="acctCancel('${r.id}')">Cancel</button></div>`).join("")}` : ""}
          <h4 class="ptH">Friends (${fr.length})</h4>
-         ${fr.length ? fr.map(f => `<div class="acFriend"><span>${sbEsc(f.display_name)}</span><button class="acX" aria-label="Remove ${sbEsc(f.display_name)}" onclick="acctRemove('${f.id}')">Remove</button></div>`).join("") : `<p class="plRules">No friends yet.</p>`}
+         ${fr.length ? fr.map(f => `<div class="acFriend"><button class="lbBtn" aria-label="Open ${sbEsc(f.display_name)}'s passport" onclick="openPassportOf('${f.id}','')">${sbEsc(f.display_name)}</button><button class="acX" aria-label="Remove ${sbEsc(f.display_name)}" onclick="acctRemove('${f.id}')">Remove</button></div>`).join("") : `<p class="plRules">No friends yet.</p>`}
          <h4 class="ptH">Friend not on Trackside Pass yet?</h4>
          <div class="acRow">${acctBtn("Send them the app", "acctShare()", "quiet")}</div>
          <h4 class="ptH">Privacy</h4>
          <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Let other players find me and show me on the Everyone leaderboard</label>
-         <p class="plRules fine">Friends always see you. Nobody sees your email. Friends can see your picks once a race has started.</p>
+         <p class="plRules fine">Friends always see you. Nobody sees your email. Friends can see your picks once a race has started. Anyone who can see you can also open your passport: your tracks, stamps and badges.</p>
          <h4 class="ptH">Your account</h4>
          ${acctBtn("Sign out", "acctOut()", "quiet")}${acctBtn("Delete my account", "acctDelete()", "quiet acDanger")}
          <p class="plRules fine">Deleting removes your profile, picks and friendships from the server for good. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>`;
@@ -157,7 +157,7 @@ async function acctEmail() {
 async function acctCode() {
   const t = (document.getElementById("acCode").value || "").replace(/\s/g, ""); if (!/^\d{6,10}$/.test(t)) { acct.msg = "Type the numbers from the email."; return acctRender(); }
   acct.msg = "Checking…"; acctRender();
-  try { await sbVerify(acct.email, t); acct.msg = ""; acct.step = "email"; await acctLoad(); acctPull(); acctStartPolling(); }
+  try { await sbVerify(acct.email, t); acct.msg = ""; acct.step = "email"; await acctLoad(); acctPull(); acctPassportSync(); acctStartPolling(); }
   catch (e) { acct.msg = /expired|invalid/i.test(e.message) ? "That code is wrong or has expired. Ask for a new one." : e.message; }
   acctRender();
 }
@@ -165,7 +165,7 @@ async function acctName() {
   const v = (document.getElementById("acName").value || "").trim();
   if (!/^[A-Za-z0-9][A-Za-z0-9 _.-]{1,18}[A-Za-z0-9]$/.test(v)) { acct.msg = "3 to 20 characters: letters, numbers, spaces, dots, dashes or underscores."; return acctRender(); }
   try { acct.profile = await sbRpc("create_profile", { p_name: v }); hintSet(acct.profile); acct.msg = ""; acct.friends = []; } catch (e) { acct.msg = e.message; }
-  acctRender(); if (acct.profile) setTimeout(acctOfferPush, 600);
+  acctRender(); if (acct.profile) { setTimeout(acctOfferPush, 600); acctPassportSync(); }
 }
 async function acctAdd() {
   const v = (document.getElementById("acFriend").value || "").trim(); if (!v) return;
@@ -271,6 +271,30 @@ async function acctOfferPush() {                       // once, after the profil
   if (confirm("Get a notification when someone sends you a friend request, or accepts yours?")) { acct.push = await pushOn(true); acctRender(); }
 }
 
+/* ---- passport: the phone keeps it and sends a copy, so friends (and Everyone-board players) can open it ---- */
+let ppSyncing = false, ppAgain = false;
+async function acctPassportSync() {
+  if (!sbOn() || !sbSession() || typeof ppLoad !== "function") return;
+  if (ppSyncing) { ppAgain = true; return; } ppSyncing = true;
+  try {
+    const p = ppLoad(), r = await sbRpc("sync_passport", { p_stamps: p.stamps, p_unlocked: p.unlocked });
+    const q = ppLoad(), seen = new Set(q.stamps.map(s => s.t + "|" + s.day)); let ch = false;      // a stamp or badge earned on another device comes down too
+    (r.stamps || []).forEach(s => { if (!seen.has(s.t + "|" + s.day)) { q.stamps.push(s); ch = true; } });
+    Object.keys(r.unlocked || {}).forEach(k => { if (!(k in q.unlocked)) { q.unlocked[k] = r.unlocked[k]; ch = true; } });
+    if (ch) { ppSave(q); renderPassportCard(); const sc = document.getElementById("passport"); if (sc && sc.classList.contains("on")) renderPassport(); }
+  } catch (e) { /* offline or no profile yet: it goes next time */ }
+  finally { ppSyncing = false; if (ppAgain) { ppAgain = false; setTimeout(acctPassportSync, 500); } }
+}
+let fpBack = "board";
+async function openPassportOf(id, name) {
+  if (!sbOn()) return;
+  const on = document.querySelector(".screen.on"); if (on && on.id !== "friendPass") fpBack = on.id;
+  try {
+    renderPassportFor(await sbRpc("passport_of", { p_user: id }));
+  } catch (e) { if (typeof toast === "function") toast(e.status ? e.message : "Offline: a passport needs a signal."); }
+}
+function fpClose() { showScreen(fpBack || "board"); }
+
 /* ---- leaderboard ---- */
 let lb = { scope: "friends", series: "", game: "", rows: null, err: "" };
 function boardGames() { return (typeof ENTRIES === "undefined" ? [] : ENTRIES).filter(g => typeof gameResult === "function" && gameResult(g) && g.d.slice(0, 4) === String(new Date().getFullYear())).sort((a, b) => b.d.localeCompare(a.d)); }
@@ -289,7 +313,7 @@ function boardRender() {
   const seg = (items, cur, on) => `<div class="gmTabs lbTabs">${items.map(([v, l]) => `<button class="gmTab${v === cur ? " on" : ""}" onclick="${on}('${v}')">${sbEsc(l)}</button>`).join("")}</div>`;
   const ser = [...new Set((typeof ENTRIES === "undefined" ? [] : ENTRIES).map(g => g.s))].map(s => [s, typeof watchSeriesName === "function" ? watchSeriesName({ s }) : s]);
   const gm = boardGames();
-  const rows = lb.rows ? (lb.rows.length ? lb.rows.map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span><span class="lbName">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}<small>${r.weekends} weekend${Number(r.weekends) === 1 ? "" : "s"} · ${r.winners} winner${Number(r.winners) === 1 ? "" : "s"} called</small></span><b>${r.points}</b>${r.is_me?"":`<button class="acX" aria-label="Report ${sbEsc(r.display_name)}" onclick="acctReport('${r.user_id}')">Report</button>`}</div>`).join("") : `<p class="plRules">${lb.scope === "friends" ? "No scores yet. Add friends from your account, then make picks." : "Nobody has scored yet this season."}</p>`) : `<p class="plRules">${sbEsc(lb.err || "Loading…")}</p>`;
+  const rows = lb.rows ? (lb.rows.length ? lb.rows.map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span><button class="lbName lbBtn" aria-label="Open ${sbEsc(r.display_name)}'s passport" onclick="${r.is_me ? "openPassport()" : `openPassportOf('${r.user_id}','')`}"><span class="lbN">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><small>${r.weekends} weekend${Number(r.weekends) === 1 ? "" : "s"} · ${r.winners} winner${Number(r.winners) === 1 ? "" : "s"} called</small></button><b>${r.points}</b>${r.is_me?"":`<button class="acX" aria-label="Report ${sbEsc(r.display_name)}" onclick="acctReport('${r.user_id}')">Report</button>`}</div>`).join("") : `<p class="plRules">${lb.scope === "friends" ? "No scores yet. Add friends from your account, then make picks." : "Nobody has scored yet this season."}</p>`) : `<p class="plRules">${sbEsc(lb.err || "Loading…")}</p>`;
   lbBox().innerHTML = acctWrap(`<h3 class="acH">Leaderboard · ${new Date().getFullYear()}</h3>
     ${seg([["friends", "Friends"], ["global", "Everyone"]], lb.scope, "boardScope")}
     <div class="acRow"><select class="acIn acSel" onchange="boardSeries(this.value)"><option value="">All series</option>${ser.map(([v, l]) => `<option value="${sbEsc(v)}"${v === lb.series ? " selected" : ""}>${sbEsc(l)}</option>`).join("")}</select>
@@ -338,4 +362,4 @@ async function acctSettingsPush(on) { await acctPushToggle(on); acctSettingsRend
 /* the app calls these from its own screens */
 function acctAppOpen() { if (sbOn() && sbSession()) acctPull(); }
 /* a phone that already said yes to notifications keeps its token fresh at every start */
-document.addEventListener("DOMContentLoaded", () => { acctHomeRefresh(); if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); if (!localStorage.getItem(K.pushOff)) setTimeout(() => pushOn(false), 3500); } });
+document.addEventListener("DOMContentLoaded", () => { acctHomeRefresh(); if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(acctPassportSync, 4500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); if (!localStorage.getItem(K.pushOff)) setTimeout(() => pushOn(false), 3500); } });

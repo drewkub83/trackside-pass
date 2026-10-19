@@ -437,6 +437,75 @@ $$;
 revoke all on function public.friend_picks(text) from public, anon;
 grant execute on function public.friend_picks(text) to authenticated;
 
+---------------------------------------------------------------- passports (stamps and badge dates, synced from the phone)
+-- The phone keeps the passport and stays the master copy; signed in, it sends it here so a friend, or anyone on the Everyone leaderboard,
+-- can open it from the leaderboard or the friends list. The phone verifies the check-in (location + race weekend): this is not tamper-proof,
+-- so the passport is shown but never ranked. Written only through sync_passport(); read only through passport_of().
+create table if not exists public.passports (
+  user_id    uuid primary key references auth.users(id) on delete cascade,
+  stamps     jsonb not null default '[]',
+  unlocked   jsonb not null default '{}',
+  updated_at timestamptz not null default now()
+);
+alter table public.passports enable row level security;
+revoke all on public.passports from anon, authenticated;
+
+-- merges what the phone sends with what is stored (union: nothing is ever removed, the earliest time wins) and returns the merged passport
+create or replace function public.sync_passport(p_stamps jsonb, p_unlocked jsonb) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid(); old public.passports; st jsonb; ul jsonb;
+begin
+  if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  if not exists (select 1 from public.profiles where id = uid) then raise exception 'Choose a name first' using errcode = '22023'; end if;
+  if jsonb_typeof(p_stamps) is distinct from 'array' or jsonb_typeof(p_unlocked) is distinct from 'object'
+     or jsonb_array_length(p_stamps) > 1000 or (select count(*) from jsonb_object_keys(p_unlocked)) > 400 then
+    raise exception 'That passport does not look right' using errcode = '22023';
+  end if;
+  select * into old from public.passports where user_id = uid;
+  select coalesce(jsonb_agg(jsonb_build_object('t', t, 'ev', ev, 'day', day, 'at', at) order by at, t), '[]') into st from (
+    select distinct on (t, day) t, ev, day, at from (
+      select e->>'t' as t, e->>'ev' as ev, e->>'day' as day,
+             case when e->>'at' ~ '^[0-9]{1,15}$' then (e->>'at')::bigint else 0 end as at
+      from jsonb_array_elements(coalesce(old.stamps, '[]') || p_stamps) e where jsonb_typeof(e) = 'object'
+    ) s
+    where t ~ '^[a-z0-9-]{1,40}$' and ev ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' and day ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+    order by t, day, at limit 1000
+  ) d;
+  select coalesce(jsonb_object_agg(k, v), '{}') into ul from (
+    select k, min(v) as v from (
+      select kv.key as k, case when kv.value::text ~ '^[0-9]{1,15}$' then kv.value::text::bigint else 0 end as v
+      from jsonb_each(coalesce(old.unlocked, '{}')) kv where jsonb_typeof(kv.value) = 'number'
+      union all
+      select kv.key, case when kv.value::text ~ '^[0-9]{1,15}$' then kv.value::text::bigint else 0 end
+      from jsonb_each(p_unlocked) kv where jsonb_typeof(kv.value) = 'number'
+    ) u where k ~ '^[A-Za-z0-9:_.-]{1,60}$' group by k order by k limit 400
+  ) m;
+  insert into public.passports(user_id, stamps, unlocked, updated_at) values (uid, st, ul, now())
+  on conflict (user_id) do update set stamps = excluded.stamps, unlocked = excluded.unlocked, updated_at = now();
+  return jsonb_build_object('stamps', st, 'unlocked', ul);
+end $$;
+revoke all on function public.sync_passport(jsonb, jsonb) from public, anon;
+grant execute on function public.sync_passport(jsonb, jsonb) to authenticated;
+
+-- someone's passport: yours, a friend's, or a player who shows on the Everyone leaderboard (the same rule as the leaderboards)
+create or replace function public.passport_of(p_user uuid) returns jsonb
+language plpgsql stable security definer set search_path = public as $$
+declare uid uuid := auth.uid(); r jsonb;
+begin
+  if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  if not exists (select 1 from public.profiles where id = p_user) then raise exception 'Player not found' using errcode = '22023'; end if;
+  if p_user <> uid
+     and not exists (select 1 from public.friendships f where (f.user_a = uid and f.user_b = p_user) or (f.user_b = uid and f.user_a = p_user))
+     and not exists (select 1 from public.profiles where id = p_user and show_global) then
+    raise exception 'This passport is private' using errcode = '42501';
+  end if;
+  select jsonb_build_object('name', p.display_name, 'stamps', coalesce(s.stamps, '[]'::jsonb), 'unlocked', coalesce(s.unlocked, '{}'::jsonb))
+    into r from public.profiles p left join public.passports s on s.user_id = p.id where p.id = p_user;
+  return r;
+end $$;
+revoke all on function public.passport_of(uuid) from public, anon;
+grant execute on function public.passport_of(uuid) to authenticated;
+
 ---------------------------------------------------------------- push notifications (iPhone: APNs, Android: Firebase Cloud Messaging)
 -- Phones register a device token; every new row in `notifications` calls the `push` edge function (supabase/functions/push/index.ts), which sends it.
 create table if not exists public.push_tokens (

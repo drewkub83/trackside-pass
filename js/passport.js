@@ -72,6 +72,7 @@ function passportStamp(t){       /* {ok, why, fresh, already, ev} */
   if(p.stamps.some(s=>s.t===t.id&&s.day===day)) return {ok:true,already:true,ev};
   p.stamps.push({t:t.id,ev:ev.d,day,at:Date.now()}); const fresh=ppEvaluate(p); ppSave(p); renderPassportCard(); if(document.getElementById("passport").classList.contains("on")) renderPassport();
   if(fresh.length) setTimeout(()=>ppEnqueue(fresh),900); else toast(`Stamped: ${ppMsg(t,ev)}`);
+  if(typeof acctPassportSync==="function") acctPassportSync();
   return {ok:true,fresh,ev};
 }
 let ppBusy=false;
@@ -508,11 +509,12 @@ function ppProg(d,st){
 }
 const ppChev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
 const ppSec=(title,count,inner,open,sid)=>`<details class="ppSec"${open?" open":""}${sid?` data-s="${sid}"`:""}><summary><span class="ppSecT">${title}</span><span class="ppSecN">${count}</span>${ppChev}</summary>${inner}</details>`;
+let ppView=false;    /* true while another player's passport is being drawn: their tracks open back to their page, no replay, no "next up" */
 function ppTrackGrid(list,p,st,defs){
   const sorted=list.slice().sort((a,b)=>a.short.localeCompare(b.short)), got=sorted.filter(t=>st.visits[t.id]), not=sorted.filter(t=>!st.visits[t.id]);
   const earned=t=>{ const n=st.visits[t.id], tier=ppTier(n), def=defs.find(d=>d.track===t&&d.id.endsWith(":"+tier)), last=p.stamps.filter(s=>s.t===t.id).reduce((m,s)=>Math.max(m,s.at||0),0);
-    return `<button class="pt t${tier}" onclick="openTrack('${t.id}','passport')"><span class="sbox" style="--r:${ppRot(t.id)}deg">${stampSvg(def,{date:last||undefined})}</span><b>${esc(t.short)}</b><small>${n} race weekend${n>1?"s":""}</small></button>`; };
-  const empty=t=>`<button class="pt mini" onclick="openTrack('${t.id}','passport')"><span class="sbox empty"><svg ${ppOutline(t,34,{c:"rgba(90,75,45,.38)",w:1.8})}</svg></span><b>${esc(t.short)}</b></button>`;
+    return `<button class="pt t${tier}" onclick="openTrack('${t.id}','${ppView?"friendPass":"passport"}')"><span class="sbox" style="--r:${ppRot(t.id)}deg">${stampSvg(def,{date:last||undefined})}</span><b>${esc(t.short)}</b><small>${n} race weekend${n>1?"s":""}</small></button>`; };
+  const empty=t=>`<button class="pt mini" onclick="openTrack('${t.id}','${ppView?"friendPass":"passport"}')"><span class="sbox empty"><svg ${ppOutline(t,34,{c:"rgba(90,75,45,.38)",w:1.8})}</svg></span><b>${esc(t.short)}</b></button>`;
   return (got.length?`<div class="pgrid">${got.map(earned).join("")}</div>`:"")+(not.length?`<div class="pgrid mini">${not.map(empty).join("")}</div>`:"");
 }
 function ppTracksHtml(p,st){
@@ -533,12 +535,12 @@ function ppNextUp(p,st){
     .filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3);
 }
 function ppBadgesHtml(p,st){
-  const next=ppNextUp(p,st), byId=Object.fromEntries(PP_GLOBAL.map(d=>[d.id,d]));
+  const next=ppView?[]:ppNextUp(p,st), byId=Object.fromEntries(PP_GLOBAL.map(d=>[d.id,d]));
   const need=x=>x.g?`<span class="ppbar"><i style="width:${Math.round(x.g[0]/x.g[1]*100)}%"></i></span>`:"";
   const nextHtml=next.length?`<div class="ppNextBox"><h4>Next up</h4>${next.map(x=>`<button class="ppnx" onclick="toast(${esc(JSON.stringify(x.d.desc))})"><span class="sbox sm">${stampSvg(x.d,{locked:true})}</span><div><b>${esc(x.d.name)}</b><small>${esc(x.d.desc)}</small>${need(x)}</div>${x.g?`<em>${x.g[0]} of ${x.g[1]}</em>`:""}</button>`).join("")}</div>`:"";
   const groups=PP_BADGE_GROUPS.map(([title,ids])=>{ const ds=ids.map(i=>byId[i]).filter(Boolean), got=ds.filter(d=>p.unlocked[d.id]), lock=ds.filter(d=>!p.unlocked[d.id]);
-    const big=d=>{ const at=p.unlocked[d.id]; return `<button class="pb${d.tier==="z"?" legend":""}" onclick="ppReplay('${d.id}')"><span class="sbox mid" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:at})}</span><b>${esc(d.name)}</b><small>${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}</small></button>`; };
-    const small=d=>{ const g=ppProg(d,st), tip=d.desc+(g?` You have ${g[0]} of ${g[1]}.`:""); return `<button class="pb lock mini${d.tier==="z"?" legend":""}" onclick="toast(${esc(JSON.stringify(tip))})"><span class="sbox sm">${stampSvg(d,{locked:true})}</span><b>${esc(d.name)}</b></button>`; };
+    const big=d=>{ const at=p.unlocked[d.id]; return `<button class="pb${d.tier==="z"?" legend":""}" onclick="${ppView?`toast(${esc(JSON.stringify(d.desc))})`:`ppReplay('${d.id}')`}"><span class="sbox mid" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:at})}</span><b>${esc(d.name)}</b><small>${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}</small></button>`; };
+    const small=d=>{ const g=ppProg(d,st), tip=d.desc+(g?(ppView?` ${g[0]} of ${g[1]} so far.`:` You have ${g[0]} of ${g[1]}.`):""); return `<button class="pb lock mini${d.tier==="z"?" legend":""}" onclick="toast(${esc(JSON.stringify(tip))})"><span class="sbox sm">${stampSvg(d,{locked:true})}</span><b>${esc(d.name)}</b></button>`; };
     return ppSec(title,`${got.length} of ${ds.length}`,(got.length?`<div class="bgrid three">${got.map(big).join("")}</div>`:"")+(lock.length?`<div class="bgrid mini">${lock.map(small).join("")}</div>`:""),true);
   }).join("");
   return nextHtml+groups;
@@ -552,13 +554,28 @@ function renderPassport(){
   document.getElementById("ppTracks").innerHTML=ppTracksHtml(p,st);
   document.getElementById("ppBadges").innerHTML=ppBadgesHtml(p,st);
 }
+/* another player's passport (from the leaderboard or the friends list): d = {name, stamps, unlocked} from the server. Which badges they hold is worked out here
+   from their stamps with today's rules, so a change to the badges needs no change to what was saved; the server only supplies the dates. */
+function renderPassportFor(d){
+  const p={stamps:d.stamps||[],unlocked:{}}, st=ppStats(p), at=d.unlocked||{}, lastAt=p.stamps.reduce((m,s)=>Math.max(m,s.at||0),0)||Date.now();
+  ppEvaluate(p); Object.keys(p.unlocked).forEach(k=>{ p.unlocked[k]=at[k]||lastAt; });
+  const total=PP_GLOBAL.length, got=PP_GLOBAL.filter(x=>p.unlocked[x.id]).length;
+  ppView=true;
+  try{
+    document.getElementById("fpTitle").textContent=d.name+"'s passport";
+    document.getElementById("fpSum").innerHTML=`<div class="ppn">${st.tracks}<small>of ${st.total} tracks</small></div><div class="ppbar big"><i style="width:${Math.round(st.tracks/st.total*100)}%"></i></div><div class="ppb">${got} of ${total} badges · ${st.weekends} race weekend${st.weekends===1?"":"s"}</div>`;
+    document.getElementById("fpTracks").innerHTML=ppTracksHtml(p,st);
+    document.getElementById("fpBadges").innerHTML=ppBadgesHtml(p,st);
+  } finally { ppView=false; }
+  showScreen("friendPass");
+}
 function openPassport(){ renderPassport(); ppMenu(false); document.getElementById("ppStatus").textContent=""; showScreen("passport"); }
 function ppBackup(){ const code=btoa(unescape(encodeURIComponent(JSON.stringify({...ppLoad(),going:goingList(),v:2})))); try{ navigator.clipboard.writeText(code).then(()=>toast("Backup code copied. Keep it somewhere safe.")); }catch(e){ prompt("Copy this backup code:",code); } }
 function ppRestore(){
   const code=prompt("Paste your backup code:"); if(!code) return;
   try{ const j=JSON.parse(decodeURIComponent(escape(atob(code.trim())))); if(!j||!Array.isArray(j.stamps)) throw 0;
     const cur2=ppLoad(), seen=new Set(cur2.stamps.map(s=>s.t+"|"+s.day)); j.stamps.forEach(s=>{ if(!seen.has(s.t+"|"+s.day)) cur2.stamps.push(s); }); cur2.unlocked={...(j.unlocked||{}),...cur2.unlocked}; if(Array.isArray(j.going)){ LSset(GO_KEY,JSON.stringify([...new Set([...goingList(),...j.going])])); renderHero(); }
-    ppEvaluate(cur2); ppSave(cur2); renderPassport(); renderPassportCard(); toast("Restored."); }
+    ppEvaluate(cur2); ppSave(cur2); renderPassport(); renderPassportCard(); toast("Restored."); if(typeof acctPassportSync==="function") acctPassportSync(); }
   catch(e){ toast("That code did not work."); }
 }
 renderPassportCard(); renderPpSw();

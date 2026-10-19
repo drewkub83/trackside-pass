@@ -935,3 +935,8 @@ html{touch-action:manipulation}
 
 /* Series tab: room under the list for the floating bar */
 #champList{margin-bottom:120px}
+
+/* names on the leaderboard and friends list open that player's passport */
+.lbBtn{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.lbBtn::after,.lbN::after{content:" \203A";opacity:.45}
+.lbName.lbBtn{display:block}.lbName.lbBtn::after{content:none}

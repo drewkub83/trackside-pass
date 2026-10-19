@@ -912,9 +912,17 @@ img,svg{-webkit-user-drag:none}
 /* Account and Leaderboard are full pages now (js/account.js) */
 .acScreen{padding:6px 22px 120px}
 .acScreen .acH{font-size:26px;font-weight:400;margin:6px 0 2px}
-.fab.acctbtn{position:relative;flex:none;width:44px;height:44px}
-.fab.acctbtn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round}
-.fab.acctbtn .acIni{font:600 17px/1 var(--font);color:var(--ink)}
-.fab.acctbtn.dot::after{content:"";position:absolute;top:4px;right:4px;width:11px;height:11px;border-radius:50%;background:var(--kerb);border:2px solid var(--paper)}
 .bar .setbtn{margin-left:auto;position:relative}.bar .setbtn svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.7;stroke-linecap:round}
 .track-row .tile.lb{color:#D39A1F}.track-row .tile.lb svg{width:30px;height:30px;stroke:currentColor;fill:rgba(242,184,75,.22);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* the home bar: Series, Podium, Leaders, Account (js/account.js and homeTab() in js/app.js) */
+.hometabs{z-index:9}
+.hometabs button{position:relative}
+.hometabs .acIni{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.2);font:600 13px/1 var(--font);color:inherit}
+.hometabs button.on .acIni{background:var(--tint);color:var(--nav)}
+.hometabs button.dot::after{content:"";position:absolute;top:6px;right:8px;width:10px;height:10px;border-radius:50%;background:var(--kerb);border:2px solid var(--nav)}
+body.hastabs .screen.on{padding-bottom:104px}
+.plCard{display:block;width:100%;text-align:left;margin:10px 0 0;padding:14px 16px;border-radius:20px;background:var(--glass);border:1px solid var(--glass-edge);box-shadow:var(--shadow);color:var(--ink);font:inherit}
+.plCard b{display:block;font-size:17px;font-weight:600}.plCard small{display:block;margin-top:3px;font-size:13px;color:var(--ink-2)}
+.plCard .plGo{float:right;font-size:13px;color:var(--accent);font-weight:600}
+.plTotal{display:flex;gap:10px;margin-top:12px}.plTotal div{flex:1;padding:14px 16px;border-radius:20px;background:var(--tint)}.plTotal b{display:block;font-size:30px;font-weight:300}.plTotal small{font-size:12px;color:var(--ink-2)}

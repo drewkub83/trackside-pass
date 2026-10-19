@@ -206,8 +206,7 @@ async function acctRequests() {
 }
 function acctBadge() {
   const n = (acct.req && (acct.req.incoming.length + acct.req.notifications.filter(x => x.type === "friend_accepted" && !x.read).length)) || 0;
-  document.querySelectorAll(".fab.gear, .fab.acctbtn").forEach(g => g.classList.toggle("dot", n > 0));
-  const r = document.getElementById("acctRow"); if (r) { const b = r.querySelector("b"); if (b) b.textContent = n ? `Account and leaderboard (${n} new)` : "Account and leaderboard"; }
+  const tab = document.getElementById("acctTab"); if (tab) tab.classList.toggle("dot", n > 0);
 }
 let acctPolling = null;
 async function acctPoll(announce) {
@@ -229,7 +228,7 @@ function acctShare() {
   if (navigator.share) navigator.share({ title: "Trackside Pass", text }).catch(() => {});
   else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { acct.msg = "Copied. Paste it into a message."; acctRender(); }).catch(() => {});
 }
-async function acctOut() { await sbSignOut(); acct = { profile: null, friends: [], req: { incoming: [], outgoing: [], notifications: [], unread: 0 }, msg: "You are signed out. Your picks stay on this phone.", busy: false, step: "email", email: "", loaded: true }; lbSummary = { at: 0, text: "" }; acctBadge(); acctRender(); }
+async function acctOut() { await sbSignOut(); acct = { profile: null, friends: [], req: { incoming: [], outgoing: [], notifications: [], unread: 0 }, msg: "You are signed out. Your picks stay on this phone.", busy: false, step: "email", email: "", loaded: true }; acctBadge(); acctRender(); }
 async function acctDelete() {
   if (!confirm("Delete your account? Your profile, picks and friendships are removed from the server for good. Picks on this phone stay.")) return;
   if (!confirm("This cannot be undone. Delete it?")) return;
@@ -320,31 +319,24 @@ async function openFriendPicks(gk) {
   } catch (e) { if (typeof toast === "function") toast(e.message); }
 }
 
-/* ---- the Home page: the Account button (top right) and the Leaderboard row ---- */
-let lbSummary = { at: 0, text: "" };
+/* ---- the home bar's Account tab (your initial, a red dot for requests) and the Settings switch for friend notifications ---- */
 function acctHomeRefresh() {
-  const on = sbOn(), signed = on && !!sbSession(), gear = document.querySelector(".mastbar .fab.gear"), b = document.getElementById("acctBtn"), box = document.getElementById("competeBox");
-  if (gear) gear.hidden = on;                                   // with accounts on, the top-right button is Account and Settings lives inside it
-  if (b) {
-    b.hidden = !on; const nm = (hintGet() || {}).display_name, ini = b.querySelector(".acIni"), ic = b.querySelector(".acIcon");
-    if (ini && ic) { ini.hidden = !(signed && nm); ic.style.display = (signed && nm) ? "none" : ""; ini.textContent = nm ? nm[0].toUpperCase() : ""; }
-    b.setAttribute("aria-label", signed && nm ? `Account: ${nm}` : "Account");
-  }
-  if (box) box.hidden = !on;
-  const meta = document.getElementById("lbMeta"); if (!meta || !on) return;
-  if (!signed) { meta.textContent = "Sign in to play with friends"; return; }
-  if (lbSummary.text) meta.textContent = lbSummary.text;
-  if (Date.now() - lbSummary.at > 60000) { lbSummary.at = Date.now(); acctBoardSummary(); }
+  const signed = sbOn() && !!sbSession(), t = document.getElementById("acctTab");
+  if (typeof syncHomeTabs === "function") { const on = document.querySelector(".screen.on"); syncHomeTabs(on ? on.id : "home"); }
+  if (!t) return;
+  const nm = (hintGet() || {}).display_name, ini = t.querySelector(".acIni"), ic = t.querySelector(".acIcon"), show = !!(signed && nm);
+  if (ini && ic) { ini.hidden = !show; ic.style.display = show ? "none" : ""; ini.textContent = nm ? nm[0].toUpperCase() : ""; }
+  t.setAttribute("aria-label", show ? `Account: ${nm}` : "Account");
 }
-async function acctBoardSummary() {
-  try {
-    const rows = await sbRpc("leaderboard", { p_scope: "friends", p_year: new Date().getFullYear(), p_series: null, p_game: null }), me = rows.find(r => r.is_me);
-    lbSummary.text = !me ? "Make picks to join in" : rows.length < 2 ? "Add friends to compare" : `You are #${me.rank} of ${rows.length} · ${me.points} pts`;
-    const meta = document.getElementById("lbMeta"); if (meta && sbSession()) meta.textContent = lbSummary.text;
-  } catch (e) {}
+async function acctSettingsRender() {
+  const box = document.getElementById("setPush"); if (!box) return;
+  if (!sbOn() || !pushPlugin()) { box.hidden = true; return; }
+  const signed = !!sbSession(); box.hidden = false; const st = signed ? await pushState() : "off";
+  box.innerHTML = `<div><b>Friend notifications</b><small>${signed ? "A notification when someone sends you a friend request or accepts yours." : "Sign in from the Account tab to get notifications about friend requests."}${st === "denied" ? " They are blocked: allow notifications for Trackside Pass in your phone's Settings." : ""}</small></div>${signed ? `<button class="sw" role="switch" aria-checked="${st === "on"}" aria-label="Friend notifications" onclick="acctSettingsPush(${st !== "on"})"><i></i></button>` : ""}`;
 }
+async function acctSettingsPush(on) { await acctPushToggle(on); acctSettingsRender(); }
 
 /* the app calls these from its own screens */
 function acctAppOpen() { if (sbOn() && sbSession()) acctPull(); }
 /* a phone that already said yes to notifications keeps its token fresh at every start */
-document.addEventListener("DOMContentLoaded", () => { acctHomeRefresh(); const r = document.getElementById("acctRow"); if (r && sbOn()) r.hidden = false; if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); if (!localStorage.getItem(K.pushOff)) setTimeout(() => pushOn(false), 3500); } });
+document.addEventListener("DOMContentLoaded", () => { acctHomeRefresh(); if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); if (!localStorage.getItem(K.pushOff)) setTimeout(() => pushOn(false), 3500); } });

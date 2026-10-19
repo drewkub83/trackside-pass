@@ -299,7 +299,15 @@ function renderSeries(){
 }
 /* screens: home (series + hero), imsa (track list), detail (a track) */
 let backTo="series";
-function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id)); window.scrollTo(0,0); syncMapMode(); }
+function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id)); window.scrollTo(0,0); syncMapMode(); syncHomeTabs(id); }
+/* the home bar (Series, Podium, Leaders, Account) is shown on those four pages only */
+const HOME_TABS=["home","play","board","account"];
+function syncHomeTabs(id){
+  const nav=document.getElementById("homeTabs"); if(!nav) return; const show=HOME_TABS.includes(id), acc=typeof sbOn==="function"&&sbOn();
+  nav.hidden=!show; document.body.classList.toggle("hastabs",show);
+  nav.querySelectorAll("button").forEach(b=>{ const t=b.dataset.t; b.hidden=(t==="board"||t==="account")&&!acc; b.classList.toggle("on",t===id); });
+}
+function homeTab(id){ if(id==="play"){ renderPlay(); showScreen("play"); } else if(id==="board"&&typeof openBoard==="function") openBoard(); else if(id==="account"&&typeof openAccount==="function") openAccount(); else showScreen(id); }
 function syncMapMode(){ const d=document.getElementById("detail"), m=document.getElementById("pMap"); document.body.classList.toggle("mapmode",!!(d&&m&&d.classList.contains("on")&&m.classList.contains("on"))); updateWake(); }
 function openSeries(id){ curChamp=champ(id)||CHAMPS[0]; renderSeries(); showScreen("series"); }
 
@@ -990,7 +998,7 @@ const gameExact=(p,t=1)=>Math.round(5*gameMult(p)*t), gameNear=(p,t=1)=>Math.rou
 /* timing: lock a pick in before qualifying starts for +25%; picks made once qualifying is over score -25% (the grid is a big hint).
    Games with no qualifying session score at x1. The factor is stored with the pick ("_m"), like the banked win chance. */
 function gameTiming(g,at){
-  at=at||Date.now(); const qs=sessionsOf(cur).filter(s=>{ const sr=seriesFor(s.n); return cur.id===g.t&&sr&&sr.id===g.s&&kindOf(s.n)==="qualifying"&&s.d>=g.d&&s.d<=eventEnd({d:g.d,t:9}); });
+  at=at||Date.now(); const qs=sessionsOf(TRACKS.find(x=>x.id===g.t)||cur).filter(s=>{ const sr=seriesFor(s.n); return sr&&sr.id===g.s&&kindOf(s.n)==="qualifying"&&s.d>=g.d&&s.d<=eventEnd({d:g.d,t:9}); });
   if(!qs.length) return {m:1,label:""};
   const first=Math.min(...qs.map(s=>+s.start)), last=Math.max(...qs.map(s=>+s.end));
   return at<first?{m:1.25,label:"Early bonus: +25% on every pick you lock in before qualifying starts",until:new Date(first)}:at<last?{m:1,label:"Qualifying is under way: normal points"}:{m:.75,label:"Qualifying is over: new picks score 25% less"};
@@ -1041,7 +1049,7 @@ function gameNow(){
   return ENTRIES.find(x=>x.t===cur.id&&x.d>=fo.d&&x.d<=fo.end)||null;
 }
 function gameLock(g){   /* when the race starts: picks freeze then (or as soon as a result exists) */
-  const race=sessionsOf(cur).filter(s=>{ const sr=seriesFor(s.n); return sr&&sr.id===g.s&&kindOf(s.n)==="race"&&s.d>=g.d; })[0];
+  const race=sessionsOf(TRACKS.find(x=>x.id===g.t)||cur).filter(s=>{ const sr=seriesFor(s.n); return sr&&sr.id===g.s&&kindOf(s.n)==="race"&&s.d>=g.d; })[0];
   return race||null;
 }
 const gameLocked=g=>{ const l=gameLock(g); return !!gameResult(g)||(l&&l.start<=new Date()); };
@@ -1131,10 +1139,29 @@ function openPoints(){
 }
 function playOpenEntry(){ const today=localToday(); return (typeof ENTRIES!=="undefined"&&ENTRIES.find(g=>TRACKS.some(x=>x.id===g.t)&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&daysBetween(today,g.d)>=-4))||null; }
 function playNow(tid){ openTrack(tid,"home").then(()=>setTimeout(openGame,150)); }
-function openPlay(){
-  const y=new Date().getFullYear(), rec=gameRecordHtml(), openG=playOpenEntry();
-  document.getElementById("infoBody").innerHTML=`<div class="mkick">Game</div><h3 id="infoTitle">Pick your podium · ${y}</h3><p class="plRules">Before each race, call the top three cars in each class from the official entry list. Picks lock at the green flag. Right car in the right place scores 5, a podium car in the wrong place 2, both multiplied for long shots (a pick keeps the win chance it had when you made it). Lock picks in before qualifying starts for 25% more; picks made after qualifying score 25% less. Every series counts toward one ${y} total, and it starts again each January. ${typeof sbOn==="function"&&sbOn()?"Sign in to keep your picks safe and play against friends.":"Scores stay on this phone."}</p><div class="gmLinks"><button class="btn quiet gmHow" onclick="openPoints()">How points work</button>${accountButtons()}</div>${openG?`<button class="btn primary plGo" onclick="closeInfo();playNow('${openG.t}')">Make my picks: ${esc((TRACKS.find(x=>x.id===openG.t)||{}).short||"")}</button>`:""}${rec||`<p class="plRules">No scored weekends yet this year.</p>`}`;
-  const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
+function openPlay(){ renderPlay(); showScreen("play"); }
+/* the Podium tab: your season, the games that are open, and what you scored */
+function renderPlay(){
+  const box=document.getElementById("playBody"); if(!box) return;
+  const y=new Date().getFullYear(), st=gameSeason(y), today=localToday(), signed=typeof sbSession==="function"&&sbSession()&&typeof sbOn==="function"&&sbOn();
+  const games=(typeof ENTRIES==="undefined"?[]:ENTRIES).filter(g=>TRACKS.some(x=>x.id===g.t)&&!gameResult(g)).sort((x,z)=>x.d.localeCompare(z.d));
+  const card=g=>{
+    const t=TRACKS.find(x=>x.id===g.t), d=daysBetween(today,g.d), open=d<=goDays(), pk=picksOf(g), n=g.classes.length, done=g.classes.filter(c=>(pk[c.h]||[]).length===3).length, lock=gameLock(g), locked=gameLocked(g);
+    const when=lock?fmtWhen(lock.start,t.tz):"";
+    const line=locked?(done?"Picks are locked in. Your score comes after the race.":"The race has started, so picks are closed.")
+      :!open?`Opens ${Math.max(1,d-goDays())} day${d-goDays()===1?"":"s"} from now.`
+      :done===n?`${n>1?`All ${n} classes`:"Your podium"} picked${when?` · locks at the start of the race, ${esc(when)}`:""}`
+      :done?`${done} of ${n} classes picked${when?` · locks ${esc(when)}`:""}`
+      :`Call the podium${when?` · locks at the start of the race, ${esc(when)}`:""}`;
+    const tap=open&&!locked?` onclick="playNow('${g.t}')"`:` disabled style="opacity:.7"`;
+    return `<button class="plCard"${tap}><span class="plGo">${locked?"Locked":!open?"Soon":done===n?"Edit":"Pick"}</span><b>${esc(t.short)} · ${esc(watchSeriesName({s:g.s}))}</b><small>${esc(fmtSpan({d:g.d,t:3}))}</small><small>${line}</small></button>`;
+  };
+  box.innerHTML=`<h3 class="acH">Pick your podium · ${y}</h3>
+    <p class="plRules">Before each race, call the top three drivers or cars from the official entry list. Right place scores 5, a podium finisher in the wrong place 2, more for long shots and for picking early.</p>
+    <div class="plTotal"><div><b>${st.pts}</b><small>points in ${y}</small></div><div><b>${st.rows.length}</b><small>weekend${st.rows.length===1?"":"s"} played</small></div></div>
+    <div class="acRow"><button class="btn quiet acBtn" onclick="openPoints()">How points work</button>${typeof sbOn==="function"&&sbOn()&&!signed?`<button class="btn primary acBtn" onclick="homeTab('account')">Sign in to play with friends</button>`:""}</div>
+    <h4 class="ptH">Games</h4>${games.length?games.map(card).join(""):`<p class="plRules">No game is open right now. The next one appears here when a race weekend is on the schedule and its entry list is published.</p>`}
+    ${st.rows.length?gameRecordHtml():""}`;
 }
 
 /* ---- Race Day hub: one function per card, composed by renderHub() ----
@@ -1765,7 +1792,7 @@ function panTo(v){ view=clampView(v); fitted=null; if(!panRaf) panRaf=requestAni
   wrap.addEventListener("touchend",e=>{ if(e.touches.length<2&&pinch){ pinch=null; drag=null; settle(); } },{passive:true});
 })();
 
-renderHome();
+renderHome(); syncHomeTabs("home");
 checkRaceWeek();
 
 /* ---- open straight at the track when you are there ----
@@ -1941,7 +1968,7 @@ scheduleGoingReminders(false); scheduleStarAlerts(false);
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){
- renderAutoSw(); renderRemSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); showScreen("settings"); }
+ renderAutoSw(); renderRemSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }
 
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----
    Sun times are worked out on the phone (no signal needed). At a track in the phone's own time zone it uses the
@@ -2157,6 +2184,7 @@ function swipeBack(){
   if(hubBack()) return;
   const sh=document.getElementById("sheet"); if(sh&&!sh.hidden){ closeSheet(); return; }
   const sc=document.querySelector(".screen.on"); if(!sc||sc.id==="home") return;
+  if(["play","board","account"].includes(sc.id)){ showScreen("home"); return; }
   /* the detail screen's tabs are Hub/Map/Events/Info: one swipe from Map/Events/Info goes back to the hub, and a
      second swipe from the hub exits to the track list (goHome does both). */
   if(sc.id==="detail"){ goHome(); return; }

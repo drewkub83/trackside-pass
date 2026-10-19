@@ -245,7 +245,7 @@ function renderSeason(){
   const pc=playCardHtml();
   el.innerHTML=cards.length||pc?`${cards.length?`<div class="sect">Your series, next up</div>`:""}<div class="scards">${cards.join("")}${pc}</div>`:"";
 }
-function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); }
+function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
 function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e.d,s&&s.d].filter(Boolean).sort()[0]||"9999-99-99"; }
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort

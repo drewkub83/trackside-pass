@@ -91,36 +91,39 @@ async function acctPull() {
 }
 window.addEventListener("online", () => { if (sbOn() && sbSession()) acctPull(); });
 
-/* ---- screens (the Home-level modal #infoModal) ---- */
-function acctOpenModal(html) { document.getElementById("infoBody").innerHTML = html; const m = document.getElementById("infoModal"); m.hidden = false; document.body.style.overflow = "hidden"; m.querySelector(".mcard").scrollTop = 0; }
-const acctWrap = h => `<div class="mkick">Account</div>${h}`;
+/* ---- screens: Account and Leaderboard are full pages (#account, #board) like Passport and Settings; small popups use the shared #infoModal ---- */
+const acBox = () => document.getElementById("acBody"), lbBox = () => document.getElementById("lbBody");
+const acctOn = id => { const e = document.getElementById(id); return !!(e && e.classList.contains("on")); };
+function acctScreen(id, html) { try { closeInfo(); } catch (e) {} (id === "account" ? acBox() : lbBox()).innerHTML = html; if (!acctOn(id)) showScreen(id); }
+function acctModal(html) { document.getElementById("infoBody").innerHTML = html; const m = document.getElementById("infoModal"); m.hidden = false; document.body.style.overflow = "hidden"; m.querySelector(".mcard").scrollTop = 0; }
+const acctWrap = h => h;
 const acctBtn = (label, on, cls) => `<button class="btn ${cls || "primary"} acBtn" onclick="${on}">${label}</button>`;
 function acctMsg() { return acct.msg ? `<p class="plRules acMsg">${sbEsc(acct.msg)}</p>` : ""; }
 async function openAccount() {
   if (!sbOn()) return;
-  acct.msg = ""; acctOpenModal(acctWrap(`<h3 id="infoTitle">Account</h3><p class="plRules">Loading…</p>`));
+  acct.msg = ""; acctScreen("account", `<h3 class="acH">Account</h3><p class="plRules">Loading…</p>`);
   await acctLoad(); acct.push = await pushState(); acctRender();
   if (acct.req && acct.req.notifications.some(n => !n.read && n.type === "friend_accepted")) sbRpc("mark_notifications_read").then(() => { acct.req.notifications.forEach(n => { if (n.type === "friend_accepted") n.read = true; }); acctBadge(); }).catch(() => {});   // shown once, then cleared
 }
 function acctRender() {
-  const s = sbSession(); const m = document.getElementById("infoModal"); if (m.hidden) return;
+  const s = sbSession(); if (!acctOn("account")) return;
   let h;
   if (!s) {
     h = acct.step === "code"
-      ? `<h3 id="infoTitle">Check your email</h3><p class="plRules">We sent a code to <b>${sbEsc(acct.email)}</b>. Type it here. It can take a minute.</p>
+      ? `<h3 class="acH">Check your email</h3><p class="plRules">We sent a code to <b>${sbEsc(acct.email)}</b>. Type it here. It can take a minute.</p>
          <input class="acIn" id="acCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Code" onkeydown="if(event.key==='Enter')acctCode()">
          ${acctMsg()}${acctBtn("Sign in", "acctCode()")}${acctBtn("Use a different email", "acct.step='email';acct.msg='';acctRender()", "quiet")}`
-      : `<h3 id="infoTitle">Play against your friends</h3><p class="plRules">An account keeps your picks and points safe, scores them from the official results, and puts you on the leaderboards. No password: we email you a code. Your email is never shown to anyone.</p>
+      : `<h3 class="acH">Play against your friends</h3><p class="plRules">An account keeps your picks and points safe, scores them from the official results, and puts you on the leaderboards. No password: we email you a code. Your email is never shown to anyone.</p>
          <input class="acIn" id="acEmail" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" value="${sbEsc(acct.email)}" onkeydown="if(event.key==='Enter')acctEmail()">
          ${acctMsg()}${acctBtn("Email me a code", "acctEmail()")}<p class="plRules fine">By signing in you accept the <a href="privacy.html" target="_blank" rel="noopener">privacy policy and terms</a>. The game works without an account too.</p>`;
   } else if (!acct.profile) {
-    h = `<h3 id="infoTitle">Choose your name</h3><p class="plRules">This is what friends and the leaderboard show: 3 to 20 letters, numbers, spaces, dots, dashes or underscores. Not your email.</p>
+    h = `<h3 class="acH">Choose your name</h3><p class="plRules">This is what friends and the leaderboard show: 3 to 20 letters, numbers, spaces, dots, dashes or underscores. Not your email.</p>
          <input class="acIn" id="acName" maxlength="20" autocomplete="nickname" placeholder="Display name" onkeydown="if(event.key==='Enter')acctName()">${acctMsg()}${acctBtn("Create my profile", "acctName()")}${acctBtn("Sign out", "acctOut()", "quiet")}`;
   } else {
     const p = acct.profile, fr = acct.friends || [];
     const rq = acct.req || { incoming: [], outgoing: [], notifications: [] };
     const news = rq.notifications.filter(n => n.type === "friend_accepted" && !n.read);
-    h = `<h3 id="infoTitle">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p>${acctMsg()}
+    h = `<h3 class="acH">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p>${acctMsg()}
          ${news.map(n => `<div class="acNote">${sbEsc(n.name)} accepted your friend request.</div>`).join("")}
          ${rq.incoming.length ? `<h4 class="ptH">Friend requests (${rq.incoming.length})</h4>${rq.incoming.map(r => `<div class="acFriend"><span><b>${sbEsc(r.name)}</b> wants to be friends</span><span><button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button><button class="acX" onclick="acctRespond('${r.id}',false)">Decline</button></span></div>`).join("")}` : ""}
          ${acctBtn("Leaderboard", "openBoard()")}
@@ -144,7 +147,7 @@ function acctRender() {
          ${acctBtn("Sign out", "acctOut()", "quiet")}${acctBtn("Delete my account", "acctDelete()", "quiet acDanger")}
          <p class="plRules fine">Deleting removes your profile, picks and friendships from the server for good. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>`;
   }
-  document.getElementById("infoBody").innerHTML = acctWrap(h);
+  acBox().innerHTML = acctWrap(h); acctHomeRefresh();
 }
 async function acctEmail() {
   const v = (document.getElementById("acEmail").value || "").trim(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { acct.msg = "That does not look like an email address."; return acctRender(); }
@@ -203,7 +206,7 @@ async function acctRequests() {
 }
 function acctBadge() {
   const n = (acct.req && (acct.req.incoming.length + acct.req.notifications.filter(x => x.type === "friend_accepted" && !x.read).length)) || 0;
-  const g = document.querySelector(".fab.gear"); if (g) g.classList.toggle("dot", n > 0);
+  document.querySelectorAll(".fab.gear, .fab.acctbtn").forEach(g => g.classList.toggle("dot", n > 0));
   const r = document.getElementById("acctRow"); if (r) { const b = r.querySelector("b"); if (b) b.textContent = n ? `Account and leaderboard (${n} new)` : "Account and leaderboard"; }
 }
 let acctPolling = null;
@@ -216,7 +219,7 @@ async function acctPoll(announce) {
     try { localStorage.setItem(K.notifSeen, String(fresh[fresh.length - 1].id)); } catch (e) {}
     if (announce !== false && typeof toast === "function") fresh.forEach(n => toast(n.type === "friend_request" ? `${n.name} sent you a friend request` : `${n.name} accepted your friend request`));
   }
-  const m = document.getElementById("infoModal"); if (m && !m.hidden && document.getElementById("infoBody").querySelector(".acFriend, .acCode")) { acct.friends = await sbRpc("my_friends").catch(() => acct.friends); acctRender(); }
+  if (acctOn("account")) { const f = document.getElementById("acFind"); if (!(f && f.value)) { acct.friends = await sbRpc("my_friends").catch(() => acct.friends); acctRender(); } }   // new requests show up without leaving the page (not while you are typing a search)
 }
 function acctStartPolling() { if (acctPolling || !sbOn()) return; acctPolling = setInterval(acctPoll, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden) acctPoll(); }); }
 async function acctRemove(id) { if (!confirm("Remove this friend?")) return; try { await sbRpc("remove_friend", { p_friend: id }); acct.friends = await sbRpc("my_friends"); acct.msg = ""; } catch (e) { acct.msg = e.message; } acctRender(); }
@@ -226,7 +229,7 @@ function acctShare() {
   if (navigator.share) navigator.share({ title: "Trackside Pass", text }).catch(() => {});
   else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { acct.msg = "Copied. Paste it into a message."; acctRender(); }).catch(() => {});
 }
-async function acctOut() { await sbSignOut(); acct = { profile: null, friends: [], req: { incoming: [], outgoing: [], notifications: [], unread: 0 }, msg: "You are signed out. Your picks stay on this phone.", busy: false, step: "email", email: "", loaded: true }; acctBadge(); acctRender(); }
+async function acctOut() { await sbSignOut(); acct = { profile: null, friends: [], req: { incoming: [], outgoing: [], notifications: [], unread: 0 }, msg: "You are signed out. Your picks stay on this phone.", busy: false, step: "email", email: "", loaded: true }; lbSummary = { at: 0, text: "" }; acctBadge(); acctRender(); }
 async function acctDelete() {
   if (!confirm("Delete your account? Your profile, picks and friendships are removed from the server for good. Picks on this phone stay.")) return;
   if (!confirm("This cannot be undone. Delete it?")) return;
@@ -274,8 +277,8 @@ async function acctOfferPush() {                       // once, after the profil
 let lb = { scope: "friends", series: "", game: "", rows: null, err: "" };
 function boardGames() { return (typeof ENTRIES === "undefined" ? [] : ENTRIES).filter(g => typeof gameResult === "function" && gameResult(g) && g.d.slice(0, 4) === String(new Date().getFullYear())).sort((a, b) => b.d.localeCompare(a.d)); }
 async function openBoard() {
-  if (!sbOn()) return; acctOpenModal(acctWrap(`<h3 id="infoTitle">Leaderboard</h3><p class="plRules">Loading…</p>`)); await acctLoad();
-  if (!sbSession() || !acct.profile) { acctOpenModal(acctWrap(`<h3 id="infoTitle">Leaderboard</h3><p class="plRules">Sign in and choose a name to join the leaderboards.</p>${acctBtn("Sign in", "openAccount()")}`)); return; }
+  if (!sbOn()) return; acctScreen("board", `<h3 class="acH">Leaderboard</h3><p class="plRules">Loading…</p>`); await acctLoad();
+  if (!sbSession() || !acct.profile) { acctScreen("board", `<h3 class="acH">Leaderboard</h3><p class="plRules">Sign in and choose a name to join the leaderboards.</p>${acctBtn("Sign in", "openAccount()")}`); return; }
   lb.rows = null; lb.err = ""; boardRender(); boardLoad();
 }
 async function boardLoad() {
@@ -283,14 +286,13 @@ async function boardLoad() {
   catch (e) { lb.rows = null; lb.err = e.status ? e.message : "Offline: the leaderboard needs a signal."; }
   boardRender();
 }
-function acctShow() { const m = document.getElementById("infoModal"); if (m.hidden) { m.hidden = false; document.body.style.overflow = "hidden"; m.querySelector(".mcard").scrollTop = 0; } }
 function boardRender() {
-  acctShow();
+  if (!acctOn("board")) return;
   const seg = (items, cur, on) => `<div class="gmTabs lbTabs">${items.map(([v, l]) => `<button class="gmTab${v === cur ? " on" : ""}" onclick="${on}('${v}')">${sbEsc(l)}</button>`).join("")}</div>`;
   const ser = [...new Set((typeof ENTRIES === "undefined" ? [] : ENTRIES).map(g => g.s))].map(s => [s, typeof watchSeriesName === "function" ? watchSeriesName({ s }) : s]);
   const gm = boardGames();
   const rows = lb.rows ? (lb.rows.length ? lb.rows.map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span><span class="lbName">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}<small>${r.weekends} weekend${Number(r.weekends) === 1 ? "" : "s"} · ${r.winners} winner${Number(r.winners) === 1 ? "" : "s"} called</small></span><b>${r.points}</b>${r.is_me?"":`<button class="acX" aria-label="Report ${sbEsc(r.display_name)}" onclick="acctReport('${r.user_id}')">Report</button>`}</div>`).join("") : `<p class="plRules">${lb.scope === "friends" ? "No scores yet. Add friends from your account, then make picks." : "Nobody has scored yet this season."}</p>`) : `<p class="plRules">${sbEsc(lb.err || "Loading…")}</p>`;
-  document.getElementById("infoBody").innerHTML = acctWrap(`<h3 id="infoTitle">Leaderboard · ${new Date().getFullYear()}</h3>
+  lbBox().innerHTML = acctWrap(`<h3 class="acH">Leaderboard · ${new Date().getFullYear()}</h3>
     ${seg([["friends", "Friends"], ["global", "Everyone"]], lb.scope, "boardScope")}
     <div class="acRow"><select class="acIn acSel" onchange="boardSeries(this.value)"><option value="">All series</option>${ser.map(([v, l]) => `<option value="${sbEsc(v)}"${v === lb.series ? " selected" : ""}>${sbEsc(l)}</option>`).join("")}</select>
     <select class="acIn acSel" onchange="boardGame(this.value)"><option value="">Whole season</option>${gm.map(g => { const t = TRACKS.find(x => x.id === g.t); return `<option value="${sbEsc(gameKey(g))}"${gameKey(g) === lb.game ? " selected" : ""}>${sbEsc((t ? t.short : g.t) + " · " + (typeof watchSeriesName === "function" ? watchSeriesName({ s: g.s }) : g.s))}</option>`; }).join("")}</select></div>
@@ -314,11 +316,35 @@ async function openFriendPicks(gk) {
     rows.forEach(r => { (by[r.display_name] = by[r.display_name] || []).push(r); });
     const g = (typeof ENTRIES === "undefined" ? [] : ENTRIES).find(x => gameKey(x) === gk);
     const car = (cls, n) => { const c = g && g.classes.find(x => x.h === cls), r = c && c.cars.find(x => String(x[0]) === String(n)); return `#${sbEsc(n)}${r ? " " + sbEsc(r[1]) : ""}`; };
-    acctOpenModal(acctWrap(`<h3 id="infoTitle">Friends' picks</h3>${Object.keys(by).length ? Object.entries(by).map(([n, rs]) => `<h4 class="ptH">${sbEsc(n)}</h4>${rs.map(r => `<div class="acFriend"><span>${sbEsc(r.cls)} · ${r.slot}</span><span>${car(r.cls, r.car)}</span></div>`).join("")}`).join("") : `<p class="plRules">No friend has picks here, or the race has not started yet.</p>`}`));
+    acctModal(`<div class="mkick">Friends</div><h3 id="infoTitle">Friends' picks</h3>${Object.keys(by).length ? Object.entries(by).map(([n, rs]) => `<h4 class="ptH">${sbEsc(n)}</h4>${rs.map(r => `<div class="acFriend"><span>${sbEsc(r.cls)} · ${r.slot}</span><span>${car(r.cls, r.car)}</span></div>`).join("")}`).join("") : `<p class="plRules">No friend has picks here, or the race has not started yet.</p>`}`);
   } catch (e) { if (typeof toast === "function") toast(e.message); }
+}
+
+/* ---- the Home page: the Account button (top right) and the Leaderboard row ---- */
+let lbSummary = { at: 0, text: "" };
+function acctHomeRefresh() {
+  const on = sbOn(), signed = on && !!sbSession(), gear = document.querySelector(".mastbar .fab.gear"), b = document.getElementById("acctBtn"), box = document.getElementById("competeBox");
+  if (gear) gear.hidden = on;                                   // with accounts on, the top-right button is Account and Settings lives inside it
+  if (b) {
+    b.hidden = !on; const nm = (hintGet() || {}).display_name, ini = b.querySelector(".acIni"), ic = b.querySelector(".acIcon");
+    if (ini && ic) { ini.hidden = !(signed && nm); ic.style.display = (signed && nm) ? "none" : ""; ini.textContent = nm ? nm[0].toUpperCase() : ""; }
+    b.setAttribute("aria-label", signed && nm ? `Account: ${nm}` : "Account");
+  }
+  if (box) box.hidden = !on;
+  const meta = document.getElementById("lbMeta"); if (!meta || !on) return;
+  if (!signed) { meta.textContent = "Sign in to play with friends"; return; }
+  if (lbSummary.text) meta.textContent = lbSummary.text;
+  if (Date.now() - lbSummary.at > 60000) { lbSummary.at = Date.now(); acctBoardSummary(); }
+}
+async function acctBoardSummary() {
+  try {
+    const rows = await sbRpc("leaderboard", { p_scope: "friends", p_year: new Date().getFullYear(), p_series: null, p_game: null }), me = rows.find(r => r.is_me);
+    lbSummary.text = !me ? "Make picks to join in" : rows.length < 2 ? "Add friends to compare" : `You are #${me.rank} of ${rows.length} · ${me.points} pts`;
+    const meta = document.getElementById("lbMeta"); if (meta && sbSession()) meta.textContent = lbSummary.text;
+  } catch (e) {}
 }
 
 /* the app calls these from its own screens */
 function acctAppOpen() { if (sbOn() && sbSession()) acctPull(); }
 /* a phone that already said yes to notifications keeps its token fresh at every start */
-document.addEventListener("DOMContentLoaded", () => { const r = document.getElementById("acctRow"); if (r && sbOn()) r.hidden = false; if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); if (!localStorage.getItem(K.pushOff)) setTimeout(() => pushOn(false), 3500); } });
+document.addEventListener("DOMContentLoaded", () => { acctHomeRefresh(); const r = document.getElementById("acctRow"); if (r && sbOn()) r.hidden = false; if (sbOn() && sbSession()) { setTimeout(acctPull, 1500); setTimeout(() => acctPoll(true), 2500); acctStartPolling(); if (!localStorage.getItem(K.pushOff)) setTimeout(() => pushOn(false), 3500); } });

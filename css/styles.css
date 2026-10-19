@@ -957,4 +957,6 @@ html{touch-action:manipulation}
 /* the page never scrolls sideways; while a screen is being dragged aside for swipe-back it also cannot be widened (iOS would shrink the whole page to fit the overflow) */
 html,body{overflow-x:hidden}
 @supports (overflow:clip){html,body{overflow-x:clip}}
-html.swiping,html.swiping body{overflow:hidden}
+html.swiping,html.swiping body{overflow:hidden;overscroll-behavior:none}
+/* blur behind dozens of cards re-renders on every frame of the drag: off while dragging, it is a solid-looking card anyway */
+html.swiping *,html.swiping *::before,html.swiping *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}

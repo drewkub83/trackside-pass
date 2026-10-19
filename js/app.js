@@ -2214,7 +2214,7 @@ function swipeTarget(){
     if(!dragging){ if(Math.hypot(dx,dy)<6) return; if(dx<0||Math.abs(dy)>Math.abs(dx)*1.2){ armed=false; return; } dragging=true; sw(true); el.style.transition="none"; el.style.willChange="transform"; }
     const x=Math.max(0,Math.min(dx,innerWidth));
     if(reduced){ return; }   /* still tracks the gesture; just skips the visual drag */
-    el.style.transform=`translate3d(${x}px,0,0)`; el.style.boxShadow="-14px 0 34px rgba(0,0,0,.16)";
+    el.style.transform=`translate3d(${x}px,0,0)`; el.style.boxShadow="-8px 0 22px rgba(0,0,0,.14)";
   },{passive:true});
   document.addEventListener("touchend",e=>{
     if(!armed){ reset(); return; } armed=false;

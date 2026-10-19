@@ -332,7 +332,7 @@ async function acctSettingsRender() {
   const box = document.getElementById("setPush"); if (!box) return;
   if (!sbOn() || !pushPlugin()) { box.hidden = true; return; }
   const signed = !!sbSession(); box.hidden = false; const st = signed ? await pushState() : "off";
-  box.innerHTML = `<div><b>Friend notifications</b><small>${signed ? "A notification when someone sends you a friend request or accepts yours." : "Sign in from the Account tab to get notifications about friend requests."}${st === "denied" ? " They are blocked: allow notifications for Trackside Pass in your phone's Settings." : ""}</small></div>${signed ? `<button class="sw" role="switch" aria-checked="${st === "on"}" aria-label="Friend notifications" onclick="acctSettingsPush(${st !== "on"})"><i></i></button>` : ""}`;
+  box.innerHTML = `<div><b>Friend notifications</b><small>${signed ? "A notification when someone sends you a friend request or accepts yours." : "Sign in from the Account tab to get notifications about friend requests."}${st === "denied" ? " They are blocked: allow notifications for Trackside Pass in your phone's Settings." : ""}</small></div>${signed ? `<button class="sw${st === "on" ? " on" : ""}" role="switch" aria-checked="${st === "on"}" aria-label="Friend notifications" onclick="acctSettingsPush(${st !== "on"})"><i></i></button>` : ""}`;
 }
 async function acctSettingsPush(on) { await acctPushToggle(on); acctSettingsRender(); }
 

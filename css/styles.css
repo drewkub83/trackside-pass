@@ -933,9 +933,5 @@ html{touch-action:manipulation}
 .hometabs button.on.dot2::after{display:none}
 .hometabs button{padding:0 12px}.hometabs button.on{padding:0 16px 0 14px}
 
-/* Series tab: the compact All tracks table, grouped by country */
-.atBox{padding:0 22px 120px}
-.atHead{display:flex;justify-content:space-between;align-items:baseline;margin:16px 2px 4px;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-2)}
-.atHead span{font-weight:400;opacity:.7}
-.atRow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;width:100%;padding:10px 4px;border-top:1px solid var(--line);font:inherit;font-size:15px;color:var(--ink);text-align:left}
-.atRow b{font-weight:500}.atRow span{font-size:13px;color:var(--ink-2);text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Series tab: room under the list for the floating bar */
+#champList{margin-bottom:120px}

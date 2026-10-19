@@ -244,7 +244,7 @@ function renderSeason(){
     return `<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`; }).filter(Boolean).slice(0,4);
   el.innerHTML=cards.length?`<div class="sect">Your series, next up</div><div class="scards">${cards.join("")}</div>`:"";
 }
-function renderHome(){ renderHero(); renderSeason(); renderChampList(); renderAllTracks(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
+function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
 function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e.d,s&&s.d].filter(Boolean).sort()[0]||"9999-99-99"; }
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort
@@ -270,20 +270,6 @@ function renderChampList(){
      order still rules within a region, and the regions follow whichever of your series comes first) */
   const regions=[...new Set(ordered.map(c=>c.region||"na"))];
   el.innerHTML=regions.length<2?ordered.map(row).join(""):regions.map(r=>`<li class="regionHead">${REGIONS[r]||r}</li>`+ordered.filter(c=>(c.region||"na")===r).map(row).join("")).join("");
-}
-/* the Series tab's "All tracks" table: every track grouped by country, countries A to Z (the country is the last part of the track's place; US states and a few UK names are folded into their country) */
-const US_STATES=new Set("Alabama Alaska Arizona Arkansas California Colorado Connecticut Delaware Florida Georgia Hawaii Idaho Illinois Indiana Iowa Kansas Kentucky Louisiana Maine Maryland Massachusetts Michigan Minnesota Mississippi Missouri Montana Nebraska Nevada New-Hampshire New-Jersey New-Mexico New-York North-Carolina North-Dakota Ohio Oklahoma Oregon Pennsylvania Rhode-Island South-Carolina South-Dakota Tennessee Texas Utah Vermont Virginia Washington West-Virginia Wisconsin Wyoming".split(" ").map(s=>s.replace(/-/g," ")));
-const CANADA_PROV=new Set(["Ontario","Quebec","British Columbia","Alberta","Nova Scotia","Manitoba","Saskatchewan"]);
-function countryOf(t){
-  const last=String(t.place||"").split(",").pop().trim();
-  if(US_STATES.has(last)) return "United States"; if(CANADA_PROV.has(last)) return "Canada";
-  return ({England:"United Kingdom",Scotland:"United Kingdom",Wales:"United Kingdom",UAE:"United Arab Emirates"})[last]||last||"Other";
-}
-function renderAllTracks(){
-  const el=document.getElementById("allTracks"); if(!el||typeof TRACKS==="undefined") return; const by={};
-  TRACKS.forEach(t=>{ (by[countryOf(t)]=by[countryOf(t)]||[]).push(t); });
-  const place=t=>{ const p=String(t.place||"").split(","); return p.length>1?p.slice(0,-1).join(",").trim():""; };
-  el.innerHTML=Object.keys(by).sort((x,z)=>x.localeCompare(z)).map(c=>`<div class="atHead">${esc(c)}<span>${by[c].length}</span></div>`+by[c].sort((x,z)=>x.short.localeCompare(z.short)).map(t=>`<button class="atRow" onclick="openTrack('${t.id}','seriesList')"><b>${esc(t.short)}</b><span>${esc(place(t))}</span></button>`).join("")).join("");
 }
 let curChamp=null, serRows=[];
 function toggleGoingSeries(i){ const r=serRows[i]; if(!r) return; const on=!isGoing(r.t,r.e); setGoing(r.t,r.e,on); renderSeries(); renderHero(); toast(on?`You're going: ${r.t.short}`:"Removed from your races"); }

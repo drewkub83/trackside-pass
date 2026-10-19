@@ -26,6 +26,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Trackside Pass uses your location to show where you are on the track map and give walking directions to seats, food and restrooms.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Trackside Pass uses your location to show where you are on the track map and give walking directions to seats, food and restrooms.</string>
 	<key>UIApplicationSceneManifest</key>

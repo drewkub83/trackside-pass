@@ -103,5 +103,5 @@ const ENTRIES = [
         ["5", "Gabriel Bortoleto", "Audi", "", 0.6, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-18. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-19. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

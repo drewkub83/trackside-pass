@@ -984,3 +984,6 @@ html.swiping *,html.swiping *::before,html.swiping *::after{-webkit-backdrop-fil
 .avFile{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .hometabs .acIni.avIni{background:none;overflow:hidden;padding:0}.hometabs .acIni.avIni .av{width:24px!important;height:24px!important}
 #fpTitle{display:flex;align-items:center;gap:10px}
+
+/* the not-yet-visited track tiles: the generic ".empty" empty-state padding was squeezing the outline into the lower right of its circle */
+.sbox.empty{padding:0}

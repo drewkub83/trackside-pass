@@ -423,7 +423,7 @@ async function openFriendPicks(gk) {
 /* ---- the home bar's Account tab (your initial, a red dot for requests) and the Settings switch for friend notifications ---- */
 function acctHomeRefresh() {
   const rc = document.getElementById("recapCard"), ry = sbOn() ? recapYear() : 0;
-  if (rc) rc.innerHTML = ry ? `<button class="plCard" onclick="openRecap()"><span class="plGo">Open</span><b>Your ${ry} recap</b><small>Your season at the track, and who shared it with you.</small></button>` : "";
+  if (rc) rc.innerHTML = ry ? `<button class="plCard" onclick="openRecap()"><span class="plGo">Open</span><b>Your ${ry} recap</b><small>Your season at the track, and who you shared it with.</small></button>` : "";
   const signed = sbOn() && !!sbSession(), t = document.getElementById("acctTab");
   if (typeof syncHomeTabs === "function") { const on = document.querySelector(".screen.on"); syncHomeTabs(on ? on.id : "home"); }
   if (!t) return;

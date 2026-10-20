@@ -131,6 +131,13 @@ SPECS=[
   blurb="Circuit Gilles Villeneuve, a 4.361 km, 14-turn circuit on Île Notre-Dame in Montréal, Québec. It hosts the Canadian Grand Prix.",
   sig=None,
   events=[dict(d="2027-05-21",e="Canadian Grand Prix",s="Formula 1",t=3)]),
+ dict(id="lime-rock", name="Lime Rock Park", short="Lime Rock", place="Lakeville, Connecticut", tz="America/New_York", center=[41.9296,-73.3830],
+  circuit=[17179697, 293189371, 293189372, 293189368, 293189363, 341048663, 293189385, 293189374, 293189389, 293189364, 293189369, 293189360, 293189359],
+  pit=35341695, official="2.372 km", length="2.372 km (1.474 mi)", opened=1957, nturns=7, lap=None,
+  rename={"Lime Rock Park":None},
+  blurb="Lime Rock Park, a 2.372 km (1.474 mi), seven-turn road course in Lakeville, in the northwest corner of Connecticut. It opened in 1957 and hosts the Michelin Pilot Challenge in September 2027.",
+  sig="The Lefthander and Righthander, Paul Newman Straight, Big Bend",
+  events=[dict(d="2027-09-23",e="FCP Euro Northeast Grand Prix",s="IMSA Michelin Pilot Challenge, 2 hours",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

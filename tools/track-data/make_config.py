@@ -125,6 +125,12 @@ SPECS=[
   blurb="The Miami International Autodrome, a 5.412 km, 19-turn circuit built around Hard Rock Stadium in Miami Gardens, Florida. Formula 1 has raced here since 2022.",
   sig=None,
   events=[dict(d="2027-04-30",e="Miami Grand Prix",s="Formula 1",t=3)]),
+ dict(id="montreal", name="Circuit Gilles Villeneuve", short="Montréal", place="Montréal, Québec", tz="America/Toronto", center=[45.5000,-73.5228],
+  circuit=[136717490], pit=413000959, official="4.361 km", length="4.361 km (2.710 mi)", opened=1978, nturns=14, lap="1:10.240 (2019, qualifying)",
+  rename={"Circuit Gilles-Villeneuve":None},
+  blurb="Circuit Gilles Villeneuve, a 4.361 km, 14-turn circuit on Île Notre-Dame in Montréal, Québec. It hosts the Canadian Grand Prix.",
+  sig=None,
+  events=[dict(d="2027-05-21",e="Canadian Grand Prix",s="Formula 1",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

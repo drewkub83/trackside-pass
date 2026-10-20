@@ -247,6 +247,45 @@ const SERIES = [
       {match:/Sprint/i, title:"Sprint weekend", text:"A short race of about 100 km on Saturday with points for the top eight. A sprint weekend has a compressed schedule, with one practice session and a separate sprint qualifying, and the usual qualifying and Grand Prix still follow."}
     ],
     fine:"A spectator summary based on Formula 1's published rules. For official details, see formula1.com."
+  },
+  {
+    id:"f1academy", match:/F1 Academy/i,
+    name:"F1 Academy", tag:"All-female, one car for everyone",
+    blurb:"A single-seater series for young women, run by Formula 1 as a step up from karting. Every driver has the same car, so results come down to the driver and the team. It races on Formula 1 weekends, and many of its cars carry the colours of Formula 1 teams.",
+    cars:[
+      {n:"T421-F1A", full:"Tatuus T421-F1A", type:"Formula 4-level single-seater, one car for everyone", c:"#C2457A", fg:"#FFFFFF", pace:"Fast",
+       text:"A Tatuus chassis with modified front and rear wings and a 1.4-liter turbocharged Autotecnica engine making 174 hp, on 13-inch Pirelli tires. Top speed is up to 150 mph. There are no required pit stops: a car only pits after damage or to change tires for changing conditions.",
+       spot:"All 18 cars are the same shape, so tell them apart by number and livery. Six teams (PREMA, Campos, MP Motorsport, Rodin, ART Grand Prix and HITECH) run three cars each."}
+    ],
+    rule:"Drivers must be 16 to 25 at their first race weekend of the season. The grid is 18 cars: 17 full-time drivers plus one wild card at each round. There are no classes, so everyone races for the same result.",
+    watch:{
+      practice:"Up to two free practice sessions of up to 40 minutes each.",
+      qualifying:"A 30-minute session that sets the starting grids.",
+      race:"Each race lasts up to 30 minutes (13 laps at Austin). A weekend has two or three races, described below."
+    },
+    specials:[
+      {match:/Opening Race/i, title:"Opening Race", text:"An extra race run at the Montreal and Austin rounds, before the other two. The grid is set by each driver's second-fastest qualifying lap. The winner gets 25 points."},
+      {match:/Reverse Grid/i, title:"Reverse Grid Race", text:"The top eight qualifiers start in reverse order; ninth to eighteenth start where they qualified. The winner gets 10 points, down to 1 point for eighth."},
+      {match:/Feature/i, title:"Feature Race", text:"The main race of the weekend. The grid is set by fastest laps, and the pole sitter gets 2 points. The winner gets 25 points, then 18, 15, 12, 10, 8, 6, 4, 2 and 1 for tenth."}
+    ],
+    fine:"A spectator summary based on F1 Academy's own 2026 beginner's guide (f1academy.com). For official details, see f1academy.com."
+  },
+  {
+    id:"masters", match:/Masters Historic/i,
+    name:"Masters Historic Racing", tag:"Classic Formula 1 cars, 1966 to 1985",
+    blurb:"Historic Formula 1 cars racing again. At the United States Grand Prix the featured series is Masters Racing Legends, for 3-litre Formula 1 cars from 1966 to 1985, the era when the Cosworth DFV engine powered much of the grid. For 2026 the series also welcomes turbo-engined Formula 1 cars from 1977 to 1985.",
+    cars:[
+      {n:"1966-85 F1", full:"Formula 1 cars, 1966 to 1985", type:"Historic Grand Prix cars", c:"#8A6B3F", fg:"#FFFFFF", pace:"Fast",
+       text:"Real Formula 1 cars from that period, many with the 3.0-liter naturally aspirated Cosworth DFV engine. A weekend is one 25-minute practice, one 25-minute qualifying and two 25-minute races.",
+       spot:"Different makes and shapes all in one field. At the 2024 Austin round the entry included March, Williams (FW07C), Tyrrell, Lotus 91, Arrows, Penske and Shadow cars, and a separate Formula Atlantic class raced with them (Chevron cars)."}
+    ],
+    rule:"Cars from many different years race together for one overall result in each race. Safety car periods can bunch the field, which makes the finish close.",
+    watch:{
+      practice:"A 25-minute session for the drivers to get used to old cars on a modern track.",
+      qualifying:"A 25-minute session that sets the grid for the two races.",
+      race:"Two 25-minute races, one on Saturday and one on Sunday at Austin. Old Grand Prix cars from different eras race wheel to wheel, so expect a mixed field and close battles."
+    },
+    fine:"A spectator summary based on Masters Historic Racing's 2026 event and series pages and its 2024 Austin race report (mastershistoricracing.com), and Formula 1's timetable. For official details, see mastershistoricracing.com."
   }
 ];
 

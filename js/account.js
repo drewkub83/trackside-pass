@@ -123,7 +123,7 @@ function acctRender() {
     const p = acct.profile, fr = acct.friends || [];
     const rq = acct.req || { incoming: [], outgoing: [], notifications: [] };
     const news = rq.notifications.filter(n => n.type === "friend_accepted" && !n.read);
-    h = `<h3 class="acH">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p>${acctMsg()}
+    h = `<div class="acHead"><button class="avBtn" aria-label="Change your picture" onclick="openAvatarPicker()">${avatarHtml("me", p.display_name, 64)}<small>Change</small></button><div><h3 class="acH">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p></div></div>${acctMsg()}
          ${news.map(n => `<div class="acNote">${sbEsc(n.name)} accepted your friend request.</div>`).join("")}
          ${rq.incoming.length ? `<h4 class="ptH">Friend requests (${rq.incoming.length})</h4>${rq.incoming.map(r => `<div class="acFriend"><span><b>${sbEsc(r.name)}</b> wants to be friends</span><span><button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button><button class="acX" onclick="acctRespond('${r.id}',false)">Decline</button></span></div>`).join("")}` : ""}
          ${recapYear() ? acctBtn("Your " + recapYear() + " recap", "openRecap()") : ""}
@@ -136,7 +136,7 @@ function acctRender() {
          </details>
          ${rq.outgoing.length ? `<h4 class="ptH">Waiting for an answer</h4>${rq.outgoing.map(r => `<div class="acFriend"><span>${sbEsc(r.name)}</span><button class="acX" onclick="acctCancel('${r.id}')">Cancel</button></div>`).join("")}` : ""}
          <h4 class="ptH">Friends (${fr.length})</h4>
-         ${fr.length ? fr.map(f => `<div class="acFriend"><button class="lbBtn" aria-label="Open ${sbEsc(f.display_name)}'s passport" onclick="openPassportOf('${f.id}','')">${sbEsc(f.display_name)}</button><button class="acX" aria-label="Remove ${sbEsc(f.display_name)}" onclick="acctRemove('${f.id}')">Remove</button></div>`).join("") : `<p class="plRules">No friends yet.</p>`}
+         ${fr.length ? fr.map(f => `<div class="acFriend"><button class="lbBtn avRow" aria-label="Open ${sbEsc(f.display_name)}'s passport" onclick="openPassportOf('${f.id}','')">${avatarHtml(f.id, f.display_name, 30)}<span>${sbEsc(f.display_name)}</span></button><button class="acX" aria-label="Remove ${sbEsc(f.display_name)}" onclick="acctRemove('${f.id}')">Remove</button></div>`).join("") : `<p class="plRules">No friends yet.</p>`}
          <h4 class="ptH">Friend not on Trackside Pass yet?</h4>
          <div class="acRow">${acctBtn("Send them the app", "acctShare()", "quiet")}</div>
          <h4 class="ptH">Privacy</h4>
@@ -233,7 +233,7 @@ async function acctOut() { await sbSignOut(); acct = { profile: null, friends: [
 async function acctDelete() {
   if (!confirm("Delete your account? Your profile, picks and friendships are removed from the server for good. Picks on this phone stay.")) return;
   if (!confirm("This cannot be undone. Delete it?")) return;
-  try { await sbRpc("delete_my_account"); } catch (e) { acct.msg = e.message; return acctRender(); }
+  await avDeleteMine(); try { await sbRpc("delete_my_account"); } catch (e) { acct.msg = e.message; return acctRender(); }
   await sbSignOut(); acct = { profile: null, friends: [], msg: "Your account was deleted.", busy: false, step: "email", email: "", loaded: true }; acctRender(); acctSettingsRender(); acctHomeRefresh(); if (typeof toast === "function") toast("Your account was deleted.");
 }
 
@@ -391,7 +391,7 @@ function boardRender() {
   const seg = (items, cur, on) => `<div class="gmTabs lbTabs">${items.map(([v, l]) => `<button class="gmTab${v === cur ? " on" : ""}" onclick="${on}('${v}')">${sbEsc(l)}</button>`).join("")}</div>`;
   const ser = [...new Set((typeof ENTRIES === "undefined" ? [] : ENTRIES).map(g => g.s))].map(s => [s, typeof watchSeriesName === "function" ? watchSeriesName({ s }) : s]);
   const gm = boardGames();
-  const rows = lb.rows ? (lb.rows.length ? lb.rows.map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span><button class="lbName lbBtn" aria-label="Open ${sbEsc(r.display_name)}'s passport" onclick="${r.is_me ? "openPassport()" : `openPassportOf('${r.user_id}','')`}"><span class="lbN">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><small>${r.weekends} weekend${Number(r.weekends) === 1 ? "" : "s"} · ${r.winners} winner${Number(r.winners) === 1 ? "" : "s"} called</small></button><b>${r.points}</b>${r.is_me?"":`<button class="acX" aria-label="Report ${sbEsc(r.display_name)}" onclick="acctReport('${r.user_id}')">Report</button>`}</div>`).join("") : `<p class="plRules">${lb.scope === "friends" ? "No scores yet. Add friends from your account, then make picks." : "Nobody has scored yet this season."}</p>`) : `<p class="plRules">${sbEsc(lb.err || "Loading…")}</p>`;
+  const rows = lb.rows ? (lb.rows.length ? lb.rows.map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span>${avatarHtml(r.is_me ? "me" : r.user_id, r.display_name, 32)}<button class="lbName lbBtn" aria-label="Open ${sbEsc(r.display_name)}'s passport" onclick="${r.is_me ? "openPassport()" : `openPassportOf('${r.user_id}','')`}"><span class="lbN">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><small>${r.weekends} weekend${Number(r.weekends) === 1 ? "" : "s"} · ${r.winners} winner${Number(r.winners) === 1 ? "" : "s"} called</small></button><b>${r.points}</b>${r.is_me?"":`<button class="acX" aria-label="Report ${sbEsc(r.display_name)}" onclick="acctReport('${r.user_id}')">Report</button>`}</div>`).join("") : `<p class="plRules">${lb.scope === "friends" ? "No scores yet. Add friends from your account, then make picks." : "Nobody has scored yet this season."}</p>`) : `<p class="plRules">${sbEsc(lb.err || "Loading…")}</p>`;
   lbBox().innerHTML = acctWrap(`<h3 class="acH">Leaderboard · ${new Date().getFullYear()}</h3>
     ${seg([["friends", "Friends"], ["global", "Everyone"]], lb.scope, "boardScope")}
     <div class="acRow"><select class="acIn acSel" onchange="boardSeries(this.value)"><option value="">All series</option>${ser.map(([v, l]) => `<option value="${sbEsc(v)}"${v === lb.series ? " selected" : ""}>${sbEsc(l)}</option>`).join("")}</select>
@@ -429,6 +429,7 @@ function acctHomeRefresh() {
   if (!t) return;
   const nm = (hintGet() || {}).display_name, ini = t.querySelector(".acIni"), ic = t.querySelector(".acIcon"), show = !!(signed && nm);
   if (ini && ic) { ini.hidden = !show; ic.style.display = show ? "none" : ""; ini.textContent = nm ? nm[0].toUpperCase() : ""; }
+  if (typeof avBar === "function") avBar();
   t.setAttribute("aria-label", show ? `Account: ${nm}` : "Account");
 }
 async function acctSettingsRender() {

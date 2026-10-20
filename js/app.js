@@ -37,6 +37,7 @@ const K={
   acctHint:"paddock:acct",         /* the profile (name, invite code) kept for offline display */
   notifSeen:"paddock:notifSeen",   /* the newest friend notification already announced on this phone */
   pushToken:"paddock:pushToken",   /* this phone's push token (iPhone/Android app) */
+  calAdded:"paddock:calAdded",    /* sessions already added to the phone's own calendar (so a second tap does not add them twice) */
   pushOff:"paddock:pushOff",       /* set when you switched phone notifications off */
   pushAsked:"paddock:pushAsked",   /* the one-time offer to turn notifications on was shown */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
@@ -154,10 +155,29 @@ async function deliverIcs(name,text){
   const url=URL.createObjectURL(new Blob([text],{type:"text/calendar"})), a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000);
   toast("Calendar file ready. Open it to add the sessions.");
 }
-function addToCalendar(scope){
+/* In the iPhone and Android apps the sessions go straight into the phone's own calendar (a native plugin, after one permission prompt);
+   in a browser, or if that fails, the .ics file is shared the old way. iPhone only asks to WRITE, it never reads your calendar. */
+const calPlugin=()=>{ const C=window.Capacitor; return (C&&C.isNativePlatform&&C.isNativePlatform()&&C.Plugins&&C.Plugins.CapacitorCalendar)||null; };
+function calAddedMap(){ try{ return JSON.parse(localStorage.getItem(K.calAdded)||"{}"); }catch(e){ return {}; } }
+async function addToNativeCalendar(list,evName){
+  const P=calPlugin(); if(!P) return false;
+  try{
+    const ios=window.Capacitor.getPlatform&&window.Capacitor.getPlatform()==="ios", perm=await (ios?P.requestWriteOnlyCalendarAccess():P.requestFullCalendarAccess());
+    if(!perm||perm.result!=="granted"){ toast("Calendar access is off. Allow it in your phone's Settings to add sessions."); return false; }
+    const done=calAddedMap(), todo=list.filter(s=>!done[starKey(cur,s)]);
+    if(!todo.length&&!confirm("These sessions are already in your calendar. Add them again?")) return true;
+    let n=0; for(const s of (todo.length?todo:list)){
+      await P.createEvent({title:shortName(s.n),location:cur.name+", "+cur.place,startDate:+s.start,endDate:+s.end,description:evName+". Added by Trackside Pass.",alerts:[-10]});
+      done[starKey(cur,s)]=1; n++; }
+    try{ localStorage.setItem(K.calAdded,JSON.stringify(done)); }catch(e){}
+    toast(`Added ${n} session${n===1?"":"s"} to your calendar.`); return true;
+  }catch(e){ return false; }
+}
+async function addToCalendar(scope){
   const now=new Date(), all=sessionsResolved().filter(s=>s.end>now), list=scope==="mine"?all.filter(s=>isStarred(cur,s)):all;
   if(!list.length){ toast(scope==="mine"?"Star a session first.":"No upcoming sessions to add."); return; }
   const fo=focusAt(cur), ev=fo?[...new Set(fo.group.map(e=>e.e))].join(" · "):cur.eventName||cur.name;
+  if(await addToNativeCalendar(list,ev)) return;
   deliverIcs(`${cur.id}-${list[0].d}.ics`,buildIcs(cur,list,ev));
 }
 function hubToggleGoing(){ const fo=focusAt(cur); if(!fo) return; const on=!isGoing(cur,fo.first); setGoing(cur,fo.first,on); renderHub(); renderHero(); toast(on?`You're going: ${cur.short}`:"Removed from your races"); }
@@ -1255,7 +1275,7 @@ function hubWatchCard(c){
 function hubFriendsCard(){
   const rows=typeof acctFriendsHere==="function"?acctFriendsHere():[]; if(!rows.length) return "";
   const tm=ms=>{ try{ return new Date(Number(ms)).toLocaleTimeString([],{hour:"numeric",minute:"2-digit",timeZone:cur.tz}); }catch(e){ return ""; } };
-  return `<div class="hubCard hubFriends"><h4>Friends here</h4>${rows.map(f=>`<div class="acFriend"><button class="lbBtn" aria-label="Open ${esc(f.display_name)}'s passport" onclick="openPassportOf('${f.user_id}','')">${esc(f.display_name)}</button><small>checked in ${esc(tm(f.since))}</small></div>`).join("")}</div>`;
+  return `<div class="hubCard hubFriends"><h4>Friends here</h4>${rows.map(f=>`<div class="acFriend"><button class="lbBtn avRow" aria-label="Open ${esc(f.display_name)}'s passport" onclick="openPassportOf('${f.user_id}','')">${typeof avatarHtml==="function"?avatarHtml(f.user_id,f.display_name,28):""}<span>${esc(f.display_name)}</span></button><small>checked in ${esc(tm(f.since))}</small></div>`).join("")}</div>`;
 }
 function hubStandingsCard(c){
   const {sid,chev}=c;

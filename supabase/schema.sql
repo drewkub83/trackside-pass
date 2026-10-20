@@ -43,7 +43,13 @@ drop policy if exists profiles_update_own on public.profiles;
 create policy profiles_update_own on public.profiles for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
 revoke insert, delete on public.profiles from anon, authenticated;
 revoke update on public.profiles from anon, authenticated;
-grant update (display_name, show_global) on public.profiles to authenticated;
+-- the picture: `avatar` is the chosen look (null = the first letter of the name, or 'livery:<id>' for a colour scheme); photo_v is set when a photo is uploaded
+-- (a version number, the upload time in ms) -- the photo itself lives in the private `avatars` storage bucket (bottom of this file) and only you and your friends can read it
+alter table public.profiles add column if not exists avatar text;
+alter table public.profiles add column if not exists photo_v bigint;
+alter table public.profiles drop constraint if exists avatar_shape;
+alter table public.profiles add constraint avatar_shape check (avatar is null or avatar ~ '^livery:[a-z0-9]{1,16}$');
+grant update (display_name, show_global, avatar, photo_v) on public.profiles to authenticated;
 
 create table if not exists public.name_blocklist (word text primary key);
 insert into public.name_blocklist(word) values ('fuck'),('shit'),('cunt'),('nigg'),('fagg'),('rape'),('nazi'),('hitler'),('admin'),('moderator'),('trackside'),('official') on conflict do nothing;
@@ -213,7 +219,7 @@ revoke all on function public.create_profile(text) from public, anon;
 grant execute on function public.create_profile(text) to authenticated;
 
 create or replace function public.my_profile() returns jsonb language sql stable security definer set search_path = public as $$
-  select jsonb_build_object('display_name', p.display_name, 'show_global', p.show_global, 'invite_code', i.code)
+  select jsonb_build_object('display_name', p.display_name, 'show_global', p.show_global, 'invite_code', i.code, 'avatar', p.avatar, 'photo_v', p.photo_v)
   from public.profiles p left join public.invites i on i.user_id = p.id where p.id = auth.uid()
 $$;
 revoke all on function public.my_profile() from public, anon;
@@ -499,7 +505,7 @@ begin
      and not exists (select 1 from public.profiles where id = p_user and show_global) then
     raise exception 'This passport is private' using errcode = '42501';
   end if;
-  select jsonb_build_object('name', p.display_name, 'stamps', coalesce(s.stamps, '[]'::jsonb), 'unlocked', coalesce(s.unlocked, '{}'::jsonb))
+  select jsonb_build_object('id', p.id, 'name', p.display_name, 'stamps', coalesce(s.stamps, '[]'::jsonb), 'unlocked', coalesce(s.unlocked, '{}'::jsonb))
     into r from public.profiles p left join public.passports s on s.user_id = p.id where p.id = p_user;
   return r;
 end $$;
@@ -586,6 +592,16 @@ begin
 end $$;
 revoke all on function public.admin_add_stamp(text, text, text, text) from public, anon, authenticated;
 
+-- the look of a list of players: the chosen colour scheme for anyone, the photo version only for yourself and your friends (the photo itself is also friends-only in storage)
+create or replace function public.avatars_of(p_ids uuid[]) returns table (id uuid, avatar text, photo_v bigint)
+language sql stable security definer set search_path = public as $$
+  select p.id, p.avatar,
+         case when p.id = auth.uid() or exists (select 1 from public.friendships f where (f.user_a = auth.uid() and f.user_b = p.id) or (f.user_b = auth.uid() and f.user_a = p.id)) then p.photo_v end
+  from public.profiles p where auth.uid() is not null and p.id = any (p_ids[1:200])
+$$;
+revoke all on function public.avatars_of(uuid[]) from public, anon;
+grant execute on function public.avatars_of(uuid[]) to authenticated;
+
 ---------------------------------------------------------------- push notifications (iPhone: APNs, Android: Firebase Cloud Messaging)
 -- Phones register a device token; every new row in `notifications` calls the `push` edge function (supabase/functions/push/index.ts), which sends it.
 create table if not exists public.push_tokens (
@@ -637,3 +653,21 @@ do $$ begin
   if exists (select 1 from pg_available_extensions where name = 'pg_net') then create extension if not exists pg_net; end if;
 exception when others then null;
 end $$;
+
+---------------------------------------------------------------- profile photos (private storage: you and your friends can read a photo, only you can write yours)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('avatars', 'avatars', false, 262144, array['image/jpeg'])
+on conflict (id) do update set public = false, file_size_limit = 262144, allowed_mime_types = array['image/jpeg'];
+drop policy if exists avatars_read on storage.objects;
+create policy avatars_read on storage.objects for select to authenticated using (
+  bucket_id = 'avatars' and name ~ '^[0-9a-f-]{36}\.jpg$' and (
+    name = auth.uid()::text || '.jpg'
+    or exists (select 1 from public.friendships f where (f.user_a = auth.uid() and f.user_b::text || '.jpg' = name) or (f.user_b = auth.uid() and f.user_a::text || '.jpg' = name))
+  )
+);
+drop policy if exists avatars_write on storage.objects;
+create policy avatars_write on storage.objects for insert to authenticated with check (bucket_id = 'avatars' and name = auth.uid()::text || '.jpg');
+drop policy if exists avatars_update on storage.objects;
+create policy avatars_update on storage.objects for update to authenticated using (bucket_id = 'avatars' and name = auth.uid()::text || '.jpg') with check (bucket_id = 'avatars' and name = auth.uid()::text || '.jpg');
+drop policy if exists avatars_delete on storage.objects;
+create policy avatars_delete on storage.objects for delete to authenticated using (bucket_id = 'avatars' and name = auth.uid()::text || '.jpg');

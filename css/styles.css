@@ -968,3 +968,19 @@ html.swiping *,html.swiping *::before,html.swiping *::after{-webkit-backdrop-fil
 .fpCls{margin:8px 0 2px;font-size:12px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-2)}
 .fpPick{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:14.5px}.fpPick .hit{color:var(--accent);font-weight:600}
 #recapCard{padding:0 22px}
+
+/* profile pictures */
+.av{display:inline-grid;place-items:center;flex:none;border-radius:50%;overflow:hidden;background:var(--tint);vertical-align:middle}
+.av img,.av svg{width:100%;height:100%;display:block;object-fit:cover}
+.av .avL{font-weight:600;line-height:1;color:var(--ink)}
+.acHead{display:flex;align-items:center;gap:14px;margin:4px 0 6px}.acHead .acH{margin:0}.acHead .plRules{margin:2px 0 0}
+.avBtn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;padding:0;color:inherit;cursor:pointer}.avBtn small{font-size:11px;color:var(--accent)}
+.avRow{display:flex;align-items:center;gap:10px}.avRow::after{content:none}
+.lbRow>.av{margin-right:-2px}
+.avBig{display:flex;justify-content:center;margin:6px 0 10px}
+.avGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.avOpt{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;border-radius:16px;background:var(--tint);border:2px solid transparent;color:inherit;cursor:pointer}
+.avOpt small{font-size:11.5px;text-align:center}.avOpt.on{border-color:var(--accent)}
+.avFile{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.hometabs .acIni.avIni{background:none;overflow:hidden;padding:0}.hometabs .acIni.avIni .av{width:24px!important;height:24px!important}
+#fpTitle{display:flex;align-items:center;gap:10px}

@@ -12,7 +12,7 @@ const read = (f) => fs.readFileSync(path.join(ROOT, f), "utf8");
 const exists = (f) => fs.existsSync(path.join(ROOT, f));
 
 /* 1. syntax of every script the app runs */
-for (const f of ["js/app.js", "js/passport.js", "js/native.js", "sw.js"]) {
+for (const f of ["js/app.js", "js/passport.js", "js/native.js", "js/account.js", "js/avatar.js", "sw.js"]) {
   try { new vm.Script(read(f), { filename: f }); } catch (e) { err(`${f}: syntax error: ${e.message}`); }
 }
 for (const f of ["gtwce", "ytlive"]) { try { cp.execFileSync(process.execPath, ["--check", path.join(ROOT, `netlify/functions/${f}.mjs`)], { stdio: "pipe" }); } catch (e) { err(`netlify/functions/${f}.mjs: syntax error`); } }

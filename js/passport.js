@@ -562,7 +562,7 @@ function renderPassportFor(d){
   const total=PP_GLOBAL.length, got=PP_GLOBAL.filter(x=>p.unlocked[x.id]).length;
   ppView=true;
   try{
-    document.getElementById("fpTitle").textContent=d.name+"'s passport";
+    document.getElementById("fpTitle").innerHTML=(typeof avatarHtml==="function"?avatarHtml(d.id||"x",d.name,34):"")+"<span>"+esc(d.name)+"'s passport</span>";
     document.getElementById("fpSum").innerHTML=`<div class="ppn">${st.tracks}<small>of ${st.total} tracks</small></div><div class="ppbar big"><i style="width:${Math.round(st.tracks/st.total*100)}%"></i></div><div class="ppb">${got} of ${total} badges · ${st.weekends} race weekend${st.weekends===1?"":"s"}</div>`;
     document.getElementById("fpTracks").innerHTML=ppTracksHtml(p,st);
     document.getElementById("fpBadges").innerHTML=ppBadgesHtml(p,st);

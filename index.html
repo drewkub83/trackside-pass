@@ -71,15 +71,17 @@
   <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Passport</h2>
     <button class="fab ppmore" aria-label="Backup and restore" onclick="ppMenu()"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
     <div class="ppmenu" id="ppMenu" hidden><button onclick="ppMenu(false);ppBackup()">Copy backup code</button><button onclick="ppMenu(false);ppRestore()">Restore from a code</button><small>Your passport is kept on this phone. A backup code moves it to a new phone.</small></div></div>
-  <div class="ppsum" id="ppSum"></div>
   <div class="ppcheck"><button class="btn quiet" id="ppCheckBtn" onclick="passportManual()">Check in here</button><small id="ppStatus"></small><small>Stamps only count at a track, during a race weekend.</small></div>
+  <div class="ppsum" id="ppSum"></div>
+  <div id="ppNext"></div>
   <div class="sect">Stamps earned</div>
   <div id="ppTracks"></div>
+  <div class="sect">Badges earned</div>
+  <div id="ppBadges"></div>
   <div class="sect">Still to collect</div>
   <div class="ppSeg" role="group" aria-label="Group tracks"><button id="ppgRegion" onclick="ppGroup('region')">By continent</button><button id="ppgSeries" onclick="ppGroup('series')">By series</button></div>
   <div id="ppMore"></div>
-  <div class="sect">Badges</div>
-  <div id="ppBadges"></div>
+  <div id="ppLocked"></div>
 </section>
 
 <!-- RECAP -->
@@ -96,8 +98,11 @@
     <div class="ppsum" id="fpSum"></div>
     <div class="sect">Stamps earned</div>
     <div id="fpTracks"></div>
-    <div class="sect">Badges</div>
+    <div class="sect">Badges earned</div>
     <div id="fpBadges"></div>
+    <div class="sect">Still to collect</div>
+    <div id="fpMore"></div>
+    <div id="fpLocked"></div>
   </div>
   <div class="acScreen" id="fpPicks" hidden></div>
 </section>

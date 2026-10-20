@@ -531,13 +531,11 @@ function ppMoreHtml(p,st){        /* each continent (or series) with the circuit
     :Object.keys(PP_REGIONS).map(r=>({r,l:TRACKS.filter(t=>ppRegionOf(t)===r)})).filter(x=>x.l.length).map(x=>sec(esc(PP_REGIONS[x.r]),x.l)).join("");
   return html||`<p class="ppNone">You have a stamp from every track. Nothing left to collect.</p>`;
 }
-/* both parts in one block (another player's passport has no group switch) */
-function ppTracksHtml(p,st){ return ppEarnedHtml(p,st)+`<div class="sect">Still to collect</div>`+ppMoreHtml(p,st); }
 function ppNextUp(p,st){
   return PP_GLOBAL.filter(d=>!p.unlocked[d.id]).map((d,i)=>{ const g=ppProg(d,st); return {d,g,i,score:g?g[0]/g[1]:(d.tier==="x"?0.01:0)}; })
     .filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3);
 }
-function ppBadgesHtml(p,st){
+function ppBadgeParts(p,st){
   const next=ppView?[]:ppNextUp(p,st), byId=Object.fromEntries(PP_GLOBAL.map(d=>[d.id,d]));
   const need=x=>x.g?`<span class="ppbar"><i style="width:${Math.round(x.g[0]/x.g[1]*100)}%"></i></span>`:"";
   const nextHtml=next.length?`<div class="ppNextBox"><h4>Next up</h4>${next.map(x=>`<button class="ppnx" onclick="toast(${esc(JSON.stringify(x.d.desc))})"><span class="sbox sm">${stampSvg(x.d,{locked:true})}</span><div><b>${esc(x.d.name)}</b><small>${esc(x.d.desc)}</small>${need(x)}</div>${x.g?`<em>${x.g[0]} of ${x.g[1]}</em>`:""}</button>`).join("")}</div>`:"";
@@ -548,9 +546,11 @@ function ppBadgesHtml(p,st){
   const earned=sets.filter(x=>x.got.length).map(x=>ppSec(x.title,`${x.got.length} of ${x.ds.length}`,`<div class="bgrid three">${x.got.map(big).join("")}</div>`,true)).join("")||`<p class="ppNone">${ppView?"No badges yet.":"Badges you earn appear here."}</p>`;
   const nLock=sets.reduce((n,x)=>n+x.lock.length,0);
   const locked=nLock?ppSec("Not yet earned",`${nLock} to go`,sets.filter(x=>x.lock.length).map(x=>`<div class="ppSub">${esc(x.title)}</div><div class="bgrid mini">${x.lock.map(small).join("")}</div>`).join(""),false):"";
-  const groups=earned+locked;
-  return nextHtml+groups;
+  return {next:nextHtml,earned,locked};
 }
+/* the pieces, for the page order: next up, badges earned, and (at the very bottom) badges not yet earned */
+const ppNextHtml=(p,st)=>ppBadgeParts(p,st).next, ppBadgesEarnedHtml=(p,st)=>ppBadgeParts(p,st).earned, ppBadgesLockedHtml=(p,st)=>ppBadgeParts(p,st).locked;
+
 function renderPassport(){
   const p=ppLoad(), st=ppStats(p), total=PP_GLOBAL.length, got=PP_GLOBAL.filter(d=>p.unlocked[d.id]).length, nx=ppNextUp(p,st).find(x=>x.g);
   document.getElementById("ppSum").innerHTML=`<div class="ppn">${st.tracks}<small>of ${st.total} tracks</small></div><div class="ppbar big"><i style="width:${Math.round(st.tracks/st.total*100)}%"></i></div>
@@ -558,7 +558,7 @@ function renderPassport(){
   const live=TRACKS.some(t=>activeEvent(t)), cb=document.getElementById("ppCheckBtn"); if(cb) cb.className="btn "+(live?"primary":"quiet");
   const mode=ppGroupMode(); document.getElementById("ppgRegion").classList.toggle("on",mode==="region"); document.getElementById("ppgSeries").classList.toggle("on",mode==="series");
   document.getElementById("ppTracks").innerHTML=ppEarnedHtml(p,st); document.getElementById("ppMore").innerHTML=ppMoreHtml(p,st);
-  document.getElementById("ppBadges").innerHTML=ppBadgesHtml(p,st);
+  const bp=ppBadgeParts(p,st); document.getElementById("ppNext").innerHTML=bp.next; document.getElementById("ppBadges").innerHTML=bp.earned; document.getElementById("ppLocked").innerHTML=bp.locked;
 }
 /* another player's passport (from the leaderboard or the friends list): d = {name, stamps, unlocked} from the server. Which badges they hold is worked out here
    from their stamps with today's rules, so a change to the badges needs no change to what was saved; the server only supplies the dates. */
@@ -570,8 +570,8 @@ function renderPassportFor(d){
   try{
     document.getElementById("fpTitle").innerHTML=(typeof avatarHtml==="function"?avatarHtml(d.id||"x",d.name,34):"")+"<span>"+esc(d.name)+"'s passport</span>";
     document.getElementById("fpSum").innerHTML=`<div class="ppn">${st.tracks}<small>of ${st.total} tracks</small></div><div class="ppbar big"><i style="width:${Math.round(st.tracks/st.total*100)}%"></i></div><div class="ppb">${got} of ${total} badges · ${st.weekends} race weekend${st.weekends===1?"":"s"}</div>`;
-    document.getElementById("fpTracks").innerHTML=ppTracksHtml(p,st);
-    document.getElementById("fpBadges").innerHTML=ppBadgesHtml(p,st);
+    const bp=ppBadgeParts(p,st); document.getElementById("fpTracks").innerHTML=ppEarnedHtml(p,st); document.getElementById("fpBadges").innerHTML=bp.earned;
+    document.getElementById("fpMore").innerHTML=ppMoreHtml(p,st); document.getElementById("fpLocked").innerHTML=bp.locked;
   } finally { ppView=false; }
   showScreen("friendPass");
 }

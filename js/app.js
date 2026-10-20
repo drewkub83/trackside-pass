@@ -171,7 +171,7 @@ async function addToNativeCalendar(list,evName){
       done[starKey(cur,s)]=1; n++; }
     try{ localStorage.setItem(K.calAdded,JSON.stringify(done)); }catch(e){}
     toast(`Added ${n} session${n===1?"":"s"} to your calendar.`); return true;
-  }catch(e){ return false; }
+  }catch(e){ toast("Could not add to your calendar: "+((e&&e.message)||"unknown error").slice(0,80)); return false; }
 }
 async function addToCalendar(scope){
   const now=new Date(), all=sessionsResolved().filter(s=>s.end>now), list=scope==="mine"?all.filter(s=>isStarred(cur,s)):all;

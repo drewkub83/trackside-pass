@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Trackside Pass adds the race sessions you choose to your calendar.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Trackside Pass adds the race sessions you choose to your calendar. It does not read your calendar.</string>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
 	<string>Trackside Pass adds the race sessions you choose to your calendar. It does not read your calendar.</string>
 	<key>NSCameraUsageDescription</key>

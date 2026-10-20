@@ -118,6 +118,13 @@ SPECS=[
   blurb="The Las Vegas Strip Circuit: 6.201 km and 17 turns on public roads, down Las Vegas Boulevard past the Bellagio, Caesars Palace and the Sphere. A night race for the Las Vegas Grand Prix on Nov 19-21, 2026, with the race starting at 20:00 local time on Saturday.",
   sig=None,
   events=[dict(d="2026-11-19",e="Las Vegas Grand Prix",s="Formula 1",t=3),dict(d="2027-11-18",e="Las Vegas Grand Prix",s="Formula 1",t=3)]),
+ dict(id="miami", name="Miami International Autodrome", short="Miami", place="Miami Gardens, Florida", tz="America/New_York", center=[25.9581,-80.2389],
+  circuit=[1472686141, 1485453197, 1017340351, 1485453204, 1472684485, 1485453202, 1485453200],
+  pit=1017340352, official="5.412 km", length="5.412 km (3.363 mi)", opened=2022, nturns=19, lap="1:26.204 (2025, qualifying)",
+  rename={"Miami International Autodrome":None},
+  blurb="The Miami International Autodrome, a 5.412 km, 19-turn circuit built around Hard Rock Stadium in Miami Gardens, Florida. Formula 1 has raced here since 2022.",
+  sig=None,
+  events=[dict(d="2027-04-30",e="Miami Grand Prix",s="Formula 1",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

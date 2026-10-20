@@ -26,20 +26,20 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCalendarsUsageDescription</key>
-	<string>Trackside Pass adds the race sessions you choose to your calendar.</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>Trackside Pass adds the race sessions you choose to your calendar. It does not read your calendar.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Trackside Pass adds the race sessions you choose to your calendar.</string>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
 	<string>Trackside Pass adds the race sessions you choose to your calendar. It does not read your calendar.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Take a profile photo. It is shared only with your friends.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Choose a profile photo. It is shared only with your friends.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Trackside Pass uses your location to show where you are on the track map and give walking directions to seats, food and restrooms.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Trackside Pass uses your location to show where you are on the track map and give walking directions to seats, food and restrooms.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose a profile photo. It is shared only with your friends.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

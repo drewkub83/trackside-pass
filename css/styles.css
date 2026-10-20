@@ -991,3 +991,35 @@ html.swiping *,html.swiping *::before,html.swiping *::after{-webkit-backdrop-fil
 /* passport: empty-state lines and the sub-heading inside the closed "not yet earned" block */
 .ppNone{margin:0 26px 12px;font-size:14px;color:var(--ink-2)}
 .ppSub{margin:6px 26px 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+
+/* ---------- wide screens: an unfolded foldable or a tablet (<html class="wide">, set from a media query in index.html and in js/app.js) ----------
+   Two panes: the left one is the page you are on, the right one shows what you open from it. On a foldable the split lands on the fold. A phone, or a phone held sideways, never gets this. */
+html.wide{--leftw:clamp(340px,50vw,460px);--appw:min(100vw,1180px)}
+html.wide .app{max-width:1180px;height:100dvh;min-height:0;overflow:hidden;display:grid;grid-template-columns:var(--leftw) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+html.wide .app>.screen{grid-row:1;min-height:0;height:100%;overflow-y:auto;overflow-x:hidden}
+html.wide .app>.screen.on{grid-column:1}
+html.wide .app>.screen.on2{display:flex;grid-column:2;border-left:1px solid var(--line)}
+html.wide .app>.screen.on:is(#detail){grid-column:1/-1;overflow:hidden}
+html.wide body.hastabs .screen.on2{padding-bottom:24px}
+html.wide .hometabs{left:calc((100vw - var(--appw))/2 + var(--leftw)/2)}
+.paneHint{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px;text-align:center;color:var(--ink-2);opacity:.8}
+.paneHint p{max-width:24ch;font-size:15px}.paneHint img{opacity:.5}
+/* a track: the Race Day hub stays on the left, the right shows the day's schedule, the map or Info */
+html.wide #detail{position:relative;--hubw:var(--leftw)}
+html.wide #detail #pMap{display:block!important;position:absolute;inset:0;height:auto;min-height:0;padding:0;overflow:hidden}
+html.wide #detail #hubView{display:flex!important;position:absolute;left:0;top:0;bottom:0;width:var(--hubw);z-index:5;background:var(--paper);border-right:1px solid var(--line);overflow-y:auto;padding-bottom:40px}
+html.wide #detail #pMap .map-wrap{left:var(--hubw)}
+html.wide #detail:not([data-wr="map"]) #pMap>.map-wrap,html.wide #detail:not([data-wr="map"]) #pMap>.fl,html.wide #detail:not([data-wr="map"]) #pMap>.sheet,html.wide #detail:not([data-wr="map"]) #pMap>.sheetBackdrop{display:none!important}
+html.wide #detail[data-wr="map"] #pMap>.map-wrap{display:block!important}
+html.wide #detail[data-wr="map"] #pMap>.fl{display:flex!important}
+html.wide #detail .fl-tl{display:none!important}
+html.wide #detail .fl-tc{left:calc(var(--hubw) + 68px)}
+html.wide #detail .fl-bl{left:calc(var(--hubw) + 12px)}
+html.wide #detail .fl-bc{left:calc(var(--hubw) + 78px)}
+html.wide #detail .sheet{left:calc(var(--hubw) + 10px)}
+html.wide #detail .sheetBackdrop{left:var(--hubw)}
+html.wide #detail #pEvents,html.wide #detail #pInfo{position:absolute;left:var(--hubw);right:0;top:0;bottom:0;overflow-y:auto;overflow-x:hidden;z-index:4;background:var(--paper)}
+html.wide #detail .tabs{left:calc((100vw - var(--appw))/2 + var(--hubw) + (var(--appw) - var(--hubw))/2)}
+html.wide #detail .tabs #hubTabBtn{display:none}
+html.wide #detail .tabs button[data-p="pEvents"]{order:-1}
+html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}

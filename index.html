@@ -16,10 +16,14 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="css/styles.css">
+<script>try{document.documentElement.classList.toggle("wide",matchMedia("(min-width:700px) and (min-height:520px)").matches)}catch(e){}</script>
 <script>try{if(localStorage.getItem("paddock:style")==="race")document.documentElement.setAttribute("data-style","race")}catch(e){}</script>
 </head>
 <body>
 <div class="app">
+
+<!-- the empty right-hand pane on a wide screen (unfolded foldable, tablet) -->
+<section class="screen" id="paneHint"><div class="paneHint"><img src="icons/pin.svg" alt="" width="34" height="46"><p>Open a series, a track or a game on the left and it shows up here.</p></div></section>
 
 <!-- HOME: hero + series -->
 <section class="screen on" id="home">

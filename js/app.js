@@ -320,7 +320,54 @@ function renderSeries(){
 }
 /* screens: home (series + hero), imsa (track list), detail (a track) */
 let backTo="series";
-function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id)); window.scrollTo(0,0); syncMapMode(); syncHomeTabs(id); }
+/* ---- wide screens (an unfolded foldable, a tablet): two panes side by side. The left pane is the page you are on; the right pane shows whatever you open from it.
+   Home keeps Pick your podium on the right until you open something; a track keeps its Race Day hub on the left and the day's schedule (or the map, or Info) on the right.
+   Everything here is off on a phone and on a phone held sideways: <html class="wide"> is set from the same media query in index.html. ---- */
+const WIDE_MQ=window.matchMedia("(min-width:700px) and (min-height:520px)"), isWide=()=>WIDE_MQ.matches;
+let wideLeft="home";
+const WIDE_RIGHT_ONLY=["series","passport","friendPass","recap","settings"];
+function showScreenWide(id){
+  let left=wideLeft, right=null;
+  if(id==="detail") left="detail";
+  else if(HOME_TABS.includes(id)){ left=id; right=id==="home"?"play":"paneHint"; }
+  else if(WIDE_RIGHT_ONLY.includes(id)){ left=HOME_TABS.includes(wideLeft)?wideLeft:"home"; right=id; }
+  else left=id;
+  wideLeft=left;
+  document.querySelectorAll(".screen").forEach(s=>{ const l=s.id===left, r=!!right&&s.id===right&&!l; s.classList.toggle("on",l); s.classList.toggle("on2",r); if(l||r) s.scrollTop=0; });
+  window.scrollTo(0,0); syncMapMode(); syncHomeTabs(left);
+  if(right==="play"&&typeof renderPlay==="function") renderPlay();
+}
+function showScreen(id){
+  if(isWide()) return showScreenWide(id);
+  document.querySelectorAll(".screen").forEach(s=>{ s.classList.toggle("on",s.id===id); s.classList.remove("on2"); }); window.scrollTo(0,0); syncMapMode(); syncHomeTabs(id);
+}
+/* the track page on a wide screen: which right-hand view is showing ("events" is the day's schedule, then "map" and "info") */
+function setWideRight(w){
+  const d=document.getElementById("detail"); if(!d) return; d.dataset.wr=w; if(!hubMode){ hubDismissed=false; enterHub(); }
+  document.querySelectorAll("#detail .tabs button").forEach(b=>b.classList.toggle("on",(b.dataset.p==="pEvents"&&w==="events")||(b.dataset.p==="pInfo"&&w==="info")||(b.id==="mapTabBtn"&&w==="map")));
+  document.querySelectorAll("#detail .panel:not(#pMap)").forEach(p=>p.classList.toggle("on",(p.id==="pEvents"&&w==="events")||(p.id==="pInfo"&&w==="info")));
+  if(w==="map") requestAnimationFrame(()=>window.dispatchEvent(new Event("resize")));      /* the map pane just got its size: refit the track to it */
+}
+const wideTab=btn=>setWideRight(btn.id==="mapTabBtn"?"map":btn.dataset.p==="pInfo"?"info":"events");
+/* folding or unfolding while the app is open: what was on the right becomes the screen when you fold, and the right pane fills in when you unfold */
+function onWideChange(){
+  if(document.documentElement.classList.contains("wide")===WIDE_MQ.matches) return;
+  document.documentElement.classList.toggle("wide",WIDE_MQ.matches);
+  const l=document.querySelector(".screen.on"), r=document.querySelector(".screen.on2"), d=document.getElementById("detail");
+  if(WIDE_MQ.matches){
+    const pn=d&&d.querySelector(".panel.on"), w=!pn?"events":pn.id==="pEvents"?"events":pn.id==="pInfo"?"info":hubMode?"events":"map";   /* the phone's tab becomes the right-hand view */
+    showScreenWide(l?l.id:"home"); if(d&&d.classList.contains("on")) setWideRight(w);
+  } else {
+    const t=r&&WIDE_RIGHT_ONLY.includes(r.id)?r.id:(l?l.id:"home"); document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on2")); showScreen(t);
+    if(t==="detail"){        /* folding on a track: the right-hand view becomes the tab you are on */
+      const w=d.dataset.wr||"events", id=w==="info"?"pInfo":w==="events"?"pEvents":"pMap";
+      d.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id===id)); if(w==="map"&&hubMode) exitHub(); else hubTabs();
+      d.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",(w==="events"&&b.dataset.p==="pEvents")||(w==="info"&&b.dataset.p==="pInfo")||(w==="map"&&b.id==="mapTabBtn")||(w==="events"&&false))); syncMapMode();
+    }
+  }
+  try{ applyView(); }catch(e){}
+}
+WIDE_MQ.addEventListener("change",onWideChange); window.addEventListener("resize",()=>setTimeout(onWideChange,60));
 /* the home bar (Series, Podium, Leaders, Account) is shown on those four pages only */
 const HOME_TABS=["home","seriesList","play","board","account"];
 function syncHomeTabs(id){
@@ -375,7 +422,7 @@ function openTrackNow(id,from){
   window.scrollTo(0,0);
   wx=null; wxToast=null; renderWx(); loadWeather();
   limits=null; view=fitted=fitView(); applyView(); { const w=document.getElementById("mapWrap"); lastSize=w.clientWidth+"x"+w.clientHeight; }
-  hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); checkRaceWeek();
+  hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); if(isWide()) setWideRight("events"); checkRaceWeek();
   /* resume live GPS automatically if it's already been allowed before, same consent-respecting check the
      hub and race-week banner use -- never asks cold, only picks back up for someone who already said yes.
      A web page can't keep watchPosition running once the OS fully closes the tab/PWA (no background
@@ -393,6 +440,7 @@ function goHome(){
   renderHome(); stopGps(); if(backTo==="play") renderPlay(); showScreen(backTo);
 }
 function tab(btn){
+  if(isWide()){ wideTab(btn); return; }
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b===btn));
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id===btn.dataset.p));
   window.scrollTo(0,0); syncMapMode();
@@ -901,8 +949,8 @@ const HUB_RADIUS_KM=32.2;   /* 20 miles */
 function hubTabs(){ const pm=document.getElementById("pMap"); if(!pm||!pm.classList.contains("on")) return; document.querySelectorAll(".tabs button[data-p=pMap]").forEach(b=>b.classList.toggle("on",hubMode===(b.getAttribute("onclick")||"").startsWith("tabHub"))); }
 function enterHub(){ hubMode=true; hubTabs(); document.getElementById("pMap").classList.add("hub-mode"); document.getElementById("hubView").hidden=false; renderHub(); }
 let hubReturn=false;   /* true while you're on the map because a hub button sent you there: swiping back or the header's back arrow return to the hub. Closing a popup (its own X, or End directions) never does -- that's just dismissing that one popup, not leaving the map, e.g. tapping a POI badge after "Full map" and closing it should leave you on the map, not bounce you back to the hub. */
-function leaveHub(){ exitHub(); hubReturn=true; }
-function backToHub(){ hubReturn=false; clearRoute(); setMode(null); closeSheet(); applyView(); hubDismissed=false; enterHub(); }
+function leaveHub(){ if(isWide()){ setWideRight("map"); return; } exitHub(); hubReturn=true; }
+function backToHub(){ if(isWide()) setWideRight("events"); hubReturn=false; clearRoute(); setMode(null); closeSheet(); applyView(); hubDismissed=false; enterHub(); }
 /* returns true when it took you back to the hub, so callers can skip their normal back step */
 function hubBack(){ if(!hubReturn||hubMode) return false; const sc=document.querySelector(".screen.on"), pn=sc&&sc.querySelector(".panel.on"); if(!sc||sc.id!=="detail"||!pn||pn.id!=="pMap") return false; if(sheetState==="shLayers"||sheetState==="shGps") return false; backToHub(); return true; }
 function endDirections(){ clearRoute(); }
@@ -1817,7 +1865,7 @@ function panTo(v){ view=clampView(v); fitted=null; if(!panRaf) panRaf=requestAni
   wrap.addEventListener("touchend",e=>{ if(e.touches.length<2&&pinch){ pinch=null; drag=null; settle(); } },{passive:true});
 })();
 
-renderHome(); syncHomeTabs("home");
+renderHome(); syncHomeTabs("home"); if(isWide()) showScreenWide("home");
 checkRaceWeek();
 
 /* ---- open straight at the track when you are there ----

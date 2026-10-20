@@ -37,7 +37,7 @@ Every track has a walking grid (`route`). Three things make Directions actually 
   track's badges. Don't bump a track's `rev` for this: it wipes the user's own badge edits.
 
 ## Working on js/app.js
-- Section index is at the top of the file. Every localStorage key lives in the `K` table near the top (add new keys there; `tools/validate.js` fails on stray `paddock:` literals). The Race Day hub is one builder function per card (`hubSessionCard`, `hubWatchCard`, ...) composed by `renderHub()`.
+- Section index is at the top of the file. Every localStorage key lives in the `K` table near the top (add new keys there; `tools/validate.js` fails on stray `paddock:` literals). A series page (`renderSeries`) lists every upcoming race via `allOrderOf(c)`, so a venue that hosts the series twice (HSR at Daytona, F1 at COTA in 2026 and 2027) shows once per weekend; `orderOf(c)` (one next race per venue) is for the home tile and the soonest-race logic. The Race Day hub is one builder function per card (`hubSessionCard`, `hubWatchCard`, ...) composed by `renderHub()`.
 - Before refactoring anything the hub renders, run the regression harness in `tools/hub_snapshot.js` (instructions in its header): it hashes the hub HTML for every track at ~10 pretend moments, so "nothing changed" can be proven.
 
 ## Lap records (`lapRecord` in `data/<track>.js`)

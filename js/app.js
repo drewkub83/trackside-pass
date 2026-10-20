@@ -201,6 +201,8 @@ function showRaceWeek(t,e){
 function closeRaceWeek(){ document.getElementById("raceWeekModal").hidden=true; document.body.style.overflow=""; }
 function nextIn(c,t){ return t.events.filter(e=>inChamp(c,e)&&!eventDone(t,e)).sort((a,b)=>a.d.localeCompare(b.d))[0]; }
 function orderOf(c){ return TRACKS.map(t=>({t,e:nextIn(c,t)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)); }
+/* every race of a series that is still to come, one row each: a venue that hosts it more than once (HSR at Daytona, Sebring and Road Atlanta; Formula 1 at COTA in 2026 and 2027) appears once per weekend */
+function allOrderOf(c){ return TRACKS.flatMap(t=>t.events.filter(e=>inChamp(c,e)&&!eventDone(t,e)).map(e=>({t,e}))).sort((a,b)=>a.e.d.localeCompare(b.e.d)||a.t.short.localeCompare(b.t.short)); }
 function stopsOf(c){ return (c.stops||[]).filter(s=>!TRACKS.some(t=>t.id===s.id)&&localToday()<=eventEnd(s)).sort((a,b)=>a.d.localeCompare(b.d)); }   /* venues without a map yet */
 const imsaOrder=()=>orderOf(champ("imsa")), imsaCurrent=()=>imsaOrder()[0]||null;   /* IMSA: the race on now, or the next one */
 /* the soonest race at each venue across every championship (home hero, passport order, weather, sun times) */
@@ -274,7 +276,7 @@ function renderChampList(){
 let curChamp=null, serRows=[];
 function toggleGoingSeries(i){ const r=serRows[i]; if(!r) return; const on=!isGoing(r.t,r.e); setGoing(r.t,r.e,on); renderSeries(); renderHero(); toast(on?`You're going: ${r.t.short}`:"Removed from your races"); }
 function renderSeries(){
-  const c=curChamp; if(!c) return; const today=localToday(), order=orderOf(c);
+  const c=curChamp; if(!c) return; const today=localToday(), order=allOrderOf(c);
   document.getElementById("serTitle").innerHTML=`${seriesMark(c.id,34)}<span>${esc(c.name)}</span>`;
   document.getElementById("serAbout").innerHTML=c.guide?`<ul class="list"><li><button class="track-row series" onclick="showSeriesInfo('${c.id}')"><span class="tile txt">i</span>
     <div><h2>About ${c.name}</h2><div class="meta">The cars and how to follow the racing</div></div><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li></ul>`:"";

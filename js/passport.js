@@ -493,7 +493,9 @@ function ppGroupMode(){ try{ return localStorage.getItem(PP_GROUP_KEY)==="series
 function ppGroup(m){ try{ localStorage.setItem(PP_GROUP_KEY,m); }catch(e){} renderPassport(); }
 function ppMenu(force){ const m=document.getElementById("ppMenu"); if(m) m.hidden=force===undefined?!m.hidden:!force; }
 document.addEventListener("click",e=>{ if(!e.target.closest("#ppMenu,.ppmore")) ppMenu(false); });
-const ppRegionOf=t=>/^Europe\//.test(t.tz||"")?"eu":"na";
+/* continents for the passport: from each track's time zone (Mexico City stays in North America) */
+const PP_REGIONS={na:"North America",sa:"South America",eu:"Europe",me:"Middle East"};
+const ppRegionOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"eu":/^Asia\/(Dubai|Qatar|Riyadh|Bahrain|Kuwait|Muscat|Baghdad|Tehran|Jerusalem)/.test(z)?"me":/^America\/(Sao_Paulo|Argentina|Bogota|Santiago|Lima|Montevideo|Caracas)/.test(z)?"sa":"na"; };
 const PP_BADGE_GROUPS=[
   ["By series",["sportscar","endcup","openwheel","gtfan","stock","grandprix","double","trifecta","tour"]],
   ["Places",["street","jungle","endurance","zones","border","sunshine","lonestar","lakes","golden","peach","banks"]],
@@ -510,26 +512,27 @@ function ppProg(d,st){
 const ppChev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
 const ppSec=(title,count,inner,open,sid)=>`<details class="ppSec"${open?" open":""}${sid?` data-s="${sid}"`:""}><summary><span class="ppSecT">${title}</span><span class="ppSecN">${count}</span>${ppChev}</summary>${inner}</details>`;
 let ppView=false;    /* true while another player's passport is being drawn: their tracks open back to their page, no replay, no "next up" */
-function ppTrackGrid(list,p,st,defs){
-  const sorted=list.slice().sort((a,b)=>a.short.localeCompare(b.short)), got=sorted.filter(t=>st.visits[t.id]), not=sorted.filter(t=>!st.visits[t.id]);
-  const earned=t=>{ const n=st.visits[t.id], tier=ppTier(n), def=defs.find(d=>d.track===t&&d.id.endsWith(":"+tier)), last=p.stamps.filter(s=>s.t===t.id).reduce((m,s)=>Math.max(m,s.at||0),0);
-    return `<button class="pt t${tier}" onclick="openTrack('${t.id}','${ppView?"friendPass":"passport"}')"><span class="sbox" style="--r:${ppRot(t.id)}deg">${stampSvg(def,{date:last||undefined})}</span><b>${esc(t.short)}</b><small>${n} race weekend${n>1?"s":""}</small></button>`; };
-  const empty=t=>`<button class="pt mini" onclick="openTrack('${t.id}','${ppView?"friendPass":"passport"}')"><span class="sbox empty"><svg ${ppOutline(t,34,{c:"rgba(90,75,45,.38)",w:1.8})}</svg></span><b>${esc(t.short)}</b></button>`;
-  return (got.length?`<div class="pgrid">${got.map(earned).join("")}</div>`:"")+(not.length?`<div class="pgrid mini">${not.map(empty).join("")}</div>`:"");
+/* the stamps you have earned (newest visit first) and, separately, the circuits still to collect */
+function ppStampTile(t,p,st,defs){
+  const n=st.visits[t.id], tier=ppTier(n), def=defs.find(d=>d.track===t&&d.id.endsWith(":"+tier)), last=p.stamps.filter(s=>s.t===t.id).reduce((m,s)=>Math.max(m,s.at||0),0);
+  return `<button class="pt t${tier}" onclick="openTrack('${t.id}','${ppView?"friendPass":"passport"}')"><span class="sbox" style="--r:${ppRot(t.id)}deg">${stampSvg(def,{date:last||undefined})}</span><b>${esc(t.short)}</b><small>${n} race weekend${n>1?"s":""}</small></button>`;
 }
-function ppTracksHtml(p,st){
-  const defs=ppTrackDefs(), mode=ppGroupMode(), count=l=>`${l.filter(t=>st.visits[t.id]).length} of ${l.length}`;
-  let html;
-  if(mode==="series"){
-    /* a track shows under every series that races there, so the same stamp can appear more than once */
-    html=orderedChamps().filter(c=>!c.optIn||followed(c)).map(c=>({c,l:TRACKS.filter(t=>t.events.some(e=>inChamp(c,e)))})).filter(x=>x.l.length)
-      .map(x=>ppSec(esc(x.c.name),count(x.l),ppTrackGrid(x.l,p,st,defs),x.l.some(t=>st.visits[t.id]),x.c.id)).join("");
-  } else {
-    html=Object.keys(REGIONS).map(r=>({r,l:TRACKS.filter(t=>ppRegionOf(t)===r)})).filter(x=>x.l.length)
-      .map(x=>ppSec(esc(REGIONS[x.r]),count(x.l),ppTrackGrid(x.l,p,st,defs),true)).join("");
-  }
-  return html;
+const ppEmptyTile=t=>`<button class="pt mini" onclick="openTrack('${t.id}','${ppView?"friendPass":"passport"}')"><span class="sbox empty"><svg ${ppOutline(t,34,{c:"rgba(90,75,45,.38)",w:1.8})}</svg></span><b>${esc(t.short)}</b></button>`;
+function ppEarnedHtml(p,st){
+  const defs=ppTrackDefs(), last=t=>p.stamps.filter(s=>s.t===t.id).reduce((m,s)=>Math.max(m,s.at||0),0);
+  const got=TRACKS.filter(t=>st.visits[t.id]).sort((a,b)=>last(b)-last(a)||a.short.localeCompare(b.short));
+  return got.length?`<div class="pgrid">${got.map(t=>ppStampTile(t,p,st,defs)).join("")}</div>`:`<p class="ppNone">${ppView?"No stamps yet.":"Your stamps appear here: one for every track you check in at during a race weekend."}</p>`;
 }
+function ppMoreHtml(p,st){        /* each continent (or series) with the circuits not yet stamped, closed until you tap it */
+  const mode=ppGroupMode(), left=l=>l.filter(t=>!st.visits[t.id]).sort((a,b)=>a.short.localeCompare(b.short)), cnt=l=>`${l.filter(t=>st.visits[t.id]).length} of ${l.length} visited`;
+  const sec=(title,l,sid)=>{ const nv=left(l); return nv.length?ppSec(title,cnt(l),`<div class="pgrid mini">${nv.map(ppEmptyTile).join("")}</div>`,false,sid):""; };
+  const html=mode==="series"
+    ?orderedChamps().filter(c=>!c.optIn||followed(c)).map(c=>({c,l:TRACKS.filter(t=>t.events.some(e=>inChamp(c,e)))})).filter(x=>x.l.length).map(x=>sec(esc(x.c.name),x.l,x.c.id)).join("")
+    :Object.keys(PP_REGIONS).map(r=>({r,l:TRACKS.filter(t=>ppRegionOf(t)===r)})).filter(x=>x.l.length).map(x=>sec(esc(PP_REGIONS[x.r]),x.l)).join("");
+  return html||`<p class="ppNone">You have a stamp from every track. Nothing left to collect.</p>`;
+}
+/* both parts in one block (another player's passport has no group switch) */
+function ppTracksHtml(p,st){ return ppEarnedHtml(p,st)+`<div class="sect">Still to collect</div>`+ppMoreHtml(p,st); }
 function ppNextUp(p,st){
   return PP_GLOBAL.filter(d=>!p.unlocked[d.id]).map((d,i)=>{ const g=ppProg(d,st); return {d,g,i,score:g?g[0]/g[1]:(d.tier==="x"?0.01:0)}; })
     .filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3);
@@ -538,11 +541,14 @@ function ppBadgesHtml(p,st){
   const next=ppView?[]:ppNextUp(p,st), byId=Object.fromEntries(PP_GLOBAL.map(d=>[d.id,d]));
   const need=x=>x.g?`<span class="ppbar"><i style="width:${Math.round(x.g[0]/x.g[1]*100)}%"></i></span>`:"";
   const nextHtml=next.length?`<div class="ppNextBox"><h4>Next up</h4>${next.map(x=>`<button class="ppnx" onclick="toast(${esc(JSON.stringify(x.d.desc))})"><span class="sbox sm">${stampSvg(x.d,{locked:true})}</span><div><b>${esc(x.d.name)}</b><small>${esc(x.d.desc)}</small>${need(x)}</div>${x.g?`<em>${x.g[0]} of ${x.g[1]}</em>`:""}</button>`).join("")}</div>`:"";
-  const groups=PP_BADGE_GROUPS.map(([title,ids])=>{ const ds=ids.map(i=>byId[i]).filter(Boolean), got=ds.filter(d=>p.unlocked[d.id]), lock=ds.filter(d=>!p.unlocked[d.id]);
-    const big=d=>{ const at=p.unlocked[d.id]; return `<button class="pb${d.tier==="z"?" legend":""}" onclick="${ppView?`toast(${esc(JSON.stringify(d.desc))})`:`ppReplay('${d.id}')`}"><span class="sbox mid" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:at})}</span><b>${esc(d.name)}</b><small>${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}</small></button>`; };
-    const small=d=>{ const g=ppProg(d,st), tip=d.desc+(g?(ppView?` ${g[0]} of ${g[1]} so far.`:` You have ${g[0]} of ${g[1]}.`):""); return `<button class="pb lock mini${d.tier==="z"?" legend":""}" onclick="toast(${esc(JSON.stringify(tip))})"><span class="sbox sm">${stampSvg(d,{locked:true})}</span><b>${esc(d.name)}</b></button>`; };
-    return ppSec(title,`${got.length} of ${ds.length}`,(got.length?`<div class="bgrid three">${got.map(big).join("")}</div>`:"")+(lock.length?`<div class="bgrid mini">${lock.map(small).join("")}</div>`:""),true);
-  }).join("");
+  const big=d=>{ const at=p.unlocked[d.id]; return `<button class="pb${d.tier==="z"?" legend":""}" onclick="${ppView?`toast(${esc(JSON.stringify(d.desc))})`:`ppReplay('${d.id}')`}"><span class="sbox mid" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:at})}</span><b>${esc(d.name)}</b><small>${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}</small></button>`; };
+  const small=d=>{ const g=ppProg(d,st), tip=d.desc+(g?(ppView?` ${g[0]} of ${g[1]} so far.`:` You have ${g[0]} of ${g[1]}.`):""); return `<button class="pb lock mini${d.tier==="z"?" legend":""}" onclick="toast(${esc(JSON.stringify(tip))})"><span class="sbox sm">${stampSvg(d,{locked:true})}</span><b>${esc(d.name)}</b></button>`; };
+  /* the badges you hold, by kind; every badge you do not hold yet sits in one closed block below */
+  const sets=PP_BADGE_GROUPS.map(([title,ids])=>{ const ds=ids.map(i=>byId[i]).filter(Boolean); return {title,ds,got:ds.filter(d=>p.unlocked[d.id]),lock:ds.filter(d=>!p.unlocked[d.id])}; });
+  const earned=sets.filter(x=>x.got.length).map(x=>ppSec(x.title,`${x.got.length} of ${x.ds.length}`,`<div class="bgrid three">${x.got.map(big).join("")}</div>`,true)).join("")||`<p class="ppNone">${ppView?"No badges yet.":"Badges you earn appear here."}</p>`;
+  const nLock=sets.reduce((n,x)=>n+x.lock.length,0);
+  const locked=nLock?ppSec("Not yet earned",`${nLock} to go`,sets.filter(x=>x.lock.length).map(x=>`<div class="ppSub">${esc(x.title)}</div><div class="bgrid mini">${x.lock.map(small).join("")}</div>`).join(""),false):"";
+  const groups=earned+locked;
   return nextHtml+groups;
 }
 function renderPassport(){
@@ -551,7 +557,7 @@ function renderPassport(){
     <div class="ppb">${got} of ${total} badges${nx?` · next: ${esc(nx.d.name)}, ${nx.g[0]} of ${nx.g[1]}`:""}</div>`;
   const live=TRACKS.some(t=>activeEvent(t)), cb=document.getElementById("ppCheckBtn"); if(cb) cb.className="btn "+(live?"primary":"quiet");
   const mode=ppGroupMode(); document.getElementById("ppgRegion").classList.toggle("on",mode==="region"); document.getElementById("ppgSeries").classList.toggle("on",mode==="series");
-  document.getElementById("ppTracks").innerHTML=ppTracksHtml(p,st);
+  document.getElementById("ppTracks").innerHTML=ppEarnedHtml(p,st); document.getElementById("ppMore").innerHTML=ppMoreHtml(p,st);
   document.getElementById("ppBadges").innerHTML=ppBadgesHtml(p,st);
 }
 /* another player's passport (from the leaderboard or the friends list): d = {name, stamps, unlocked} from the server. Which badges they hold is worked out here

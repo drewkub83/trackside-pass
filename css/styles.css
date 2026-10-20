@@ -987,3 +987,7 @@ html.swiping *,html.swiping *::before,html.swiping *::after{-webkit-backdrop-fil
 
 /* the not-yet-visited track tiles: the generic ".empty" empty-state padding was squeezing the outline into the lower right of its circle */
 .sbox.empty{padding:0}
+
+/* passport: empty-state lines and the sub-heading inside the closed "not yet earned" block */
+.ppNone{margin:0 26px 12px;font-size:14px;color:var(--ink-2)}
+.ppSub{margin:6px 26px 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}

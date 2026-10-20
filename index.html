@@ -73,9 +73,11 @@
     <div class="ppmenu" id="ppMenu" hidden><button onclick="ppMenu(false);ppBackup()">Copy backup code</button><button onclick="ppMenu(false);ppRestore()">Restore from a code</button><small>Your passport is kept on this phone. A backup code moves it to a new phone.</small></div></div>
   <div class="ppsum" id="ppSum"></div>
   <div class="ppcheck"><button class="btn quiet" id="ppCheckBtn" onclick="passportManual()">Check in here</button><small id="ppStatus"></small><small>Stamps only count at a track, during a race weekend.</small></div>
-  <div class="sect">Tracks</div>
-  <div class="ppSeg" role="group" aria-label="Group tracks"><button id="ppgRegion" onclick="ppGroup('region')">By region</button><button id="ppgSeries" onclick="ppGroup('series')">By series</button></div>
+  <div class="sect">Stamps earned</div>
   <div id="ppTracks"></div>
+  <div class="sect">Still to collect</div>
+  <div class="ppSeg" role="group" aria-label="Group tracks"><button id="ppgRegion" onclick="ppGroup('region')">By continent</button><button id="ppgSeries" onclick="ppGroup('series')">By series</button></div>
+  <div id="ppMore"></div>
   <div class="sect">Badges</div>
   <div id="ppBadges"></div>
 </section>
@@ -92,7 +94,7 @@
   <div class="gmTabs lbTabs fpTabs" id="fpTabs"><button class="gmTab on" onclick="fpTab('passport')">Passport</button><button class="gmTab" onclick="fpTab('picks')">Picks</button></div>
   <div id="fpPassport">
     <div class="ppsum" id="fpSum"></div>
-    <div class="sect">Tracks</div>
+    <div class="sect">Stamps earned</div>
     <div id="fpTracks"></div>
     <div class="sect">Badges</div>
     <div id="fpBadges"></div>

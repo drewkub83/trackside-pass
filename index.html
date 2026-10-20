@@ -33,6 +33,7 @@
   </header>
   <div id="hero"></div>
   <div id="season"></div>
+  <div id="recapCard"></div>
   <div class="sect">Your passport</div>
   <ul class="list">
     <li><button class="track-row series" onclick="openPassport()"><span class="tile pp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span>
@@ -88,11 +89,15 @@
 <!-- ANOTHER PLAYER'S PASSPORT -->
 <section class="screen" id="friendPass">
   <div class="bar"><button class="fab" aria-label="Back" onclick="fpClose()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2" id="fpTitle">Passport</h2></div>
-  <div class="ppsum" id="fpSum"></div>
-  <div class="sect">Tracks</div>
-  <div id="fpTracks"></div>
-  <div class="sect">Badges</div>
-  <div id="fpBadges"></div>
+  <div class="gmTabs lbTabs fpTabs" id="fpTabs"><button class="gmTab on" onclick="fpTab('passport')">Passport</button><button class="gmTab" onclick="fpTab('picks')">Picks</button></div>
+  <div id="fpPassport">
+    <div class="ppsum" id="fpSum"></div>
+    <div class="sect">Tracks</div>
+    <div id="fpTracks"></div>
+    <div class="sect">Badges</div>
+    <div id="fpBadges"></div>
+  </div>
+  <div class="acScreen" id="fpPicks" hidden></div>
 </section>
 
 <!-- SETTINGS -->
@@ -140,6 +145,7 @@
     <div class="sgb" id="sgb3">
   <div class="appear"><b>Badge animation</b><small style="margin:0 0 10px">See what unlocking a badge looks like.</small><button class="btn quiet" onclick="previewUnlock()">Preview animation</button> <button class="btn quiet" onclick="openStampSheet()">Sticker sheet: every stamp</button></div>
     <div class="appear"><b>Back up and restore</b><small style="margin:0 0 10px">Your stamps and the races you are going to live only on this phone. Copy a backup code before you delete the app or get a new phone, and paste it here to bring them back.</small><div style="display:flex;gap:10px"><button class="btn quiet" onclick="ppBackup()">Copy backup code</button><button class="btn quiet" onclick="ppRestore()">Restore</button></div></div>
+  <div class="appear" id="setDelete" hidden></div>
       </div>
   </section>
   <section class="sgrp" id="sg4">

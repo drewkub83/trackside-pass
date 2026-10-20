@@ -547,6 +547,45 @@ end $$;
 revoke all on function public.friends_shared(int) from public, anon;
 grant execute on function public.friends_shared(int) to authenticated;
 
+-- a friend's picks and how they scored, for one year: only weekends whose race has started (picks stay secret until then), only for yourself and friends
+create or replace function public.friend_season(p_user uuid, p_year int)
+returns table (game_key text, cls text, slot smallint, car text, pts integer, mx integer, hit boolean)
+language plpgsql stable security definer set search_path = public as $$
+declare uid uuid := auth.uid();
+begin
+  if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
+  if p_user <> uid and not exists (select 1 from public.friendships f where (f.user_a = uid and f.user_b = p_user) or (f.user_b = uid and f.user_a = p_user)) then
+    raise exception 'Picks are shared with friends only' using errcode = '42501';
+  end if;
+  return query
+    select k.game_key, k.cls, k.slot, k.car, s.pts, s.mx, s.hit
+    from public.picks k join public.games g on g.game_key = k.game_key
+    left join lateral public.pick_score(k.p, k.m, k.slot::int, k.car, g.result->k.cls) s on true
+    where k.user_id = p_user and extract(year from g.event_start)::int = p_year and now() >= g.race_start
+    order by g.event_start desc, k.game_key, k.cls, k.slot;
+end $$;
+revoke all on function public.friend_season(uuid, int) from public, anon;
+grant execute on function public.friend_season(uuid, int) to authenticated;
+
+-- ADMIN ONLY (run in the SQL editor, which is not a signed-in player): add a passport stamp for a player whose check-in failed at the track.
+--   select public.admin_add_stamp('Their display name', 'cota', '2026-10-23', '2026-10-24');   -- name, track id, event start day, the day they were there
+-- The player's phone picks it up the next time they open the app signed in. Nobody signed in can call this.
+create or replace function public.admin_add_stamp(p_name text, p_track text, p_event text, p_day text) returns text
+language plpgsql security definer set search_path = public as $$
+declare uid uuid; cur jsonb;
+begin
+  if p_track !~ '^[a-z0-9-]{1,40}$' or p_event !~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' or p_day !~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' then raise exception 'Bad track or date'; end if;
+  select id into uid from public.profiles where lower(display_name) = lower(p_name);
+  if uid is null then raise exception 'No player named %', p_name; end if;
+  select stamps into cur from public.passports where user_id = uid;
+  cur := coalesce(cur, '[]'::jsonb);
+  if exists (select 1 from jsonb_array_elements(cur) e where e->>'t' = p_track and e->>'day' = p_day) then return 'already stamped'; end if;
+  insert into public.passports(user_id, stamps, unlocked) values (uid, jsonb_build_array(jsonb_build_object('t', p_track, 'ev', p_event, 'day', p_day, 'at', (extract(epoch from (p_day::date + time '12:00')) * 1000)::bigint)), '{}')
+  on conflict (user_id) do update set stamps = public.passports.stamps || excluded.stamps, updated_at = now();
+  return 'stamped ' || p_name || ' at ' || p_track || ' on ' || p_day;
+end $$;
+revoke all on function public.admin_add_stamp(text, text, text, text) from public, anon, authenticated;
+
 ---------------------------------------------------------------- push notifications (iPhone: APNs, Android: Firebase Cloud Messaging)
 -- Phones register a device token; every new row in `notifications` calls the `push` edge function (supabase/functions/push/index.ts), which sends it.
 create table if not exists public.push_tokens (

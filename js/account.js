@@ -126,7 +126,7 @@ function acctRender() {
     h = `<h3 class="acH">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p>${acctMsg()}
          ${news.map(n => `<div class="acNote">${sbEsc(n.name)} accepted your friend request.</div>`).join("")}
          ${rq.incoming.length ? `<h4 class="ptH">Friend requests (${rq.incoming.length})</h4>${rq.incoming.map(r => `<div class="acFriend"><span><b>${sbEsc(r.name)}</b> wants to be friends</span><span><button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button><button class="acX" onclick="acctRespond('${r.id}',false)">Decline</button></span></div>`).join("")}` : ""}
-         ${acctBtn("Leaderboard", "openBoard()")}${acctBtn("Your " + new Date().getFullYear() + " recap", "openRecap()", "quiet")}
+         ${recapYear() ? acctBtn("Your " + recapYear() + " recap", "openRecap()") : ""}
          <h4 class="ptH">Add a friend</h4>
          <input class="acIn" id="acFind" autocomplete="off" autocapitalize="none" placeholder="Search by name" oninput="acctFind(this.value)">
          <div id="acResults" class="acResults"></div>
@@ -143,8 +143,8 @@ function acctRender() {
          <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Public account: anyone can find me, see me on the Everyone leaderboard and open my passport</label>
          <p class="plRules fine">Switched off, only friends can find you, see your score and open your passport. Friends can also see your picks once a race has started, and that you are at a track on a race weekend. Nobody sees your email.</p>
          <h4 class="ptH">Your account</h4>
-         ${acctBtn("Sign out", "acctOut()", "quiet")}${acctBtn("Delete my account", "acctDelete()", "quiet acDanger")}
-         <p class="plRules fine">Deleting removes your profile, picks and friendships from the server for good. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>`;
+         ${acctBtn("Sign out", "acctOut()", "quiet")}
+         <p class="plRules fine">To delete your account, go to Settings, Passport and your data. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>`;
   }
   acBox().innerHTML = acctWrap(h); acctHomeRefresh();
 }
@@ -234,7 +234,7 @@ async function acctDelete() {
   if (!confirm("Delete your account? Your profile, picks and friendships are removed from the server for good. Picks on this phone stay.")) return;
   if (!confirm("This cannot be undone. Delete it?")) return;
   try { await sbRpc("delete_my_account"); } catch (e) { acct.msg = e.message; return acctRender(); }
-  await sbSignOut(); acct = { profile: null, friends: [], msg: "Your account was deleted.", busy: false, step: "email", email: "", loaded: true }; acctRender();
+  await sbSignOut(); acct = { profile: null, friends: [], msg: "Your account was deleted.", busy: false, step: "email", email: "", loaded: true }; acctRender(); acctSettingsRender(); acctHomeRefresh(); if (typeof toast === "function") toast("Your account was deleted.");
 }
 
 /* ---- phone notifications (iPhone and Android app only: APNs / Firebase, sent by the `push` edge function when a notification row is created) ---- */
@@ -315,12 +315,17 @@ function recapWeekend(t, ev) {
   const tr = TRACKS.find(x => x.id === t), e = tr && tr.events.find(x => x.d === ev), d = new Date(ev + "T12:00:00");
   return `${sbEsc(tr ? tr.short : t)} · ${sbEsc(e ? e.e : "race weekend")} <small>${d.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</small>`;
 }
-async function openRecap() {
-  if (!sbOn()) return; const y = new Date().getFullYear(), box = document.getElementById("rcBody");
+/* the recap only comes up in late December, just before the new year, and for a few days into January (then it is last year's) */
+function recapYear(now) {
+  const d = now || new Date(), m = d.getMonth(), day = d.getDate();
+  return m === 11 && day >= 20 ? d.getFullYear() : m === 0 && day <= 7 ? d.getFullYear() - 1 : 0;
+}
+async function openRecap(year) {
+  if (!sbOn()) return; const y = year || recapYear() || new Date().getFullYear(), box = document.getElementById("rcBody");
   box.innerHTML = `<h3 class="acH">${y}</h3><p class="plRules">Loading…</p>`; showScreen("recap");
   await acctPassportSync();                                   // so your friends see this weekend's check-ins and you see theirs
   let shared = null, rows = null; try { [shared, rows] = await Promise.all([sbRpc("friends_shared", { p_year: y }), sbRpc("leaderboard", { p_scope: "friends", p_year: y, p_series: null, p_game: null })]); } catch (e) {}
-  const st = recapStats(ppLoad(), y), me = (rows || []).find(r => r.is_me), done = new Date() >= new Date(y, 11, 1);
+  const st = recapStats(ppLoad(), y), me = (rows || []).find(r => r.is_me), done = true;
   const tile = (n, l) => `<div class="rcT"><b>${n}</b><span>${l}</span></div>`;
   const by = {}; (shared || []).forEach(r => { (by[r.display_name] = by[r.display_name] || []).push(r); });
   const pals = Object.entries(by).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
@@ -331,15 +336,37 @@ async function openRecap() {
     ${st.weekends ? `<div class="rcGrid">${tile(st.tracks.length, "track" + (st.tracks.length === 1 ? "" : "s"))}${tile(st.weekends, "race weekend" + (st.weekends === 1 ? "" : "s"))}${tile(st.days, "day" + (st.days === 1 ? "" : "s") + " checked in")}${tile(st.fresh, "new track" + (st.fresh === 1 ? "" : "s"))}${tile(st.badges, "badge" + (st.badges === 1 ? "" : "s") + " earned")}${me ? tile(me.points, "podium points") : ""}</div>
       ${pt ? `<p class="plRules">Most visited: <b>${sbEsc(pt.short)}</b>, ${st.top.n} weekend${st.top.n === 1 ? "" : "s"}.</p>` : ""}` : `<p class="plRules">No check-ins yet this year. Stamps are earned at a track during a race weekend.</p>${me ? `<div class="rcGrid">${tile(me.points, "podium points")}</div>` : ""}`}
     <h4 class="ptH">With friends</h4>
-    ${shared === null ? `<p class="plRules">Offline: friends need a signal.</p>` : pals.length ? pals.map(([n, rs]) => `<div class="rcPal"><b>${sbEsc(n)}</b><span>${rs.length} weekend${rs.length === 1 ? "" : "s"} together</span>${rs.map(r => `<div class="rcWk">${recapWeekend(r.t, r.ev)}</div>`).join("")}</div>`).join("") : `<p class="plRules">No shared weekends yet. When you and a friend both check in at the same race weekend, it shows up here.</p>`}
+    ${shared === null ? `<p class="plRules">${sbSession() ? "Offline: friends need a signal." : "Sign in to see friends here."}</p>` : pals.length ? pals.map(([n, rs]) => `<div class="rcPal"><b>${sbEsc(n)}</b><span>${rs.length} weekend${rs.length === 1 ? "" : "s"} together</span>${rs.map(r => `<div class="rcWk">${recapWeekend(r.t, r.ev)}</div>`).join("")}</div>`).join("") : `<p class="plRules">No shared weekends yet. When you and a friend both check in at the same race weekend, it shows up here.</p>`}
     ${rows && rows.some(r => Number(r.points) > 0) ? `<h4 class="ptH">Pick your podium, among friends</h4><div class="lbList">${rows.slice(0, 5).map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span><span class="lbName">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><b>${r.points}</b></div>`).join("")}</div>` : ""}
     <div class="acRow">${acctBtn("Share my " + y, "rcShare()", "quiet")}</div>`;
 }
 function rcShare() { const text = window.rcText || ""; if (navigator.share) navigator.share({ title: "Trackside Pass", text }).catch(() => {}); else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { if (typeof toast === "function") toast("Copied. Paste it into a message."); }).catch(() => {}); }
-let fpBack = "board";
+let fpBack = "board", fpUser = null;
+function fpTab(t) {
+  document.getElementById("fpPassport").hidden = t !== "passport"; document.getElementById("fpPicks").hidden = t !== "picks";
+  document.querySelectorAll("#fpTabs .gmTab").forEach((b, i) => b.classList.toggle("on", (i === 0) === (t === "passport")));
+  if (t === "picks") fpPicksLoad();
+}
+/* a friend's picks and how they scored, newest weekend first (the server only returns weekends whose race has started, and only for friends) */
+async function fpPicksLoad() {
+  const box = document.getElementById("fpPicks"); if (!fpUser) return; const y = new Date().getFullYear();
+  box.innerHTML = `<p class="plRules">Loading…</p>`;
+  let rows; try { rows = await sbRpc("friend_season", { p_user: fpUser.id, p_year: y }); }
+  catch (e) { box.innerHTML = `<p class="plRules">${sbEsc(e.status ? (/friends only/i.test(e.message) ? "Picks are only shared with friends." : e.message) : "Offline: picks need a signal.")}</p>`; return; }
+  if (!rows.length) { box.innerHTML = `<h3 class="acH">Pick your podium · ${y}</h3><p class="plRules">No picks to show yet. A friend's picks appear once the race has started.</p>`; return; }
+  const by = {}, order = []; rows.forEach(r => { if (!by[r.game_key]) { by[r.game_key] = []; order.push(r.game_key); } by[r.game_key].push(r); });
+  box.innerHTML = `<h3 class="acH">Pick your podium · ${y}</h3>` + order.map(gk => {
+    const [t, d, s] = gk.split("|"), tr = TRACKS.find(x => x.id === t), g = (typeof ENTRIES === "undefined" ? [] : ENTRIES).find(x => gameKey(x) === gk), rs = by[gk];
+    const car = (cls, n) => { const c = g && g.classes.find(x => x.h === cls), r = c && c.cars.find(x => String(x[0]) === String(n)); return `#${sbEsc(n)}${r ? " " + sbEsc(r[1]) : ""}`; };
+    const scored = rs.every(r => r.pts !== null), tot = rs.reduce((n, r) => n + (r.pts || 0), 0), classes = [...new Set(rs.map(r => r.cls))];
+    return `<div class="fpGame"><div class="fpHead"><b>${sbEsc(tr ? tr.short : t)} · ${sbEsc(typeof watchSeriesName === "function" ? watchSeriesName({ s }) : s)}</b><span>${scored ? tot + " pts" : "Scoring after the race"}</span></div><small>${sbEsc(typeof fmtSpan === "function" ? fmtSpan({ d, t: 3 }) : d)}</small>
+      ${classes.map(cl => `${classes.length > 1 ? `<div class="fpCls">${sbEsc(cl)}</div>` : ""}${rs.filter(r => r.cls === cl).map(r => `<div class="fpPick"><span>${r.slot}. ${car(r.cls, r.car)}</span><span class="${r.hit ? "hit" : ""}">${r.pts === null ? "" : (r.hit ? "✓ " : "") + "+" + r.pts}</span></div>`).join("")}`).join("")}</div>`;
+  }).join("");
+}
 async function openPassportOf(id, name) {
   if (!sbOn()) return;
   const on = document.querySelector(".screen.on"); if (on && on.id !== "friendPass") fpBack = on.id;
+  fpUser = { id, name }; fpTab("passport");
   try {
     renderPassportFor(await sbRpc("passport_of", { p_user: id }));
   } catch (e) { if (typeof toast === "function") toast(e.status ? e.message : "Offline: a passport needs a signal."); }
@@ -395,6 +422,8 @@ async function openFriendPicks(gk) {
 
 /* ---- the home bar's Account tab (your initial, a red dot for requests) and the Settings switch for friend notifications ---- */
 function acctHomeRefresh() {
+  const rc = document.getElementById("recapCard"), ry = sbOn() ? recapYear() : 0;
+  if (rc) rc.innerHTML = ry ? `<button class="plCard" onclick="openRecap()"><span class="plGo">Open</span><b>Your ${ry} recap</b><small>Your season at the track, and who shared it with you.</small></button>` : "";
   const signed = sbOn() && !!sbSession(), t = document.getElementById("acctTab");
   if (typeof syncHomeTabs === "function") { const on = document.querySelector(".screen.on"); syncHomeTabs(on ? on.id : "home"); }
   if (!t) return;
@@ -403,6 +432,8 @@ function acctHomeRefresh() {
   t.setAttribute("aria-label", show ? `Account: ${nm}` : "Account");
 }
 async function acctSettingsRender() {
+  const del = document.getElementById("setDelete");
+  if (del) { const on = sbOn() && !!sbSession(); del.hidden = !on; if (on) del.innerHTML = `<b>Delete my account</b><small style="margin:0 0 10px">Removes your profile, picks, friendships and passport copy from the server for good. Your stamps and picks on this phone stay.</small><button class="btn quiet acDanger" onclick="acctDelete()">Delete my account</button>`; }
   const box = document.getElementById("setPush"); if (!box) return;
   if (!sbOn() || !pushPlugin()) { box.hidden = true; return; }
   const signed = !!sbSession(); box.hidden = false; const st = signed ? await pushState() : "off";

@@ -960,3 +960,11 @@ html,body{overflow-x:hidden}
 html.swiping,html.swiping body{overflow:hidden;overscroll-behavior:none}
 /* blur behind dozens of cards re-renders on every frame of the drag: off while dragging, it is a solid-looking card anyway */
 html.swiping *,html.swiping *::before,html.swiping *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+
+/* friend's picks */
+.fpTabs{margin:6px 22px 10px}
+.fpGame{padding:12px 0;border-top:1px solid var(--line)}.fpGame>small{display:block;color:var(--ink-2);font-size:12.5px;margin:2px 0 6px}
+.fpHead{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.fpHead b{font-size:16px}.fpHead span{font-size:13px;color:var(--ink-2)}
+.fpCls{margin:8px 0 2px;font-size:12px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-2)}
+.fpPick{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:14.5px}.fpPick .hit{color:var(--accent);font-weight:600}
+#recapCard{padding:0 22px}

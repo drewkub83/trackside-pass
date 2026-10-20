@@ -63,6 +63,7 @@ function avBar() {
 }
 
 /* ---- choosing: Account > your picture ---- */
+function avErr(e) { const t = (e && e.message) || "That did not work."; const m = document.getElementById("avMsg"); if (m) m.textContent = t; if (typeof toast === "function") toast(t.slice(0, 120)); }
 async function avSave(fields) {
   const t = await sbToken(); await sbJson("/rest/v1/profiles?id=eq." + sbSession().uid, { method: "PATCH", headers: { apikey: SB.key, Authorization: "Bearer " + t, "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify(fields) });
   Object.assign(acct.profile, fields); if (typeof hintSet === "function") hintSet(acct.profile);
@@ -78,7 +79,7 @@ function openAvatarPicker() {
     <p class="plRules fine" id="avMsg"></p>`);
 }
 async function avChoose(val) {
-  try { await avSave({ avatar: val || null }); openAvatarPicker(); acctRender(); avBar(); } catch (e) { const m = document.getElementById("avMsg"); if (m) m.textContent = e.message; }
+  try { await avSave({ avatar: val || null }); openAvatarPicker(); acctRender(); avBar(); } catch (e) { avErr(e); }
 }
 /* the photo is cropped to a square and shrunk to 192 px (about 15 KB) on the phone before it is sent */
 async function avPhoto(file) {
@@ -93,10 +94,10 @@ async function avPhoto(file) {
     if (!r.ok) throw new Error(r.status === 413 ? "That photo is too big." : "The photo could not be saved (" + r.status + ").");
     const v = Date.now(); await avSave({ photo_v: v }); AV.photo[uid + "|" + v] = URL.createObjectURL(blob);
     openAvatarPicker(); acctRender(); avBar();
-  } catch (e) { const m = document.getElementById("avMsg"); if (m) m.textContent = e.message || "That did not work."; }
+  } catch (e) { avErr(e); }
 }
 async function avRemovePhoto() {
   try { const t = await sbToken(); await fetch(`${SB.url}/storage/v1/object/avatars/${sbSession().uid}.jpg`, { method: "DELETE", headers: { apikey: SB.key, Authorization: "Bearer " + t } }); await avSave({ photo_v: null }); openAvatarPicker(); acctRender(); avBar(); }
-  catch (e) { const m = document.getElementById("avMsg"); if (m) m.textContent = e.message; }
+  catch (e) { avErr(e); }
 }
 async function avDeleteMine() { try { const t = await sbToken(); await fetch(`${SB.url}/storage/v1/object/avatars/${sbSession().uid}.jpg`, { method: "DELETE", headers: { apikey: SB.key, Authorization: "Bearer " + t } }); } catch (e) {} }

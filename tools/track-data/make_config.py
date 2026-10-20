@@ -138,6 +138,18 @@ SPECS=[
   blurb="Lime Rock Park, a 2.372 km (1.474 mi), seven-turn road course in Lakeville, in the northwest corner of Connecticut. It opened in 1957 and hosts the Michelin Pilot Challenge in September 2027.",
   sig="The Lefthander and Righthander, Paul Newman Straight, Big Bend",
   events=[dict(d="2027-09-23",e="FCP Euro Northeast Grand Prix",s="IMSA Michelin Pilot Challenge, 2 hours",t=3)]),
+ dict(id="bahrain", name="Bahrain International Circuit", short="Bahrain", place="Sakhir, Bahrain", tz="Asia/Bahrain", center=[26.0325,50.5106],
+  circuit=[4818385, 881756729, 881756728], pit=187123422, official="5.412 km", length="5.412 km (3.363 mi)", opened=2004, nturns=15, lap=None,
+  rename={"Grand Prix Circuit":None},
+  blurb="The Bahrain International Circuit at Sakhir: 5.412 km and 15 turns on the Grand Prix layout. It opens the 2027 Formula 1 season.",
+  sig=None,
+  events=[dict(d="2027-03-12",e="Bahrain Grand Prix",s="Formula 1",t=3)]),
+ dict(id="jeddah", name="Jeddah Corniche Circuit", short="Jeddah", place="Jeddah, Saudi Arabia", tz="Asia/Riyadh", center=[21.6319,39.1044],
+  circuit=[1359884756, 1359884762, 1007989410, 1359884757, 1257884699, 1359884761, 1359884760, 1359884759, 1359884758], pit=1121870473, official="6.174 km", length="6.174 km (3.836 mi)", opened=2021, nturns=27, lap=None,
+  rename={"حلبة كورنيش جدة":None},
+  blurb="The Jeddah Corniche Circuit on the Red Sea waterfront in Saudi Arabia: 6.174 km and 27 turns, a street circuit that first hosted Formula 1 in 2021.",
+  sig=None,
+  events=[dict(d="2027-03-19",e="Saudi Arabian Grand Prix",s="Formula 1",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

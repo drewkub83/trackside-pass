@@ -35,14 +35,14 @@ way = ->(wid) { ways.find { |w| w["id"] == wid } or abort "OpenStreetMap way #{w
 
 # ---------- circuit ----------
 ring = if C[:circuit].is_a?(Array)      # a loop made of several OpenStreetMap pieces, in driving order
-         C[:circuit].flat_map.with_index { |wid, i| g = ll.(way.(wid)); i.zero? ? g : g[1..-1] }
+         C[:circuit].flat_map.with_index { |wid, i| g = ll.(way.(wid.abs)); g = g.reverse if wid < 0; i.zero? ? g : g[1..-1] }
        else ll.(way.(C[:circuit])) end
 ring.pop if ring.size > 2 && ring.first == ring.last
 if (n = C[:smooth].to_i) > 0 then ring = chaikin(ring + [ring.first], n)[0..-2] end
 lap = poly_len(ring) + dm(ring.last, ring.first)
 puts "circuit: %d points, %.0f m = %.3f mi (official %s)"%[ring.size, lap, lap / 1609.34, C[:official_mi]]
 pit_ll = if C[:pit].is_a?(Array)        # the pit road can also be several OpenStreetMap pieces, in order (same as circuit above)
-           C[:pit].flat_map.with_index { |wid, i| g = ll.(way.(wid)); i.zero? ? g : g[1..-1] }
+           C[:pit].flat_map.with_index { |wid, i| g = ll.(way.(wid.abs)); g = g.reverse if wid < 0; i.zero? ? g : g[1..-1] }
          else ll.(way.(C[:pit])) end
 closed = ring + [ring.first]
 # the mapped "Pit Lane" can include access roads that wander away from the circuit: keep the longest stretch that hugs it
@@ -110,7 +110,7 @@ inb = ->(p) { p[0] >= s0 - 0.0005 && p[0] <= n0 + 0.0005 && p[1] >= w0 - 0.0007 
 KIND = { "motorway" => "primary", "motorway_link" => "primary", "trunk" => "primary", "primary" => "primary", "secondary" => "primary", "tertiary" => "primary",
          "residential" => "residential", "unclassified" => "residential", "living_street" => "residential", "service" => "service",
          "footway" => "path", "path" => "path", "cycleway" => "path", "track" => "track", "raceway" => "raceway" }
-skip_ids = Array(C[:circuit]) + [C[:pit]] + (C[:skip_ids] || [])
+skip_ids = Array(C[:circuit]).map(&:abs) + Array(C[:pit]).map(&:abs) + (C[:skip_ids] || [])
 lines = []; polys = []
 ways.each do |w|
   t = w["tags"] || {}; g = ll.(w); next unless g.any? { |p| inb.(p) }

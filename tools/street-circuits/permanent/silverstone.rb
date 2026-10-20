@@ -1,0 +1,9 @@
+{
+  id: "silverstone", name: "Silverstone Circuit", short: "Silverstone", place: "Silverstone, Northamptonshire, England", tz: "Europe/London",
+  center: [52.0786, -1.0169], circuit: [430075118, 169733766, 169733769, 169733770, 169848880, 169848884, 169848881, 55224168, 55224167, 169854842, 169800226, 169800223, 169800225, 169848882, 169800224, 169800222, 169618242, 169618240, 169618241, 169618245, 169609611, 169730588, 3571477, 169730585, 169730587, 169733768, 169730586], pit: 227838385,
+  official_mi: "5.891 km", length: "5.891 km (3.660 mi)", opened: 1948, nturns: 18,
+  corner_labels: [["Becketts", 52.072065, -1.010095, true], ["Chapel Curve", 52.070861, -1.009306, true], ["Hangar Straight", 52.064899, -1.015538, true], ["Stowe", 52.063523, -1.017935, true], ["Vale", 52.064969, -1.019835, true], ["Club", 52.066798, -1.024001, true], ["Hamilton Straight", 52.069337, -1.022152, true], ["Abbey", 52.0713, -1.019437, true], ["Farm Curve", 52.071244, -1.01638, true], ["Village", 52.072524, -1.013278, true], ["The Loop", 52.071413, -1.012139, true], ["Aintree", 52.072962, -1.011453, true], ["Wellington Straight", 52.075008, -1.014897, true], ["Brooklands", 52.07715, -1.019054, true], ["Luffield", 52.075855, -1.021318, true], ["Woodcote", 52.078359, -1.019497, true], ["Copse", 52.078724, -1.011515, true], ["Maggotts", 52.073665, -1.009651, true]],
+  blurb: "Silverstone Circuit in Northamptonshire, England: 5.891 km and 18 turns on the Grand Prix layout, on a former Second World War airfield. It hosts the British Grand Prix.",
+  facts: { "Signature sections" => "Copse, Maggotts and Becketts, the Hangar Straight, Stowe, Club", "Venue data" => "Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map." },
+  events: [{ "d" => "2027-07-02", "e" => "British Grand Prix", "s" => "Formula 1", "t" => 3 }]
+}

@@ -1,0 +1,9 @@
+{
+  id: "suzuka", name: "Suzuka International Racing Course", short: "Suzuka", place: "Suzuka, Mie, Japan", tz: "Asia/Tokyo",
+  center: [34.8431, 136.541], circuit: [183391634, 183391629, 183391633, 183391631, 183391632, 183391630, 183391642, 411295349, 183391641, 183391656, 183391664, 183391655, 183391662, 183391658, 183391646, 183391659, 183391651, 411295347, 183391649, 183391647, 411295351, 183391648, 411295348, 175231434, 183391652, 183391660, 411289989, 183391637, 183391639, 183391638, 183391640, 183391661, 183391665, 183391643, 183391645, 183391644, 183391657, 183391636, 183391635, 183391628], pit: 120917578,
+  official_mi: "5.807 km", length: "5.807 km (3.608 mi)", opened: 1962, nturns: 18,
+  corner_labels: [["S Curves", 34.841735, 136.539233, true], ["Reverse Bank", 34.842628, 136.537198, true], ["Nippo Corner", 34.844332, 136.537308, true], ["Degner 1", 34.843261, 136.532583, true], ["Degner 2", 34.843208, 136.530834, true], ["Hairpin", 34.847207, 136.530503, true], ["Spoon Curve", 34.848295, 136.523552, true], ["West Straight", 34.845938, 136.524352, true], ["130R", 34.844036, 136.531932, true], ["Chicane", 34.845903, 136.534878, true], ["Chicane", 34.845651, 136.535407, true], ["Main Straight", 34.84545, 136.538152, true], ["Turn 1", 34.840049, 136.543402, true], ["Turn 2", 34.838955, 136.542694, true]],
+  blurb: "Suzuka International Racing Course in Mie Prefecture, Japan: 5.807 km and 18 turns on a figure-eight layout, a drivers' favourite since 1962. It hosts the Japanese Grand Prix.",
+  facts: { "Signature sections" => "The S Curves, Degner, the Hairpin, Spoon Curve, 130R", "Venue data" => "Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map." },
+  events: [{ "d" => "2027-04-09", "e" => "Japanese Grand Prix", "s" => "Formula 1", "t" => 3 }]
+}

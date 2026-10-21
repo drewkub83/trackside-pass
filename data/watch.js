@@ -299,5 +299,41 @@ const WATCH = [
         ["AF Corse USA Ferrari (Jay Schreibman, Oswaldo Negri)", "Lead Am by a commanding 143-to-25 margin over Scuderia Corsa; the title is effectively already settled since no rival can gain more than 25 points in one race."]
       ] }
     ],
-    note:"Sources: GT World Challenge America's own standings pages (Pro/Pro-Am/Am Teams, checked directly, Oct 5), its Barber race recap (\"AF Corse USA Takes Second Pro Win of Season as Archangel Motorsports Breaks Through at Barber in Pro-Am\"), and Sportscar365's entry-list report (\"29 Entries on Provisional Indy 8H Entry List\"), via web search. Three-time defending Indy 8 Hour champion Team WRT is sitting this one out after BMW reduced factory support for the final IGTC rounds. Driver-to-team pairings are as those sources gave them; the two different car numbers earlier Barber entries used for JMF Motorsports' Pro car weren't consistent between reports, so no car number is given here for any team." }
+    note:"Sources: GT World Challenge America's own standings pages (Pro/Pro-Am/Am Teams, checked directly, Oct 5), its Barber race recap (\"AF Corse USA Takes Second Pro Win of Season as Archangel Motorsports Breaks Through at Barber in Pro-Am\"), and Sportscar365's entry-list report (\"29 Entries on Provisional Indy 8H Entry List\"), via web search. Three-time defending Indy 8 Hour champion Team WRT is sitting this one out after BMW reduced factory support for the final IGTC rounds. Driver-to-team pairings are as those sources gave them; the two different car numbers earlier Barber entries used for JMF Motorsports' Pro car weren't consistent between reports, so no car number is given here for any team." },
+  { t:"cota", d:"2026-10-23", s:"carrera", at:"2026-10-21T19:10:00Z",
+    asOf:"Current after Road Atlanta (Oct 1-2); Circuit of the Americas is the eight-round season finale, run with the United States Grand Prix.",
+    groups:[
+      { h:"Pro", items:[
+        ["Tyler Maxson (TOPP Racing)", "Swept both races at Road Atlanta, his seventh and eighth wins of the season, and leads the Pro standings entering the finale (current points gap not published in sources found)."],
+        ["Aaron Jeansonne (Kellymoss)", "Runner-up in both Road Atlanta races; the closest challenger to Maxson for the Pro title."],
+        ["Callum Hedge (JDX Racing)", "Third in Road Atlanta's second race, also in the Pro title picture behind Maxson and Jeansonne."]
+      ] },
+      { h:"Pro-Am", items:[
+        ["Patrick Mulcahy (ACI Motorsports)", "Already clinched the Pro-Am title at Indianapolis and raced unopposed at Road Atlanta; Austin is a formality for the class."]
+      ] },
+      { h:"Masters", items:[
+        ["Marco Cirone (ACI Motorsports)", "Leads Masters after winning both races at Road Atlanta and goes into the finale as the class favorite."],
+        ["Rob Walker (JTR Motorsports Engineering)", "Runner-up in both Road Atlanta races, the closest Masters challenger to Cirone."]
+      ] }
+    ],
+    note:"Sources: data/standings.js's Carrera Cup standings (current after Road Atlanta, Oct 2), drawn from Porsche Motorsport North America and Sportscar365 race reports; Porsche's own 2026 calendar release confirms the season closes at Circuit of the Americas. Current points gaps entering Austin were not published in sources found." },
+  { t:"cota", d:"2026-10-23", s:"f1academy", at:"2026-10-21T19:10:00Z",
+    asOf:"Current after the Dutch GP round at Zandvoort (Aug 21-23); Austin is the penultimate round before the Las Vegas finale.",
+    groups:[
+      { h:"Championship", items:[
+        ["Alisha Palmowski (Campos Racing)", "Leads by 48 points after winning the Zandvoort Feature Race, her fourth win of the season; with 104 points still available over Austin and Las Vegas, she can clinch the title in Austin."],
+        ["Emma Felbermayr", "48 points back after her lowest-scoring weekend of the season at Zandvoort; needs a big result in Austin to carry the fight to Las Vegas."],
+        ["Nina Gademan", "Third in points after Zandvoort."],
+        ["Alba Larsen (MP Motorsport)", "Climbed to fourth in the standings at Zandvoort after a slow start to the season."]
+      ] }
+    ],
+    note:"Sources: F1 Academy's own Zandvoort Feature Race report (f1academy.com) and pitdebrief.com's post-round standings, cross-checked; Goodwood's title-fight preview (goodwood.com) naming Austin as a round where Palmowski can clinch the title. This is one of two 2026 rounds (with Montreal) run as a three-race weekend after the original Jeddah round was cancelled." },
+  { t:"cota", d:"2026-10-23", s:"masters", at:"2026-10-21T19:10:00Z",
+    asOf:"Current as of Oct 21: no 2026 Austin entry list, driver roster or car count was found in sources checked.",
+    groups:[
+      { h:"What to expect", items:[
+        ["Masters Racing Legends, 1966-85 Formula 1 cars", "A practice, qualifying and two-race weekend for pre-1986 Grand Prix cars, run alongside the United States Grand Prix as in past Austin appearances; this year's entry list wasn't published in sources checked, so which cars and drivers make the trip isn't confirmed yet."]
+      ] }
+    ],
+    note:"Sources: Masters Historic Racing's own event page (mastershistoricracing.com) confirming the Oct 23-25 date; no 2026 Austin entry list was found as of this writing. Check back closer to the weekend." }
 ];

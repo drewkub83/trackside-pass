@@ -24,5 +24,7 @@ TRACKS.push({
   "eventName":"Barber Motorsports Park",
   "nturns":17,
   "turns":[],
-  "rev":7
+  "rev":7,
+  "tw":5.7,
+  "lw":0.82
 });

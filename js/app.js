@@ -28,6 +28,7 @@ const K={
   alerts:"paddock:alerts",        /* session alerts on/off (iPhone app) */
   alertsSeen:"paddock:alertsSeen",    /* whether the alerts permission prompt was shown */
   remind:"paddock:remind",        /* going-race reminders on/off */
+  pickRemind:"paddock:pickRemind",    /* Thursday "lock in your picks" reminder on/off (iPhone/Android app) */
   goDays:"paddock:goDays",        /* how many days before a weekend the hub shows What to watch / the game */
   going:"paddock:going",         /* races you are going to */
   stars:"paddock:stars",         /* starred sessions */
@@ -118,7 +119,7 @@ function isGoing(t,e){ return goingList().includes(goKey(t,e)); }
 function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>scheduleGoingReminders(on),0); }
 /* Starred sessions: tap the star on a session to get an alert 10 minutes before it (works anywhere, not just at the track,
    because you picked that session yourself). The star list is on this phone; alerts are the iPhone app's own notifications. */
-const STAR_KEY=K.stars, STAR_ID_BASE=2000;
+const STAR_KEY=K.stars, STAR_ID_BASE=2000, PICK_ID_BASE=3000;   /* notification ids: sessions 1-60, going 1000+, stars 2000-2999, pick reminders 3000-3099 */
 const starKey=(t,s)=>`${t.id}|${s.d}|${s.s}|${s.n}`;
 function starList(){ try{ return JSON.parse(localStorage.getItem(STAR_KEY)||"[]"); }catch(e){ return []; } }
 function isStarred(t,s){ return starList().includes(starKey(t,s)); }
@@ -131,7 +132,7 @@ function toggleStar(i){
 }
 async function scheduleStarAlerts(ask){
   const LN=nativeNotifier(); if(!LN) return;
-  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=STAR_ID_BASE);
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=STAR_ID_BASE&&n.id<PICK_ID_BASE);
   if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
   const now=Date.now(), lead=SESSION_ALERT_LEAD_MIN*60000, out=[];
   starList().forEach(k=>{ const [tid,d,st,...nm]=k.split("|"), t=TRACKS.find(x=>x.id===tid), n=nm.join("|"), s=t&&sessionsOf(t).find(x=>x.d===d&&x.s===st&&x.n===n);
@@ -469,8 +470,8 @@ function renderMap(){ limits=null; document.getElementById("mapWrap").classList.
     <defs><pattern id="grass" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="var(--grass)"/><circle cx="6" cy="6" r="1" fill="var(--grass-2)" opacity=".35"/><circle cx="19" cy="17" r="1" fill="var(--grass-2)" opacity=".35"/></pattern></defs>
     <rect x="${t.vb[0]}" y="${t.vb[1]}" width="${t.vb[2]}" height="${t.vb[3]}" fill="url(#grass)"/>
     ${baseSvg(t)}
-    ${t.pit?`<path d="${t.pit}" fill="none" stroke="var(--track-edge)" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="${t.pit}" fill="none" stroke="var(--pit)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:""}
-    <path d="${t.path}" fill="none" stroke="var(--track-edge)" stroke-width="${(t.tw||7)+2}" stroke-linejoin="round"/>
+    ${t.pit?`<path d="${t.pit}" fill="none" stroke="var(--track-edge)" stroke-width="${(6.4*(t.tw||7)/7).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="${t.pit}" fill="none" stroke="var(--pit)" stroke-width="${(4*(t.tw||7)/7).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round"/>`:""}
+    <path d="${t.path}" fill="none" stroke="var(--track-edge)" stroke-width="${((t.tw||7)*9/7).toFixed(2)}" stroke-linejoin="round"/>
     <path id="trackPath" d="${t.path}" fill="none" stroke="var(--track)" stroke-width="${t.tw||7}" stroke-linejoin="round"/>
     ${t.sfArrow?`<g class="sfa" transform="translate(${t.sfArrow[0]},${t.sfArrow[1]}) rotate(${t.sfArrow[2]})"><g class="sc noturn"><path d="M-9,0 H6 M1,-5 L6,0 L1,5" fill="none" stroke="#16181B" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/><path d="M-9,0 H6 M1,-5 L6,0 L1,5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></g>`:""}
     <g class="sf" transform="translate(${t.sf[0]},${t.sf[1]}) rotate(${t.sfArrow?t.sfArrow[2]:0})"><rect x="-2.4" y="-5.5" width="4.8" height="11" fill="#fff"/><rect x="-2.4" y="-5.5" width="2.4" height="2.75" fill="#16181B"/><rect x="0" y="-2.75" width="2.4" height="2.75" fill="#16181B"/><rect x="-2.4" y="0" width="2.4" height="2.75" fill="#16181B"/><rect x="0" y="2.75" width="2.4" height="2.75" fill="#16181B"/></g>
@@ -1053,7 +1054,7 @@ function gameProbs(g,cls){
 function carP(g,cls,n){ const m=gameProbs(g,cls); return m&&typeof m[n]==="number"?m[n]:null; }
 function pickP(g,cls,n){ const b=(picksOf(g)._p||{})[cls+"|"+n]; return typeof b==="number"?b:carP(g,cls,n); }   /* the chance banked when picked (or the current one for older picks) */
 function setPickP(g,cls,n,p){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); const m=Object.assign({},all[k]._p), tm=Object.assign({},all[k]._m); if(p==null){ delete m[cls+"|"+n]; delete tm[cls+"|"+n]; } else { m[cls+"|"+n]=p; tm[cls+"|"+n]=gameTiming(g).m; } all[k]._p=m; all[k]._m=tm; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
-function savePicks(g,cls,list){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
+function savePicks(g,cls,list){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} if(typeof schedulePickReminders==="function") schedulePickReminders(false); }
 const gameNum=str=>{ const m=/#(\d+)/.exec(str||""); return m?m[1]:null; };
 function gameResult(g){
   const r=typeof RESULTS!=="undefined"?RESULTS.filter(x=>x.t===g.t&&x.d===g.d&&x.s===g.s).pop()||null:null; if(r) return r;
@@ -1829,8 +1830,10 @@ function clampView(v){
   if(!limits) computeLimits(); if(!limits) return v;
   let [x,y,w,h]=v; const nw=Math.max(cur.vb[2]/8,Math.min(limits.maxW,w));
   if(nw!==w){ const r=nw/w, cx=x+w/2, cy=y+h/2; w=nw; h*=r; x=cx-w/2; y=cy-h/2; }
-  const B=limits.B, cx=Math.min(B.x+B.w,Math.max(B.x,x+w/2)), cy=Math.min(B.y+B.h,Math.max(B.y,y+h/2));
-  return [cx-w/2,cy-h/2,w,h];
+  /* the whole view stays inside the venue box B (plus a margin), so you never look at empty green; when the view is wider than B
+     (zoomed out) it may sit anywhere that keeps B filling it, which is what lets the fitted view clear the floating controls */
+  const B=limits.B, mx=B.w*.1, my=B.h*.1, ax=B.x-mx, bx=B.x+B.w+mx-w, ay=B.y-my, by=B.y+B.h+my-h;
+  return [Math.min(Math.max(ax,bx),Math.max(Math.min(ax,bx),x)), Math.min(Math.max(ay,by),Math.max(Math.min(ay,by),y)), w, h];
 }
 let anim=0, settleT=0, zRaf=0, panRaf=0, fitted=null, lastSize="";
 function cancelAnim(){ if(anim){ cancelAnimationFrame(anim); anim=0; } }
@@ -2055,12 +2058,42 @@ async function scheduleGoingReminders(ask){
   });
   if(out.length) await LN.schedule({notifications:out});
 }
-(function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.track) openTrack(x.track,"home"); }); })();
-scheduleGoingReminders(false); scheduleStarAlerts(false);
+/* ---- Thursday reminder to lock in your picks (Pick your podium) ----------------------------------------------------
+   For each weekend that has a game you have not finished: a notification on the Thursday on or before the event's first
+   day, 12:00 on the phone's clock (18:00 if that has passed). Rebuilt on every app open and after every pick, so finishing
+   the picks removes it. Own id range (PICK_ID_BASE, see the notification id note at STAR_ID_BASE), the phone's local notifications only (no server). */
+function pickRemindOn(){ return LSget(K.pickRemind,"1")!=="0"; }
+function renderPickSw(){ const b=document.getElementById("pickSw"); if(!b) return; const on=pickRemindOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
+async function togglePickRemind(){
+  const on=!pickRemindOn(); try{ localStorage.setItem(K.pickRemind,on?"1":"0"); }catch(e){} renderPickSw();
+  if(!nativeNotifier()){ toast(on?"Reminders work in the phone app.":"Off."); return; }
+  await schedulePickReminders(on); toast(on?"I'll remind you on Thursdays to lock in your picks.":"Pick reminders off.");
+}
+async function schedulePickReminders(ask){
+  const LN=nativeNotifier(); if(!LN||typeof ENTRIES==="undefined") return;
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=PICK_ID_BASE&&n.id<PICK_ID_BASE+100);
+  if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
+  if(!pickRemindOn()) return;
+  const now=Date.now(), out=[]; let id=PICK_ID_BASE;
+  ENTRIES.slice().sort((a,b)=>a.d.localeCompare(b.d)).forEach(g=>{
+    const t=TRACKS.find(x=>x.id===g.t); if(!t||gameResult(g)||gameLocked(g)||!g.classes.some(c=>(picksOf(g)[c.h]||[]).length<3)) return;
+    const [y,m,d]=g.d.split("-").map(Number), start=new Date(y,m-1,d), back=(start.getDay()-4+7)%7, thu=new Date(y,m-1,d-back);
+    if(thu.getTime()-now>16*86400000) return;
+    let at=new Date(thu.getFullYear(),thu.getMonth(),thu.getDate(),12,0,0); if(at.getTime()<=now) at=new Date(thu.getFullYear(),thu.getMonth(),thu.getDate(),18,0,0);
+    if(at.getTime()<=now) return;
+    const bonus=gameTiming(g,at.getTime()).m>1;
+    out.push({id:id++,title:`Lock in your picks: ${t.short}`,body:bonus?"Pick your podium before qualifying for the +25% early bonus.":"Pick your podium before the race starts.",schedule:{at},extra:{play:true}});
+  });
+  if(!out.length) return;
+  let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
+  await LN.schedule({notifications:out.slice(0,20)});
+}
+(function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.play) homeTab("play"); else if(x&&x.track) openTrack(x.track,"home"); }); })();
+scheduleGoingReminders(false); scheduleStarAlerts(false); schedulePickReminders(false);
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){
- renderAutoSw(); renderRemSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }
+ renderAutoSw(); renderRemSw(); renderPickSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }
 
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----
    Sun times are worked out on the phone (no signal needed). At a track in the phone's own time zone it uses the

@@ -23,5 +23,7 @@ TRACKS.push({
   "nturns":17,
   "turns":[],
   "rev":1,
-  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:35.444","who":"Raffaele Marciello","car":"Mercedes-AMG GT3","year":2022,"note":"fastest lap of any session (Sprint Cup qualifying 2, pole for race 2, #89 Akkodis ASP)"}]
+  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:35.444","who":"Raffaele Marciello","car":"Mercedes-AMG GT3","year":2022,"note":"fastest lap of any session (Sprint Cup qualifying 2, pole for race 2, #89 Akkodis ASP)"}],
+  "tw":5.5,
+  "lw":0.79
 });

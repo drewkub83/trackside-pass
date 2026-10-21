@@ -23,5 +23,7 @@ TRACKS.push({
   "nturns":16,
   "turns":[],
   "rev":3,
-  "lapRecord":[{"series":"Formula 1","time":"1:30.641","who":"Oscar Piastri","car":"McLaren MCL39","year":2025,"note":"fastest lap ever (Q3 pole lap, 2025 Chinese GP); race lap record 1:32.238, Michael Schumacher, Ferrari F2004, 2004"}]
+  "lapRecord":[{"series":"Formula 1","time":"1:30.641","who":"Oscar Piastri","car":"McLaren MCL39","year":2025,"note":"fastest lap ever (Q3 pole lap, 2025 Chinese GP); race lap record 1:32.238, Michael Schumacher, Ferrari F2004, 2004"}],
+  "tw":6.1,
+  "lw":0.87
 });

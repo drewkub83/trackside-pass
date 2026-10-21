@@ -23,5 +23,7 @@ TRACKS.push({
   "eventName":"GT World Challenge Europe: Barcelona",
   "nturns":14,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "tw":2.8,
+  "lw":0.4
 });

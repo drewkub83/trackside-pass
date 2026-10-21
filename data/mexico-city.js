@@ -24,5 +24,7 @@ TRACKS.push({
   "turns":[],
   "rev":1,
   "sessions":[{"d":"2026-10-30","s":"12:30","e":"13:30","n":"Practice 1 - Formula 1"},{"d":"2026-10-30","s":"16:00","e":"17:00","n":"Practice 2 - Formula 1"},{"d":"2026-10-31","s":"11:30","e":"12:30","n":"Practice 3 - Formula 1"},{"d":"2026-10-31","s":"15:00","e":"16:00","n":"Qualifying - Formula 1"},{"d":"2026-11-01","s":"14:00","e":"16:00","n":"Race - Formula 1"}],
-  "lapRecord":[{"series":"Formula 1","time":"1:14.758","who":"Max Verstappen","car":"Red Bull-Honda RB15","year":2019,"note":"fastest known lap (qualifying lap, 2019 Mexican GP); race lap record 1:17.774, Valtteri Bottas, Mercedes W12, 2021"}]
+  "lapRecord":[{"series":"Formula 1","time":"1:14.758","who":"Max Verstappen","car":"Red Bull-Honda RB15","year":2019,"note":"fastest known lap (qualifying lap, 2019 Mexican GP); race lap record 1:17.774, Valtteri Bottas, Mercedes W12, 2021"}],
+  "tw":3.5,
+  "lw":0.5
 });

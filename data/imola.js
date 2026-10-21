@@ -23,5 +23,7 @@ TRACKS.push({
   "eventName":"GT World Challenge Europe: Imola (Endurance Cup)",
   "nturns":19,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "tw":5.0,
+  "lw":0.71
 });

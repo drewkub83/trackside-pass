@@ -23,5 +23,7 @@ TRACKS.push({
   "nturns":4,
   "lapRecord":[{"time":"0:37.895","who":"Arie Luyendyk","car":"Reynard 94I-Ford","year":1996,"note":"IndyCar one-lap qualifying track record (237.498 mph); the 4-lap average used to set the pole is 2:31.908 — this is the oval; the road course's own record is a separate track","series":"IndyCar"},{"series":"NASCAR Cup","time":"0:47.647","who":"Kevin Harvick","car":"Chevrolet SS","year":2014,"note":"one-lap qualifying record, Brickyard 400"}],
   "turns":[],
-  "rev":1
+  "rev":1,
+  "tw":4.8,
+  "lw":0.69
 });

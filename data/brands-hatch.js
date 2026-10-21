@@ -23,5 +23,7 @@ TRACKS.push({
   "eventName":"GT World Challenge Europe: Brands Hatch (Sprint Cup)",
   "nturns":9,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "tw":3.3,
+  "lw":0.48
 });

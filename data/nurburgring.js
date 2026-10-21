@@ -23,5 +23,7 @@ TRACKS.push({
   "eventName":"GT World Challenge Europe: Nürburgring",
   "nturns":17,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "tw":4.0,
+  "lw":0.57
 });

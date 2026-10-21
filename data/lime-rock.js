@@ -22,5 +22,7 @@ TRACKS.push({
   "eventName":"FCP Euro Northeast Grand Prix",
   "nturns":7,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "tw":5.4,
+  "lw":0.77
 });

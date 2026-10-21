@@ -23,5 +23,7 @@ TRACKS.push({
   "nturns":16,
   "turns":[],
   "rev":1,
-  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:30.762","who":"Raffaele Marciello","car":"Mercedes-AMG GT3 Evo","year":2023,"note":"fastest lap of any session (Sprint Cup qualifying 1, pole for race 1, #88 Akkodis ASP)"}]
+  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:30.762","who":"Raffaele Marciello","car":"Mercedes-AMG GT3 Evo","year":2023,"note":"fastest lap of any session (Sprint Cup qualifying 1, pole for race 1, #88 Akkodis ASP)"}],
+  "tw":5.4,
+  "lw":0.77
 });

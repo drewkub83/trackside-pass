@@ -23,5 +23,7 @@ TRACKS.push({
   "eventName":"Phoenix Raceway",
   "nturns":4,
   "turns":[],
-  "rev":10
+  "rev":10,
+  "tw":4.2,
+  "lw":0.59
 });

@@ -2,6 +2,7 @@
 #   from map_apply import apply
 #   apply("silverstone", "silver_fit.json", items, source="the 2023 British Grand Prix fan map", rename_r=30)
 # items: (kind, name, (image_x, image_y), description[, id]) with the pixel position in the image fit_map.py was given.
+#   - rename_fmt "{old} ({new})" keeps the OpenStreetMap name and adds the official one (use it when the map only numbers its stands).
 #   - kind "stand" items within rename_r map units of an existing grandstand badge RENAME it to the official name (the OpenStreetMap
 #     position is kept, it is the better one); other items are added unless the same kind already has a badge within dedupe_r.
 #   - every added badge says its position is approximate and where it came from.
@@ -16,7 +17,7 @@ def tf_from_fit(fit):
         u, v = (p[0] - F["tx"]) / s, (p[1] - F["ty"]) / s
         return (u * c + v * sn, -u * sn + v * c)    # inverse of image = s*R(ang)*track + t
     return tf
-def apply(tid, fit, items, source, rename_r=30, dedupe_r=None, facts=None):
+def apply(tid, fit, items, source, rename_r=30, dedupe_r=None, facts=None, rename_fmt="{new}"):
     dedupe_r = dedupe_r or {"rest": 12, "info": 10, "med": 12, "park": 14, "camp": 30, "food": 12}
     tf = tf_from_fit(fit); T = load(tid); have = {p.get("id") for p in T["pois"]}; added, renamed, skipped = [], [], []; used = set(); orig = len(T["pois"])
     note = "Position approximate: placed from %s." % source
@@ -25,7 +26,7 @@ def apply(tid, fit, items, source, rename_r=30, dedupe_r=None, facts=None):
         if k == "stand" and rename_r:
             c = [(math.hypot(p["x"] - x, p["y"] - y), j) for j, p in enumerate(T["pois"][:orig]) if p["k"] == "stand" and not p.get("del") and j not in used and math.hypot(p["x"] - x, p["y"] - y) <= rename_r]
             if c:
-                j = min(c)[1]; used.add(j); p = T["pois"][j]; old = p["n"]; p["n"] = n; p["d"] = d; p["id"] = i if i not in have else p.get("id"); have.add(i); renamed.append((old, n)); continue
+                j = min(c)[1]; used.add(j); p = T["pois"][j]; old = p["n"]; p["n"] = rename_fmt.format(old=old, new=n); p["d"] = d; p["id"] = i if i not in have else p.get("id"); have.add(i); renamed.append((old, n)); continue
         if i in have: skipped.append((n, "id exists")); continue
         r = dedupe_r.get(k)
         if r and any(p["k"] == k and not p.get("del") and math.hypot(p["x"] - x, p["y"] - y) < r for p in T["pois"]): skipped.append((n, "already within %d" % r)); continue

@@ -191,6 +191,33 @@ const RESULTS = [
         podium:[] }
     ],
     note:"Sources: RACER race report (Oct 11, 2026) and gt-world-challenge-america.com results (winner of the race and the Pro superpole, driver names as listed there). Double-points finale. Other positions in each class were not confirmed, so none are listed." },
+  { t:"indianapolis", d:"2026-10-07", s:"gt4a", event:"Pirelli GT4 America season finale, Race 2 (Oct 11)",
+    groups:[
+      { h:"Silver", winner:"#68 RAFA Racing Team Toyota GR Supra GT4 — Tyler Gonzalez, Westin Workman",
+        gap:"Their second win of the weekend, but the title went to RS1's Luca Mars and Spencer Pumpelly by one point.", podium:[] },
+      { h:"Pro-Am", winner:"#39 Dome Motorsport Mercedes-AMG GT4 — Allen Patten, Marc Miller",
+        gap:"Patten passed NOLASPORT's Matt Travis with four minutes left.", podium:[] },
+      { h:"Am", winner:"Laura Hayes",
+        gap:"Frankie Muniz and Tyler Stone (#30 TechSport Racing Ford Mustang GT4) took the Am title.", podium:[] }
+    ],
+    note:"Source: SRO America's season-finale release (published on racer.com, Oct 11, 2026). Only class winners were stated; Laura Hayes' car number and co-driver were not given, and Race 1 results were not confirmed, so they are left out." },
+  { t:"indianapolis", d:"2026-10-07", s:"gta", event:"GT America season finale, Race 2 (Oct 11)",
+    groups:[
+      { h:"SRO3", winner:"#100 Risi Competizione Maserati MC20 GT2 — Peter Dempsey",
+        gap:"A weekend sweep on Maserati's GT America debut; champion Memo Gidley (#56 SKI Autosports Audi) ran second.", podium:[] },
+      { h:"GT4", winner:"Damir Hot", gap:"From pole, sweeping the weekend; Craig Lumsden took the GT4 title.", podium:[] },
+      { h:"Cup", winner:"David Lecko", gap:"Unopposed, closing out his Cup title season.", podium:[] }
+    ],
+    note:"Source: SRO America's season-finale release (published on racer.com, Oct 11, 2026). Positions below the winners were not stated, so none are listed." },
+  { t:"indianapolis", d:"2026-10-07", s:"tca", event:"TC America season finale, Race 2 (Oct 11)",
+    groups:[
+      { h:"TC", order:[
+        "1. #4 JMF Motorsports Toyota GR Corolla TC — Braydon Arthur",
+        "2. #78 Ricca Autosport Hyundai Elantra N1 TC Evo — Matan Rosenberg",
+        "3. #77 Ricca Autosport Hyundai Elantra N1 TC Evo — André Castro"
+      ] }
+    ],
+    note:"Run in the rain. Arthur swept the weekend and clinched the 2026 title; Castro is vice-champion. Source: SRO America's season-finale release (published on racer.com, Oct 11, 2026); places below third were not given." },
   { t:"laguna-seca", d:"2026-09-06", s:"indycar", event:"Mission Foods Grand Prix of Monterey",
     groups:[
       { h:"Race", order:[

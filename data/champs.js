@@ -11,7 +11,7 @@
    Sources: INDYCAR.com (2027 Phase One schedule, announced Aug 12, 2026), IMSA.com, SRO America (provisional 2027 calendar, June 26, 2026),
    GT World Challenge Europe (gt-world-challenge-europe.com calendar, checked Oct 7, 2026). */
 /* the day schedules, lists of cars and drivers to watch and support races were last checked (shown in Settings). Update it whenever they are refreshed. */
-const DATA_UPDATED = "2026-10-07";
+const DATA_UPDATED = "2026-10-21";
 const REGIONS = { na:"North America", eu:"Europe", world:"Worldwide" };   /* add a key here (and region:"…" on its series) when a new part of the world is added */
 const CHAMPS = [
   { id:"imsa", region:"na", name:"IMSA", tile:"IMSA", full:"WeatherTech SportsCar Championship", match:/IMSA/i, skip:/test/i, guide:"weathertech",

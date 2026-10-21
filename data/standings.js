@@ -225,5 +225,61 @@ const STANDINGS = [
         { pos:11, who:"Cadillac", pts:0 }
       ] }
     ],
-    note:"Source: formula1.com official 2026 drivers' and teams' standings, read Oct 16, 2026. Drivers on the same points share a position; the order within a tie follows the official table." }
+    note:"Source: formula1.com official 2026 drivers' and teams' standings, read Oct 16, 2026. Drivers on the same points share a position; the order within a tie follows the official table." },
+  { s:"f1academy", asOf:"Current after Round 4 of 6 at Zandvoort (Aug 21-23, 2026); Austin (Oct 23-25) and Las Vegas remain.",
+    classes:[
+      { h:"Drivers", rows:[
+        { pos:1, who:"Alisha Palmowski (Campos Racing)", pts:136 },
+        { pos:2, who:"Emma Felbermayr", pts:88 },
+        { pos:3, who:"Nina Gademan", pts:71 },
+        { pos:4, who:"Alba Larsen (MP Motorsport)", pts:50 }
+      ] }
+    ],
+    note:"Points from F1 Academy's own driver standings (f1academy.com), read Oct 21, 2026. The official table shows drivers only by initial and surname, so only the top four (whose full names and teams were confirmed in F1 Academy's Zandvoort race report) are listed; 5th to 7th are P. Westcott 49, M. Bruce 49 and E. Lloyd 47 points on that table." },
+  { s:"gt4a", asOf:"Final 2026 standings after the Indianapolis finale (Oct 10-11); the season is complete.",
+    classes:[
+      { h:"Silver", rows:[
+        { pos:1, who:"Luca Mars, Spencer Pumpelly (RS1, #028): 2026 Silver champions", pts:259 },
+        { pos:2, who:"Tyler Gonzalez, Westin Workman (RAFA Racing Team)", pts:258 },
+        { pos:3, who:"Francis Selldorff, Kevin Boehm", pts:192 }
+      ] },
+      { h:"Pro-Am", rows:[
+        { pos:1, who:"Sam Craven, Kenton Koch", gap:"2026 Pro-Am champions; Craven clinched the drivers' title in Saturday's Race 1." }
+      ] },
+      { h:"Am", rows:[
+        { pos:1, who:"Frankie Muniz, Tyler Stone (TechSport Racing)", gap:"2026 Am champions, settled in the final race." }
+      ] }
+    ],
+    note:"Silver points from gt4-america.com's own driver standings (all 13 rounds scored), read Oct 21, 2026. Pro-Am and Am champions from SRO America's season-finale release (published on racer.com, Oct 11, 2026); RS1 won the Silver title by one point despite retiring from the final race after an opening-lap incident, while RAFA won both Indianapolis races. The official Pro-Am and Am points tables could not be read, so no totals are shown for them." },
+  { s:"gta", asOf:"Final 2026 standings after the Indianapolis finale (Oct 10-11); the season is complete.",
+    classes:[
+      { h:"SRO3", rows:[
+        { pos:1, who:"Memo Gidley (SKI Autosports, #56)", gap:"2026 SRO3 champion, clinched before the finale; 10 wins, tying the record for a single GT America season." }
+      ] },
+      { h:"GT4", rows:[
+        { pos:1, who:"Craig Lumsden", gap:"2026 GT4 class champion." }
+      ] },
+      { h:"Cup", rows:[
+        { pos:1, who:"David Lecko", gap:"2026 Cup class champion; won the final race unopposed." }
+      ] }
+    ],
+    note:"Champions only, from SRO America's season-finale release (published on racer.com, Oct 11, 2026). Points totals were not read from the official table, so none are shown." },
+  { s:"tca", asOf:"Final 2026 standings after the Indianapolis finale (Oct 10-11); the season is complete.",
+    classes:[
+      { h:"TC", rows:[
+        { pos:1, who:"Braydon Arthur (JMF Motorsports, #4 Toyota GR Corolla)", gap:"2026 TC America champion: arrived five points clear of Castro and swept both Indianapolis races. Toyota won the TC manufacturers' title." },
+        { pos:2, who:"André Castro (Ricca Autosport, #77 Hyundai Elantra N1)", gap:"Vice-champion; third in the final race." }
+      ] }
+    ],
+    note:"From SRO America's season-finale release (published on racer.com, Oct 11, 2026). Final points totals were not read from the official table, so none are shown." },
+  { s:"grcup", asOf:"Final 2026 standings after the Indianapolis finale (Oct 10-11); the season is complete.",
+    classes:[
+      { h:"Am", rows:[
+        { pos:1, who:"Spike Kohlbecker (TechSport Racing, #15)", gap:"2026 GR Cup champion: six wins and 11 podiums in 14 races; the series' all-time wins leader." }
+      ] },
+      { h:"Legends Cup", rows:[
+        { pos:1, who:"Patrick Brunson (Eagles Canyon with Fast Track)", gap:"2026 WWEX Group Legends Cup champion (drivers 40 and over): six class wins in 10 races." }
+      ] }
+    ],
+    note:"Champions only, from GAZOO Racing's own release \"GAZOO Racing Crowns 2026 GR Cup Series Champions\" (grcupseries.com, Oct 11, 2026). Points totals were not published there, so none are shown." }
 ];

@@ -654,6 +654,41 @@ do $$ begin
 exception when others then null;
 end $$;
 
+---------------------------------------------------------------- Thursday "lock in your picks" push
+-- Every Thursday at 16:00 UTC (noon in New York) pg_cron calls the `push` edge function with {"picks": true}. The function asks pick_reminder_targets() who to
+-- nudge: players with a registered phone who have not finished their 3 picks in some class of a game whose event starts on that Thursday or the days after
+-- (the Thursday on or before the event's first day is today) and whose race has not started. A player can switch it off (profiles.pick_remind).
+alter table public.profiles add column if not exists pick_remind boolean not null default true;
+create or replace function public.set_pick_reminders(p_on boolean) returns void language sql security definer set search_path = public as $$
+  update public.profiles set pick_remind = coalesce(p_on, true) where id = auth.uid()
+$$;
+revoke all on function public.set_pick_reminders(boolean) from public, anon;
+grant execute on function public.set_pick_reminders(boolean) to authenticated;
+create or replace function public.pick_reminder_targets(p_day date default current_date) returns table (token text, platform text, game_key text, title text, quali_start timestamptz)
+language sql stable security definer set search_path = public as $$
+  select t.token, t.platform, g.game_key, g.title, g.quali_start
+  from public.games g
+  join public.push_tokens t on true
+  join public.profiles pr on pr.id = t.user_id and pr.pick_remind
+  where g.race_start > now()
+    and g.event_start >= p_day
+    and g.event_start - ((extract(dow from g.event_start)::int + 3) % 7) = p_day
+    and exists (select 1 from jsonb_object_keys(g.entries) c
+                where (select count(*) from public.picks k where k.user_id = t.user_id and k.game_key = g.game_key and k.cls = c) < 3)
+$$;
+revoke all on function public.pick_reminder_targets(date) from public, anon, authenticated;
+grant execute on function public.pick_reminder_targets(date) to service_role;
+do $$ begin
+  create extension if not exists pg_cron;
+  perform cron.unschedule(jobid) from cron.job where jobname = 'pick-reminders';
+  perform cron.schedule('pick-reminders', '0 16 * * 4', $cron$
+    select net.http_post(url := 'https://hspehgxhksctfegcfgyv.supabase.co/functions/v1/push',
+      headers := jsonb_build_object('Content-Type', 'application/json', 'x-push-secret', (select value from private.config where key = 'push_secret')),
+      body := '{"picks": true}'::jsonb)
+  $cron$);
+exception when others then raise notice 'pg_cron not set up (%): enable the pg_cron extension in Database > Extensions, then run this file again', sqlerrm;
+end $$;
+
 ---------------------------------------------------------------- profile photos (private storage: you and your friends can read a photo, only you can write yours)
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('avatars', 'avatars', false, 262144, array['image/jpeg'])

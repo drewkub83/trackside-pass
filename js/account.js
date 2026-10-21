@@ -245,7 +245,7 @@ function pushWire(P) {
   P.addListener("registration", async t => { try { await sbRpc("register_push_token", { p_token: t.value, p_platform: window.Capacitor.getPlatform() }); localStorage.setItem(K.pushToken, t.value); } catch (e) {} });
   P.addListener("registrationError", e => console.log("push registration failed", e && e.error));
   P.addListener("pushNotificationReceived", () => acctPoll(false));                                   // the app is open: refresh the inbox and the red dot
-  P.addListener("pushNotificationActionPerformed", () => { acctPoll(false); openAccount(); });          // tapped from the lock screen: open the requests
+  P.addListener("pushNotificationActionPerformed", a => { const d = (a && a.notification && a.notification.data) || {}; if (d.type === "pick_reminder" && typeof homeTab === "function") homeTab("play"); else { acctPoll(false); openAccount(); } });   // tapped from the lock screen: the picks, or the requests
 }
 /* returns "on" | "off" (not asked yet or switched off) | "denied" (blocked in the phone's settings) | "unavailable" (web, or not signed in) */
 async function pushOn(ask) {

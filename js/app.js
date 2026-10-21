@@ -2067,6 +2067,7 @@ function renderPickSw(){ const b=document.getElementById("pickSw"); if(!b) retur
 async function togglePickRemind(){
   const on=!pickRemindOn(); try{ localStorage.setItem(K.pickRemind,on?"1":"0"); }catch(e){} renderPickSw();
   if(!nativeNotifier()){ toast(on?"Reminders work in the phone app.":"Off."); return; }
+  if(typeof sbRpc==="function"&&typeof sbSession==="function"&&sbSession()){ try{ await sbRpc("set_pick_reminders",{p_on:on}); }catch(e){} }   /* the server's Thursday push follows this switch too */
   await schedulePickReminders(on); toast(on?"I'll remind you on Thursdays to lock in your picks.":"Pick reminders off.");
 }
 async function schedulePickReminders(ask){
@@ -2074,6 +2075,8 @@ async function schedulePickReminders(ask){
   const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=PICK_ID_BASE&&n.id<PICK_ID_BASE+100);
   if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
   if(!pickRemindOn()) return;
+  /* signed in with phone notifications on: the server's Thursday push does this (one notification, not two) */
+  try{ if(typeof sbSession==="function"&&sbSession()&&typeof pushState==="function"&&await pushState()==="on") return; }catch(e){}
   const now=Date.now(), out=[]; let id=PICK_ID_BASE;
   ENTRIES.slice().sort((a,b)=>a.d.localeCompare(b.d)).forEach(g=>{
     const t=TRACKS.find(x=>x.id===g.t); if(!t||gameResult(g)||gameLocked(g)||!g.classes.some(c=>(picksOf(g)[c.h]||[]).length<3)) return;

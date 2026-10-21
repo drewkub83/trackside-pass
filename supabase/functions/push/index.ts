@@ -57,6 +57,19 @@ Deno.serve(async (req) => {
     try { if (have("FCM_SERVICE_ACCOUNT")) { await fcmToken(JSON.parse(Deno.env.get("FCM_SERVICE_ACCOUNT")!)); res.fcmLogin = true; } } catch (e) { res.fcmLogin = String(e).slice(0, 160); }
     return new Response(JSON.stringify(res), { headers: { "Content-Type": "application/json" } });
   }
+  if (input.picks) {   // the Thursday "lock in your picks" nudge (called by pg_cron, see schema.sql): one push per phone per game
+    const r = await rest("rpc/pick_reminder_targets", { method: "POST", body: "{}" });
+    const rows: { token: string; platform: string; game_key: string; title: string; quali_start: string | null }[] = r.ok ? await r.json() : [];
+    let ok = 0, dead = 0;
+    for (const w of rows) {
+      const early = w.quali_start && new Date(w.quali_start).getTime() > Date.now();
+      const body = `${w.title}: pick your podium ${early ? "before qualifying for the +25% early bonus." : "before the race starts."}`, data = { type: "pick_reminder", game: w.game_key };
+      let res = "retry";
+      try { res = w.platform === "ios" ? await sendApns(w.token, "Lock in your picks", body, data) : await sendFcm(w.token, "Lock in your picks", body, data); } catch (e) { console.log("send failed", w.platform, String(e)); }
+      if (res === "ok") ok++; if (res === "dead") { dead++; await rest(`push_tokens?token=eq.${encodeURIComponent(w.token)}`, { method: "DELETE" }); }
+    }
+    return new Response(JSON.stringify({ picks: { targets: rows.length, sent: ok, dead } }), { headers: { "Content-Type": "application/json" } });
+  }
   const { id } = input;
   if (!Number.isInteger(id)) return new Response("bad request", { status: 400 });
   const n = (await (await rest(`notifications?id=eq.${id}&select=id,user_id,type,data`)).json())[0];

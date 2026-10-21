@@ -1364,7 +1364,7 @@ function hubBeforeWeekend(c){
 /* ---- the Race Day hub's cards can be moved and hidden: Edit in the hub's top bar. Saved on this phone, the same for every track.
    With no changes and not editing, the cards come out in the default order exactly as before (no wrappers). ---- */
 const HUB_CARDS=[["session","Next on track"],["friends","Friends here"],["quick","I'm going"],["day","Plan your weekend"],["live","Live results"],["results","Results"],["game","Pick your podium"],["strip","Today's sessions"],["wx","Weather"],["timing","Live timing"],["actions","Shortcuts"],["watch","What to watch"],["standings","Standings"],["lastHere","Last time here"],["stream","Watch live"]];
-let hubEditing=false, hubShownIds=[];
+let hubEditing=false, hubShownIds=[], hubDragging=false;
 function hubLayout(){ try{ const j=JSON.parse(LSget(K.hubLayout,"{}"))||{}; return {order:Array.isArray(j.order)?j.order:[],hidden:Array.isArray(j.hidden)?j.hidden:[]}; }catch(e){ return {order:[],hidden:[]}; } }
 function hubLayoutSave(l){ LSset(K.hubLayout,JSON.stringify(l)); renderHub(); }
 function hubCompose(cards){
@@ -1375,20 +1375,48 @@ function hubCompose(cards){
   const shown=present.filter(c=>!l.hidden.includes(c[0])), hid=present.filter(c=>l.hidden.includes(c[0]));
   hubShownIds=shown.map(c=>c[0]);
   if(!hubEditing) return shown.map(c=>c[1]).join("");
-  const arrow=(d)=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d<0?"M6 15l6-6 6 6":"M6 9l6 6 6-6"}"/></svg>`;
-  return `<div class="hubEdTop"><b>Edit cards</b><small>Move cards up or down, or hide the ones you don't use. It applies to every track.</small><span><button class="btn primary" onclick="hubEditToggle(false)">Done</button><button class="btn quiet" onclick="hubReset()">Reset</button></span></div>`
-    +shown.map((c,i)=>`<div class="hubEd"><div class="hubEdBar"><b>${esc(nm[c[0]]||c[0])}</b><span><button aria-label="Move ${esc(nm[c[0]])} up" onclick="hubMove('${c[0]}',-1)"${i===0?" disabled":""}>${arrow(-1)}</button><button aria-label="Move ${esc(nm[c[0]])} down" onclick="hubMove('${c[0]}',1)"${i===shown.length-1?" disabled":""}>${arrow(1)}</button><button class="hubEdHide" onclick="hubHide('${c[0]}',true)">Hide</button></span></div><div class="hubEdBody">${c[1]}</div></div>`).join("")
+  return `<div class="hubEdTop"><b>Edit cards</b><small>Touch and hold a card, then drag it where you want it. Tap Hide for the ones you don't use. It applies to every track.</small><span><button class="btn primary" onclick="hubEditToggle(false)">Done</button><button class="btn quiet" onclick="hubReset()">Reset</button></span></div>`
+    +shown.map(c=>`<div class="hubEd" data-c="${c[0]}"><div class="hubEdBar"><b>${esc(nm[c[0]]||c[0])}</b><button class="hubEdHide" onclick="hubHide('${c[0]}',true)">Hide</button></div><div class="hubEdBody">${c[1]}</div></div>`).join("")
     +(hid.length?`<h4 class="hubEdH">Hidden cards</h4>`+hid.map(c=>`<div class="hubEdRow"><b>${esc(nm[c[0]]||c[0])}</b><button class="btn quiet" onclick="hubHide('${c[0]}',false)">Show</button></div>`).join(""):"");
 }
 function hubEditToggle(on){ hubEditing=on===undefined?!hubEditing:!!on; const b=document.getElementById("hubEditBtn"); if(b){ b.classList.toggle("on",hubEditing); b.setAttribute("aria-pressed",hubEditing); } renderHub(); const v=document.getElementById("hubView"); if(v) v.scrollTop=0; }
-function hubMove(id,d){
-  const cur=hubShownIds.slice(), i=cur.indexOf(id), j=i+d; if(i<0||j<0||j>=cur.length) return; [cur[i],cur[j]]=[cur[j],cur[i]];
-  const l=hubLayout(); hubLayoutSave({order:cur.concat(l.order.filter(x=>!cur.includes(x))),hidden:l.hidden});
-}
+/* touch and hold a card in Edit mode and it lifts; drag it up or down and the others make room, let go to drop it (like moving apps on an iPhone) */
+(function(){
+  const body=document.getElementById("hubBody"); if(!body) return;
+  let timer=0, el=null, lifted=false, sx=0, sy=0, lastY=0, grab=0, curTy=0, raf=0;
+  const view=()=>document.getElementById("hubView"), cards=()=>[...body.querySelectorAll(":scope>.hubEd")];
+  function begin(target,x,y){ if(!hubEditing||!target||!target.closest) return; const c=target.closest(".hubEd"); if(!c||target.closest("button")) return; el=c; sx=x; sy=y; lastY=y; clearTimeout(timer); timer=setTimeout(lift,380); }
+  function lift(){ if(!el) return; lifted=true; hubDragging=true; grab=sy-el.getBoundingClientRect().top; curTy=0; el.classList.add("lifted"); try{ if(LSget(K.haptics,"1")==="1"&&navigator.vibrate) navigator.vibrate(12); }catch(e){} tick(); }
+  function apply(y){ const r=el.getBoundingClientRect(), layoutTop=r.top-curTy; curTy=(y-grab)-layoutTop; el.style.transform=`translateY(${curTy}px) scale(1.02)`; }
+  function swap(){
+    const cs=cards(), i=cs.indexOf(el), r=el.getBoundingClientRect(), mid=r.top+r.height/2, prev=cs[i-1], next=cs[i+1]; let other=null, before=false;
+    if(prev){ const p=prev.getBoundingClientRect(); if(mid<p.top+p.height/2){ other=prev; before=true; } }
+    if(!other&&next){ const n=next.getBoundingClientRect(); if(mid>n.top+n.height/2) other=next; }
+    if(!other) return false;
+    const was=other.getBoundingClientRect().top; if(before) body.insertBefore(el,other); else body.insertBefore(other,el);
+    const now=other.getBoundingClientRect().top; other.style.transition="none"; other.style.transform=`translateY(${was-now}px)`;
+    requestAnimationFrame(()=>{ other.style.transition="transform .18s ease"; other.style.transform=""; setTimeout(()=>{ other.style.transition=""; },220); });
+    return true;
+  }
+  function place(y){ lastY=y; apply(y); if(swap()) apply(y); }
+  function tick(){ if(!lifted) return; const vr=view().getBoundingClientRect(); let d=0; if(lastY<vr.top+90) d=-9; else if(lastY>vr.bottom-110) d=9; if(d){ view().scrollTop+=d; place(lastY); } raf=requestAnimationFrame(tick); }
+  function move(x,y){ if(!lifted){ if(el&&Math.hypot(x-sx,y-sy)>9){ clearTimeout(timer); el=null; } return false; } place(y); return true; }
+  function end(){
+    clearTimeout(timer); cancelAnimationFrame(raf);
+    if(lifted&&el){ const ids=cards().map(c=>c.dataset.c); el.classList.remove("lifted"); el.style.transform=""; lifted=false; hubDragging=false; const l=hubLayout(); hubLayoutSave({order:ids.concat(l.order.filter(x=>!ids.includes(x))),hidden:l.hidden}); }
+    lifted=false; hubDragging=false; el=null;
+  }
+  body.addEventListener("touchstart",e=>{ if(e.touches.length===1) begin(e.target,e.touches[0].clientX,e.touches[0].clientY); else end(); },{passive:true});
+  body.addEventListener("touchmove",e=>{ if(move(e.touches[0].clientX,e.touches[0].clientY)) e.preventDefault(); },{passive:false});
+  body.addEventListener("touchend",end); body.addEventListener("touchcancel",end);
+  body.addEventListener("mousedown",e=>{ if(e.button===0) begin(e.target,e.clientX,e.clientY); });
+  document.addEventListener("mousemove",e=>{ if(el||lifted) move(e.clientX,e.clientY); });
+  document.addEventListener("mouseup",()=>{ if(el||lifted) end(); });
+})();
 function hubHide(id,on){ const l=hubLayout(); hubLayoutSave({order:l.order,hidden:on?[...new Set(l.hidden.concat(id))]:l.hidden.filter(x=>x!==id)}); }
 function hubReset(){ if(confirm("Put the Race Day cards back in their original order and show them all?")) hubLayoutSave({order:[],hidden:[]}); }
 function renderHub(){
-  if(!hubMode) return;
+  if(!hubMode||hubDragging) return;
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
   const body=document.getElementById("hubBody"); if(!body) return;
   const ss=sessionsResolved(), now=new Date();

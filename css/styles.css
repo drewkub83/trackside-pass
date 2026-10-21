@@ -1040,3 +1040,10 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 .hubEdH{margin:18px 4px 8px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
 .hubEdRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;margin-bottom:8px;border-radius:16px;background:var(--tint)}
 .hubEdRow b{font-weight:500}.hubEdRow .btn{padding:8px 16px}
+
+/* Edit mode: cards wiggle a little and lift when you hold them (touch and hold, then drag) */
+.hubEd{touch-action:pan-y;-webkit-user-select:none;user-select:none;position:relative}
+.hubEd.lifted{z-index:30;border-style:solid;background:var(--paper);box-shadow:0 22px 44px rgba(0,0,0,.3);cursor:grabbing}
+.hubEd.lifted .hubEdBody{animation:none}
+@keyframes hubWig{0%{transform:rotate(-.5deg)}50%{transform:rotate(.5deg)}100%{transform:rotate(-.5deg)}}
+@media (prefers-reduced-motion:no-preference){.hubEd:not(.lifted) .hubEdBody{animation:hubWig .3s ease-in-out infinite}.hubEd:nth-of-type(even):not(.lifted) .hubEdBody{animation-duration:.26s;animation-delay:-.1s}}

@@ -37,7 +37,7 @@ const K={
   acctHint:"paddock:acct",         /* the profile (name, invite code) kept for offline display */
   notifSeen:"paddock:notifSeen",   /* the newest friend notification already announced on this phone */
   pushToken:"paddock:pushToken",   /* this phone's push token (iPhone/Android app) */
-  calAdded:"paddock:calAdded",    /* sessions already added to the phone's own calendar (so a second tap does not add them twice) */
+  hubLayout:"paddock:hubLayout",    /* the Race Day hub's card order and the cards you hid */
   pushOff:"paddock:pushOff",       /* set when you switched phone notifications off */
   pushAsked:"paddock:pushAsked",   /* the one-time offer to turn notifications on was shown */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
@@ -140,45 +140,6 @@ async function scheduleStarAlerts(ask){
   let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
   out.sort((a,b)=>a.s.start-b.s.start);
   await LN.schedule({notifications:out.slice(0,40).map(({t,s},i)=>({id:STAR_ID_BASE+i,title:shortName(s.n),body:`${t.short} · starts in ${SESSION_ALERT_LEAD_MIN} minutes`,sound:"racecar.caf",schedule:{at:new Date(s.start.getTime()-lead)},extra:{track:t.id}}))});
-}
-/* Add to calendar: a .ics file with one event per session and a 10-minute alarm, shared with the phone's own Calendar app. */
-const icsDate=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
-const icsEsc=x=>String(x).replace(/\\/g,"\\\\").replace(/;/g,"\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
-const icsFold=l=>{ let o="",b=l; while(b.length>73){ o+=b.slice(0,73)+"\r\n "; b=b.slice(73); } return o+b; };
-function buildIcs(t,list,evName){
-  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Trackside Pass//EN","CALSCALE:GREGORIAN","METHOD:PUBLISH"], stamp=icsDate(new Date());
-  list.forEach(s=>{ L.push("BEGIN:VEVENT",`UID:${starKey(t,s).replace(/[^A-Za-z0-9]/g,"")}@tracksidepass`,`DTSTAMP:${stamp}`,`DTSTART:${icsDate(s.start)}`,`DTEND:${icsDate(s.end)}`,`SUMMARY:${icsEsc(shortName(s.n))}`,`LOCATION:${icsEsc(t.name+", "+t.place)}`,`DESCRIPTION:${icsEsc(evName+". Times shown in your calendar's own time zone.")}`,"BEGIN:VALARM","TRIGGER:-PT10M","ACTION:DISPLAY",`DESCRIPTION:${icsEsc(shortName(s.n)+" starts in 10 minutes")}`,"END:VALARM","END:VEVENT"); });
-  L.push("END:VCALENDAR"); return L.map(icsFold).join("\r\n")+"\r\n";
-}
-async function deliverIcs(name,text){
-  try{ const file=new File([text],name,{type:"text/calendar"}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:name}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
-  const url=URL.createObjectURL(new Blob([text],{type:"text/calendar"})), a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000);
-  toast("Calendar file ready. Open it to add the sessions.");
-}
-/* In the iPhone and Android apps the sessions go straight into the phone's own calendar (a native plugin, after one permission prompt);
-   in a browser, or if that fails, the .ics file is shared the old way. iPhone only asks to WRITE, it never reads your calendar. */
-const calPlugin=()=>{ const C=window.Capacitor; return (C&&C.isNativePlatform&&C.isNativePlatform()&&C.Plugins&&C.Plugins.CapacitorCalendar)||null; };
-function calAddedMap(){ try{ return JSON.parse(localStorage.getItem(K.calAdded)||"{}"); }catch(e){ return {}; } }
-async function addToNativeCalendar(list,evName){
-  const P=calPlugin(); if(!P) return false;
-  try{
-    const ios=window.Capacitor.getPlatform&&window.Capacitor.getPlatform()==="ios", perm=await (ios?P.requestWriteOnlyCalendarAccess():P.requestFullCalendarAccess());
-    if(!perm||perm.result!=="granted"){ toast("Calendar access is off. Allow it in your phone's Settings to add sessions."); return false; }
-    const done=calAddedMap(), todo=list.filter(s=>!done[starKey(cur,s)]);
-    if(!todo.length&&!confirm("These sessions are already in your calendar. Add them again?")) return true;
-    let n=0; for(const s of (todo.length?todo:list)){
-      await P.createEvent({title:shortName(s.n),location:cur.name+", "+cur.place,startDate:+s.start,endDate:+s.end,description:evName+". Added by Trackside Pass.",alerts:[-10]});
-      done[starKey(cur,s)]=1; n++; }
-    try{ localStorage.setItem(K.calAdded,JSON.stringify(done)); }catch(e){}
-    toast(`Added ${n} session${n===1?"":"s"} to your calendar.`); return true;
-  }catch(e){ toast("Could not add to your calendar: "+((e&&e.message)||"unknown error").slice(0,80)); return false; }
-}
-async function addToCalendar(scope){
-  const now=new Date(), all=sessionsResolved().filter(s=>s.end>now), list=scope==="mine"?all.filter(s=>isStarred(cur,s)):all;
-  if(!list.length){ toast(scope==="mine"?"Star a session first.":"No upcoming sessions to add."); return; }
-  const fo=focusAt(cur), ev=fo?[...new Set(fo.group.map(e=>e.e))].join(" · "):cur.eventName||cur.name;
-  if(await addToNativeCalendar(list,ev)) return;
-  deliverIcs(`${cur.id}-${list[0].d}.ics`,buildIcs(cur,list,ev));
 }
 function hubToggleGoing(){ const fo=focusAt(cur); if(!fo) return; const on=!isGoing(cur,fo.first); setGoing(cur,fo.first,on); renderHub(); renderHero(); toast(on?`You're going: ${cur.short}`:"Removed from your races"); }
 function nextGoing(){ const out=[]; TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(isGoing(t,e)&&!eventDone(t,e)) out.push({t,e}); })); return out.sort((a,b)=>a.e.d.localeCompare(b.e.d))[0]||null; }
@@ -422,7 +383,7 @@ function openTrackNow(id,from){
   window.scrollTo(0,0);
   wx=null; wxToast=null; renderWx(); loadWeather();
   limits=null; view=fitted=fitView(); applyView(); { const w=document.getElementById("mapWrap"); lastSize=w.clientWidth+"x"+w.clientHeight; }
-  hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); if(isWide()) setWideRight("events"); checkRaceWeek();
+  hubEditing=false; { const eb=document.getElementById("hubEditBtn"); if(eb){ eb.classList.remove("on"); eb.setAttribute("aria-pressed","false"); } } hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); if(isWide()) setWideRight("events"); checkRaceWeek();
   /* resume live GPS automatically if it's already been allowed before, same consent-respecting check the
      hub and race-week banner use -- never asks cold, only picks back up for someone who already said yes.
      A web page can't keep watchPosition running once the OS fully closes the tab/PWA (no background
@@ -1392,7 +1353,7 @@ function hubBeforeWeekend(c){
   let quickHtml="", dayHtml="", lastHereHtml="";
   { const fq=focusAt(cur), aw=fq?daysBetween(localToday(),fq.d):-1, upcoming=ss.filter(x=>x.end>now);
     if(fq&&aw>0){ const going=isGoing(cur,fq.first);
-      quickHtml=`<div class="hubQuick"><button class="${going?"on":""}" aria-pressed="${going}" onclick="hubToggleGoing()"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>${going?"I'm going":"I'm going?"}</button>${upcoming.length?`<button onclick="addToCalendar('all')">${CAL_SVG}Add to calendar</button>`:""}</div>`; }
+      quickHtml=`<div class="hubQuick"><button class="${going?"on":""}" aria-pressed="${going}" onclick="hubToggleGoing()"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>${going?"I'm going":"I'm going?"}</button></div>`; }
     const mine=upcoming.filter(x=>isStarred(cur,x));
     if(mine.length) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><h4>Your sessions</h4>${chev}</div><div class="hubStarList">${mine.slice(0,6).map(x=>`<div><b>${fmtWhen(x.start,cur.tz)}</b><span>${esc(shortName(x.n))}</span></div>`).join("")}</div><p class="asof hubAsof">${nativeNotifier()?"You'll get an alert 10 minutes before each one.":"Star more in the schedule."}</p></div>`;
     else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions you care about in the schedule and get an alert before each.</div></div>${chev}</div></div>`;
@@ -1400,6 +1361,32 @@ function hubBeforeWeekend(c){
       if(last) lastHereHtml=`<div class="hubCard"><h4>Last time here</h4><div class="hubSeries">${esc(last.event)}</div>${last.groups.slice(0,2).map(g=>resultGroupHtml(g,3)).join("")}</div>`; } }
   return {quickHtml,dayHtml,lastHereHtml};
 }
+/* ---- the Race Day hub's cards can be moved and hidden: Edit in the hub's top bar. Saved on this phone, the same for every track.
+   With no changes and not editing, the cards come out in the default order exactly as before (no wrappers). ---- */
+const HUB_CARDS=[["session","Next on track"],["friends","Friends here"],["quick","I'm going"],["day","Plan your weekend"],["live","Live results"],["results","Results"],["game","Pick your podium"],["strip","Today's sessions"],["wx","Weather"],["timing","Live timing"],["actions","Shortcuts"],["watch","What to watch"],["standings","Standings"],["lastHere","Last time here"],["stream","Watch live"]];
+let hubEditing=false, hubShownIds=[];
+function hubLayout(){ try{ const j=JSON.parse(LSget(K.hubLayout,"{}"))||{}; return {order:Array.isArray(j.order)?j.order:[],hidden:Array.isArray(j.hidden)?j.hidden:[]}; }catch(e){ return {order:[],hidden:[]}; } }
+function hubLayoutSave(l){ LSset(K.hubLayout,JSON.stringify(l)); renderHub(); }
+function hubCompose(cards){
+  const l=hubLayout(), ids=HUB_CARDS.map(c=>c[0]), nm=Object.fromEntries(HUB_CARDS);
+  if(!hubEditing&&!l.order.length&&!l.hidden.length){ hubShownIds=cards.filter(c=>c[1]).map(c=>c[0]); return cards.map(c=>c[1]).join(""); }
+  const rank=id=>{ const i=l.order.indexOf(id); return i<0?1000+ids.indexOf(id):i; };
+  const present=cards.filter(c=>c[1]).sort((x,y)=>rank(x[0])-rank(y[0]));
+  const shown=present.filter(c=>!l.hidden.includes(c[0])), hid=present.filter(c=>l.hidden.includes(c[0]));
+  hubShownIds=shown.map(c=>c[0]);
+  if(!hubEditing) return shown.map(c=>c[1]).join("");
+  const arrow=(d)=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d<0?"M6 15l6-6 6 6":"M6 9l6 6 6-6"}"/></svg>`;
+  return `<div class="hubEdTop"><b>Edit cards</b><small>Move cards up or down, or hide the ones you don't use. It applies to every track.</small><span><button class="btn primary" onclick="hubEditToggle(false)">Done</button><button class="btn quiet" onclick="hubReset()">Reset</button></span></div>`
+    +shown.map((c,i)=>`<div class="hubEd"><div class="hubEdBar"><b>${esc(nm[c[0]]||c[0])}</b><span><button aria-label="Move ${esc(nm[c[0]])} up" onclick="hubMove('${c[0]}',-1)"${i===0?" disabled":""}>${arrow(-1)}</button><button aria-label="Move ${esc(nm[c[0]])} down" onclick="hubMove('${c[0]}',1)"${i===shown.length-1?" disabled":""}>${arrow(1)}</button><button class="hubEdHide" onclick="hubHide('${c[0]}',true)">Hide</button></span></div><div class="hubEdBody">${c[1]}</div></div>`).join("")
+    +(hid.length?`<h4 class="hubEdH">Hidden cards</h4>`+hid.map(c=>`<div class="hubEdRow"><b>${esc(nm[c[0]]||c[0])}</b><button class="btn quiet" onclick="hubHide('${c[0]}',false)">Show</button></div>`).join(""):"");
+}
+function hubEditToggle(on){ hubEditing=on===undefined?!hubEditing:!!on; const b=document.getElementById("hubEditBtn"); if(b){ b.classList.toggle("on",hubEditing); b.setAttribute("aria-pressed",hubEditing); } renderHub(); const v=document.getElementById("hubView"); if(v) v.scrollTop=0; }
+function hubMove(id,d){
+  const cur=hubShownIds.slice(), i=cur.indexOf(id), j=i+d; if(i<0||j<0||j>=cur.length) return; [cur[i],cur[j]]=[cur[j],cur[i]];
+  const l=hubLayout(); hubLayoutSave({order:cur.concat(l.order.filter(x=>!cur.includes(x))),hidden:l.hidden});
+}
+function hubHide(id,on){ const l=hubLayout(); hubLayoutSave({order:l.order,hidden:on?[...new Set(l.hidden.concat(id))]:l.hidden.filter(x=>x!==id)}); }
+function hubReset(){ if(confirm("Put the Race Day cards back in their original order and show them all?")) hubLayoutSave({order:[],hidden:[]}); }
 function renderHub(){
   if(!hubMode) return;
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
@@ -1415,7 +1402,7 @@ function renderHub(){
   const liveStreamHtml=hubLiveStream(ctx), liveTimingHtml=hubTimingCard(ctx);
   const {quickHtml,dayHtml,lastHereHtml}=hubBeforeWeekend(ctx);
   const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"", lv=liveSrc(), liveHtml=lv?liveCardHtml(lv,chev):""; if(lv) liveStart();
-  body.innerHTML=sessionHtml+hubFriendsCard()+quickHtml+dayHtml+liveHtml+resultsHtml+gameHtml+stripHtml+wxHtml+liveTimingHtml+actionsHtml+watchHtml+standingsHtml+lastHereHtml+liveStreamHtml;
+  body.innerHTML=hubCompose([["session",sessionHtml],["friends",hubFriendsCard()],["quick",quickHtml],["day",dayHtml],["live",liveHtml],["results",resultsHtml],["game",gameHtml],["strip",stripHtml],["wx",wxHtml],["timing",liveTimingHtml],["actions",actionsHtml],["watch",watchHtml],["standings",standingsHtml],["lastHere",lastHereHtml],["stream",liveStreamHtml]]);
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */
@@ -1425,7 +1412,6 @@ function renderHub(){
     if(target) stripEl.scrollLeft=Math.max(0,target.offsetLeft-stripEl.offsetLeft);
   }
 }
-const CAL_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>';
 function renderSchedule(){
   tzNote();
   renderWatch();
@@ -1451,7 +1437,7 @@ function renderSchedule(){
     const on=isStarred(cur,s), star=past||live?"":`<button class="sstar${on?" on":""}" aria-pressed="${on}" aria-label="${on?"Remove from my sessions":"Alert me before this session"}" onclick="event.stopPropagation();toggleStar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></button>`;
     return sr?`<div class="sess tap ${live?"live":past?"past":""}" role="button" tabindex="0" onclick="showInfo(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showInfo(${i})}" aria-label="About ${esc(s.n)}">${inner}${star}</div>`:`<div class="sess ${live?"live":past?"past":""}">${inner}${star}</div>`; }).join("");
   const mineN=ss.filter(x=>x.end>now&&isStarred(cur,x)).length, soonN=ss.filter(x=>x.end>now).length;
-  document.getElementById("schedTools").innerHTML=soonN?`<button class="pill" onclick="addToCalendar('all')">${CAL_SVG}Add weekend to calendar</button>${mineN?`<button class="pill" onclick="addToCalendar('mine')">${CAL_SVG}My ${mineN} session${mineN>1?"s":""}</button>`:""}`:"";
+  document.getElementById("schedTools").innerHTML="";
 }
 /* ---- series guide (data/series.js) ---- */
 function seriesFor(name){ return SERIES.find(s=>s.match.test(name))||null; }
@@ -1494,16 +1480,21 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeInfo(); });
    so it never fights with scrolling long content inside it -- the same convention native bottom sheets use. */
 function enableSwipeDown(panel,onClose){
   if(!panel) return;
-  let sy=0,dy=0,dragging=false,moved=false;
-  panel.addEventListener("touchstart",e=>{ if(panel.hidden) return; sy=e.touches[0].clientY; dy=0; moved=false; dragging=panel.scrollTop<=0; panel.style.transition="none"; },{passive:true});
+  let sy=0,dy=0,dragging=false,moved=false,ign=false;
+  /* the rain radar is a map you pan and pinch inside this sheet: touches there (and any two-finger gesture) are the map's, never the sheet's */
+  const reset=()=>{ panel.style.transition=""; panel.style.transform=""; dragging=false; moved=false; dy=0; };
+  panel.addEventListener("touchstart",e=>{ if(panel.hidden) return; ign=e.touches.length>1||!!(e.target.closest&&e.target.closest(".radarWrap")); if(ign){ reset(); return; } sy=e.touches[0].clientY; dy=0; moved=false; dragging=panel.scrollTop<=0; panel.style.transition="none"; },{passive:true});
   panel.addEventListener("touchmove",e=>{
     if(panel.hidden) return;
+    if(e.touches.length>1) ign=true;
+    if(ign){ if(moved||dragging) reset(); return; }
     if(!dragging){ if(panel.scrollTop<=0){ dragging=true; sy=e.touches[0].clientY; } else return; }
     dy=e.touches[0].clientY-sy;
     if(dy>4){ moved=true; panel.style.transform=`translateY(${dy}px)`; }
     else if(dy<0){ dragging=false; moved=false; panel.style.transform=""; }
   },{passive:true});
-  panel.addEventListener("touchend",()=>{
+  panel.addEventListener("touchend",e=>{
+    if(ign){ reset(); if(!e.touches||e.touches.length===0) ign=false; return; }
     panel.style.transition=""; panel.style.transform="";
     if(moved&&dy>70) onClose();
     dragging=false; moved=false; dy=0;

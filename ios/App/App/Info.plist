@@ -26,12 +26,6 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Trackside Pass adds the race sessions you choose to your calendar. It does not read your calendar.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>Trackside Pass adds the race sessions you choose to your calendar.</string>
-	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
-	<string>Trackside Pass adds the race sessions you choose to your calendar. It does not read your calendar.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Take a profile photo. It is shared only with your friends.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

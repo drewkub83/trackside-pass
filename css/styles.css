@@ -1023,3 +1023,20 @@ html.wide #detail .tabs{left:calc((100vw - var(--appw))/2 + var(--hubw) + (var(-
 html.wide #detail .tabs #hubTabBtn{display:none}
 html.wide #detail .tabs button[data-p="pEvents"]{order:-1}
 html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
+
+/* Race Day hub: Edit mode (move and hide cards) */
+.hubView .bar::after{display:none}
+#hubEditBtn.on{background:var(--accent);color:#fff}
+.hubEdTop{margin:6px 0 12px;padding:14px 16px;border-radius:18px;background:var(--tint);display:flex;flex-direction:column;gap:6px}
+.hubEdTop small{color:var(--ink-2);font-size:13px}.hubEdTop span{display:flex;gap:8px;margin-top:6px}.hubEdTop .btn{padding:9px 16px}
+.hubEd{margin:0 0 12px;border:1px dashed var(--line);border-radius:22px;padding:6px 6px 0}
+.hubEdBar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 8px 8px}.hubEdBar b{font-size:14px;font-weight:500}
+.hubEdBar span{display:flex;gap:6px;align-items:center}
+.hubEdBar button{height:34px;min-width:34px;padding:0 8px;border-radius:999px;background:var(--tint);display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.hubEdBar button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hubEdBar button:disabled{opacity:.3}.hubEdHide{padding:0 14px!important}
+.hubEdBody{pointer-events:none;opacity:.92;max-height:210px;overflow:hidden;border-radius:18px}
+.hubEdBody>*{margin-bottom:6px!important}
+.hubEdH{margin:18px 4px 8px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.hubEdRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;margin-bottom:8px;border-radius:16px;background:var(--tint)}
+.hubEdRow b{font-weight:500}.hubEdRow .btn{padding:8px 16px}

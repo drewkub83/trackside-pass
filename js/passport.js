@@ -467,11 +467,11 @@ function ppNext(){
   const legend=d.tier==="z", ink=PP_INK[d.tier]||PP_INK.x, n=legend?46:16, gold=["#A87712","#E0B84C","#14171A","#FFFFFF","#E0B84C"];
   document.getElementById("ulBurst").innerHTML=Array.from({length:n},(_,i)=>{ const a=(i/n)*Math.PI*2+Math.random()*.5, r=88+Math.random()*44;
     return `<i style="--dx:${Math.round(Math.cos(a)*r)}px;--dy:${Math.round(Math.sin(a)*r)}px;--c:${legend?gold[i%gold.length]:ink};--s:${(3+Math.random()*(legend?6:4)).toFixed(1)}px;${legend?"border-radius:1px;":""}"></i>`; }).join("");
-  document.getElementById("ulMedal").innerHTML=stampSvg(d,{date:Date.now()});
+  document.getElementById("ulMedal").innerHTML=stampSvg(d,{date:d.when||Date.now()});
   document.getElementById("ulMedal").style.setProperty("--rot",ppRot(d.id)+"deg"); el.querySelector(".ul-card").style.setProperty("--stampink",ink);
   document.getElementById("ulName").textContent=d.name; document.getElementById("ulDesc").textContent=d.desc;
   document.getElementById("ulBtn").textContent=ppQ.length?`Next stamp (${ppQ.length} more)`:"Nice";
-  el.querySelector(".ul-kick").textContent=legend?"Legendary stamp":"New stamp";
+  el.querySelector(".ul-kick").textContent=legend?"Legendary stamp":d.when?"Your stamp":"New stamp";
   const card=el.querySelector(".ul-card"); card.classList.toggle("legend",legend); card.classList.remove("go"); void card.offsetWidth; card.classList.add("go");   /* restart the animation */
   el.hidden=false; document.body.style.overflow="hidden";
   clearTimeout(window._ppThud); window._ppThud=setTimeout(()=>{ try{ LSget(K.haptics,"1")==="1"&&navigator.vibrate&&navigator.vibrate(d.tier==="z"?[40,50,40,50,160]:[26,40,12]); }catch(e){} },930);   /* the thud when the stamp lands */
@@ -479,7 +479,7 @@ function ppNext(){
 function closeUnlock(){ const el=document.getElementById("unlock"); el.hidden=true; document.body.style.overflow=""; ppQ=[]; }
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!document.getElementById("unlock").hidden) closeUnlock(); });
 function previewUnlock(){ const t=TRACKS.find(x=>x.id==="road-atlanta")||TRACKS[0]; ppEnqueue([ppTrackDefs().find(d=>d.track===t&&d.tier==="g"),PP_GLOBAL.find(d=>d.id==="tour")]); }
-function ppReplay(id){ const d=ppTrackDefs().concat(PP_GLOBAL).find(x=>x.id===id); if(d) ppEnqueue([d]); }
+function ppReplay(id,when){ const d=ppTrackDefs().concat(PP_GLOBAL).find(x=>x.id===id); if(d) ppEnqueue([when?{...d,when}:d]); }      /* tapping a stamp you hold plays its animation again, dated when you earned it */
 
 /* ---------------- passport screen and home card ---------------- */
 function ppTier(n){ return n>=3?3:n; }
@@ -515,7 +515,7 @@ let ppView=false;    /* true while another player's passport is being drawn: the
 /* the stamps you have earned (newest visit first) and, separately, the circuits still to collect */
 function ppStampTile(t,p,st,defs){
   const n=st.visits[t.id], tier=ppTier(n), def=defs.find(d=>d.track===t&&d.id.endsWith(":"+tier)), last=p.stamps.filter(s=>s.t===t.id).reduce((m,s)=>Math.max(m,s.at||0),0);
-  return `<button class="pt t${tier}" onclick="openTrack('${t.id}','${ppView?"friendPass":"passport"}')"><span class="sbox" style="--r:${ppRot(t.id)}deg">${stampSvg(def,{date:last||undefined})}</span><b>${esc(t.short)}</b><small>${n} race weekend${n>1?"s":""}</small></button>`;
+  return `<button class="pt t${tier}" onclick="${ppView?`toast(${esc(JSON.stringify(def.desc))})`:`ppReplay('${def.id}',${last||0})`}"><span class="sbox" style="--r:${ppRot(t.id)}deg">${stampSvg(def,{date:last||undefined})}</span><b>${esc(t.short)}</b><small>${n} race weekend${n>1?"s":""}</small></button>`;
 }
 const ppEmptyTile=t=>`<button class="pt mini" onclick="openTrack('${t.id}','${ppView?"friendPass":"passport"}')"><span class="sbox empty"><svg ${ppOutline(t,34,{c:"rgba(90,75,45,.38)",w:1.8})}</svg></span><b>${esc(t.short)}</b></button>`;
 function ppEarnedHtml(p,st){
@@ -539,7 +539,7 @@ function ppBadgeParts(p,st){
   const next=ppView?[]:ppNextUp(p,st), byId=Object.fromEntries(PP_GLOBAL.map(d=>[d.id,d]));
   const need=x=>x.g?`<span class="ppbar"><i style="width:${Math.round(x.g[0]/x.g[1]*100)}%"></i></span>`:"";
   const nextHtml=next.length?`<div class="ppNextBox"><h4>Next up</h4>${next.map(x=>`<button class="ppnx" onclick="toast(${esc(JSON.stringify(x.d.desc))})"><span class="sbox sm">${stampSvg(x.d,{locked:true})}</span><div><b>${esc(x.d.name)}</b><small>${esc(x.d.desc)}</small>${need(x)}</div>${x.g?`<em>${x.g[0]} of ${x.g[1]}</em>`:""}</button>`).join("")}</div>`:"";
-  const big=d=>{ const at=p.unlocked[d.id]; return `<button class="pb${d.tier==="z"?" legend":""}" onclick="${ppView?`toast(${esc(JSON.stringify(d.desc))})`:`ppReplay('${d.id}')`}"><span class="sbox mid" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:at})}</span><b>${esc(d.name)}</b><small>${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}</small></button>`; };
+  const big=d=>{ const at=p.unlocked[d.id]; return `<button class="pb${d.tier==="z"?" legend":""}" onclick="${ppView?`toast(${esc(JSON.stringify(d.desc))})`:`ppReplay('${d.id}',${at||0})`}"><span class="sbox mid" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:at})}</span><b>${esc(d.name)}</b><small>${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}</small></button>`; };
   const small=d=>{ const g=ppProg(d,st), tip=d.desc+(g?(ppView?` ${g[0]} of ${g[1]} so far.`:` You have ${g[0]} of ${g[1]}.`):""); return `<button class="pb lock mini${d.tier==="z"?" legend":""}" onclick="toast(${esc(JSON.stringify(tip))})"><span class="sbox sm">${stampSvg(d,{locked:true})}</span><b>${esc(d.name)}</b></button>`; };
   /* the badges you hold, by kind; every badge you do not hold yet sits in one closed block below */
   const sets=PP_BADGE_GROUPS.map(([title,ids])=>{ const ds=ids.map(i=>byId[i]).filter(Boolean); return {title,ds,got:ds.filter(d=>p.unlocked[d.id]),lock:ds.filter(d=>!p.unlocked[d.id])}; });

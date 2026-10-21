@@ -7,6 +7,8 @@
 #     --exclude x0,y0,x1,y1[;x0,...]   blank out rectangles (legends, titles) before looking for the circuit
 #     --thin R      drop filled blobs (icons, text discs) wider than R px, keep every long thin piece (the drawn asphalt band, even when icons
 #                   and zone borders cut it into many pieces); --minlen L = shortest piece kept (default 100 px). Use instead of --keep.
+#     --affine      after the similarity fit, also allow different x/y scale and shear (stylised or oblique maps: Montreal, Lime Rock);
+#                   the JSON then carries "A" = [a,b,c,d] so image = A*track + (tx,ty), and map_apply.py uses it
 #     --keep K      keep the K largest dark blobs (default 1: the circuit is one connected line)
 # Needs OpenCV and numpy (pip install --target <dir> opencv-python-headless numpy; add <dir> to PYTHONPATH). Result: {"s","ang","tx","ty","cost"} so that
 #   image_xy = s * rot(ang) * track_xy + (tx, ty);  use inv() below to turn a point read off the image into track units.
@@ -70,6 +72,20 @@ for it in range(900):
     c2 = cost(*cand)
     if c2 < cur: s, a, tx, ty = cand; cur = c2
     if it % 300 == 299: step = [x * 0.5 for x in step]
-out = dict(s=s, ang=a, tx=tx, ty=ty, cost=cur, W=W, H=H); json.dump(out, open(opt("--out", "fit.json"), "w"))
+A_ = [s * math.cos(a), -s * math.sin(a), s * math.sin(a), s * math.cos(a)]
+def project_aff(Am, tx_, ty_, pts=D): return np.stack([(Am[0] * pts[:, 0] + Am[1] * pts[:, 1] + tx_) / SC, (Am[2] * pts[:, 0] + Am[3] * pts[:, 1] + ty_) / SC], 1)
+if "--affine" in A:
+    def cost_aff(p):
+        q = project_aff(p[:4], p[4], p[5]); u, v = q[:, 0], q[:, 1]; ok = (u >= 0) & (u < ws - 1) & (v >= 0) & (v < hs - 1)
+        if ok.sum() < len(D) * 0.97: return 1e9
+        a_ = float(np.mean(dtm[v[ok].astype(int), u[ok].astype(int)])); canvas = np.zeros((hs, ws), np.uint8); cv2.polylines(canvas, [q.astype(np.int32)], True, 1, 1)
+        dm = cv2.distanceTransform(1 - canvas, cv2.DIST_L2, 3); return a_ + float(np.mean(dm[M[::3, 1].astype(int), M[::3, 0].astype(int)]))
+    pA = A_ + [tx, ty]; curA = cost_aff(pA); st_ = [abs(s) * 0.05] * 4 + [14, 14]
+    for it in range(6000):
+        cand = [pA[i] + random.gauss(0, st_[i]) for i in range(6)]; c2 = cost_aff(cand)
+        if c2 < curA: pA, curA = cand, c2
+        if it % 1500 == 1499: st_ = [x * 0.55 for x in st_]
+    A_, tx, ty, cur = pA[:4], pA[4], pA[5], curA
+out = dict(s=s, ang=a, A=A_, tx=tx, ty=ty, cost=cur, W=W, H=H); json.dump(out, open(opt("--out", "fit.json"), "w"))
 print("fit cost %.2f (px at 1/%d scale, lower is better)  scale %.4f  rotation %.1f deg" % (cur, SC, s, math.degrees(a)))
-over = img.copy(); q = (project(s, a, tx, ty) * SC).astype(np.int32); cv2.polylines(over, [q], True, (0, 0, 255), 3); cv2.imwrite(opt("--overlay", "overlay.png"), over)
+over = img.copy(); q = (project_aff(A_, tx, ty) * SC).astype(np.int32); cv2.polylines(over, [q], True, (0, 0, 255), 3); cv2.imwrite(opt("--overlay", "overlay.png"), over)

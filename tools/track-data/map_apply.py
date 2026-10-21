@@ -12,7 +12,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_route import load, save
 slug = lambda s: re.sub(r'[^a-z0-9]+', '-', s.lower()).strip('-')
 def tf_from_fit(fit):
+    if callable(fit): return fit      # e.g. geo_map.to_app wrapper for stylised maps
     F = json.load(open(fit)) if isinstance(fit, str) else fit; c, sn, s = math.cos(F["ang"]), math.sin(F["ang"]), F["s"]
+    if "A" in F:    # affine fit (fit_map.py --affine): invert the 2x2 matrix
+        a, b, c2, d = F["A"]; det = a * d - b * c2
+        return lambda p: (( d * (p[0] - F["tx"]) - b * (p[1] - F["ty"])) / det, (-c2 * (p[0] - F["tx"]) + a * (p[1] - F["ty"])) / det)
     def tf(p):
         u, v = (p[0] - F["tx"]) / s, (p[1] - F["ty"]) / s
         return (u * c + v * sn, -u * sn + v * c)    # inverse of image = s*R(ang)*track + t

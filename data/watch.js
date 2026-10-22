@@ -335,5 +335,28 @@ const WATCH = [
         ["Masters Racing Legends, 1966-85 Formula 1 cars", "A practice, qualifying and two-race weekend for pre-1986 Grand Prix cars, run alongside the United States Grand Prix as in past Austin appearances; this year's entry list wasn't published in sources checked, so which cars and drivers make the trip isn't confirmed yet."]
       ] }
     ],
-    note:"Sources: Masters Historic Racing's own event page (mastershistoricracing.com) confirming the Oct 23-25 date; no 2026 Austin entry list was found as of this writing. Check back closer to the weekend." }
+    note:"Sources: Masters Historic Racing's own event page (mastershistoricracing.com) confirming the Oct 23-25 date; no 2026 Austin entry list was found as of this writing. Check back closer to the weekend." },
+  { t:"mexico-city", d:"2026-10-30", s:"f1", at:"2026-10-22T00:23:54Z",
+    asOf:"Current on Oct 22, before the Austin weekend: the standings are after the Singapore Grand Prix (17 races done). The United States GP on Oct 25 runs before this one and could already settle the title or move the constructors' fight -- those numbers will be out of date by the time this weekend starts.",
+    groups:[
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads the championship by 102 points over team-mate George Russell with six races left. He can already clinch the title at Austin on Oct 25 -- the race just before this one -- by outscoring Russell there by 24 points; if that happens, Mexico City is run with the title settled."],
+        ["George Russell (Mercedes)", "Second on 238 points. Keeps the title fight alive into Mexico City unless Antonelli has already clinched it at Austin five days earlier."]
+      ] },
+      { h:"The chasers", items:[
+        ["Lewis Hamilton (Ferrari)", "Third on 229 points."],
+        ["Max Verstappen (Red Bull Racing)", "Fourth on 221 points."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 215 points."],
+        ["Lando Norris (McLaren)", "Sixth on 201 points. Won last year's Mexico City GP from pole, leading every lap for his first win at this circuit; McLaren lead Red Bull Racing by just 7 points (339-332) in the fight for third in the constructors' championship."]
+      ] },
+      { h:"Checo Perez's home race", items:[
+        ["Sergio Perez (Cadillac)", "Back at his home race after missing the 2025 edition, in his first season with Cadillac's debut F1 team alongside Valtteri Bottas; both are still on zero points this year. The weekend doubles as a celebration of his 300th grand prix start -- Cadillac and the race are holding a free public show run on Paseo de la Reforma on Wednesday, Oct 28."]
+      ] },
+      { h:"What to look for", items:[
+        ["Thin air at 2,240 m", "The Autodromo Hermanos Rodriguez is one of the highest circuits on the calendar; the altitude cuts aerodynamic downforce and strains engine cooling, which is why cars run unusually high-drag wings here."],
+        ["The stadium section", "The track cuts through the old Foro Sol arena for its final sector -- McLaren's own site calls it one of the loudest sections on the calendar."],
+        ["No sprint", "A normal weekend: two practice sessions Friday, one more and qualifying Saturday, race Sunday. Neither of the last two winners here was a Red Bull car -- Carlos Sainz (Ferrari) in 2024, Norris (McLaren) in 2025."]
+      ] }
+    ],
+    note:"Sources: racingnews365.com and crash.net (2026 standings after the Singapore GP and the Austin title-clinch scenario, read Oct 22, 2026), f1-fansite.com and mclaren.com (2026 Mexico City session times and circuit notes), riverramayanews.mx and cronica.com.mx (Perez's return, 300th start and the Oct 28 Reforma show run), autosport.com/motorauthority.com (2024 race result) and planetf1.com/racingnews365.com (2025 race result)." }
 ];

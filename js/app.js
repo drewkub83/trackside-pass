@@ -1830,10 +1830,13 @@ function clampView(v){
   if(!limits) computeLimits(); if(!limits) return v;
   let [x,y,w,h]=v; const nw=Math.max(cur.vb[2]/8,Math.min(limits.maxW,w));
   if(nw!==w){ const r=nw/w, cx=x+w/2, cy=y+h/2; w=nw; h*=r; x=cx-w/2; y=cy-h/2; }
-  /* the whole view stays inside the venue box B (plus a margin), so you never look at empty green; when the view is wider than B
-     (zoomed out) it may sit anywhere that keeps B filling it, which is what lets the fitted view clear the floating controls */
-  const B=limits.B, mx=B.w*.1, my=B.h*.1, ax=B.x-mx, bx=B.x+B.w+mx-w, ay=B.y-my, by=B.y+B.h+my-h;
-  return [Math.min(Math.max(ax,bx),Math.max(Math.min(ax,bx),x)), Math.min(Math.max(ay,by),Math.max(Math.min(ay,by),y)), w, h];
+  /* the view stays inside the mapped rectangle (cur.vb) plus a small margin, so you never look at empty ground; when the view is bigger than
+     that rectangle (zoomed far out) it may sit anywhere that keeps the rectangle filling it. Panning is free inside it, in both directions. */
+  const V=cur.vb, mx=V[2]*.04, my=V[3]*.04, ax=V[0]-mx, bx=V[0]+V[2]+mx-w, ay=V[1]-my, by=V[1]+V[3]+my-h;
+  /* but never so tight that the map cannot be dragged: when the rectangle is short compared with the screen (a wide track on a tall phone) the range is padded to
+     90% of the view so you can always move it a good way in every direction */
+  const rng=(a,b,size,pos)=>{ let lo=Math.min(a,b), hi=Math.max(a,b); const need=size*.9; if(hi-lo<need){ const pad=(need-(hi-lo))/2; lo-=pad; hi+=pad; } return Math.min(hi,Math.max(lo,pos)); };
+  return [rng(ax,bx,w,x), rng(ay,by,h,y), w, h];
 }
 let anim=0, settleT=0, zRaf=0, panRaf=0, fitted=null, lastSize="";
 function cancelAnim(){ if(anim){ cancelAnimationFrame(anim); anim=0; } }

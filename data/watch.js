@@ -350,7 +350,7 @@ const WATCH = [
         ["Lando Norris (McLaren)", "Sixth on 201 points. Won last year's Mexico City GP from pole, leading every lap for his first win at this circuit; McLaren lead Red Bull Racing by just 7 points (339-332) in the fight for third in the constructors' championship."]
       ] },
       { h:"Checo Perez's home race", items:[
-        ["Sergio Perez (Cadillac)", "Back at his home race after missing the 2025 edition, in his first season with Cadillac's debut F1 team alongside Valtteri Bottas; both are still on zero points this year. The weekend doubles as a celebration of his 300th grand prix start -- Cadillac and the race are holding a free public show run on Paseo de la Reforma on Wednesday, Oct 28."]
+        ["Sergio Perez (Cadillac)", "Back at his home race after missing the 2025 edition, in his first season with Cadillac's debut F1 team alongside Valtteri Bottas; both are still on zero points this year. The weekend doubles as a celebration of his 300th grand prix start -- Cadillac is holding a public show run on Paseo de la Reforma in Mexico City on Wednesday, Oct 28, around 10:00 (registration is requested through Cadillac's official X account; the route and exact times may still change)."]
       ] },
       { h:"What to look for", items:[
         ["Thin air at 2,240 m", "The Autodromo Hermanos Rodriguez is one of the highest circuits on the calendar; the altitude cuts aerodynamic downforce and strains engine cooling, which is why cars run unusually high-drag wings here."],

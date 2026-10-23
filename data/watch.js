@@ -358,5 +358,24 @@ const WATCH = [
         ["No sprint", "A normal weekend: two practice sessions Friday, one more and qualifying Saturday, race Sunday. Neither of the last two winners here was a Red Bull car -- Carlos Sainz (Ferrari) in 2024, Norris (McLaren) in 2025."]
       ] }
     ],
-    note:"Sources: racingnews365.com and crash.net (2026 standings after the Singapore GP and the Austin title-clinch scenario, read Oct 22, 2026), f1-fansite.com and mclaren.com (2026 Mexico City session times and circuit notes), riverramayanews.mx and cronica.com.mx (Perez's return, 300th start and the Oct 28 Reforma show run), autosport.com/motorauthority.com (2024 race result) and planetf1.com/racingnews365.com (2025 race result)." }
+    note:"Sources: racingnews365.com and crash.net (2026 standings after the Singapore GP and the Austin title-clinch scenario, read Oct 22, 2026), f1-fansite.com and mclaren.com (2026 Mexico City session times and circuit notes), riverramayanews.mx and cronica.com.mx (Perez's return, 300th start and the Oct 28 Reforma show run), autosport.com/motorauthority.com (2024 race result) and planetf1.com/racingnews365.com (2025 race result)." },
+  { t:"cota", d:"2026-10-23", s:"f1", from:"2026-10-23", at:"2026-10-23T19:23:34Z",
+    asOf:"Current after Friday's Free Practice 1 (12:30 PM local). FP2 follows at 4 PM local, FP3 Saturday at 12:30 PM, qualifying Saturday at 4 PM, and the race Sunday at 3 PM, all local time.",
+    groups:[
+      { h:"FP1: Ferrari quickest, Verstappen's best lap deleted", items:[
+        ["Charles Leclerc (Ferrari)", "Fastest in FP1, a 1:36.052, after Ferrari brought floor, sidepod-inlet and diffuser updates for the SF-26."],
+        ["Max Verstappen (Red Bull Racing)", "Went quicker on a 1:35.860, but it was deleted for exceeding track limits at Turn 19, leaving him classified second, 0.084s off Leclerc."],
+        ["Lando Norris (McLaren)", "Third, 0.245s off the pace, with George Russell fourth (+0.326s), Kimi Antonelli fifth (+0.481s) and Lewis Hamilton sixth (+0.503s)."],
+        ["Colton Herta (Cadillac, in for Sergio Perez)", "Cadillac's reserve driver ran Perez's car for his mandatory young-driver FP1 outing (every team must give a rookie two FP1 sessions this year) -- not because Perez was hurt. He was classified 21st; this was his fourth FP1 appearance of the season after Barcelona, Hungary and Monza, and the first by an American in a US-based F1 session since Logan Sargeant in 2023."]
+      ] },
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads the championship by 102 points over team-mate George Russell with six races left. Practice times don't change the standings; he can still clinch the title here only by winning while Russell finishes ninth or lower and Hamilton fifth or lower."],
+        ["George Russell (Mercedes)", "Second on 238 points. Keeps the title fight alive unless Antonelli wins and he finishes ninth or lower."]
+      ] },
+      { h:"What to look for in the rest of the weekend", items:[
+        ["No sprint, three practice sessions", "With no sprint this weekend, FP2 and FP3 are the only remaining chances for teams to fine-tune the car before qualifying Saturday afternoon."],
+        ["Verstappen's pace", "He has won the last two races (Bahrain and Singapore) and was fastest in FP1 before the deletion, with Red Bull looking competitive again at a track he won at in 2023."]
+      ] }
+    ],
+    note:"Sources: PlanetF1 ('Charles Leclerc fastest in US GP FP1 as FIA holds unusual test'), Formula1.com's FP1 report, Motorsport Week's and Scuderia Fans' FP1 classifications (all Oct 23, 2026), and RacingNews365/Motorsport.com on Colton Herta's 2026 FP1 outings and the mandatory young-driver rule. Formula1.com and the series' own live-timing pages could not be reached directly from this environment; results are relayed via these published reports. Championship standings and title-clinch scenario carried over unchanged from the Oct 16 entry." }
 ];

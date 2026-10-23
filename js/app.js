@@ -1824,19 +1824,30 @@ function computeLimits(){
   let [x0,y0,x1,y1]=c; const ov=layoutOverrides();
   cur.pois.map(p=>applyOv(p,ov[pid(p)])).concat(userStands()).forEach(p=>{ if(p.del) return; x0=Math.min(x0,p.x); y0=Math.min(y0,p.y); x1=Math.max(x1,p.x); y1=Math.max(y1,p.y); });
   const px=(x1-x0)*.06, py=(y1-y0)*.06, v=cur.vb; x0=Math.max(v[0],x0-px); y0=Math.max(v[1],y0-py); x1=Math.min(v[0]+v[2],x1+px); y1=Math.min(v[1]+v[3],y1+py);
-  limits={B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.min(Math.max(viewFor(f,x0,y0,x1,y1)[2],viewFor(f,...c)[2]*1.12),viewFor(f,...c)[2]*1.25)}   /* zoom-out stops at 1.25x the fitted circuit: further out just shrinks the track to a speck */;
+  const fv=viewFor(f,...c);   /* the fitted view's visible part (middle two thirds of the holder): always allowed, so the opening view is never pushed */
+  limits={fw:fv[2],F:{x:fv[0]+fv[2]/6,y:fv[1]+fv[3]/6,w:fv[2]/1.5,h:fv[3]/1.5},B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.min(Math.max(viewFor(f,x0,y0,x1,y1)[2],viewFor(f,...c)[2]*1.12),viewFor(f,...c)[2]*1.25)}   /* zoom-out stops at 1.25x the fitted circuit: further out just shrinks the track to a speck */;
 }
 function clampView(v){
   if(!limits) computeLimits(); if(!limits) return v;
   let [x,y,w,h]=v; const nw=Math.max(cur.vb[2]/8,Math.min(limits.maxW,w));
   if(nw!==w){ const r=nw/w, cx=x+w/2, cy=y+h/2; w=nw; h*=r; x=cx-w/2; y=cy-h/2; }
-  /* the view stays inside the mapped rectangle (cur.vb) plus a small margin, so you never look at empty ground; when the view is bigger than
-     that rectangle (zoomed far out) it may sit anywhere that keeps the rectangle filling it. Panning is free inside it, in both directions. */
-  const V=cur.vb, mx=V[2]*.04, my=V[3]*.04, ax=V[0]-mx, bx=V[0]+V[2]+mx-w, ay=V[1]-my, by=V[1]+V[3]+my-h;
-  /* but never so tight that the map cannot be dragged: when the rectangle is short compared with the screen (a wide track on a tall phone) the range is padded to
-     90% of the view so you can always move it a good way in every direction */
-  const rng=(a,b,size,pos)=>{ let lo=Math.min(a,b), hi=Math.max(a,b); const need=size*.9; if(hi-lo<need){ const pad=(need-(hi-lo))/2; lo-=pad; hi+=pad; } return Math.min(hi,Math.max(lo,pos)); };
-  return [rng(ax,bx,w,x), rng(ay,by,h,y), w, h];
+  /* Panning is limited to the venue (circuit + every badge: gates, parking, stands...), not the whole downloaded map
+     rectangle, which for many tracks runs far past anything a fan would walk to. The visible part of the holder is its
+     middle two thirds (see frame()); that part may run past the venue by a small margin. When it is bigger than the
+     venue (zoomed out), it can sit anywhere that keeps the whole venue on screen. The venue is already clipped to the mapped rectangle. */
+  const B=limits.B, vw=w/1.5, vh=h/1.5, f=frame(), su=f?f.cw/vw:1;   /* su: screen px per map unit */
+  /* the floating buttons cover the top and bottom of the screen, so the venue may run under them by that much */
+  const padLo=f?f.top/su:0, padHi=f?f.bot/su:0;
+  const fit=(lo,size,vis,pos,flo,fsize,pl=0,ph=0)=>{        /* pos = left/top of the holder; returns the clamped value */
+    const m=vis*.1;                                                   /* margin: a tenth of the screen, at any zoom */
+    let a=lo-m-pl, b=lo+size+m+ph;                                   /* allowed span for the visible part: the venue + margin */
+    if(useF){ a=Math.min(a,flo); b=Math.max(b,flo+fsize); }            /* at the opening zoom or further out, also wherever the opening view reaches */
+    const v=pos+(vis*1.5-vis)/2;                                      /* visible part's left/top */
+    let nv; if(vis<=b-a) nv=Math.min(b-vis,Math.max(a,v)); else nv=Math.min(a,Math.max(b-vis,v));
+    return nv-(vis*1.5-vis)/2;
+  };
+  const F=limits.F, useF=w>=limits.fw*.98;
+  return [fit(B.x,B.w,vw,x,F.x,F.w), fit(B.y,B.h,vh,y,F.y,F.h,padLo,padHi), w, h];
 }
 let anim=0, settleT=0, zRaf=0, panRaf=0, fitted=null, lastSize="";
 function cancelAnim(){ if(anim){ cancelAnimationFrame(anim); anim=0; } }

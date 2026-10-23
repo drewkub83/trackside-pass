@@ -26,5 +26,5 @@ TRACKS.push({
   "sessions":[{"d":"2026-11-19","s":"16:30","e":"17:30","n":"Practice 1 - Formula 1"},{"d":"2026-11-19","s":"20:00","e":"21:00","n":"Practice 2 - Formula 1"},{"d":"2026-11-20","s":"16:30","e":"17:30","n":"Practice 3 - Formula 1"},{"d":"2026-11-20","s":"20:00","e":"21:00","n":"Qualifying - Formula 1"},{"d":"2026-11-21","s":"20:00","e":"22:00","n":"Race - Formula 1"}],
   "lapRecord":[{"series":"Formula 1","time":"1:32.312","who":"George Russell","car":"Mercedes W15","year":2024,"note":"fastest known lap (pole lap, 2024 Las Vegas GP, FIA qualifying classification); race lap record 1:33.365, Max Verstappen, Red Bull RB21, 2025. Practice laps were not checked"}],
   "lw":0.55,
-  "tw":5.5
+  "tw":2.4
 });

@@ -461,7 +461,7 @@ function baseSvg(t){
   s+=b.labels.map(([x,y,n,a])=>`<text class="rl" transform="translate(${x},${y}) rotate(${a})" text-anchor="middle" dy="-4">${n}</text>`).join("");
   return s;
 }
-function renderMap(){ limits=null; document.getElementById("mapWrap").classList.toggle("show-shwr",layers.has("shower"));
+function renderMap(){ limits=null; lastTwf=1; document.getElementById("mapWrap").classList.toggle("show-shwr",layers.has("shower"));
   const t = cur, us = userStands();
   const ov=layoutOverrides();
   const all = t.pois.map(p=>applyOv(p,ov[pid(p)])).concat(us.map(s=>({k:"food",n:s.n,x:s.x,y:s.y})));
@@ -470,9 +470,9 @@ function renderMap(){ limits=null; document.getElementById("mapWrap").classList.
     <defs><pattern id="grass" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="var(--grass)"/><circle cx="6" cy="6" r="1" fill="var(--grass-2)" opacity=".35"/><circle cx="19" cy="17" r="1" fill="var(--grass-2)" opacity=".35"/></pattern></defs>
     <rect x="${t.vb[0]}" y="${t.vb[1]}" width="${t.vb[2]}" height="${t.vb[3]}" fill="url(#grass)"/>
     ${baseSvg(t)}
-    ${t.pit?`<path d="${t.pit}" fill="none" stroke="var(--track-edge)" stroke-width="${(6.4*(t.tw||7)/7).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path d="${t.pit}" fill="none" stroke="var(--pit)" stroke-width="${(4*(t.tw||7)/7).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round"/>`:""}
-    <path d="${t.path}" fill="none" stroke="var(--track-edge)" stroke-width="${((t.tw||7)*9/7).toFixed(2)}" stroke-linejoin="round"/>
-    <path id="trackPath" d="${t.path}" fill="none" stroke="var(--track)" stroke-width="${t.tw||7}" stroke-linejoin="round"/>
+    ${t.pit?`<path class="twx" data-w="${(6.4*(t.tw||7)/7).toFixed(2)}" d="${t.pit}" fill="none" stroke="var(--track-edge)" stroke-width="${(6.4*(t.tw||7)/7).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><path class="twx" data-w="${(4*(t.tw||7)/7).toFixed(2)}" d="${t.pit}" fill="none" stroke="var(--pit)" stroke-width="${(4*(t.tw||7)/7).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round"/>`:""}
+    <path class="twx" data-w="${((t.tw||7)*9/7).toFixed(2)}" d="${t.path}" fill="none" stroke="var(--track-edge)" stroke-width="${((t.tw||7)*9/7).toFixed(2)}" stroke-linejoin="round"/>
+    <path class="twx" data-w="${t.tw||7}" id="trackPath" d="${t.path}" fill="none" stroke="var(--track)" stroke-width="${t.tw||7}" stroke-linejoin="round"/>
     ${t.sfArrow?`<g class="sfa" transform="translate(${t.sfArrow[0]},${t.sfArrow[1]}) rotate(${t.sfArrow[2]})"><g class="sc noturn"><path d="M-9,0 H6 M1,-5 L6,0 L1,5" fill="none" stroke="#16181B" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/><path d="M-9,0 H6 M1,-5 L6,0 L1,5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></g>`:""}
     <g class="sf" transform="translate(${t.sf[0]},${t.sf[1]}) rotate(${t.sfArrow?t.sfArrow[2]:0})"><rect x="-2.4" y="-5.5" width="4.8" height="11" fill="#fff"/><rect x="-2.4" y="-5.5" width="2.4" height="2.75" fill="#16181B"/><rect x="0" y="-2.75" width="2.4" height="2.75" fill="#16181B"/><rect x="-2.4" y="0" width="2.4" height="2.75" fill="#16181B"/><rect x="0" y="2.75" width="2.4" height="2.75" fill="#16181B"/></g>
     ${(t.labels||[]).map(([x,y,l,s])=>`<g class="cl${s==="lm"?" lm":""}" transform="translate(${x},${y})"><g class="sc"><text text-anchor="middle" font-size="12" font-weight="600" fill="var(--ink)" stroke="var(--paper)" stroke-width="3" paint-order="stroke">${l}</text></g></g>`).join("")}
@@ -1713,6 +1713,7 @@ let lastZ=0;
 window.addEventListener("resize",()=>{ clearTimeout(window._rz); window._rz=setTimeout(()=>{
   if(!cur||!document.getElementById("detail").classList.contains("on")) return; const w=document.getElementById("mapWrap"), sz=w.clientWidth+"x"+w.clientHeight; if(sz===lastSize) return; lastSize=sz;
   limits=null; if(view&&view===fitted){ view=fitted=fitView(); } else if(view){ view=clampView(view); } applyView(); },150); });
+let lastTwf=1;
 function applyView(light){       /* light: only move/scale during a gesture; the label layout runs when it ends */
   const svg=document.getElementById("mapSvg"); if(!svg) return;
   if(view) svg.setAttribute("viewBox",view.map(n=>+n.toFixed(2)).join(" "));
@@ -1720,6 +1721,13 @@ function applyView(light){       /* light: only move/scale during a gesture; the
   if(light===true&&Math.abs(z-lastZ)<1e-9) return;     /* a plain pan changes nothing else */
   lastZ=z;
   const k=Math.pow(1/z,0.85);
+  /* Track (and pit lane) width: as drawn at the opening zoom; zooming in keeps it the same width on screen until it is as
+     wide as a narrow real track (9 m, so the two sides of a divided road stay apart), then it scales with the map. Without this a street circuit drawn 30+ m wide merges the
+     two sides of a divided road it races out and back on (Baku's Neftchilar Avenue). */
+  if(!limits) computeLimits();
+  const tw0=cur.tw||7, zf=limits&&limits.fw?limits.fw/v[2]:z, floorW=cur.route?9/cur.route.mpu:tw0;
+  const twf=Math.max(Math.min(1,floorW/tw0), 1/Math.max(1,zf));
+  if(twf!==lastTwf){ lastTwf=twf; svg.querySelectorAll(".twx").forEach(el=>el.setAttribute("stroke-width",(+el.dataset.w*twf).toFixed(2))); }
   svg.querySelectorAll(".sc").forEach(el=>el.setAttribute("transform",(el.classList.contains("noturn")?"":`rotate(${heading}) `)+`scale(${k})`));
   if(light===true) return;
   positionPop();

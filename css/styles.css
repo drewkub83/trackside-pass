@@ -219,26 +219,26 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .map-wrap svg .b-farm,.map-wrap svg .b-farmland,.map-wrap svg .b-residential,.map-wrap svg .b-cemetery{fill:var(--field)}
 .map-wrap svg .b-grass,.map-wrap svg .b-sports_centre{fill:var(--grass-2);opacity:.5}
 .map-wrap svg .b-wood{fill:var(--wood)}
-.map-wrap svg .b-water{fill:var(--water)}
+.map-wrap svg .b-water{fill:var(--water);fill-rule:evenodd}   /* islands and lake holes are cut out of the sea / lake */
 .map-wrap svg .b-sand{fill:var(--sand)}
 .map-wrap svg .b-parking{fill:var(--lot);stroke:var(--road-2);stroke-width:.8}
 .map-wrap svg .b-building{fill:var(--bldg);stroke:var(--bldg-2);stroke-width:.6}
 .map-wrap svg .b-grandstand,.map-wrap svg .b-bleachers{fill:var(--stand);opacity:.5}
 .map-wrap svg .b-raceway_area{fill:var(--asphalt-2);opacity:.45}
-.map-wrap svg .l-stream{stroke:var(--water);stroke-width:2;fill:none}
-.map-wrap svg .l-primary{stroke:var(--road);stroke-width:calc(7px*var(--lw,1));fill:none;stroke-linecap:round}
-.map-wrap svg .l-primary-e{stroke:var(--road-2);stroke-width:calc(9px*var(--lw,1));fill:none;stroke-linecap:round}
-.map-wrap svg .l-residential{stroke:var(--road);stroke-width:calc(4.5px*var(--lw,1));fill:none;stroke-linecap:round}
-.map-wrap svg .l-residential-e{stroke:var(--road-2);stroke-width:calc(6px*var(--lw,1));fill:none;stroke-linecap:round}
-.map-wrap svg .l-service{stroke:var(--road);stroke-width:calc(2.6px*var(--lw,1));fill:none;stroke-linecap:round}
-.map-wrap svg .l-service-e{stroke:var(--road-2);stroke-width:calc(3.6px*var(--lw,1));fill:none;stroke-linecap:round}
-.map-wrap svg .l-track{stroke:#C9A877;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.map-wrap svg .l-track-e{stroke:#94764B;stroke-width:3.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.map-wrap svg .l-bridge{stroke:var(--road);stroke-width:3;fill:none}
-.map-wrap svg .l-bridge-e{stroke:var(--ink);stroke-width:5;fill:none;opacity:.4}
-.map-wrap svg .l-tunnel{stroke:var(--road-2);stroke-width:3;fill:none;stroke-dasharray:4 3}
-.map-wrap svg .l-path{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-dasharray:3 3;opacity:.5}
-.map-wrap svg .l-raceway{stroke:var(--asphalt-2);stroke-width:5;fill:none;opacity:.5;stroke-linecap:round}
+.map-wrap svg .l-stream{stroke:var(--water);stroke-width:calc(2px*var(--rz,1));fill:none}
+.map-wrap svg .l-primary{stroke:var(--road);stroke-width:calc(7px*var(--lw,1)*var(--rz,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-primary-e{stroke:var(--road-2);stroke-width:calc(9px*var(--lw,1)*var(--rz,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-residential{stroke:var(--road);stroke-width:calc(4.5px*var(--lw,1)*var(--rz,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-residential-e{stroke:var(--road-2);stroke-width:calc(6px*var(--lw,1)*var(--rz,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-service{stroke:var(--road);stroke-width:calc(2.6px*var(--lw,1)*var(--rz,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-service-e{stroke:var(--road-2);stroke-width:calc(3.6px*var(--lw,1)*var(--rz,1));fill:none;stroke-linecap:round}
+.map-wrap svg .l-track{stroke:#C9A877;stroke-width:calc(2.6px*var(--rz,1));fill:none;stroke-linecap:round;stroke-linejoin:round}
+.map-wrap svg .l-track-e{stroke:#94764B;stroke-width:calc(3.8px*var(--rz,1));fill:none;stroke-linecap:round;stroke-linejoin:round}
+.map-wrap svg .l-bridge{stroke:var(--road);stroke-width:calc(3px*var(--rz,1));fill:none}
+.map-wrap svg .l-bridge-e{stroke:var(--ink);stroke-width:calc(5px*var(--rz,1));fill:none;opacity:.4}
+.map-wrap svg .l-tunnel{stroke:var(--road-2);stroke-width:calc(3px*var(--rz,1));fill:none;stroke-dasharray:4 3;opacity:.45}
+.map-wrap svg .l-path{stroke:var(--ink);stroke-width:calc(1.5px*var(--rz,1));fill:none;stroke-dasharray:3 3;opacity:.5}
+.map-wrap svg .l-raceway{stroke:var(--asphalt-2);stroke-width:calc(5px*var(--rz,1));fill:none;opacity:.5;stroke-linecap:round}
 .map-wrap svg .rl{font-size:10px;fill:var(--ink-2);font-weight:400}
 .map-wrap svg text{font-family:var(--font);font-weight:500}
 .map-wrap svg .route-c{stroke:#fff;stroke-width:4.2;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.85}

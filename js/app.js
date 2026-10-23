@@ -461,7 +461,7 @@ function baseSvg(t){
   s+=b.labels.map(([x,y,n,a])=>`<text class="rl" transform="translate(${x},${y}) rotate(${a})" text-anchor="middle" dy="-4">${n}</text>`).join("");
   return s;
 }
-function renderMap(){ limits=null; lastTwf=1; document.getElementById("mapWrap").classList.toggle("show-shwr",layers.has("shower"));
+function renderMap(){ limits=null; lastTwf=1; lastRzf=1; document.getElementById("mapWrap").classList.toggle("show-shwr",layers.has("shower"));
   const t = cur, us = userStands();
   const ov=layoutOverrides();
   const all = t.pois.map(p=>applyOv(p,ov[pid(p)])).concat(us.map(s=>({k:"food",n:s.n,x:s.x,y:s.y})));
@@ -1713,7 +1713,7 @@ let lastZ=0;
 window.addEventListener("resize",()=>{ clearTimeout(window._rz); window._rz=setTimeout(()=>{
   if(!cur||!document.getElementById("detail").classList.contains("on")) return; const w=document.getElementById("mapWrap"), sz=w.clientWidth+"x"+w.clientHeight; if(sz===lastSize) return; lastSize=sz;
   limits=null; if(view&&view===fitted){ view=fitted=fitView(); } else if(view){ view=clampView(view); } applyView(); },150); });
-let lastTwf=1;
+let lastTwf=1, lastRzf=1;
 function applyView(light){       /* light: only move/scale during a gesture; the label layout runs when it ends */
   const svg=document.getElementById("mapSvg"); if(!svg) return;
   if(view) svg.setAttribute("viewBox",view.map(n=>+n.toFixed(2)).join(" "));
@@ -1728,6 +1728,10 @@ function applyView(light){       /* light: only move/scale during a gesture; the
   const tw0=cur.tw||7, zf=limits&&limits.fw?limits.fw/v[2]:z, floorW=cur.route?9/cur.route.mpu:tw0;
   const twf=Math.max(Math.min(1,floorW/tw0), 1/Math.max(1,zf));
   if(twf!==lastTwf){ lastTwf=twf; svg.querySelectorAll(".twx").forEach(el=>el.setAttribute("stroke-width",(+el.dataset.w*twf).toFixed(2))); }
+  /* roads, paths and bridges the same way: as drawn at the opening zoom, then the same width on screen until a main road
+     (7 units x the track's --lw) is down to a real 12 m; past that they scale with the map */
+  const roadFloor=cur.route?Math.min(1,12/(7*(cur.lw||1)*cur.route.mpu)):1, rzf=Math.max(roadFloor,1/Math.max(1,zf));
+  if(rzf!==lastRzf){ lastRzf=rzf; svg.style.setProperty("--rz",rzf.toFixed(3)); }
   svg.querySelectorAll(".sc").forEach(el=>el.setAttribute("transform",(el.classList.contains("noturn")?"":`rotate(${heading}) `)+`scale(${k})`));
   if(light===true) return;
   positionPop();

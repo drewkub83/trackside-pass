@@ -66,6 +66,10 @@ def run(tid, margin=0.35, dry=False):
         # clutter a normal street map leaves out: sidewalks and crossings drawn beside/over every street, parking aisles, driveways
         if t.get("footway") in ("sidewalk", "crossing", "access_aisle", "traffic_island") or t.get("path") == "sidewalk": continue
         if t.get("service") in ("parking_aisle", "driveway", "drive-through", "emergency_access"): continue
+        if t.get("indoor") == "yes" or t.get("level", "0") not in ("0", "") or t.get("tunnel") in ("building_passage",): continue   # walkways inside buildings
+        # footpaths: only named ones (a promenade, a park's main walk) and footbridges; the rest of a park's or golf course's
+        # path network is noise at this scale. Pedestrian streets are kept above as streets.
+        if k == "path" and not (t.get("name") or t.get("bridge") == "yes"): continue
         p = [(X(c["lon"]), Y(c["lat"])) for c in el["geometry"]]
         if not any(inside(x, y) for x, y in p): continue
         L = sum(math.hypot(b[0] - a[0], b[1] - a[1]) for a, b in zip(p, p[1:])) * mpu

@@ -23,7 +23,8 @@ def overpass(q):
             out = subprocess.run(["curl", "-sS", "-m", "200", "-A", "TracksidePass/0.1 (personal race-day app)", "--data-urlencode", "data=" + q, ep], capture_output=True, text=True)
             return json.loads(out.stdout)
         except Exception as e:
-            print("  retry", attempt, ep, str(e)[:60], file=sys.stderr); time.sleep(10)
+            why = re.sub(r"<[^>]+>", " ", out.stdout if "out" in dir() and out.stdout else str(e)); why = " ".join(why.split())[:120]
+            print("  retry", attempt, ep, why, file=sys.stderr); time.sleep(20 + 20 * attempt)
     raise SystemExit("Overpass did not answer")
 
 def dp(p, eps):   # Douglas-Peucker, like the builder
@@ -107,4 +108,6 @@ def run(tid, margin=0.35, dry=False):
 if __name__ == "__main__":
     a = sys.argv[1:]; dry = "--dry" in a; mg = 0.35
     if "--margin" in a: mg = float(a[a.index("--margin") + 1]); a = [x for i, x in enumerate(a) if x != "--margin" and (i == 0 or a[i - 1] != "--margin")]
-    for tid in [x for x in a if not x.startswith("--")]: run(tid, mg, dry)
+    for tid in [x for x in a if not x.startswith("--")]:
+        try: run(tid, mg, dry)
+        except SystemExit as e: print(f"{tid}: skipped ({e})")   # one track failing does not stop the rest

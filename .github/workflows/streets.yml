@@ -11,7 +11,7 @@ on:
         description: "Track ids, space separated (e.g. long-beach miami monaco)"
         required: true
       tool:
-        description: "streets = add missing streets (refresh_streets.py); water = add sea, lakes and rivers (add_water.py)"
+        description: "streets = add missing streets (refresh_streets.py); water = add sea, lakes and rivers (add_water.py); fetch = download a NEW track's OpenStreetMap data (tracks = '<id> <lat> <lon> [radius]') to the osm-fetch branch"
         required: false
         default: streets
 permissions:
@@ -27,9 +27,21 @@ jobs:
           node-version: 20
       - name: Run the map tool
         run: |
-          if [ "${{ github.event.inputs.tool }}" = "water" ]; then python3 tools/track-data/add_water.py ${{ github.event.inputs.tracks }}
+          if [ "${{ github.event.inputs.tool }}" = "fetch" ]; then
+            set -- ${{ github.event.inputs.tracks }}
+            python3 tools/track-data/fetch_track_osm.py "$@"
+            python3 tools/track-data/osm_raceways.py "$2" "$3" "${4:-0.02}" | tee "tools/street-circuits/osm/$1-raceways.txt"
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git checkout -B osm-fetch
+            git add -f "tools/street-circuits/osm/$1.json" "tools/street-circuits/osm/$1-raceways.txt"
+            git commit -m "OpenStreetMap data for $1 [skip ci]"
+            git push -f origin osm-fetch
+            exit 0
+          elif [ "${{ github.event.inputs.tool }}" = "water" ]; then python3 tools/track-data/add_water.py ${{ github.event.inputs.tracks }}
           else python3 tools/track-data/refresh_streets.py ${{ github.event.inputs.tracks }}; fi
       - name: Check and commit to the streets-refresh branch
+        if: github.event.inputs.tool != 'fetch'
         run: |
           if [ -z "$(git status --porcelain data)" ]; then echo "nothing changed"; exit 0; fi
           node tools/validate.js

@@ -44,7 +44,11 @@ def run(tid, margin=0.35, dry=False):
     lng = lambda x: g["w"] + (x - vb[0]) / vb[2] * (g["e"] - g["w"]); lat = lambda y: g["n"] - (y - vb[1]) / vb[3] * (g["n"] - g["s"])
     X = lambda lo: vb[0] + (lo - g["w"]) / (g["e"] - g["w"]) * vb[2]; Y = lambda la: vb[1] + (g["n"] - la) / (g["n"] - g["s"]) * vb[3]
     bb = f"{lat(y1):.6f},{lng(x0):.6f},{lat(y0):.6f},{lng(x1):.6f}"
-    data = overpass(f'[out:json][timeout:180];way["highway"]({bb});out geom;')
+    cache = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "street-circuits", "osm", tid + "-streets.json")
+    if os.path.exists(cache) and json.load(open(cache)).get("bb") == bb: data = json.load(open(cache))
+    else:
+        data = overpass(f'[out:json][timeout:180];way["highway"]({bb});out geom;'); data["bb"] = bb
+        os.makedirs(os.path.dirname(cache), exist_ok=True); json.dump(data, open(cache, "w"))
     # existing drawing, sampled every ~2 m into a hash of 4 m cells, to recognise streets already drawn
     cs = 4 / mpu; have = set()
     for l in base["lines"]:
@@ -59,6 +63,9 @@ def run(tid, margin=0.35, dry=False):
         t = el.get("tags", {}); k = KIND.get(t.get("highway"))
         if not k or "geometry" not in el or t.get("area") == "yes": continue
         if t.get("access") in ("private", "no") and k in ("service", "path", "track"): continue
+        # clutter a normal street map leaves out: sidewalks and crossings drawn beside/over every street, parking aisles, driveways
+        if t.get("footway") in ("sidewalk", "crossing", "access_aisle", "traffic_island") or t.get("path") == "sidewalk": continue
+        if t.get("service") in ("parking_aisle", "driveway", "drive-through", "emergency_access"): continue
         p = [(X(c["lon"]), Y(c["lat"])) for c in el["geometry"]]
         if not any(inside(x, y) for x, y in p): continue
         L = sum(math.hypot(b[0] - a[0], b[1] - a[1]) for a, b in zip(p, p[1:])) * mpu

@@ -38,7 +38,20 @@ jobs:
             git commit -m "OpenStreetMap data for $1 [skip ci]"
             git push -f origin osm-fetch
             exit 0
-          elif [ "${{ github.event.inputs.tool }}" = "water" ]; then python3 tools/track-data/add_water.py ${{ github.event.inputs.tracks }}
+          elif [ "${{ github.event.inputs.tool }}" = "water" ]; then
+            # one track at a time, each saved to the water-refresh branch as soon as it is done, so a timeout loses nothing
+            # (several runs can share the branch: each push rebases onto the others)
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            for t in ${{ github.event.inputs.tracks }}; do
+              python3 tools/track-data/add_water.py "$t"
+              if [ -n "$(git status --porcelain data)" ] && node tools/validate.js; then
+                git add data/maps && git commit -qm "Maps (water): $t [skip ci]"
+                for i in 1 2 3 4 5; do git pull -q --rebase origin water-refresh && git push -q origin HEAD:water-refresh && break; sleep $((i*5)); done
+              fi
+              git checkout -q -- data
+            done
+            exit 0
           else python3 tools/track-data/refresh_streets.py ${{ github.event.inputs.tracks }}; fi
       - name: Check and commit to the streets-refresh branch
         if: github.event.inputs.tool != 'fetch'

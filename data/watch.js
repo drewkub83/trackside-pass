@@ -377,5 +377,21 @@ const WATCH = [
         ["Verstappen's pace", "He has won the last two races (Bahrain and Singapore) and was fastest in FP1 before the deletion, with Red Bull looking competitive again at a track he won at in 2023."]
       ] }
     ],
-    note:"Sources: PlanetF1 ('Charles Leclerc fastest in US GP FP1 as FIA holds unusual test'), Formula1.com's FP1 report, Motorsport Week's and Scuderia Fans' FP1 classifications (all Oct 23, 2026), and RacingNews365/Motorsport.com on Colton Herta's 2026 FP1 outings and the mandatory young-driver rule. Formula1.com and the series' own live-timing pages could not be reached directly from this environment; results are relayed via these published reports. Championship standings and title-clinch scenario carried over unchanged from the Oct 16 entry." }
+    note:"Sources: PlanetF1 ('Charles Leclerc fastest in US GP FP1 as FIA holds unusual test'), Formula1.com's FP1 report, Motorsport Week's and Scuderia Fans' FP1 classifications (all Oct 23, 2026), and RacingNews365/Motorsport.com on Colton Herta's 2026 FP1 outings and the mandatory young-driver rule. Formula1.com and the series' own live-timing pages could not be reached directly from this environment; results are relayed via these published reports. Championship standings and title-clinch scenario carried over unchanged from the Oct 16 entry." },
+  { t:"cota", d:"2026-10-23", s:"carrera", from:"2026-10-23", at:"2026-10-23T21:24:16Z",
+    asOf:"Current after Friday's lone practice at COTA (Oct 23). Qualifying and Race 1 are Saturday, Race 2 Sunday.",
+    groups:[
+      { h:"Pro: a 27-point title fight", items:[
+        ["Tyler Maxson (TOPP Racing, No. 77)", "Leads Aaron Jeansonne by 27 points entering the finale and needs 29 points or more across the two remaining races (56 available) to clinch the title. Topped Friday's practice at 2:06.255."],
+        ["Cole Kleck (TOPP Racing, No. 78)", "Maxson's teammate was second overall and in Pro, 0.415 seconds back, at 2:06.670."],
+        ["Janne Stiak (ACI Motorsports, No. 40)", "Completed the overall and Pro top three in practice."]
+      ] },
+      { h:"Pro-Am", items:[
+        ["James Sofronas (GMG Racing, No. 14)", "Led Pro-Am in practice at 2:09.093, his first series start since Sebring in March. Patrick Mulcahy has already clinched the Pro-Am title."]
+      ] },
+      { h:"Masters", items:[
+        ["Joel Johnson (JDX Racing, No. 70)", "Topped the Masters class in practice at 2:09.923. Marco Cirone leads the Masters points standings entering the weekend."]
+      ] }
+    ],
+    note:"Sources: Sportscar365 ('Maxson Paces Lone COTA Practice' and 'Maxson, Jeansonne Set for Pro Title Fight in COTA Finale,' both Oct 23, 2026, via web search; the site could not be reached directly from this environment). The Masters points gap behind Cirone was not given in sources found." }
 ];

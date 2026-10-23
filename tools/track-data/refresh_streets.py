@@ -16,14 +16,26 @@ KIND = {"motorway": "primary", "motorway_link": "primary", "trunk": "primary", "
         "service": "service", "footway": "path", "path": "path", "cycleway": "path", "steps": "path", "bridleway": "path", "track": "track"}
 RANK = {"path": 0, "track": 1, "service": 2, "residential": 3, "primary": 4}   # draw order: small streets under big roads
 
-def overpass(q):
-    for attempt in range(6):
+def fetch_ways(s, w, n, e, depth=0):
+    """Every highway way in the box; a box the mirror refuses (timeout, memory) is split into 4 and retried, twice deep."""
+    q = f'[out:json][timeout:180];way["highway"]({s:.6f},{w:.6f},{n:.6f},{e:.6f});out geom;'
+    try: return overpass(q, tries=2 if depth < 2 else 6)["elements"]
+    except SystemExit:
+        if depth >= 2: raise
+        print(f"  splitting the area (depth {depth + 1})", file=sys.stderr)
+        mlat, mlon = (s + n) / 2, (w + e) / 2; seen = {}
+        for b in [(s, w, mlat, mlon), (s, mlon, mlat, e), (mlat, w, n, mlon), (mlat, mlon, n, e)]:
+            for el in fetch_ways(*b, depth + 1): seen[el["id"]] = el
+        return list(seen.values())
+
+def overpass(q, tries=6):
+    for attempt in range(tries):
         ep = EPS[attempt % len(EPS)]
         try:
             out = subprocess.run(["curl", "-sS", "-m", "200", "-A", "TracksidePass/0.1 (personal race-day app)", "--data-urlencode", "data=" + q, ep], capture_output=True, text=True)
             return json.loads(out.stdout)
         except Exception as e:
-            why = re.sub(r"<[^>]+>", " ", out.stdout if "out" in dir() and out.stdout else str(e)); why = " ".join(why.split())[:120]
+            why = re.sub(r"<[^>]+>", " ", out.stdout if "out" in dir() and out.stdout else str(e)); why = " ".join(why.split()); why = why[why.find("remark"):][:140] if "remark" in why else why[-140:]
             print("  retry", attempt, ep, why, file=sys.stderr); time.sleep(20 + 20 * attempt)
     raise SystemExit("Overpass did not answer")
 
@@ -48,7 +60,7 @@ def run(tid, margin=0.35, dry=False):
     cache = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "street-circuits", "osm", tid + "-streets.json")
     if os.path.exists(cache) and json.load(open(cache)).get("bb") == bb: data = json.load(open(cache))
     else:
-        data = overpass(f'[out:json][timeout:180];way["highway"]({bb});out geom;'); data["bb"] = bb
+        data = {"elements": fetch_ways(lat(y1), lng(x0), lat(y0), lng(x1)), "bb": bb}
         os.makedirs(os.path.dirname(cache), exist_ok=True); json.dump(data, open(cache, "w"))
     # existing drawing, sampled every ~2 m into a hash of 4 m cells, to recognise streets already drawn
     cs = 4 / mpu; have = set()

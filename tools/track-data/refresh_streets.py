@@ -17,11 +17,12 @@ KIND = {"motorway": "primary", "motorway_link": "primary", "trunk": "primary", "
 RANK = {"path": 0, "track": 1, "service": 2, "residential": 3, "primary": 4}   # draw order: small streets under big roads
 
 def fetch_ways(s, w, n, e, depth=0):
-    """Every highway way in the box; a box the mirror refuses (timeout, memory) is split into 4 and retried, twice deep."""
-    q = f'[out:json][timeout:180];way["highway"]({s:.6f},{w:.6f},{n:.6f},{e:.6f});out geom;'
-    try: return overpass(q, tries=2 if depth < 2 else 6)["elements"]
+    """Every highway way in the box; a box the mirror refuses (timeout, memory) is split into 4 and retried, up to three levels deep."""
+    # ask for little (60 s, 64 MB): a busy server admits small requests first, and the tiles below are small
+    q = f'[out:json][timeout:60][maxsize:67108864];way["highway"]({s:.6f},{w:.6f},{n:.6f},{e:.6f});out geom;'
+    try: return overpass(q, tries=2 if depth < 3 else 6)["elements"]
     except SystemExit:
-        if depth >= 2: raise
+        if depth >= 3: raise
         print(f"  splitting the area (depth {depth + 1})", file=sys.stderr)
         mlat, mlon = (s + n) / 2, (w + e) / 2; seen = {}
         for b in [(s, w, mlat, mlon), (s, mlon, mlat, e), (mlat, w, n, mlon), (mlat, mlon, n, e)]:

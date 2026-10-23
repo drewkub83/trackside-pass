@@ -393,5 +393,33 @@ const WATCH = [
         ["Joel Johnson (JDX Racing, No. 70)", "Topped the Masters class in practice at 2:09.923. Marco Cirone leads the Masters points standings entering the weekend."]
       ] }
     ],
-    note:"Sources: Sportscar365 ('Maxson Paces Lone COTA Practice' and 'Maxson, Jeansonne Set for Pro Title Fight in COTA Finale,' both Oct 23, 2026, via web search; the site could not be reached directly from this environment). The Masters points gap behind Cirone was not given in sources found." }
+    note:"Sources: Sportscar365 ('Maxson Paces Lone COTA Practice' and 'Maxson, Jeansonne Set for Pro Title Fight in COTA Finale,' both Oct 23, 2026, via web search; the site could not be reached directly from this environment). The Masters points gap behind Cirone was not given in sources found." },
+  { t:"cota", d:"2026-10-23", s:"f1", from:"2026-10-23", at:"2026-10-23T22:22:28Z",
+    asOf:"Current after Friday's Free Practice 2 (4 PM local). FP3 follows Saturday at 12:30 PM local, qualifying at 4 PM, and the race Sunday at 3 PM, all local time.",
+    groups:[
+      { h:"FP2: Leclerc tops both Friday sessions", items:[
+        ["Charles Leclerc (Ferrari)", "Fastest again, a 1:35.291, after also topping FP1. He briefly lost the top spot to Verstappen before going quicker."],
+        ["Kimi Antonelli (Mercedes)", "Second, just 0.042s off Leclerc's pace -- the closest margin at the top of the two sessions so far."],
+        ["Max Verstappen (Red Bull Racing)", "Third, 0.189s back, after briefly going fastest himself. He also had a lap deleted for track limits in FP1."],
+        ["Lewis Hamilton (Ferrari)", "Fourth, 0.615s off Leclerc, with George Russell fifth (+0.744s)."],
+        ["Lando Norris (McLaren)", "Seventh, 1.082s off the pace, with McLaren team-mate Oscar Piastri eighth (+1.096s). Alex Albon (Williams) lost his representative lap to track limits and was classified last."]
+      ] },
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads the championship by 102 points over team-mate George Russell with six races left. Practice times don't change the standings; he can still clinch the title here only by winning while Russell finishes ninth or lower and Hamilton fifth or lower."],
+        ["George Russell (Mercedes)", "Second on 238 points. Keeps the title fight alive unless Antonelli wins and he finishes ninth or lower."]
+      ] },
+      { h:"What to look for Saturday", items:[
+        ["One more practice before it counts", "FP3 Saturday at 12:30 PM local is the last chance to fine-tune the car before qualifying at 4 PM, with no sprint this weekend."],
+        ["Leclerc's pace, Verstappen's recent form", "Leclerc has been fastest in both sessions so far, but Verstappen has won the last two races (Bahrain, Singapore) and was quick again here on Friday."]
+      ] }
+    ],
+    note:"Sources: ScuderiaFans and RacingNews365 FP2 classifications, PlanetF1 and GrandPrix247 FP2 reports, Motorsport Week's FP2 results table (all Oct 23, 2026). Formula1.com and the series' own live-timing pages could not be reached directly from this environment; results are relayed via these published reports. Championship standings and title-clinch scenario carried over unchanged from the Oct 16 entry." },
+  { t:"cota", d:"2026-10-23", s:"masters", from:"2026-10-23", at:"2026-10-23T22:22:28Z",
+    asOf:"Current as of Oct 23, after this weekend's scheduled practice and qualifying sessions: still no 2026 Austin entry list, car count, or session results were found in sources checked, despite repeated searches of Masters Historic Racing's own site and race-media coverage.",
+    groups:[
+      { h:"What to expect", items:[
+        ["Masters Racing Legends, 1966-85 Formula 1 cars", "A one-session practice, one-session qualifying and two-race weekend (25 minutes each) for pre-1986 Grand Prix cars, run alongside the United States Grand Prix as in past Austin appearances. Neither this year's entry list nor Friday's practice/qualifying results have turned up in sources checked, so which cars and drivers are racing, and how they qualified, isn't confirmed."]
+      ] }
+    ],
+    note:"Sources: Masters Historic Racing's own event page (mastershistoricracing.com) confirms the Oct 23-25 date and the one-practice/one-qualifying/two-race format, but could not be reached directly from this environment to check for a published entry list or results, and none turned up in further web searches today. Check back once the series or a race report publishes the grid and results." }
 ];

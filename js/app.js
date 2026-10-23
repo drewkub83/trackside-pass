@@ -1341,9 +1341,16 @@ function hubTimingCard(c){
      before and between sessions too. Inside the iPhone app it opens as an in-app browser sheet (openLiveTiming). */
   /* the series' own timing page when it has a guide (SERIES.timing); otherwise the first event on this weekend
      with an official page (TIMING_LINKS), so F1 and NASCAR weekends get one even without a session list. */
+  /* a session on track decides first (its series guide, else TIMING_LINKS by the session's name), so the card follows
+     F1 -> F2 -> Supercup through a weekend even when the starred series is another one */
+  const linkFor=n=>{ const g=seriesFor(n); if(g&&g.timing) return {url:g.timing,name:g.name}; const t=TIMING_LINKS.find(x=>x.match.test(n)); return t?{url:t.url,name:t.name}:null; };
+  const nxt=!live&&!c.fav?c.next:null;          /* between sessions: the next one up */
+  const onTrack=live?linkFor(live.n):nxt?linkFor(nxt.n):null;
   const timingSr=sid?SERIES.find(r=>r.id===sid):null;
   let timingUrl=null, timingName=null;
-  if(timingSr&&timingSr.timing){ timingUrl=timingSr.timing; timingName=timingSr.name; }
+  if(onTrack){ timingUrl=onTrack.url; timingName=onTrack.name; }
+  else if(live) return "";          /* a series with no timing page we know of is on track: no card, rather than another series' timing */
+  else if(timingSr&&timingSr.timing){ timingUrl=timingSr.timing; timingName=timingSr.name; }
   else { const fo=focusAt(cur); const hit=(fo?fo.group:[]).map(e=>TIMING_LINKS.find(x=>x.match.test(e.s||""))).find(Boolean); if(hit){ timingUrl=hit.url; timingName=hit.name; } }
   const liveTimingHtml=timingUrl?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingUrl}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingName)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
   return liveTimingHtml;

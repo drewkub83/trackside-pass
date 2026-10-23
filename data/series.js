@@ -249,7 +249,7 @@ const SERIES = [
     fine:"A spectator summary based on Formula 1's published rules. For official details, see formula1.com."
   },
   {
-    id:"f1academy", match:/F1 Academy/i,
+    id:"f1academy", match:/F1 Academy/i, timing:"https://www.f1academy.com/About/Live-Timing",
     name:"F1 Academy", tag:"All-female, one car for everyone",
     blurb:"A single-seater series for young women, run by Formula 1 as a step up from karting. Every driver has the same car, so results come down to the driver and the team. It races on Formula 1 weekends, and many of its cars carry the colours of Formula 1 teams.",
     cars:[
@@ -294,6 +294,13 @@ const SERIES = [
    Only official organizer pages go here, checked directly. The timing content on these pages appears during live
    sessions, the same as the GT World page. Add a row only after checking the page yourself. */
 const TIMING_LINKS = [
+  /* support series first: their sessions run on Formula 1 weekends, and each has its own timing (F1's covers only F1).
+     Matched against the session on track, so the card switches when another series takes over. Checked Oct 23, 2026;
+     Formula 3's exact timing address could not be confirmed, so it opens the F3 site, whose menu has Live Timing. */
+  { match:/F1 Academy/i, name:"F1 Academy", url:"https://www.f1academy.com/About/Live-Timing" },
+  { match:/Formula 2|\bF2\b/i, name:"Formula 2", url:"https://www.fiaformula2.com/livetiming/index.html" },
+  { match:/Formula 3|\bF3\b/i, name:"Formula 3", url:"https://www.fiaformula3.com/" },
+  { match:/Supercup/i, name:"Porsche Supercup", url:"https://racing.porsche.com/mobil-1-supercup/live-timing" },
   { match:/Formula 1/i, name:"Formula 1", url:"https://www.formula1.com/en/timing/f1-live-lite" },
   { match:/NASCAR/i, name:"NASCAR", url:"https://www.nascar.com/followlive/" },
   { match:/IMSA|WeatherTech|Pilot Challenge|VP Racing|MX-5|Carrera Cup|Super Trofeo/i, name:"IMSA", url:"https://www.imsa.com/scoring/" },

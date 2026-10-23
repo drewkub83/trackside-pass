@@ -7,7 +7,7 @@ TRACKS.push({
   "opened":2016,
   "blurb":"Baku City Circuit: 6.003 km and 20 turns through the streets of Baku, with the long waterfront straight beside the Caspian Sea and the narrow walls of the Old City, home of the Azerbaijan Grand Prix.",
   "facts":{"Signature sections":"The Neftchilar Avenue waterfront straight, the Old City castle section, the quick run past Government House","Venue data":"The circuit was traced from an OpenStreetMap map showing the route and snapped to OpenStreetMap roads (lap 5.995 km vs 6.003 official). Gates A to G, the numbered grandstands, ambulance posts, toilets, information booths, merchandise and pedestrian bridges come from the official 2025 Azerbaijan Grand Prix map, fitted onto the circuit, so positions are approximate. Turn numbers and the pit lane are not drawn yet. Layouts change each year: check the current map."},
-  "events":[{"d":"2027-09-24","e":"Azerbaijan Grand Prix","s":"Formula 1","t":3}],
+  "events":[{"d":"2027-09-24","e":"Azerbaijan Grand Prix","s":"Formula 1","t":3,"support":["FIA Formula 2"]}],
   "tz":"Asia/Baku",
   "eventName":"Azerbaijan Grand Prix",
   "nturns":20,

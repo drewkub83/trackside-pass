@@ -7,7 +7,7 @@ TRACKS.push({
   "opened":1996,
   "blurb":"Albert Park Circuit in Melbourne, Australia: 5.278 km and 14 turns on the public roads around Albert Park Lake, home of the Australian Grand Prix.",
   "facts":{"Signature sections":"The Turn 9 and 10 sweeps beside the lake, the Turn 11 to 12 corner onto Lakeside Drive, the Turn 13 and 14 chicane onto the pit straight","Venue data":"The circuit follows the public roads around Albert Park Lake (OpenStreetMap roads, traced from the Grand Prix's visitor map). Gates, grandstands, first aid, information points, water, merchandise, food areas and tram stops come from the Australian Grand Prix's own digital circuit map; the layout changes each year, so check the current year's map. The circuit is a street layout that is public park most of the year."},
-  "events":[{"d":"2027-04-02","e":"Australian Grand Prix","s":"Formula 1","t":3}],
+  "events":[{"d":"2027-04-02","e":"Australian Grand Prix","s":"Formula 1","t":3,"support":["FIA Formula 2","FIA Formula 3"]}],
   "tz":"Australia/Melbourne",
   "eventName":"Australian Grand Prix",
   "nturns":14,

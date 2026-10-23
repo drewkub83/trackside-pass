@@ -7,7 +7,7 @@ TRACKS.push({
   "opened":1929,
   "blurb":"Circuit de Monaco: 3.337 km and 19 turns through the streets of Monte Carlo and La Condamine around Port Hercule, home of the Monaco Grand Prix.",
   "facts":{"Signature sections":"Sainte Devote, the climb to Casino Square, the Fairmont hairpin, the tunnel, the harbour chicane, Tabac, the Swimming Pool, Rascasse","Venue data":"The circuit was traced from the official 2026 Monaco Grand Prix map onto OpenStreetMap roads and is approximate (about 2% shorter than the official lap). Grandstand letters, access gates, first aid, toilets, public parking, footbridges and ticket points come from that map; positions are approximate. Hospitality and yacht viewing are on a separate Senate Grand Prix map and are not placed. Layouts change each year."},
-  "events":[{"d":"2027-06-04","e":"Monaco Grand Prix","s":"Formula 1","t":3}],
+  "events":[{"d":"2027-06-04","e":"Monaco Grand Prix","s":"Formula 1","t":3,"support":["FIA Formula 2","FIA Formula 3","Porsche Mobil 1 Supercup"]}],
   "tz":"Europe/Monaco",
   "eventName":"Monaco Grand Prix",
   "nturns":19,

@@ -2,6 +2,8 @@
    region: "na" or "eu" (see REGIONS): the home list groups followed series under region headings once they span more than one.
    match/skip: how a race is found in a track's `events` (by its series text `s`) -- or, for a support series
           (viaSupport:true), by the event's `support` list instead, since it never headlines its own weekend.
+   parent: for a support series, the main series whose weekends it races at; Settings groups the support series under it
+          ("With <group or name of the parent>").
    optIn: a series that is off by default: either a support series that rides along with a main series, or a niche series
           (HSR) with its own weekends. The fan turns it on in Settings ("Series I follow") if they actually follow it.
           Never shown in the home hero's "X + Y" headline, and it stays off the home screen until turned on.
@@ -22,7 +24,7 @@ const CHAMPS = [
       { id:"st-petersburg", short:"St. Petersburg", place:"St. Petersburg, Florida", kind:"Street circuit", e:"Firestone Grand Prix of St. Petersburg", d:"2027-03-05", t:3 },
       { id:"arlington",     short:"Arlington",      place:"Arlington, Texas",        kind:"Street circuit", e:"Java House Grand Prix of Arlington",     d:"2027-03-19", t:3 }
     ] },
-  { id:"gtwca", region:"na", name:"GT World Challenge", tile:"GTWC", full:"GT World Challenge America Powered by AWS", match:/GT World Challenge America|Texas 8 Hour/i, guide:"gtwca",
+  { id:"gtwca", region:"na", name:"GT World Challenge", group:"GT World Challenge America", tile:"GTWC", full:"GT World Challenge America Powered by AWS", match:/GT World Challenge America|Texas 8 Hour/i, guide:"gtwca",
     note:"Barber (Sep 25-27) and the Indianapolis 8 Hour (Oct 9-11) finish the 2026 season. Then the provisional 2027 calendar: seven rounds, including the first Texas 8 Hour at Circuit of the Americas and the return of Watkins Glen. Dates can still change.",
     stops:[
       { id:"sonoma", short:"Sonoma", place:"Sonoma, California", kind:"Road course", e:"GT World Challenge America", d:"2027-04-02", t:3 },
@@ -43,10 +45,42 @@ const CHAMPS = [
       { id:"hungaroring",         short:"Hungaroring",       place:"Budapest, Hungary",             kind:"Road course", e:"GT World Challenge Europe: Budapest (Sprint Cup)",           d:"2027-10-01", t:3 },
       { id:"barcelona-catalunya", short:"Barcelona",         place:"Montmeló, Spain",               kind:"Road course", e:"GT World Challenge Europe: Barcelona (Endurance Cup)",       d:"2027-10-22", t:3 }
     ] },
-  { id:"carreracup", region:"na", name:"Porsche Carrera Cup", tile:"CARR", full:"Porsche Carrera Cup North America", match:/Porsche Carrera Cup/i, viaSupport:true, optIn:true,
+  { id:"carreracup", region:"na", name:"Porsche Carrera Cup", tile:"CARR", full:"Porsche Carrera Cup North America", match:/Porsche Carrera Cup/i, viaSupport:true, optIn:true, parent:"imsa", guide:"carrera",
     note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },
-  { id:"pilotchallenge", region:"na", name:"Pilot Challenge", tile:"PILOT", full:"Michelin Pilot Challenge", match:/Michelin Pilot Challenge/i, viaSupport:true, optIn:true,
+  { id:"pilotchallenge", region:"na", name:"Pilot Challenge", tile:"PILOT", full:"Michelin Pilot Challenge", match:/Michelin Pilot Challenge/i, viaSupport:true, optIn:true, parent:"imsa", guide:"pilot",
     note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },
+  { id:"vpracing", region:"na", name:"VP Racing SportsCar Challenge", tile:"VP", full:"IMSA VP Racing SportsCar Challenge", match:/VP Racing/i, viaSupport:true, optIn:true, parent:"imsa", guide:"vp",
+    note:"IMSA's LMP3 and GT4 series. 2027 (sportscar365.com, new format): Mid-Ohio Jun 11-13 and Lime Rock Sep 23-25 with Pilot Challenge, plus Watkins Glen Jul 2-4 and Road Atlanta Sep 10-12, which have no event in the app yet; a Road America date is still to be confirmed." },
+  { id:"mx5", region:"na", name:"Mazda MX-5 Cup", tile:"MX-5", full:"Whelen Mazda MX-5 Cup", match:/MX-5/i, viaSupport:true, optIn:true, parent:"imsa", guide:"mx5",
+    note:"Races at IMSA weekends. The 2027 schedule has not been published yet." },
+  { id:"lambo", region:"na", name:"Lamborghini Super Trofeo", tile:"LAMBO", full:"Lamborghini Super Trofeo North America", match:/Super Trofeo/i, viaSupport:true, optIn:true, parent:"imsa", guide:"lambo",
+    note:"Races at IMSA WeatherTech weekends. 2027 (IMSA, Sep 24, 2026): Sebring, Laguna Seca, Watkins Glen, Road America and Indianapolis, then the World Finals (venue to be announced)." },
+  { id:"gtamerica", region:"na", name:"GT America", tile:"GTA", full:"GT America powered by AWS", match:/(^|\| )GT America/i, viaSupport:true, optIn:true, parent:"gtwca", guide:"gta",
+    note:"SRO America series that races at GT World Challenge America weekends. Which 2027 rounds it joins has not been published round by round yet." },
+  { id:"gt4america", region:"na", name:"GT4 America", tile:"GT4", full:"Pirelli GT4 America", match:/GT4 America/i, viaSupport:true, optIn:true, parent:"gtwca", guide:"gt4a",
+    note:"SRO America series that races at GT World Challenge America weekends. Which 2027 rounds it joins has not been published round by round yet." },
+  { id:"tcamerica", region:"na", name:"TC America", tile:"TCA", full:"TC America powered by Skip Barber", match:/TC America/i, viaSupport:true, optIn:true, parent:"gtwca", guide:"tca",
+    note:"SRO America touring-car series at GT World Challenge America weekends. Which 2027 rounds it joins has not been published round by round yet." },
+  { id:"grcup", region:"na", name:"Toyota GR Cup", tile:"GR", full:"Toyota GR Cup North America", match:/GR Cup/i, viaSupport:true, optIn:true, parent:"gtwca", guide:"grcup",
+    note:"One-make Toyota GR86 series, mostly at GT World Challenge America weekends. Its 2027 season opens at the IndyCar weekend in Arlington (GT Report); the other 2027 rounds are not in the app yet." },
+  { id:"gt2europe", region:"eu", name:"GT2 European Series", tile:"GT2", full:"GT2 European Series powered by Pirelli", match:/GT2 European/i, viaSupport:true, optIn:true, parent:"gtwce",
+    note:"2027 (gt2europeanseries.com): five weekends with GT World Challenge Europe: Paul Ricard, Imola, Misano, Nürburgring and the Hungaroring finale." },
+  { id:"gt4europe", region:"eu", name:"GT4 European Series", tile:"GT4E", full:"GT4 European Series", match:/GT4 European/i, viaSupport:true, optIn:true, parent:"gtwce",
+    note:"Races at GT World Challenge Europe weekends. Only the 2027 Paul Ricard opener and the 24 Hours of Spa are confirmed so far." },
+  { id:"mclarentrophy", region:"eu", name:"McLaren Trophy Europe", tile:"MCL", full:"McLaren Trophy Europe", match:/McLaren Trophy Europe/i, viaSupport:true, optIn:true, parent:"gtwce",
+    note:"One-make McLaren Artura series at SRO Europe weekends. Its full 2027 calendar has not been published (two rounds will support the 24 Hours of Le Mans, which is not in the app)." },
+  { id:"gt3revival", region:"eu", name:"GT3 Revival Series", tile:"REV", full:"GT3 Revival Series", match:/GT3 Revival/i, viaSupport:true, optIn:true, parent:"gtwce",
+    note:"GT3 cars from the 2006-2014 era, at the 24 Hours of Spa weekend." },
+  { id:"f2", region:"world", name:"Formula 2", tile:"F2", full:"FIA Formula 2 Championship", match:/Formula 2/i, viaSupport:true, optIn:true, parent:"f1",
+    note:"The last step before Formula 1, at 14 Grand Prix weekends. 2026 ends at Qatar and Abu Dhabi. 2027 (FIA, Oct 2026): Bahrain, Jeddah, Melbourne, Montreal (subject to contract), Monaco, Silverstone, Spielberg, Monza, Madrid, Baku, Istanbul, Mexico City, Qatar and Abu Dhabi." },
+  { id:"f3", region:"world", name:"Formula 3", tile:"F3", full:"FIA Formula 3 Championship", match:/Formula 3/i, viaSupport:true, optIn:true, parent:"f1",
+    note:"2027 (FIA, Oct 2026): 10 Grand Prix weekends, Bahrain to an Istanbul finale (Istanbul subject to circuit homologation). The 2026 season is over." },
+  { id:"supercup", region:"world", name:"Porsche Supercup", tile:"SUPR", full:"Porsche Mobil 1 Supercup", match:/Supercup/i, viaSupport:true, optIn:true, parent:"f1",
+    note:"Porsche 911 GT3 Cup cars at European Grand Prix weekends. The 2027 calendar is preliminary: Monaco, Portimão, Spielberg, Spa, Budapest, Monza, Istanbul and a Madrid finale. The 2026 season is over." },
+  { id:"f1academy", region:"world", name:"F1 Academy", tile:"F1A", full:"F1 Academy", match:/F1 Academy/i, viaSupport:true, optIn:true, parent:"f1", guide:"f1academy",
+    note:"Formula 1's all-women series. 2026 ends at Austin and Las Vegas; the 2027 calendar has not been published yet." },
+  { id:"masters", region:"world", name:"Masters Historic", tile:"HIST", full:"Masters Historic Racing", match:/Masters Historic/i, viaSupport:true, optIn:true, parent:"f1", guide:"masters",
+    note:"Historic Formula 1 cars at selected Grand Prix weekends." },
   { id:"hsr", region:"na", name:"HSR", tile:"HSR", full:"Historic Sportscar Racing", match:/HSR/i, optIn:true,
     note:"Vintage and historic sports and race cars, with its own race weekends at Daytona, Sebring, Road Atlanta and Watkins Glen. Dates come from HSR's published schedule; several are still provisional and can change." }
   ,{ id:"f1", region:"world", name:"Formula 1", tile:"F1", full:"FIA Formula One World Championship", match:/Formula 1/i, guide:"f1",

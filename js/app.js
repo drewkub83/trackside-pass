@@ -2411,8 +2411,20 @@ function renderSettingsMore(){
   const q=s=>document.querySelectorAll(s), on=(id,v)=>{ const b=document.getElementById(id); if(b){ b.classList.toggle("on",v); b.setAttribute("aria-checked",v); } };
   q(".goSeg").forEach(el=>{ el.innerHTML=segHtml(goDays(),[[7,"1 week"],[14,"2 weeks"],[30,"1 month"]],"setGoDays"); });
   q(".timeSeg").forEach(el=>{ el.innerHTML=segHtml(timesPref(),[["track","Track time"],["mine","My time"]],"setTimes"); });
-  const fl=document.getElementById("followList"); if(fl) fl.innerHTML=orderedChamps().map(c=>`<div class="frow" data-id="${c.id}"><button class="fhandle" aria-label="Drag to reorder ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span>${esc(c.name)}</span><button class="sw${followed(c)?" on":""}" role="switch" aria-checked="${followed(c)}" aria-label="Show ${esc(c.name)}" onclick="toggleFollow('${c.id}')"><i></i></button></div>`).join("");
+  const fl=document.getElementById("followList"); if(fl) fl.innerHTML=orderedChamps().filter(c=>!c.optIn).map(c=>`<div class="frow" data-id="${c.id}"><button class="fhandle" aria-label="Drag to reorder ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span>${esc(c.name)}</span><button class="sw${followed(c)?" on":""}" role="switch" aria-checked="${followed(c)}" aria-label="Show ${esc(c.name)}" onclick="toggleFollow('${c.id}')"><i></i></button></div>`).join("");
   on("awakeSw",LSget(K.awake,"0")==="1"); on("hapSw",LSget(K.haptics,"1")==="1");
+  renderFollowSub();
+}
+/* support series (optIn), one folding group per main series they race with; HSR-style series with their own weekends go under "Other series".
+   A group stays open across re-renders (switching one on redraws the list) and opens by itself when one of its series is on. */
+const followSubOpen=new Set();
+function renderFollowSub(){
+  const el=document.getElementById("followSubList"); if(!el) return;
+  const groups=[]; CHAMPS.filter(c=>c.optIn).forEach(c=>{ const g=c.parent||"other"; let x=groups.find(y=>y.id===g); if(!x){ x={id:g,list:[]}; groups.push(x); } x.list.push(c); });
+  const order=orderedChamps().map(c=>c.id); groups.sort((a,b)=>(a.id==="other")-(b.id==="other")||order.indexOf(a.id)-order.indexOf(b.id));
+  el.innerHTML=groups.map(g=>{ const p=champ(g.id), n=g.list.filter(followed).length, open=followSubOpen.has(g.id)||n>0;
+    return `<details class="fsub"${open?" open":""} ontoggle="followSubOpen[this.open?'add':'delete']('${g.id}')"><summary><span>${p?"With "+esc(p.group||p.name):"Other series"}</span><small>${n?n+" of "+g.list.length+" on":g.list.length+" series"}</small></summary>${
+      g.list.map(c=>`<div class="frow"><span>${esc(c.name)}<small>${esc(c.full!==c.name?c.full:"")}</small></span><button class="sw${followed(c)?" on":""}" role="switch" aria-checked="${followed(c)}" aria-label="Show ${esc(c.name)}" onclick="toggleFollow('${c.id}')"><i></i></button></div>`).join("")}</details>`; }).join("");
 }
 /* drag the handle in "Series I follow" to set the order series appear everywhere: siblings slide out of the way
    as you drag past them (transform only, no DOM move yet), and the real reorder + save happens once on release. */

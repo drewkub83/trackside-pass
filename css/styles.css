@@ -548,6 +548,16 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 /* more settings */
 .frow{display:flex;align-items:center;gap:10px;padding:7px 0;background:none;touch-action:pan-y}
 .frow span{font-size:16px;flex:1}
+.frow span small{display:block;font-size:12px;color:var(--ink-2)}
+.fsub{border-top:1px solid var(--line,rgba(0,0,0,.08))}
+.fsub:first-child{border-top:0}
+.fsub summary{display:flex;align-items:center;gap:8px;padding:10px 0;cursor:pointer;list-style:none;font-weight:600}
+.fsub summary::-webkit-details-marker{display:none}
+.fsub summary span{flex:1}
+.fsub summary small{font-weight:400;color:var(--ink-2)}
+.fsub summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);margin:0 6px 4px 4px;transition:transform .2s}
+.fsub[open] summary::after{transform:rotate(-135deg);margin-bottom:-2px}
+.fsub .frow{padding-left:4px}
 .frow.dragging{position:relative;z-index:5;background:var(--glass);border-radius:14px;box-shadow:var(--shadow)}
 .fhandle{flex:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--ink-2);touch-action:none}
 .fhandle svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;stroke-linecap:round;fill:none}

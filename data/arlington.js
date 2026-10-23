@@ -8,7 +8,7 @@ TRACKS.push({
   "blurb":"A street circuit through the Arlington entertainment district, around AT&T Stadium and Globe Life Field, with a 0.95-mile Randol Mill Road back straight.",
   "lapRecord":[{"series":"IndyCar","time":"1:33.1409","who":"Kyle Kirkwood","car":"Dallara IR-18","year":2026,"note":"fastest lap of any session on this circuit (practice 2, Andretti Global); pole was 1:34.3562"}],
   "facts":{"Race weekend":"Built on city streets around the stadiums every March","Signature sections":"The Randol Mill Road back straight, the Horseshoe beside AT&T Stadium, split pit lane","Designer":"Tony Cottman","Crossings":"Pedestrian bridges plus street-level crossings that open when the track is cold"},
-  "events":[{"d":"2027-03-19","e":"Java House Grand Prix of Arlington","s":"NTT INDYCAR SERIES","t":3}],
+  "events":[{"d":"2027-03-19","e":"Java House Grand Prix of Arlington","s":"NTT INDYCAR SERIES","t":3,"support":["Toyota GR Cup North America"]}],
   "tz":"America/Chicago",
   "eventName":"Java House Grand Prix of Arlington",
   "nturns":14,

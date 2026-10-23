@@ -38,6 +38,16 @@ jobs:
             git commit -m "OpenStreetMap data for $1 [skip ci]"
             git push -f origin osm-fetch
             exit 0
+          elif [ "${{ github.event.inputs.tool }}" = "waterdata" ]; then
+            # only download the raw OpenStreetMap water data (for checking add_water.py), to the osm-fetch branch
+            for t in ${{ github.event.inputs.tracks }}; do python3 tools/track-data/add_water.py "$t" --dry; done
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git checkout -B osm-fetch
+            git add -f tools/street-circuits/osm/*-water.json
+            git commit -qm "OpenStreetMap water data: ${{ github.event.inputs.tracks }} [skip ci]"
+            git push -f origin osm-fetch
+            exit 0
           elif [ "${{ github.event.inputs.tool }}" = "water" ]; then
             # one track at a time, each saved to the water-refresh branch as soon as it is done, so a timeout loses nothing
             # (several runs can share the branch: each push rebases onto the others)
@@ -54,7 +64,7 @@ jobs:
             exit 0
           else python3 tools/track-data/refresh_streets.py ${{ github.event.inputs.tracks }}; fi
       - name: Check and commit to the streets-refresh branch
-        if: github.event.inputs.tool != 'fetch'
+        if: github.event.inputs.tool != 'fetch' && github.event.inputs.tool != 'waterdata'
         run: |
           if [ -z "$(git status --porcelain data)" ]; then echo "nothing changed"; exit 0; fi
           node tools/validate.js

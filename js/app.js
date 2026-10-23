@@ -893,6 +893,9 @@ function relTime(ms){ const m=Math.round(ms/60000); if(m<1) return "now"; if(m<6
 /* "Wed, Sep 30 · 9:05 AM" (adds the year when it is not this year) */
 function fmtWhen(date,tz){ tz=timesPref()==="mine"?undefined:tz; const y=new Date().getFullYear(); const d=date.toLocaleDateString("en-US",{timeZone:tz,weekday:"short",month:"short",day:"numeric"}); const yr=+date.toLocaleDateString("en-US",{timeZone:tz,year:"numeric"}); return `${d}${yr!==y?", "+yr:""} · ${fmtTime(date,tz)}`; }
 /* the session on track right now: sessions can overlap (a grid walk running into the race), so take the latest one that started and still has more than 10 minutes left; the last 10 minutes count as "next" */
+/* the session actually on track until its scheduled end (currentSession lets go 10 minutes early, for "next up" cards);
+   the latest one to start wins when two overlap, so the series-following cards switch the moment a new session starts */
+function onTrackNow(ss,now){ const l=ss.filter(x=>x.start<=now&&now<x.end); return l.length?l.reduce((a,b)=>b.start>=a.start?b:a):null; }
 function currentSession(ss,now){ const l=ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000); return l.length?l[l.length-1]:null; }
 function renderNow(){
   const pill=document.getElementById("nowPill"); const ss=sessionsResolved(), cu=nextAny(); if(!ss.length||!cu||cu.t.id!==cur.id){ pill.hidden=true; return; }
@@ -1254,7 +1257,7 @@ function hubActionTiles(){
 }
 /* which series the hub is about: the one live now, else the next one up (shared by What to watch, Standings and Live timing) */
 function hubFocusSeries(c){
-  const {ss,now,live}=c;
+  const {ss,now}=c, live=onTrackNow(ss,now);
   /* "what to watch" follows the series on track (or next on track): when MX-5 Cup takes the track, its storylines are what shows.
      Starring a series (when more than one runs the same weekend) keeps that series showing even while another is on track.
      It swaps to a live running order once that data source exists and a session is live. */
@@ -1327,14 +1330,15 @@ function hubLiveStream(c){
      30 s and rebuilding an iframe would restart the stream. See updateHubLive().
      Unlike the session cards (which drop a session 10 minutes before its end) the stream stays up through the whole race, the
      last minutes are the ones that matter, and for STREAM_TAIL_MIN after the scheduled end, since races run over and the podium follows. */
-  const liveRace=ss.find(x=>x.start<=now&&now<(+x.end)+STREAM_TAIL_MIN*60000&&kindOf(x.n)==="race"&&(seriesFor(x.n)||{}).yt);
+  /* a race running now beats one in its after-the-flag tail, so the next series' race takes over the moment it starts */
+  const streams=ss.filter(x=>x.start<=now&&now<(+x.end)+STREAM_TAIL_MIN*60000&&kindOf(x.n)==="race"&&(seriesFor(x.n)||{}).yt);
+  const liveRace=streams.filter(x=>now<x.end).sort((a,b)=>b.start-a.start)[0]||streams.sort((a,b)=>b.end-a.end)[0];
   updateHubLive(liveRace?seriesFor(liveRace.n):null);
   const liveStreamHtml="";
   return liveStreamHtml;
 }
 function hubTimingCard(c){
-  const {sid,live}=c;
-  const liveSr=live?seriesFor(live.n):null;   /* a session is on track: show the live dot */
+  const {sid}=c, live=onTrackNow(c.ss,c.now);
   /* "Live timing": same on-track-now gating as Watch live, but keyed off `timing` instead of `yt` -- most
      series have one even when they don't stream free video, so this often shows on its own. */
   /* Always there for the series in focus (not only while a session is live), so the timing page is one tap away
@@ -1352,7 +1356,7 @@ function hubTimingCard(c){
   else if(live) return "";          /* a series with no timing page we know of is on track: no card, rather than another series' timing */
   else if(timingSr&&timingSr.timing){ timingUrl=timingSr.timing; timingName=timingSr.name; }
   else { const fo=focusAt(cur); const hit=(fo?fo.group:[]).map(e=>TIMING_LINKS.find(x=>x.match.test(e.s||""))).find(Boolean); if(hit){ timingUrl=hit.url; timingName=hit.name; } }
-  const liveTimingHtml=timingUrl?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingUrl}')"><div class="hubLiveRow">${liveSr?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingName)} -- ${liveSr?"live now":"opens in an in-app browser"}</div></div>`:"";
+  const liveTimingHtml=timingUrl?`<div class="hubCard hubTap" role="button" onclick="openLiveTiming('${timingUrl}')"><div class="hubLiveRow">${live?'<span class="hubLiveDot"></span>':""}<h4 style="margin:0">Live timing</h4></div><div class="hubSessionSub" style="margin-top:4px">${esc(timingName)} -- ${live?"live now":"opens in an in-app browser"}</div></div>`:"";
   return liveTimingHtml;
 }
 function hubBeforeWeekend(c){

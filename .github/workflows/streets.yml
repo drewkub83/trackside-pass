@@ -1,4 +1,5 @@
-# Fills in missing streets around tracks (tools/track-data/refresh_streets.py) on GitHub's servers, which reach the
+# Map fixes that need OpenStreetMap: missing streets (tools/track-data/refresh_streets.py) or the sea, lakes and rivers
+# (tools/track-data/add_water.py), on GitHub's servers, which reach the
 # OpenStreetMap Overpass mirrors directly (a cloud Claude session's network was refused by them in Oct 2026).
 # Run it by hand (Actions > Street maps > Run workflow) with the track ids. It commits the maps to the
 # `streets-refresh` branch, NOT to main: look at them first, then merge that branch into main to deploy.
@@ -9,6 +10,10 @@ on:
       tracks:
         description: "Track ids, space separated (e.g. long-beach miami monaco)"
         required: true
+      tool:
+        description: "streets = add missing streets (refresh_streets.py); water = add sea, lakes and rivers (add_water.py)"
+        required: false
+        default: streets
 permissions:
   contents: write
 jobs:
@@ -20,8 +25,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Refresh streets
-        run: python3 tools/track-data/refresh_streets.py ${{ github.event.inputs.tracks }}
+      - name: Run the map tool
+        run: |
+          if [ "${{ github.event.inputs.tool }}" = "water" ]; then python3 tools/track-data/add_water.py ${{ github.event.inputs.tracks }}
+          else python3 tools/track-data/refresh_streets.py ${{ github.event.inputs.tracks }}; fi
       - name: Check and commit to the streets-refresh branch
         run: |
           if [ -z "$(git status --porcelain data)" ]; then echo "nothing changed"; exit 0; fi
@@ -30,5 +37,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B streets-refresh
           git add data/maps
-          git commit -m "Street maps: fill in missing streets (${{ github.event.inputs.tracks }}) [skip ci]"
+          git commit -m "Maps (${{ github.event.inputs.tool }}): ${{ github.event.inputs.tracks }} [skip ci]"
           git push -f origin streets-refresh

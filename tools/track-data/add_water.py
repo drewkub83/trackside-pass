@@ -99,6 +99,24 @@ def sea_rings(coast_ways, box):
         ring.append(ring[0]); rings.append(ring)
     return rings, islands
 
+def clip_poly(ring, rect):
+    """Sutherland-Hodgman: the part of a polygon inside an axis-aligned rectangle (x0, y0, x1, y1); open list of points."""
+    x0, y0, x1, y1 = rect; pts_ = ring[:-1] if ring[0] == ring[-1] else ring[:]
+    for inside_, cut in ((lambda p: p[0] >= x0, lambda a, b: (x0, a[1] + (b[1] - a[1]) * (x0 - a[0]) / (b[0] - a[0]))),
+                         (lambda p: p[0] <= x1, lambda a, b: (x1, a[1] + (b[1] - a[1]) * (x1 - a[0]) / (b[0] - a[0]))),
+                         (lambda p: p[1] >= y0, lambda a, b: (a[0] + (b[0] - a[0]) * (y0 - a[1]) / (b[1] - a[1]), y0)),
+                         (lambda p: p[1] <= y1, lambda a, b: (a[0] + (b[0] - a[0]) * (y1 - a[1]) / (b[1] - a[1]), y1))):
+        out = []
+        for i, b in enumerate(pts_):
+            a = pts_[i - 1]
+            if inside_(b):
+                if not inside_(a): out.append(cut(a, b))
+                out.append(b)
+            elif inside_(a): out.append(cut(a, b))
+        pts_ = out
+        if not pts_: return []
+    return pts_ + pts_[:1]
+
 def inside(p, ring):
     x, y = p; c = False
     for (ax, ay), (bx, by) in zip(ring, ring[1:]):
@@ -128,7 +146,10 @@ def run(tid, dry=False):
                 q = (min(xs) + (max(xs) - min(xs)) * (i + .5) / 12, min(ys) + (max(ys) - min(ys)) * (j + .5) / 12)
                 if inside(q, ring): tot += 1; hit += any(inside(q, o + o[:1]) for o in old)
         return hit / tot if tot else 1
-    fmt = lambda r: "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in dp(r, .5)) + " Z"
+    # simplify the ring as an open line (Douglas-Peucker on a closed ring, whose ends coincide, collapses it to a dot)
+    fmt = lambda r: "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in dp(r[:-1] if r[0] == r[-1] else r, .5)) + " Z"
+    area = lambda r: abs(sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(r, r[1:] + r[:1]))) / 2 * T["route"]["mpu"] ** 2   # m²
+    onmap = lambda r: max(p[0] for p in r) > vb[0] and min(p[0] for p in r) < vb[0] + vb[2] and max(p[1] for p in r) > vb[1] and min(p[1] for p in r) < vb[1] + vb[3]
     new = []
     # 1) the sea, from coastlines
     coast = [e for e in els if e["type"] == "way" and e.get("tags", {}).get("natural") == "coastline"]
@@ -137,6 +158,7 @@ def run(tid, dry=False):
         if rings:
             d = " ".join(fmt(proj(r)) for r in rings + islands)
             new.append({"k": "water", "d": d, "_sea": True})
+            old += [proj(r) for r in rings]          # a lake relation for the same sea (the Caspian is one) is then skipped as covered
     # 2) lakes and rivers: closed ways and stitched multipolygons not already drawn
     for e in els:
         t = e.get("tags", {})
@@ -149,9 +171,10 @@ def run(tid, dry=False):
             outer = rings_any_direction([m for m in e.get("members", []) if m.get("role") == "outer"])
             inner = rings_any_direction([m for m in e.get("members", []) if m.get("role") == "inner"])
         for o in outer:
-            r = proj(o)
+            r = clip_poly(proj(o), (vb[0] - mx, vb[1] - my, vb[0] + vb[2] + mx, vb[1] + vb[3] + my))   # a sea-sized lake is cut to the map
+            if len(r) < 4 or not onmap(r) or area(r) < 400: continue      # fountains and pools are clutter at this scale
             if covered(r) >= .8: continue
-            hole = [proj(i) for i in inner if inside(i[0], o)]
+            hole = [h for h in (clip_poly(proj(i), (vb[0] - mx, vb[1] - my, vb[0] + vb[2] + mx, vb[1] + vb[3] + my)) for i in inner if inside(i[0], o)) if len(h) >= 4]
             new.append({"k": "water", "d": " ".join(fmt(x) for x in [r] + hole)})
     print(f"{tid}: {len(coast)} coastline ways, {len(els) - len(coast)} water areas in OSM; adding "
           f"{'the sea + ' if any(n.get('_sea') for n in new) else ''}{sum(1 for n in new if not n.get('_sea'))} lake/river areas")

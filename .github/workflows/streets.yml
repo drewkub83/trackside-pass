@@ -56,7 +56,7 @@ jobs:
             for t in ${{ github.event.inputs.tracks }}; do
               python3 tools/track-data/add_water.py "$t"
               if [ -n "$(git status --porcelain data)" ] && node tools/validate.js; then
-                git add data/maps && git commit -qm "Maps (water): $t [skip ci]"
+                git add data/maps && git add -f "tools/street-circuits/osm/$t-water.json" && git commit -qm "Maps (water): $t [skip ci]"
                 for i in 1 2 3 4 5; do git pull -q --rebase origin water-refresh && git push -q origin HEAD:water-refresh && break; sleep $((i*5)); done
               fi
               git checkout -q -- data

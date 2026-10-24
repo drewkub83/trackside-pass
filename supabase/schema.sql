@@ -689,6 +689,49 @@ do $$ begin
 exception when others then raise notice 'pg_cron not set up (%): enable the pg_cron extension in Database > Extensions, then run this file again', sqlerrm;
 end $$;
 
+---------------------------------------------------------------- rain alerts (push when rain is about to start where you are)
+-- Every 5 minutes pg_cron calls the `push` edge function with {"rain": true}. rain_candidates() lists phones of players who checked in at a track in the last 14
+-- hours (a stamp in their synced passport), have push on, have not switched rain alerts off (profiles.rain_alerts) and were not alerted for that track in the
+-- last 3 hours. The function reads each track's forecast from our own /api/weather and sends "Rain at <track>" only when rain starts within about 20 minutes.
+alter table public.profiles add column if not exists rain_alerts boolean not null default true;
+create or replace function public.set_rain_alerts(p_on boolean) returns void language sql security definer set search_path = public as $$
+  update public.profiles set rain_alerts = coalesce(p_on, true) where id = auth.uid()
+$$;
+revoke all on function public.set_rain_alerts(boolean) from public, anon;
+grant execute on function public.set_rain_alerts(boolean) to authenticated;
+create table if not exists public.rain_alerts_sent (user_id uuid not null references auth.users(id) on delete cascade, track text not null, sent_at timestamptz not null default now());
+create index if not exists rain_alerts_sent_idx on public.rain_alerts_sent (user_id, track, sent_at desc);
+alter table public.rain_alerts_sent enable row level security;     -- no policies: only the functions below touch it
+revoke all on public.rain_alerts_sent from anon, authenticated;
+create or replace function public.rain_candidates() returns table (user_id uuid, token text, platform text, track text)
+language sql stable security definer set search_path = public as $$
+  select distinct t.user_id, t.token, t.platform, e->>'t'
+  from public.passports pp
+  cross join lateral jsonb_array_elements(pp.stamps) e
+  join public.profiles pr on pr.id = pp.user_id and pr.rain_alerts
+  join public.push_tokens t on t.user_id = pp.user_id
+  where (e->>'at')::bigint > (extract(epoch from now()) * 1000 - 14 * 3600 * 1000)::bigint
+    and e->>'t' ~ '^[a-z0-9-]{1,40}$'
+    and not exists (select 1 from public.rain_alerts_sent s where s.user_id = pp.user_id and s.track = e->>'t' and s.sent_at > now() - interval '3 hours')
+$$;
+revoke all on function public.rain_candidates() from public, anon, authenticated;
+grant execute on function public.rain_candidates() to service_role;
+create or replace function public.rain_mark(p_users uuid[], p_track text) returns void language sql security definer set search_path = public as $$
+  insert into public.rain_alerts_sent(user_id, track) select unnest(p_users), p_track
+$$;
+revoke all on function public.rain_mark(uuid[], text) from public, anon, authenticated;
+grant execute on function public.rain_mark(uuid[], text) to service_role;
+do $$ begin
+  create extension if not exists pg_cron;
+  perform cron.unschedule(jobid) from cron.job where jobname = 'rain-alerts';
+  perform cron.schedule('rain-alerts', '*/5 * * * *', $cron$
+    select net.http_post(url := 'https://hspehgxhksctfegcfgyv.supabase.co/functions/v1/push',
+      headers := jsonb_build_object('Content-Type', 'application/json', 'x-push-secret', (select value from private.config where key = 'push_secret')),
+      body := '{"rain": true}'::jsonb)
+  $cron$);
+exception when others then raise notice 'pg_cron not set up (%): enable the pg_cron extension in Database > Extensions, then run this file again', sqlerrm;
+end $$;
+
 ---------------------------------------------------------------- profile photos (private storage: you and your friends can read a photo, only you can write yours)
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('avatars', 'avatars', false, 262144, array['image/jpeg'])

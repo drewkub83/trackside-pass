@@ -28,6 +28,7 @@ const K={
   alerts:"paddock:alerts",        /* session alerts on/off (iPhone app) */
   alertsSeen:"paddock:alertsSeen",    /* whether the alerts permission prompt was shown */
   remind:"paddock:remind",        /* going-race reminders on/off */
+  rainAlerts:"paddock:rainAlerts",    /* "0" = rain alerts switched off (the server also keeps the choice: profiles.rain_alerts) */
   pickRemind:"paddock:pickRemind",    /* Thursday "lock in your picks" reminder on/off (iPhone/Android app) */
   goDays:"paddock:goDays",        /* how many days before a weekend the hub shows What to watch / the game */
   going:"paddock:going",         /* races you are going to */
@@ -2099,6 +2100,13 @@ async function scheduleGoingReminders(ask){
    For each weekend that has a game you have not finished: a notification on the Thursday on or before the event's first
    day, 12:00 on the phone's clock (18:00 if that has passed). Rebuilt on every app open and after every pick, so finishing
    the picks removes it. Own id range (PICK_ID_BASE, see the notification id note at STAR_ID_BASE), the phone's local notifications only (no server). */
+function rainAlertsOn(){ return LSget(K.rainAlerts,"1")!=="0"; }
+function renderRainSw(){ const b=document.getElementById("rainSw"); if(!b) return; const on=rainAlertsOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
+async function toggleRainAlerts(){
+  const on=!rainAlertsOn(); try{ localStorage.setItem(K.rainAlerts,on?"1":"0"); }catch(e){} renderRainSw();
+  if(typeof sbRpc==="function"&&typeof sbSession==="function"&&sbSession()){ try{ await sbRpc("set_rain_alerts",{p_on:on}); }catch(e){ toast("Could not save that. Check your signal and try again."); } }
+  toast(on?"I'll warn you when rain is about to start where you are at a race.":"Rain alerts off.");
+}
 function pickRemindOn(){ return LSget(K.pickRemind,"1")!=="0"; }
 function renderPickSw(){ const b=document.getElementById("pickSw"); if(!b) return; const on=pickRemindOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
 async function togglePickRemind(){
@@ -2133,7 +2141,7 @@ scheduleGoingReminders(false); scheduleStarAlerts(false); schedulePickReminders(
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){
- renderAutoSw(); renderRemSw(); renderPickSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }
+ renderAutoSw(); renderRemSw(); renderPickSw(); renderRainSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }
 
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----
    Sun times are worked out on the phone (no signal needed). At a track in the phone's own time zone it uses the

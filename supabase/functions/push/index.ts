@@ -46,6 +46,21 @@ async function sendFcm(token: string, title: string, body: string, data: Record<
   if (st === "UNREGISTERED" || st === "NOT_FOUND" || st === "INVALID_ARGUMENT") return "dead";
   console.log("fcm", r.status, JSON.stringify(j).slice(0, 200)); return "retry";
 }
+// ---- rain alerts: is rain about to start at a track? ----
+// minutely = Open-Meteo-shaped minutely_15 ({time: local "YYYY-MM-DDTHH:MM" = END of each 15-minute bucket, precipitation: mm per bucket}); nowLocalMs = the track's wall clock read as UTC milliseconds.
+// Returns minutes until the rain starts (0 to 20) and its strength when it is dry now and wet within 20 minutes, else null.
+export function rainSoon(minutely: any, currentMm: number, nowLocalMs: number): { mins: number; level: string } | null {
+  const THR = 0.15;      // mm per 15 minutes, about 0.6 mm/h: drizzle
+  if (!minutely || !minutely.time || !minutely.precipitation) return null;
+  const slots = minutely.time.map((t: string, i: number) => ({ s: Date.parse(t + ":00Z") - 15 * 60000, e: Date.parse(t + ":00Z"), p: minutely.precipitation[i] })).filter((x: any) => x.e > nowLocalMs && x.p !== null);
+  if (!slots.length || (currentMm || 0) >= 0.1 || slots[0].p >= THR && slots[0].s <= nowLocalMs) return null;     // already raining: not news
+  const k = slots.findIndex((x: any) => x.p >= THR);
+  if (k < 0) return null;
+  const mins = Math.max(0, Math.round((slots[k].s - nowLocalMs) / 60000)); if (mins > 20) return null;
+  const peak = Math.max(...slots.slice(k, k + 4).map((x: any) => x.p)) * 4;      // mm/h
+  return { mins, level: peak >= 7.6 ? "heavy" : peak >= 2.5 ? "moderate" : "light" };
+}
+const localNow = (tz: string) => { const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: tz, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).formatToParts(new Date()).map((x) => [x.type, x.value])); return Date.parse(`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:00Z`); };
 const text = (n: any) => n.type === "friend_request" ? ["Friend request", `${n.data?.name || "Someone"} wants to be friends`] : n.type === "friend_accepted" ? ["Friend request accepted", `${n.data?.name || "Someone"} accepted your friend request`] : ["Trackside Pass", "You have a new notification"];
 
 Deno.serve(async (req) => {
@@ -56,6 +71,31 @@ Deno.serve(async (req) => {
     try { await apnsToken(); res.apnsKeyReadable = true; } catch (e) { res.apnsKeyReadable = String(e).slice(0, 120); }
     try { if (have("FCM_SERVICE_ACCOUNT")) { await fcmToken(JSON.parse(Deno.env.get("FCM_SERVICE_ACCOUNT")!)); res.fcmLogin = true; } } catch (e) { res.fcmLogin = String(e).slice(0, 160); }
     return new Response(JSON.stringify(res), { headers: { "Content-Type": "application/json" } });
+  }
+  if (input.rain) {     // rain alerts (called every 5 minutes by pg_cron, see schema.sql)
+    const r = await rest("rpc/rain_candidates", { method: "POST", body: "{}" });
+    const rows: { user_id: string; token: string; platform: string; track: string }[] = r.ok ? await r.json() : [];
+    const byTrack: Record<string, typeof rows> = {}; rows.forEach((w) => (byTrack[w.track] ||= []).push(w));
+    const report: Record<string, string> = {};
+    for (const [track, list] of Object.entries(byTrack)) {
+      try {
+        const txt = await (await fetch(`https://tracksidepass.com/data/${track}.js`)).text();
+        const geo = JSON.parse((/"geo":(\{[^}]*\})/.exec(txt) || [])[1]), tz = (/"tz":"([^"]+)"/.exec(txt) || [])[1], short = (/"short":"([^"]+)"/.exec(txt) || [])[1] || track;
+        const wr = await fetch(`https://tracksidepass.com/api/weather?lat=${((geo.n + geo.s) / 2).toFixed(3)}&lon=${((geo.w + geo.e) / 2).toFixed(3)}&tz=${encodeURIComponent(tz)}`);
+        const w = await wr.json(), soon = rainSoon(w.minutely_15, w.current && w.current.precipitation, localNow(tz));
+        if (!soon) { report[track] = "dry"; continue; }
+        const body = soon.mins <= 2 ? `${soon.level[0].toUpperCase() + soon.level.slice(1)} rain is starting now.` : `${soon.level[0].toUpperCase() + soon.level.slice(1)} rain is expected in about ${soon.mins} minutes.`, data = { type: "rain_alert", track };
+        let ok = 0; const done = new Set<string>();
+        for (const t of list) {
+          let res = "retry";
+          try { res = t.platform === "ios" ? await sendApns(t.token, `Rain at ${short}`, body, data) : await sendFcm(t.token, `Rain at ${short}`, body, data); } catch (e) { console.log("send failed", t.platform, String(e)); }
+          if (res === "ok") { ok++; done.add(t.user_id); } if (res === "dead") await rest(`push_tokens?token=eq.${encodeURIComponent(t.token)}`, { method: "DELETE" });
+        }
+        if (done.size) await rest("rpc/rain_mark", { method: "POST", body: JSON.stringify({ p_users: [...done], p_track: track }) });
+        report[track] = `alert ${soon.mins} min ${soon.level}: sent ${ok}`;
+      } catch (e) { report[track] = "error " + String(e).slice(0, 80); }
+    }
+    return new Response(JSON.stringify({ rain: { candidates: rows.length, tracks: report } }), { headers: { "Content-Type": "application/json" } });
   }
   if (input.picks) {   // the Thursday "lock in your picks" nudge (called by pg_cron, see schema.sql): one push per phone per game
     const r = await rest("rpc/pick_reminder_targets", { method: "POST", body: "{}" });

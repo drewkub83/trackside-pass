@@ -262,5 +262,14 @@ const RESULTS = [
         "1. #45 Ruckus Racing — Scott Blind"
       ] }
     ],
-    note:"Sources: Porsche Motorsport North America (\"Stiak takes COTA win, Maxson clinches Mobil Pro class title\") and Sportscar365 (\"Stiak Earns Win, Maxson Clinches Pro Title in Race 1 at COTA\"), Oct 24, 2026 (via web search; direct fetch was blocked in this environment). Stiak's second win of the season; Maxson's third place clinched the 2026 Pro title (provisional, subject to post-race technical inspection). A late multi-car Masters incident meant the race ended under yellow. Sofronas led all 13 laps. Mulcahy's team was not given; places below those listed were not confirmed in these sources." }
+    note:"Sources: Porsche Motorsport North America (\"Stiak takes COTA win, Maxson clinches Mobil Pro class title\") and Sportscar365 (\"Stiak Earns Win, Maxson Clinches Pro Title in Race 1 at COTA\"), Oct 24, 2026 (via web search; direct fetch was blocked in this environment). Stiak's second win of the season; Maxson's third place clinched the 2026 Pro title (provisional, subject to post-race technical inspection). A late multi-car Masters incident meant the race ended under yellow. Sofronas led all 13 laps. Mulcahy's team was not given; places below those listed were not confirmed in these sources." },
+  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Reverse Grid Race - F1 Academy", event:"F1 Academy, Austin: Reverse Grid Race",
+    groups:[
+      { h:"Race", order:[
+        "1. Alba Larsen",
+        "2. Alisha Palmowski (Campos Racing)",
+        "3. Lisa Billard"
+      ] }
+    ],
+    note:"Sources: Pit Debrief, 'F1 Academy 2026 United States GP Reverse Grid Race report' and 'Reverse Grid Race results' (pitdebrief.com, Oct 24, 2026; via web search, direct fetch blocked here). Larsen's first F1 Academy win, from 4th on the grid; Palmowski came from 8th to 2nd and clinched the 2026 drivers' title; Billard's first series podium. A Safety Car followed a Turn 16 collision (Ferreira, Jacquet, Danielsson). Places below 3rd, car numbers and the other teams were not confirmed in the reports seen, so they are left out." }
 ];

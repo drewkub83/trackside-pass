@@ -86,7 +86,7 @@ async function apple(lat, lon, tz, env) {
 
 async function forecast(lat, lon, tz, env) {
   if (env && env.WEATHERKIT_KEY && env.WEATHERKIT_KEY_ID && env.WEATHERKIT_TEAM_ID && env.WEATHERKIT_SERVICE_ID && tz !== "auto") {
-    try { return await apple(lat, lon, tz, env); } catch (e) { console.log("weatherkit failed, using open-meteo:", String(e).slice(0, 200)); }
+    try { return await apple(lat, lon, tz, env); } catch (e) { const why = String(e && e.message || e).slice(0, 160); console.log("weatherkit failed, using open-meteo:", why); const d = await openMeteo(lat, lon, tz); d._apple_error = why; return d; }
   }
   return await openMeteo(lat, lon, tz);
 }

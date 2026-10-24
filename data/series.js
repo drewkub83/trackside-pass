@@ -10,6 +10,9 @@
    included here on purpose -- it's a Peacock/NBC broadcast, free on YouTube only for occasional select races.
    SRO America's own site (tcamerica.us, "How to watch") says every qualifying session and race of GT World Challenge America, GT America, GT4 America,
    TC America, Toyota GR Cup and McLaren Trophy is streamed live and free on the GTWorld YouTube channel, so those all share one channel id.
+   autoResults (optional): this series' race results are imported by the automatic GitHub job (tools/auto_update.py and the
+   F1/IndyCar/GTWCA readers) within the hour; every other series' results are written from published race reports by the hourly
+   cloud routine (tools/due_updates.js lists them as "results" items), so the hub says so and links to the live timing meanwhile.
    timing (optional): the official live timing & scoring page for the sanctioning body that runs this series'
    races, so the Race Day hub's "Live timing" card can link straight out to it while this series is on track.
    It's a link-out, not an embed -- these sites run their own scripts and most refuse to load inside an iframe,
@@ -123,7 +126,7 @@ const SERIES = [
     watch:{ race:"Same car for everyone, with four driver classes racing in one field. Each class has its own winner." }
   }
   ,{
-    id:"indycar", match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
+    id:"indycar", autoResults:true, match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
     name:"NTT INDYCAR SERIES", tag:"One car, three kinds of track",
     blurb:"North America's top open-wheel series. Every team runs the same Dallara chassis with the same aero kit, powered by a Chevrolet or Honda engine, so results come down to drivers, teams and strategy. The season mixes street circuits, permanent road courses and ovals, and it builds to the Indianapolis 500.",
     cars:[
@@ -143,7 +146,7 @@ const SERIES = [
     fine:"A spectator summary based on INDYCAR's published car facts. For official details, see INDYCAR.com."
   }
   ,{
-    id:"gtwca", match:/GT World Challenge America|Texas 8 Hour/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
+    id:"gtwca", autoResults:true, match:/GT World Challenge America|Texas 8 Hour/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
     name:"GT World Challenge America Powered by AWS", tag:"GT3 supercars, sprint racing",
     blurb:"North America's home for GT3 racing, run by SRO Motorsports Group. The cars are race versions of well-known sports cars, built to the same FIA GT3 rules used at the Spa 24 Hours and around the world, so many makes race on equal terms. Weekends are short sprint races instead of endurance events, with one exception in 2027: the Texas 8 Hour.",
     cars:[
@@ -162,7 +165,7 @@ const SERIES = [
     fine:"A spectator summary of GT3 racing and GT World Challenge America. For official details, see GT-World-Challenge-America.com."
   },
   {
-    id:"gtwce", match:/GT World Challenge Europe|24 Hours of Spa/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-europe.com/watch-live#live-timing",
+    id:"gtwce", autoResults:true, match:/GT World Challenge Europe|24 Hours of Spa/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-europe.com/watch-live#live-timing",
     name:"GT World Challenge Europe Powered by AWS", tag:"GT3 supercars, Sprint and Endurance Cups",
     blurb:"Europe's top GT3 championship, run by SRO Motorsports Group. It is open to cars built to the FIA GT3 rules and balanced by SRO's Balance of Performance, the same rules used at GT World Challenge America. The season has ten rounds, split evenly between the Sprint Cup and the Endurance Cup, and it includes the CrowdStrike 24 Hours of Spa, the biggest GT race in the world.",
     cars:[
@@ -229,7 +232,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see GTAmerica.us."
 }
   ,{
-    id:"f1", match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
+    id:"f1", autoResults:true, match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
     name:"Formula 1", tag:"The top of single-seater racing",
     blurb:"The FIA Formula One World Championship, the highest level of single-seater racing. Eleven teams run two cars each at Grands Prix on circuits around the world, and every team designs and builds its own car, so the pace of the car matters as much as the driver. There are two titles: drivers and constructors (teams). 2026 brought a new generation of cars and two new teams, Audi and Cadillac.",
     cars:[

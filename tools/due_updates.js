@@ -9,13 +9,17 @@
    An entry's age is its `at` stamp (ISO UTC, write it when you add the entry), else its `from` day, else its event start day.
    A session counts as ended 20 minutes after its end (results are published by then) and stays due for --hours hours (default 48).
    `suggestedFrom` (after items) is the `from` day to write: 14 hours before the newest session ended, so the entry shows for every time zone straight away.
-   The last race of an event is not "due": results, standings and the podium game are written by the automatic jobs (tools/auto_update.py). */
+   The last race of an event is not "due" for What to watch: results, standings and the podium game come from elsewhere.
+     "results"     a race of a series WITHOUT automatic results (no `autoResults` in data/series.js: IMSA, Carrera Cup, F1 Academy ...)
+                   ended at least 20 minutes ago (up to --hours) and data/results.js has no entry for it yet. An entry covers a race
+                   when its `race` is the session's name; an older entry without `race` covers the series' last race of that event.
+                   Write it from a published race report (never from live timing), with race:"<session name>". */
 const fs = require("fs"), path = require("path");
 const ROOT = path.join(__dirname, "..");
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : d; };
 const NOW = new Date(arg("--now", new Date().toISOString())), HOURS = +arg("--hours", 48), AHEAD = +arg("--ahead", 8);
 const load = (f, name, pre = "") => new Function(pre + fs.readFileSync(path.join(ROOT, f), "utf8") + `;return ${name}`)();
-const SERIES = load("data/series.js", "SERIES"), WATCH = load("data/watch.js", "WATCH");
+const SERIES = load("data/series.js", "SERIES"), WATCH = load("data/watch.js", "WATCH"), RESULTS = load("data/results.js", "RESULTS");
 const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js"];
 const tracks = fs.readdirSync(path.join(ROOT, "data")).filter(f => f.endsWith(".js") && !NON.includes(f)).map(f => { const T = []; new Function("TRACKS", fs.readFileSync(path.join(ROOT, "data", f), "utf8"))(T); return T[0]; });
 const kindOf = n => /qualifying/i.test(n) ? "qualifying" : /practice/i.test(n) ? "practice" : "race";
@@ -36,6 +40,12 @@ for (const t of tracks) {
     for (const s of sess) { const sr = seriesFor(s.n); if (!sr) continue; const st = at(s.d, s.s, t.tz); (bySeries[sr.id] = bySeries[sr.id] || { sr, list: [] }).list.push({ n: s.n, kind: kindOf(s.n), start: st, end: s.e ? at(s.d, s.e, t.tz) : new Date(st.getTime() + 3600e3) }); if (s.e && s.e <= s.s) bySeries[sr.id].list.at(-1).end = new Date(bySeries[sr.id].list.at(-1).end.getTime() + 86400e3); }
     for (const { sr, list } of Object.values(bySeries)) {
       list.sort((a, b) => a.start - b.start);
+      if (!sr.autoResults) {          // races whose result nobody has written yet
+        const res = RESULTS.filter(r => r.t === t.id && r.d === ev.d && r.s === sr.id), races = list.filter(x => x.kind === "race");
+        const missing = races.filter((x, i) => NOW - x.end >= 20 * 60e3 && NOW - x.end <= HOURS * 3600e3 &&
+          !res.some(r => r.race ? r.race === x.n : i === races.length - 1));
+        if (missing.length) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "results", sessions: missing.map(x => ({ n: x.n, kind: x.kind, ended: x.end.toISOString() })) });
+      }
       const entries = WATCH.filter(w => w.t === t.id && w.d === ev.d && w.s === sr.id), newest = entries.map(stamp).sort((a, b) => b - a)[0] || null;
       const daysTo = (new Date(ev.d + "T00:00:00Z") - NOW) / 864e5;
       if (!entries.length && daysTo <= AHEAD && NOW <= new Date(end + "T23:59:59Z")) { due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "preview", sessions: list.map(x => ({ n: x.n, start: x.start.toISOString() })) }); continue; }

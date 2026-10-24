@@ -38,6 +38,22 @@ jobs:
             git commit -m "OpenStreetMap data for $1 [skip ci]"
             git push -f origin osm-fetch
             exit 0
+          elif [ "${{ github.event.inputs.tool }}" = "probe" ]; then
+            # save one public web page (tracks = its URL) to the osm-fetch branch, to see how a results/timing page gets its data
+            mkdir -p probe && curl -sSL -m 60 -A "Mozilla/5.0 (Trackside Pass)" -o probe/page.html "${{ github.event.inputs.tracks }}" || true
+            grep -oE '(https?:)?//[^"'"'"' )]+' probe/page.html | sort -u > probe/urls.txt || true
+            for js in $(grep -oE 'src="[^"]+\.js[^"]*"' probe/page.html | sed 's/src="//;s/"$//' | head -15); do
+              case "$js" in http*) u="$js";; //*) u="https:$js";; /*) u="$(echo "${{ github.event.inputs.tracks }}" | grep -oE '^https?://[^/]+')$js";; *) continue;; esac
+              curl -sSL -m 60 "$u" | grep -oE '(wss?|https?)://[a-zA-Z0-9./_-]*(timing|live|result|api|socket)[a-zA-Z0-9./_?=&-]*' >> probe/endpoints.txt || true
+            done
+            sort -u -o probe/endpoints.txt probe/endpoints.txt 2>/dev/null || true
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git checkout -B osm-fetch
+            git add -f probe
+            git commit -qm "Probe: ${{ github.event.inputs.tracks }} [skip ci]"
+            git push -f origin osm-fetch
+            exit 0
           elif [ "${{ github.event.inputs.tool }}" = "waterdata" ]; then
             # only download the raw OpenStreetMap water data (for checking add_water.py), to the osm-fetch branch
             for t in ${{ github.event.inputs.tracks }}; do python3 tools/track-data/add_water.py "$t" --dry; done
@@ -64,7 +80,7 @@ jobs:
             exit 0
           else python3 tools/track-data/refresh_streets.py ${{ github.event.inputs.tracks }}; fi
       - name: Check and commit to the streets-refresh branch
-        if: github.event.inputs.tool != 'fetch' && github.event.inputs.tool != 'waterdata'
+        if: github.event.inputs.tool != 'fetch' && github.event.inputs.tool != 'waterdata' && github.event.inputs.tool != 'probe'
         run: |
           if [ -z "$(git status --porcelain data)" ]; then echo "nothing changed"; exit 0; fi
           node tools/validate.js

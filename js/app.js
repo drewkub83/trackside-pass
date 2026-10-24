@@ -2230,11 +2230,18 @@ function wxUrl(t){
    +"&hourly=temperature_2m,precipitation_probability,weather_code,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset"
    +"&minutely_15=precipitation&forecast_minutely_15=16&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone="+encodeURIComponent(t.tz||"auto")+"&forecast_days=16";
 }
+/* our own server first (netlify/functions/weather.mjs: one shared, cached download per track, and the one place a weather
+   provider is chosen), straight from Open-Meteo if the server cannot be reached */
+function wxProxyUrl(t){ const g=t.geo; return fnUrl("weather")+"?lat="+((g.n+g.s)/2).toFixed(3)+"&lon="+((g.w+g.e)/2).toFixed(3)+"&tz="+encodeURIComponent(t.tz||"auto"); }
+async function wxGet(url,ms){
+  const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),ms);
+  try{ const res=await fetch(url,{signal:ctl.signal}); if(!res.ok) throw new Error("weather "+res.status); const d=await res.json(); if(!d||!d.current) throw new Error("weather: no data"); return d; }
+  finally{ clearTimeout(to); }
+}
 async function wxFetch(t){        /* download and remember one track's forecast */
-  const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),10000);
-  try{ const res=await fetch(wxUrl(t),{signal:ctl.signal}); if(!res.ok) throw new Error("weather "+res.status); const data=await res.json(), at=Date.now();
-    try{ localStorage.setItem(K.wx+t.id,JSON.stringify({at,data})); }catch(e){}
-    return {at,data,live:true}; } finally { clearTimeout(to); }
+  let data; try{ data=await wxGet(wxProxyUrl(t),8000); }catch(e){ data=await wxGet(wxUrl(t),10000); }
+  const at=Date.now(); try{ localStorage.setItem(K.wx+t.id,JSON.stringify({at,data})); }catch(e){}
+  return {at,data,live:true};
 }
 let wxFailed=false;
 async function loadWeather(force){

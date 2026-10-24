@@ -10,19 +10,23 @@
    stops: venues that are on the series schedule but have no map yet. They show in that series' list as "Map coming soon"
           and disappear from here automatically once a track with the same id is added to data/.
    showAll: also list every other venue in the app as "date to be announced" (IMSA does this).
-   Sources: INDYCAR.com (2027 Phase One schedule, announced Aug 12, 2026), IMSA.com, SRO America (provisional 2027 calendar, June 26, 2026),
+   Sources: INDYCAR.com (2027 schedule: Phase One Aug 12, Phase Two Oct 23, 2026), IMSA.com, SRO America (provisional 2027 calendar, June 26, 2026),
    GT World Challenge Europe (gt-world-challenge-europe.com calendar, checked Oct 7, 2026). */
 /* the day schedules, lists of cars and drivers to watch and support races were last checked (shown in Settings). Update it whenever they are refreshed. */
-const DATA_UPDATED = "2026-10-21";
+const DATA_UPDATED = "2026-10-24";
 const REGIONS = { na:"North America", eu:"Europe", world:"Worldwide" };   /* add a key here (and region:"…" on its series) when a new part of the world is added */
 const CHAMPS = [
   { id:"imsa", region:"na", name:"IMSA", tile:"IMSA", full:"WeatherTech SportsCar Championship", match:/IMSA/i, skip:/test/i, guide:"weathertech",
     note:"Every venue on the 2027 IMSA WeatherTech schedule, including the Long Beach and Detroit street circuits and Canadian Tire Motorsport Park, plus Mid-Ohio." },
   { id:"indycar", region:"na", name:"IndyCar", tile:"INDY", full:"NTT INDYCAR SERIES", match:/INDYCAR/i, guide:"indycar",
-    note:"These are the first eight races of the 2027 season. INDYCAR will announce the rest in the coming weeks, and we will add them here. Race weekends run Friday to Sunday.",
+    note:"The full 2027 season: 17 races, announced in two phases (Aug 12 and Oct 23, 2026). Race weekends run Friday to Sunday (Milwaukee has a race on both Saturday and Sunday). Session times come once INDYCAR publishes them; venues without a map show Map coming soon.",
     stops:[
       { id:"st-petersburg", short:"St. Petersburg", place:"St. Petersburg, Florida", kind:"Street circuit", e:"Firestone Grand Prix of St. Petersburg", d:"2027-03-05", t:3 },
-      { id:"arlington",     short:"Arlington",      place:"Arlington, Texas",        kind:"Street circuit", e:"Java House Grand Prix of Arlington",     d:"2027-03-19", t:3 }
+      { id:"arlington",     short:"Arlington",      place:"Arlington, Texas",        kind:"Street circuit", e:"Java House Grand Prix of Arlington",     d:"2027-03-19", t:3 },
+      { id:"wwt-raceway",    short:"WWT Raceway",    place:"Madison, Illinois",       kind:"Oval",           e:"NTT INDYCAR SERIES at World Wide Technology Raceway", d:"2027-06-11", t:3 },
+      { id:"portland",       short:"Portland",       place:"Portland, Oregon",        kind:"Road course",    e:"NTT INDYCAR SERIES at Portland International Raceway", d:"2027-07-30", t:3 },
+      { id:"markham",        short:"Markham",        place:"Markham, Ontario",        kind:"Street circuit", e:"NTT INDYCAR SERIES: Streets of Markham", d:"2027-08-13", t:3 },
+      { id:"milwaukee-mile", short:"Milwaukee Mile", place:"West Allis, Wisconsin",   kind:"Oval",           e:"NTT INDYCAR SERIES at the Milwaukee Mile (races on Saturday and Sunday)", d:"2027-08-27", t:3 }
     ] },
   { id:"gtwca", region:"na", name:"GT World Challenge", group:"GT World Challenge America", tile:"GTWC", full:"GT World Challenge America Powered by AWS", match:/GT World Challenge America|Texas 8 Hour/i, guide:"gtwca",
     note:"Barber (Sep 25-27) and the Indianapolis 8 Hour (Oct 9-11) finish the 2026 season. Then the provisional 2027 calendar: seven rounds, including the first Texas 8 Hour at Circuit of the Americas and the return of Watkins Glen. Dates can still change.",

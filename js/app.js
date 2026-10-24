@@ -2320,7 +2320,7 @@ function renderWxSheet(){
     <div class="wnow"><span class="wbig">${wxIcon(c.weather_code,c.is_day)}</span><div><div class="wt">${tv(c.temperature_2m)}°</div><small>${cond}. Feels like ${tv(c.apparent_temperature)}°</small></div></div>
     <div class="pmeta">${stats.map(s=>`<span>${s}</span>`).join("")}</div>
     <h4 class="mh">Next 12 hours</h4><div class="whours">${hours}</div>${wk}
-    <small class="fine">${wx.live===false?`No signal. Showing the forecast from ${when}.`:`Updated ${when}.`} Forecast by Open-Meteo, at the track's location. The rain line is a short-range estimate, so keep an eye on the sky.</small>`;
+    <small class="fine">${wx.live===false?`No signal. Showing the forecast from ${when}.`:`Updated ${when}.`} ${wx.data._src==="apple"?`Forecast by <a href="https://weatherkit.apple.com/legal-attribution.html" target="_blank" rel="noopener">Apple Weather</a>`:"Forecast by Open-Meteo"}, at the track's location. The rain line is a short-range estimate, so keep an eye on the sky.</small>`;
 }
 function openWeather(){ if(!wx&&!wxFailed) return; if(sheetState==="shWx"){ closeSheet(); return; } renderWxSheet(); showSheet("shWx"); if(!wx||Date.now()-wx.at>WX_TTL) loadWeather(true); }
 setInterval(()=>{ if(cur&&inDetail()&&(!wx||Date.now()-wx.at>WX_TTL)) loadWeather(true); },60000);

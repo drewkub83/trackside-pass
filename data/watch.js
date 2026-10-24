@@ -494,5 +494,23 @@ const WATCH = [
         ["Patrick Mulcahy (ACI Motorsports) and Marco Cirone (ACI Motorsports)", "Both classes' titles were already clinched before this weekend, so Race 1's class results weren't covered in the sources checked."]
       ] }
     ],
-    note:"Sources: VelocityNews ('Hedge narrowly misses podium in Porsche Carrera Cup North America season finale opener at COTA,' Oct 24-25, 2026) via web search; the site could not be reached directly from this environment to read the full report, so this is pieced together from search summaries of it and cross-checked across several searches for consistency. No second outlet's race report was found as of this writing to independently confirm the finishing order or the exact points gap (one earlier Sportscar365 report gave 29 points after qualifying, this one 28 after the race); Maxson's title is described by the source as provisional, pending the series' own confirmation. Pro-Am and Masters Race 1 results were not found in sources checked." }
+    note:"Sources: VelocityNews ('Hedge narrowly misses podium in Porsche Carrera Cup North America season finale opener at COTA,' Oct 24-25, 2026) via web search; the site could not be reached directly from this environment to read the full report, so this is pieced together from search summaries of it and cross-checked across several searches for consistency. No second outlet's race report was found as of this writing to independently confirm the finishing order or the exact points gap (one earlier Sportscar365 report gave 29 points after qualifying, this one 28 after the race); Maxson's title is described by the source as provisional, pending the series' own confirmation. Pro-Am and Masters Race 1 results were not found in sources checked." },
+  { t:"cota", d:"2026-10-23", s:"f1", from:"2026-10-24", at:"2026-10-24T22:23:36Z",
+    asOf:"Current after Saturday's qualifying at COTA (4 PM local, Oct 24). The race follows Sunday at 3 PM local.",
+    groups:[
+      { h:"Qualifying: Antonelli beats the Red Bulls to pole, Ferrari fades", items:[
+        ["Kimi Antonelli (Mercedes)", "Took pole with a 1:34.035, set early in Q3, after Ferrari had topped every practice session this weekend. He beat closest title rival George Russell's time by more than four tenths."],
+        ["Max Verstappen (Red Bull Racing)", "Second, 0.179s off Antonelli, with Red Bull team-mate Isack Hadjar third (+0.215s)."],
+        ["Charles Leclerc (Ferrari)", "Fourth (+0.232s). Ferrari had been fastest in FP1, FP2 and FP3 but lost pace in Q3, with Lewis Hamilton fifth and leaving both Ferraris behind the Antonelli-Verstappen-Hadjar trio."],
+        ["George Russell (Mercedes)", "Sixth, behind team-mate Antonelli and Hamilton. The rest of the top 10 is reported inconsistently between outlets checked, so it isn't repeated here -- the McLarens of Lando Norris and Oscar Piastri and rookie Arvid Lindblad filled out the group behind Russell."]
+      ] },
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads the championship by 102 points over team-mate Russell with six races left. Starting on pole doesn't change the standings; he can only clinch the title Sunday by winning while Russell finishes the race ninth or lower and Hamilton fifth or lower -- both currently line up ahead of those marks on the grid (Russell 6th, Hamilton 5th), so it would take a result well off their starting spots for the title to be settled here."],
+        ["George Russell (Mercedes)", "Sixth on the grid, second in the championship on 238 points. Keeps the title fight alive past Austin unless Antonelli wins and he finishes the race ninth or lower."]
+      ] },
+      { h:"What to look for Sunday", items:[
+        ["Race start, 3 PM local", "Antonelli starts from pole with both Red Bulls alongside and behind him and Ferrari further back than it ran all weekend in practice -- a shuffled grid from how practice pace suggested the weekend would go."]
+      ] }
+    ],
+    note:"Sources: Speedcafe.com and RaceFans ('Antonelli beats Red Bull pair to pole position in Austin,' both Oct 24, 2026, via web search; the sites could not be reached directly from this environment) agree on the pole time and top four. Athlon Sports' and Autosport's grid reports agree through 6th (Russell) but disagree on the order from 7th on, and a GPFans Dutch-language report conflicts with both on Piastri and Norris's positions, so positions below 6th are left unstated rather than guessed. Championship standings and the title-clinch scenario are carried over unchanged from the Oct 16 entry; qualifying positions are from the sources above." }
 ];

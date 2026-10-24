@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /* Lists the "What to watch" updates that are due right now, for every series in the app (the schedule is the only input).
    Run by the recurring cloud routine (see CLAUDE.md "What to watch, every week"); prints JSON and exits 0, with {"due":[]} when nothing is due.
-     node tools/due_updates.js [--now 2026-10-23T20:00:00Z] [--hours 48] [--ahead 8] [--text]
+     node tools/due_updates.js [--now 2026-10-23T20:00:00Z] [--hours 48] [--ahead 8] [--text] [--results]
+   Without --results it lists preview/after items (the "What to watch" routine); with --results only the "results" items
+   (the "Results" routine, see CLAUDE.md).
    A due item is one (track, event, series) with the reason:
      "preview"     the series races at this track within --ahead days and has no entry at all for the event
      "after"       sessions of the series have ended (practice, qualifying, or a race that is not the last of the event) since the
@@ -17,6 +19,7 @@
 const fs = require("fs"), path = require("path");
 const ROOT = path.join(__dirname, "..");
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : d; };
+const RESULTS_ONLY = process.argv.includes("--results");
 const NOW = new Date(arg("--now", new Date().toISOString())), HOURS = +arg("--hours", 48), AHEAD = +arg("--ahead", 8);
 const load = (f, name, pre = "") => new Function(pre + fs.readFileSync(path.join(ROOT, f), "utf8") + `;return ${name}`)();
 const SERIES = load("data/series.js", "SERIES"), WATCH = load("data/watch.js", "WATCH"), RESULTS = load("data/results.js", "RESULTS");
@@ -56,6 +59,7 @@ for (const t of tracks) {
     }
   }
 }
+{ const keep = due.filter(x => (x.why === "results") === RESULTS_ONLY); due.length = 0; due.push(...keep); }
 due.sort((a, b) => a.d.localeCompare(b.d) || a.s.localeCompare(b.s));
 if (process.argv.includes("--text")) { console.log(`now ${NOW.toISOString()}: ${due.length} due`); for (const x of due) console.log(`- ${x.t} ${x.d} ${x.s} (${x.why}): ${x.sessions.map(s => s.n).join("; ")}`); }
 else console.log(JSON.stringify({ now: NOW.toISOString(), due }, null, 1));

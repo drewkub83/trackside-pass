@@ -421,5 +421,19 @@ const WATCH = [
         ["Masters Racing Legends, 1966-85 Formula 1 cars", "A one-session practice, one-session qualifying and two-race weekend (25 minutes each) for pre-1986 Grand Prix cars, run alongside the United States Grand Prix as in past Austin appearances. Neither this year's entry list nor Friday's practice/qualifying results have turned up in sources checked, so which cars and drivers are racing, and how they qualified, isn't confirmed."]
       ] }
     ],
-    note:"Sources: Masters Historic Racing's own event page (mastershistoricracing.com) confirms the Oct 23-25 date and the one-practice/one-qualifying/two-race format, but could not be reached directly from this environment to check for a published entry list or results, and none turned up in further web searches today. Check back once the series or a race report publishes the grid and results." }
+    note:"Sources: Masters Historic Racing's own event page (mastershistoricracing.com) confirms the Oct 23-25 date and the one-practice/one-qualifying/two-race format, but could not be reached directly from this environment to check for a published entry list or results, and none turned up in further web searches today. Check back once the series or a race report publishes the grid and results." },
+  { t:"cota", d:"2026-10-23", s:"f1academy", from:"2026-10-23", at:"2026-10-24T00:23:21Z",
+    asOf:"Current after Friday's Opening Race (Oct 23). The Reverse Grid Race follows Saturday at 6 PM local and the Feature Race Sunday at 12 PM local -- the last two rounds of points at COTA before the Las Vegas finale.",
+    groups:[
+      { h:"Opening Race: Palmowski closes in on the title", items:[
+        ["Alisha Palmowski (Campos Racing)", "Won from pole, crossing the line about 1.9 seconds ahead of Nina Gademan -- race reports describe the result as a big step toward clinching the title, which she entered the weekend leading by 48 points."],
+        ["Nina Gademan (MP Motorsport)", "Finished second after a stewards investigation into a move earlier in the race by podium rival Alba Larsen was dropped, leaving the result unchanged."],
+        ["Alba Larsen (MP Motorsport)", "Completed the podium in third."]
+      ] },
+      { h:"What's left at COTA", items:[
+        ["Reverse Grid Race, Saturday 6 PM local", "Grid set by reversing the top 8 from qualifying; Austin and Montreal are the only two 2026 rounds with this extra third race."],
+        ["Feature Race, Sunday 12 PM local", "Grid from the full qualifying order -- the last points on offer before the Las Vegas finale."]
+      ] }
+    ],
+    note:"Sources: Motorsport Week ('Alisha Palmowski takes giant leap towards F1 Academy title with Race 1 victory,' Oct 24, 2026) and Dive-Bomb ('Alisha Palmowski steps closer to championship title after Opening Race win in Austin'), cross-checked on the Race 1 podium order and the dropped investigation; f1academy.com and motorsport.com's results pages could not be reached directly from this environment. Updated post-race points totals for Palmowski and Felbermayr were not found in sources checked, so only the pre-weekend 48-point gap (carried over from the Oct 21 entry) is given here." }
 ];

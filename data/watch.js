@@ -479,5 +479,20 @@ const WATCH = [
         ["Masters Racing Legends, 1966-85 Formula 1 cars", "A practice, qualifying and two-race weekend for pre-1986 Grand Prix cars, run alongside the United States Grand Prix as in past Austin appearances. Race 1 was scheduled for Saturday morning and Race 2 follows Sunday, but neither an entry list nor any result has turned up in sources checked, so which cars and drivers are racing, and how Race 1 went, isn't confirmed."]
       ] }
     ],
-    note:"Sources: Masters Historic Racing's own event page confirms the Oct 23-25 date and format but could not be reached directly from this environment to check for a published entry list or results, and none turned up in further web searches today. Check back once the series or a race report publishes the grid and results." }
+    note:"Sources: Masters Historic Racing's own event page confirms the Oct 23-25 date and format but could not be reached directly from this environment to check for a published entry list or results, and none turned up in further web searches today. Check back once the series or a race report publishes the grid and results." },
+  { t:"cota", d:"2026-10-23", s:"carrera", from:"2026-10-24", at:"2026-10-24T21:23:51Z",
+    asOf:"Current after Saturday afternoon's Race 1 of 2 at COTA (Oct 24). Race 2, the season finale, is Sunday morning.",
+    groups:[
+      { h:"Pro: Stiak wins Race 1, but Maxson's third provisionally clinches the title", items:[
+        ["Janne Stiak (ACI Motorsports, No. 40)", "Took the lead early from pole-sitter Tyler Maxson and held off a charging Aaron Jeansonne to win Race 1, built on a 1.3-second cushion before two caution periods bunched the field back up."],
+        ["Tyler Maxson (TOPP Racing, No. 77)", "Finished third after losing the lead to Stiak and contact with Jeansonne for second; third place provisionally secures him the Pro title with a race to spare, pending the series' official post-race confirmation. Reports gave his lead over Jeansonne entering Race 2 as 28 points."],
+        ["Aaron Jeansonne (Kellymoss)", "Passed Callum Hedge and then Maxson to finish second, the best result still open to him in the title fight; not enough to prevent Maxson's provisional clinch."],
+        ["Callum Hedge (JDX Racing, No. 9)", "Ran as high as third before Jeansonne and Maxson's contact for position dropped him to fourth at the flag, denying him a podium."],
+        ["Two cautions", "The race was slowed once by a last-corner collision between Dan Drohan and Josh Conley, and again later while the lead group was running close together; neither was reported to have drawn a penalty."]
+      ] },
+      { h:"Pro-Am and Masters", items:[
+        ["Patrick Mulcahy (ACI Motorsports) and Marco Cirone (ACI Motorsports)", "Both classes' titles were already clinched before this weekend, so Race 1's class results weren't covered in the sources checked."]
+      ] }
+    ],
+    note:"Sources: VelocityNews ('Hedge narrowly misses podium in Porsche Carrera Cup North America season finale opener at COTA,' Oct 24-25, 2026) via web search; the site could not be reached directly from this environment to read the full report, so this is pieced together from search summaries of it and cross-checked across several searches for consistency. No second outlet's race report was found as of this writing to independently confirm the finishing order or the exact points gap (one earlier Sportscar365 report gave 29 points after qualifying, this one 28 after the race); Maxson's title is described by the source as provisional, pending the series' own confirmation. Pro-Am and Masters Race 1 results were not found in sources checked." }
 ];

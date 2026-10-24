@@ -69,8 +69,9 @@ export function fromApple(a, tz, minutely) {
 async function apple(lat, lon, tz, env) {
   const now = Date.now(), start = local(now, tz).slice(0, 10), startMs = now - (now % 86400000) - 86400000, from = new Date(startMs).toISOString().replace(/\.\d+Z$/, "Z");
   const url = `https://weatherkit.apple.com/api/v1/weather/en/${lat}/${lon}?dataSets=currentWeather,forecastDaily,forecastHourly,forecastNextHour&timezone=${encodeURIComponent(tz)}&dailyStart=${from}&hourlyStart=${from}&dailyEnd=${new Date(startMs + 11 * 86400000).toISOString().replace(/\.\d+Z$/, "Z")}&hourlyEnd=${new Date(startMs + 11 * 86400000).toISOString().replace(/\.\d+Z$/, "Z")}`;
-  const r = await fetch(url, { headers: { authorization: `Bearer ${await appleToken(env)}` } });
-  if (!r.ok) throw new Error("weatherkit " + r.status);
+  let r = await fetch(url, { headers: { authorization: `Bearer ${await appleToken(env)}` } });
+  if (r.status === 401) { jwt = null; r = await fetch(url, { headers: { authorization: `Bearer ${await appleToken(env)}` } }); }      // one retry with a freshly signed token
+  if (!r.ok) throw new Error("weatherkit " + r.status + " " + (await r.text().catch(() => "")).slice(0, 100) + " [" + String(env.WEATHERKIT_KEY).length + " key chars, key id " + String(env.WEATHERKIT_KEY_ID).length + " chars]");
   const a = await r.json();
   let minutely = null;
   if (!(a.forecastNextHour && a.forecastNextHour.minutes && a.forecastNextHour.minutes.length)) {      // no next-hour data in this country: borrow Open-Meteo's 15-minute rain line

@@ -1,0 +1,6 @@
+https://app-live-timing-dev-nestjs-v2.azurewebsites.net
+https://app-live-timing-dev-nestjs.azurewebsites.net
+https://cloudinary.com/documentation/advanced_url_delivery_options
+https://nextjs.org/docs/app/api-reference/functions/use-search-params
+https://racing.liveresults.swisstiming.com
+https://vercel.live/_next-live/feedback/feedback.js

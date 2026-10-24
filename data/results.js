@@ -233,4 +233,17 @@ const RESULTS = [
       ] }
     ],
     note:"Source: INDYCAR.com \"Instant Recall\" (Sep 7, 2026). The 2026 season finale; McLaughlin led 87 of 95 laps from pole for his first win in 36 races, Kirkwood was 1.3739 s behind. Alex Palou's 8th place was enough: he had already clinched his fourth straight championship. Scott Dixon finished 17th in his last race with Chip Ganassi Racing. 10th place was not in the source. d is the race day (Sunday)." },
+  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Opening Race - F1 Academy", event:"F1 Academy, Austin: Opening Race",
+    groups:[
+      { h:"Race", order:[
+        "1. Alisha Palmowski (Campos Racing)",
+        "2. Nina Gademan",
+        "3. Alba Larsen",
+        "4. Lisa Billard",
+        "5. Emma Felbermayr",
+        "6. Natalia Granada",
+        "7. Payton Westcott"
+      ] }
+    ],
+    note:"Sources: F1 Academy, 'Opening Race: Alisha Palmowski claims her fifth victory of the season in commanding Austin drive' (f1academy.com); Formula1.com, 'Alisha Palmowski closes in on title with Opening Race victory in Austin'; Pit Debrief race report. Car numbers and teams other than the winner's are left out: the reports seen did not give them." }
 ];

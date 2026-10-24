@@ -359,7 +359,7 @@ create or replace function public.my_requests() returns jsonb language sql stabl
   select jsonb_build_object(
     'incoming', coalesce((select jsonb_agg(jsonb_build_object('id', r.from_user, 'name', p.display_name, 'at', r.created_at) order by r.created_at) from public.friend_requests r join public.profiles p on p.id = r.from_user where r.to_user = auth.uid() and r.status = 'pending'), '[]'::jsonb),
     'outgoing', coalesce((select jsonb_agg(jsonb_build_object('id', r.to_user, 'name', p.display_name, 'at', r.created_at) order by r.created_at) from public.friend_requests r join public.profiles p on p.id = r.to_user where r.from_user = auth.uid() and r.status = 'pending'), '[]'::jsonb),
-    'notifications', coalesce((select jsonb_agg(jsonb_build_object('id', n.id, 'type', n.type, 'name', n.data->>'name', 'at', n.created_at, 'read', n.read_at is not null) order by n.created_at desc) from (select * from public.notifications where user_id = auth.uid() order by created_at desc limit 20) n), '[]'::jsonb),
+    'notifications', coalesce((select jsonb_agg(jsonb_build_object('id', n.id, 'type', n.type, 'name', n.data->>'name', 'track', n.data->>'track', 'at', n.created_at, 'read', n.read_at is not null) order by n.created_at desc) from (select * from public.notifications where user_id = auth.uid() order by created_at desc limit 20) n), '[]'::jsonb),
     'unread', (select count(*) from public.notifications where user_id = auth.uid() and read_at is null))
 $$;
 revoke all on function public.my_requests() from public, anon;
@@ -459,7 +459,7 @@ revoke all on public.passports from anon, authenticated;
 -- merges what the phone sends with what is stored (union: nothing is ever removed, the earliest time wins) and returns the merged passport
 create or replace function public.sync_passport(p_stamps jsonb, p_unlocked jsonb) returns jsonb
 language plpgsql security definer set search_path = public as $$
-declare uid uuid := auth.uid(); old public.passports; st jsonb; ul jsonb;
+declare uid uuid := auth.uid(); old public.passports; st jsonb; ul jsonb; myname text; ck record;
 begin
   if uid is null then raise exception 'Sign in first' using errcode = '28000'; end if;
   if not exists (select 1 from public.profiles where id = uid) then raise exception 'Choose a name first' using errcode = '22023'; end if;
@@ -486,6 +486,20 @@ begin
       from jsonb_each(p_unlocked) kv where jsonb_typeof(kv.value) = 'number'
     ) u where k ~ '^[A-Za-z0-9:_.-]{1,60}$' group by k order by k limit 400
   ) m;
+  -- a check-in that is new to the server AND was made in the last 6 hours (a restore or an old stamp never notifies) tells each friend who has
+  -- friend check-ins on (profiles.checkin_push, default on): a 'friend_checkin' notification, which the notifications trigger sends as a push
+  select display_name into myname from public.profiles where id = uid;
+  for ck in
+    select e->>'t' as t, e->>'day' as day from jsonb_array_elements(st) e
+    where (e->>'at')::bigint > (extract(epoch from now()) * 1000)::bigint - 21600000
+      and not exists (select 1 from jsonb_array_elements(coalesce(old.stamps, '[]'::jsonb)) o where o->>'t' = e->>'t' and o->>'day' = e->>'day')
+    limit 3
+  loop
+    insert into public.notifications(user_id, type, data)
+    select fr.id, 'friend_checkin', jsonb_build_object('from', uid, 'name', myname, 'track', ck.t, 'day', ck.day)
+    from (select case when f.user_a = uid then f.user_b else f.user_a end as id from public.friendships f where uid in (f.user_a, f.user_b)) fr
+    join public.profiles pr on pr.id = fr.id and pr.checkin_push;
+  end loop;
   insert into public.passports(user_id, stamps, unlocked, updated_at) values (uid, st, ul, now())
   on conflict (user_id) do update set stamps = excluded.stamps, unlocked = excluded.unlocked, updated_at = now();
   return jsonb_build_object('stamps', st, 'unlocked', ul);
@@ -653,6 +667,16 @@ do $$ begin
   if exists (select 1 from pg_available_extensions where name = 'pg_net') then create extension if not exists pg_net; end if;
 exception when others then null;
 end $$;
+
+
+-- Friend check-ins: when a friend's passport gets a NEW check-in (sync_passport above), you get a push "<name> checked in at <track>" unless you switch it off
+-- (Settings > Friend check-ins, profiles.checkin_push). Friends only; the same people can already see it in the hub's Friends here card.
+alter table public.profiles add column if not exists checkin_push boolean not null default true;
+create or replace function public.set_checkin_push(p_on boolean) returns void language sql security definer set search_path = public as $$
+  update public.profiles set checkin_push = coalesce(p_on, true) where id = auth.uid()
+$$;
+revoke all on function public.set_checkin_push(boolean) from public, anon;
+grant execute on function public.set_checkin_push(boolean) to authenticated;
 
 ---------------------------------------------------------------- Thursday "lock in your picks" push
 -- Every Thursday at 16:00 UTC (noon in New York) pg_cron calls the `push` edge function with {"picks": true}. The function asks pick_reminder_targets() who to

@@ -126,7 +126,7 @@ function acctRender() {
     h = `<div class="acHead"><button class="avBtn" aria-label="Change your picture" onclick="openAvatarPicker()">${avatarHtml("me", p.display_name, 64)}<small>Change</small></button><div><h3 class="acH">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p></div></div>${acctMsg()}
          ${news.map(n => `<div class="acNote">${sbEsc(n.name)} accepted your friend request.</div>`).join("")}
          ${rq.incoming.length ? `<h4 class="ptH">Friend requests (${rq.incoming.length})</h4>${rq.incoming.map(r => `<div class="acFriend"><span><b>${sbEsc(r.name)}</b> wants to be friends</span><span><button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button><button class="acX" onclick="acctRespond('${r.id}',false)">Decline</button></span></div>`).join("")}` : ""}
-         ${recapYear() ? acctBtn("Your " + recapYear() + " recap", "openRecap()") : ""}
+         ${recapState() ? acctBtn("Your " + recapState().year + (recapState().done ? " recap" : " so far"), "openRecap()") : ""}
          <h4 class="ptH">Add a friend</h4>
          <input class="acIn" id="acFind" autocomplete="off" autocapitalize="none" placeholder="Search by name" oninput="acctFind(this.value)">
          <div id="acResults" class="acResults"></div>
@@ -217,7 +217,7 @@ async function acctPoll(announce) {
   const fresh = r.notifications.filter(n => n.id > seen && !n.read).sort((a, b) => a.id - b.id);
   if (fresh.length) {
     try { localStorage.setItem(K.notifSeen, String(fresh[fresh.length - 1].id)); } catch (e) {}
-    if (announce !== false && typeof toast === "function") fresh.forEach(n => toast(n.type === "friend_request" ? `${n.name} sent you a friend request` : `${n.name} accepted your friend request`));
+    if (announce !== false && typeof toast === "function") fresh.forEach(n => toast(n.type === "friend_request" ? `${n.name} sent you a friend request` : n.type === "friend_checkin" ? `${n.name} checked in at ${(TRACKS.find(t => t.id === n.track) || {}).short || "a track"}` : `${n.name} accepted your friend request`));
   }
   if (acctOn("account")) { const f = document.getElementById("acFind"); if (!(f && f.value)) { acct.friends = await sbRpc("my_friends").catch(() => acct.friends); acctRender(); } }   // new requests show up without leaving the page (not while you are typing a search)
 }
@@ -245,7 +245,7 @@ function pushWire(P) {
   P.addListener("registration", async t => { try { await sbRpc("register_push_token", { p_token: t.value, p_platform: window.Capacitor.getPlatform() }); localStorage.setItem(K.pushToken, t.value); } catch (e) {} });
   P.addListener("registrationError", e => console.log("push registration failed", e && e.error));
   P.addListener("pushNotificationReceived", () => acctPoll(false));                                   // the app is open: refresh the inbox and the red dot
-  P.addListener("pushNotificationActionPerformed", a => { const d = (a && a.notification && a.notification.data) || {}; if (d.type === "pick_reminder" && typeof homeTab === "function") homeTab("play"); else if (d.type === "rain_alert" && d.track && typeof openTrack === "function") openTrack(d.track, "home"); else { acctPoll(false); openAccount(); } });   // tapped from the lock screen: the picks, or the requests
+  P.addListener("pushNotificationActionPerformed", a => { const d = (a && a.notification && a.notification.data) || {}; if (d.type === "pick_reminder" && typeof homeTab === "function") homeTab("play"); else if ((d.type === "rain_alert" || d.type === "friend_checkin") && d.track && typeof openTrack === "function") openTrack(d.track, "home"); else { acctPoll(false); openAccount(); } });   // tapped from the lock screen: the picks, or the requests
 }
 /* returns "on" | "off" (not asked yet or switched off) | "denied" (blocked in the phone's settings) | "unavailable" (web, or not signed in) */
 async function pushOn(ask) {
@@ -320,12 +320,17 @@ function recapYear(now) {
   const d = now || new Date(), m = d.getMonth(), day = d.getDate();
   return m === 11 && day >= 20 ? d.getFullYear() : m === 0 && day <= 7 ? d.getFullYear() - 1 : 0;
 }
+/* the Home banner starts on Dec 1 as "your year so far" (the recap itself says "so far" until the 20th), then becomes the finished recap until Jan 7 */
+function recapState(now) {
+  const d = now || new Date(), done = recapYear(d);
+  return done ? { year: done, done: true } : d.getMonth() === 11 ? { year: d.getFullYear(), done: false } : null;
+}
 async function openRecap(year) {
-  if (!sbOn()) return; const y = year || recapYear() || new Date().getFullYear(), box = document.getElementById("rcBody");
+  if (!sbOn()) return; const y = year || (recapState() || {}).year || new Date().getFullYear(), box = document.getElementById("rcBody");
   box.innerHTML = `<h3 class="acH">${y}</h3><p class="plRules">Loading…</p>`; showScreen("recap");
   await acctPassportSync();                                   // so your friends see this weekend's check-ins and you see theirs
   let shared = null, rows = null; try { [shared, rows] = await Promise.all([sbRpc("friends_shared", { p_year: y }), sbRpc("leaderboard", { p_scope: "friends", p_year: y, p_series: null, p_game: null })]); } catch (e) {}
-  const st = recapStats(ppLoad(), y), me = (rows || []).find(r => r.is_me), done = true;
+  const st = recapStats(ppLoad(), y), me = (rows || []).find(r => r.is_me), done = !(recapState() && recapState().year === y && !recapState().done);   // "so far" only while the year is still running
   const tile = (n, l) => `<div class="rcT"><b>${n}</b><span>${l}</span></div>`;
   const by = {}; (shared || []).forEach(r => { (by[r.display_name] = by[r.display_name] || []).push(r); });
   const pals = Object.entries(by).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
@@ -422,8 +427,12 @@ async function openFriendPicks(gk) {
 
 /* ---- the home bar's Account tab (your initial, a red dot for requests) and the Settings switch for friend notifications ---- */
 function acctHomeRefresh() {
-  const rc = document.getElementById("recapCard"), ry = sbOn() ? recapYear() : 0;
-  if (rc) rc.innerHTML = ry ? `<button class="plCard" onclick="openRecap()"><span class="plGo">Open</span><b>Your ${ry} recap</b><small>Your season at the track, and who you shared it with.</small></button>` : "";
+  const rc = document.getElementById("recapCard"), rs = sbOn() ? recapState() : null;
+  if (rc) {
+    let line = "";
+    if (rs) { const st = recapStats(ppLoad(), rs.year), n = (k, w) => `${k} ${w}${k === 1 ? "" : "s"}`; line = st.weekends ? `${n(st.tracks.length, "track")} · ${n(st.weekends, "race weekend")} · ${n(st.badges, "badge")}` : "Check in at a race weekend to start yours."; }
+    rc.innerHTML = rs ? `<button class="rcBanner" onclick="openRecap()"><span class="rcYr">${rs.year}</span><span class="rcTx"><i>${rs.done ? "Your year is in" : "Your year so far"}</i><b>${rs.done ? "Your " + rs.year + " recap" : "Your " + rs.year + " at the track"}</b><small>${sbEsc(line)}</small></span><span class="rcGo">${rs.done ? "See it" : "Peek"}</span></button>` : "";
+  }
   const signed = sbOn() && !!sbSession(), t = document.getElementById("acctTab");
   if (typeof syncHomeTabs === "function") { const on = document.querySelector(".screen.on"); syncHomeTabs(on ? on.id : "home"); }
   if (!t) return;

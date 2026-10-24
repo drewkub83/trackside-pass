@@ -29,6 +29,7 @@ const K={
   alertsSeen:"paddock:alertsSeen",    /* whether the alerts permission prompt was shown */
   remind:"paddock:remind",        /* going-race reminders on/off */
   rainAlerts:"paddock:rainAlerts",    /* "0" = rain alerts switched off (the server also keeps the choice: profiles.rain_alerts) */
+  checkinPush:"paddock:checkinPush",  /* "0" = no push when a friend checks in (the server also keeps the choice: profiles.checkin_push) */
   pickRemind:"paddock:pickRemind",    /* Thursday "lock in your picks" reminder on/off (iPhone/Android app) */
   goDays:"paddock:goDays",        /* how many days before a weekend the hub shows What to watch / the game */
   going:"paddock:going",         /* races you are going to */
@@ -2137,6 +2138,13 @@ async function toggleRainAlerts(){
   if(typeof sbRpc==="function"&&typeof sbSession==="function"&&sbSession()){ try{ await sbRpc("set_rain_alerts",{p_on:on}); }catch(e){ toast("Could not save that. Check your signal and try again."); } }
   toast(on?"I'll warn you when rain is about to start where you are at a race.":"Rain alerts off.");
 }
+function checkinPushOn(){ return LSget(K.checkinPush,"1")!=="0"; }
+function renderCheckinSw(){ const b=document.getElementById("checkinSw"); if(!b) return; const on=checkinPushOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
+async function toggleCheckinPush(){
+  const on=!checkinPushOn(); try{ localStorage.setItem(K.checkinPush,on?"1":"0"); }catch(e){} renderCheckinSw();
+  if(typeof sbRpc==="function"&&typeof sbSession==="function"&&sbSession()){ try{ await sbRpc("set_checkin_push",{p_on:on}); }catch(e){ toast("Could not save that. Check your signal and try again."); } }
+  toast(on?"I'll tell you when a friend checks in at a track.":"Friend check-in alerts off.");
+}
 function pickRemindOn(){ return LSget(K.pickRemind,"1")!=="0"; }
 function renderPickSw(){ const b=document.getElementById("pickSw"); if(!b) return; const on=pickRemindOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
 async function togglePickRemind(){
@@ -2171,7 +2179,7 @@ scheduleGoingReminders(false); scheduleStarAlerts(false); schedulePickReminders(
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){
- renderAutoSw(); renderRemSw(); renderPickSw(); renderRainSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }
+ renderAutoSw(); renderRemSw(); renderPickSw(); renderRainSw(); renderCheckinSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }
 
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----
    Sun times are worked out on the phone (no signal needed). At a track in the phone's own time zone it uses the

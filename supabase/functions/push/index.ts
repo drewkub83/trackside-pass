@@ -61,7 +61,8 @@ export function rainSoon(minutely: any, currentMm: number, nowLocalMs: number): 
   return { mins, level: peak >= 7.6 ? "heavy" : peak >= 2.5 ? "moderate" : "light" };
 }
 const localNow = (tz: string) => { const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: tz, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).formatToParts(new Date()).map((x) => [x.type, x.value])); return Date.parse(`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:00Z`); };
-const text = (n: any) => n.type === "friend_request" ? ["Friend request", `${n.data?.name || "Someone"} wants to be friends`] : n.type === "friend_accepted" ? ["Friend request accepted", `${n.data?.name || "Someone"} accepted your friend request`] : ["Trackside Pass", "You have a new notification"];
+const trackShort = async (id: string) => { try { return (/"short":"([^"]+)"/.exec(await (await fetch(`https://tracksidepass.com/data/${encodeURIComponent(id)}.js`)).text()) || [])[1] || id; } catch (_) { return id; } };
+const text = (n: any, track = "") => n.type === "friend_request" ? ["Friend request", `${n.data?.name || "Someone"} wants to be friends`] : n.type === "friend_accepted" ? ["Friend request accepted", `${n.data?.name || "Someone"} accepted your friend request`] : n.type === "friend_checkin" ? [`${n.data?.name || "A friend"} checked in`, `${n.data?.name || "A friend"} is at ${track || "the track"}`] : ["Trackside Pass", "You have a new notification"];
 
 Deno.serve(async (req) => {
   if (!Deno.env.get("PUSH_SECRET") || req.headers.get("x-push-secret") !== Deno.env.get("PUSH_SECRET")) return new Response("no", { status: 401 });
@@ -115,7 +116,8 @@ Deno.serve(async (req) => {
   const n = (await (await rest(`notifications?id=eq.${id}&select=id,user_id,type,data`)).json())[0];
   if (!n) return new Response("gone", { status: 404 });
   const toks: { token: string; platform: string }[] = await (await rest(`push_tokens?user_id=eq.${n.user_id}&select=token,platform`)).json();
-  const [title, body] = text(n), data = { type: String(n.type), name: String(n.data?.name || "") }; const out: Record<string, string> = {};
+  const [title, body] = text(n, n.type === "friend_checkin" ? await trackShort(String(n.data?.track || "")) : ""), data: Record<string, string> = { type: String(n.type), name: String(n.data?.name || "") }; const out: Record<string, string> = {};
+  if (n.type === "friend_checkin") data.track = String(n.data?.track || "");
   for (const t of toks) {
     let r = "retry";
     try { r = t.platform === "ios" ? await sendApns(t.token, title, body, data) : await sendFcm(t.token, title, body, data); } catch (e) { console.log("send failed", t.platform, String(e)); }

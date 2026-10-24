@@ -451,5 +451,33 @@ const WATCH = [
         ["Scott Blind (Ruckus Racing, No. 45)", "Topped the Masters class in qualifying at 2:08.096. Marco Cirone leads the Masters points standings entering the weekend."]
       ] }
     ],
-    note:"Sources: Sportscar365 ('Maxson Shatters COTA Record to Claim Race 1 Pole,' Oct 24, 2026, via web search; the site could not be reached directly from this environment), which also reported the 29-point post-qualifying gap over Jeansonne and the Race 1 title-clinch scenario. Sofronas's qualifying time, and the Masters points gap behind Cirone, were not given in sources found." }
+    note:"Sources: Sportscar365 ('Maxson Shatters COTA Record to Claim Race 1 Pole,' Oct 24, 2026, via web search; the site could not be reached directly from this environment), which also reported the 29-point post-qualifying gap over Jeansonne and the Race 1 title-clinch scenario. Sofronas's qualifying time, and the Masters points gap behind Cirone, were not given in sources found." },
+  { t:"cota", d:"2026-10-23", s:"f1", from:"2026-10-24", at:"2026-10-24T19:23:10Z",
+    asOf:"Current after Saturday morning's Free Practice 3 (12:30 PM local). Qualifying follows at 4 PM local, and the race Sunday at 3 PM local.",
+    groups:[
+      { h:"FP3: Hamilton goes fastest, track limits bite again", items:[
+        ["Lewis Hamilton (Ferrari)", "Topped the final practice session with a 1:34.893."],
+        ["Max Verstappen (Red Bull Racing)", "Second, a 1:35.061, 0.168s off Hamilton's pace."],
+        ["Charles Leclerc (Ferrari)", "Third, 0.234s back, after a quicker lap was deleted for exceeding track limits (reports differ on the corner, Turn 10 or Turn 12)."],
+        ["Kimi Antonelli (Mercedes)", "Fourth, a 1:35.196; he had briefly gone provisionally quickest on a lap that was also deleted for track limits, at Turn 9."],
+        ["George Russell (Mercedes)", "Fifth, 0.488s off Hamilton, with Oscar Piastri sixth (+0.638s), Nico Hulkenberg seventh for Audi, Lando Norris eighth, Pierre Gasly ninth for Alpine and Isack Hadjar tenth."],
+        ["Track limits", "A theme all weekend: reports put Friday's deleted-lap count at 207, and FIA race director Rui Marques relaxed the limits at several corners for the rest of the event."]
+      ] },
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads the championship by 102 points over team-mate George Russell with six races left. Practice times don't change the standings; he can still clinch the title here only by winning while Russell finishes ninth or lower and Hamilton fifth or lower."],
+        ["George Russell (Mercedes)", "Second on 238 points. Keeps the title fight alive unless Antonelli wins and he finishes ninth or lower."]
+      ] },
+      { h:"What to look for Saturday afternoon", items:[
+        ["Qualifying, 4 PM local", "No sprint this weekend -- qualifying sets Sunday's grid directly. Hamilton and Ferrari have topped every session so far, with Verstappen closest behind."]
+      ] }
+    ],
+    note:"Sources: Formula1.com's FP3 report, RacingNews365, PlanetF1, GrandPrix247, Grande Premio, ScuderiaFans and Motorsport Week FP3 classifications (all Oct 24, 2026, via web search; the sites could not be reached directly from this environment). Sources disagreed slightly on which corner cost Leclerc his deleted lap; both are noted. Championship standings and title-clinch scenario carried over unchanged from the Oct 16 entry." },
+  { t:"cota", d:"2026-10-23", s:"masters", from:"2026-10-24", at:"2026-10-24T19:23:10Z",
+    asOf:"Current as of Oct 24, after Race 1 of 2 was due to run Saturday morning: still no 2026 Austin entry list, car count, or results were found in sources checked, despite repeated searches of Masters Historic Racing's own site (including its results-PDF listing) and race-media coverage.",
+    groups:[
+      { h:"What to expect", items:[
+        ["Masters Racing Legends, 1966-85 Formula 1 cars", "A practice, qualifying and two-race weekend for pre-1986 Grand Prix cars, run alongside the United States Grand Prix as in past Austin appearances. Race 1 was scheduled for Saturday morning and Race 2 follows Sunday, but neither an entry list nor any result has turned up in sources checked, so which cars and drivers are racing, and how Race 1 went, isn't confirmed."]
+      ] }
+    ],
+    note:"Sources: Masters Historic Racing's own event page confirms the Oct 23-25 date and format but could not be reached directly from this environment to check for a published entry list or results, and none turned up in further web searches today. Check back once the series or a race report publishes the grid and results." }
 ];

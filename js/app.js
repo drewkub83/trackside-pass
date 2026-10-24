@@ -287,12 +287,14 @@ function renderSeries(){
 /* screens: home (series + hero), imsa (track list), detail (a track) */
 let backTo="series";
 /* Tap the top of the screen to scroll back to the top, like Safari. The header bar (it also covers the status-bar strip) scrolls the container it sits in: the Race Day hub scrolls inside #hubView, which the iPhone's own status-bar tap cannot reach (that only moves the page). Buttons keep working. */
-document.addEventListener("click",e=>{
-  const bar=e.target.closest&&e.target.closest(".bar"); if(!bar||e.target.closest("button,a,input,select,textarea,label,[onclick]")) return;
-  let el=bar.parentElement; while(el&&el!==document.body){ const oy=getComputedStyle(el).overflowY; if((oy==="auto"||oy==="scroll")&&el.scrollTop>0) break; el=el.parentElement; }
+let barTap=null;   /* pointer events, not click: iOS sends no click for a tap on a plain element such as a title */
+document.addEventListener("pointerdown",e=>{ barTap=e.isPrimary&&e.target.closest&&e.target.closest(".bar")&&!e.target.closest("button,a,input,select,textarea,label,[onclick]")?{x:e.clientX,y:e.clientY,t:Date.now(),bar:e.target.closest(".bar")}:null; },{passive:true});
+document.addEventListener("pointerup",e=>{
+  const d=barTap; barTap=null; if(!d||Math.hypot(e.clientX-d.x,e.clientY-d.y)>10||Date.now()-d.t>600) return;
+  let el=d.bar.parentElement; while(el&&el!==document.body){ const oy=getComputedStyle(el).overflowY; if((oy==="auto"||oy==="scroll")&&el.scrollTop>0) break; el=el.parentElement; }
   const smooth=!matchMedia("(prefers-reduced-motion:reduce)").matches, to=t=>t.scrollTo({top:0,behavior:smooth?"smooth":"auto"});
   if(el&&el!==document.body) to(el); else if(window.scrollY>0) to(window);
-});
+},{passive:true});
 /* ---- wide screens (an unfolded foldable, a tablet): two panes side by side. The left pane is the page you are on; the right pane shows whatever you open from it.
    Home keeps Pick your podium on the right until you open something; a track keeps its Race Day hub on the left and the day's schedule (or the map, or Info) on the right.
    Everything here is off on a phone and on a phone held sideways: <html class="wide"> is set from the same media query in index.html. ---- */

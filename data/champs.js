@@ -66,7 +66,7 @@ const CHAMPS = [
   { id:"tcamerica", region:"na", name:"TC America", tile:"TCA", full:"TC America powered by Skip Barber", match:/TC America/i, viaSupport:true, optIn:true, parent:"gtwca", guide:"tca",
     note:"SRO America touring-car series at GT World Challenge America weekends. Which 2027 rounds it joins has not been published round by round yet." },
   { id:"grcup", region:"na", name:"Toyota GR Cup", tile:"GR", full:"Toyota GR Cup North America", match:/GR Cup/i, viaSupport:true, optIn:true, parent:"gtwca", guide:"grcup",
-    note:"One-make Toyota GR86 series, mostly at GT World Challenge America weekends. Its 2027 season opens at the IndyCar weekend in Arlington (GT Report); the other 2027 rounds are not in the app yet." },
+    note:"One-make Toyota GR86 series, mostly at GT World Challenge America weekends. 2027 (Toyota Gazoo Racing, June 26, 2026): seven weekends: Arlington (with IndyCar), Sonoma, COTA, Watkins Glen (its first visit), Road Atlanta, Road America and Indianapolis, the finale." },
   { id:"gt2europe", region:"eu", name:"GT2 European Series", tile:"GT2", full:"GT2 European Series powered by Pirelli", match:/GT2 European/i, viaSupport:true, optIn:true, parent:"gtwce",
     note:"2027 (gt2europeanseries.com): five weekends with GT World Challenge Europe: Paul Ricard, Imola, Misano, Nürburgring and the Hungaroring finale." },
   { id:"gt4europe", region:"eu", name:"GT4 European Series", tile:"GT4E", full:"GT4 European Series", match:/GT4 European/i, viaSupport:true, optIn:true, parent:"gtwce",

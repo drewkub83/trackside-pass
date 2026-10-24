@@ -1268,6 +1268,13 @@ function hubActionTiles(){
   </div>`;
   return actionsHtml;
 }
+/* the series that headlines the weekend on now: the first main (not support) series you follow that races at this track's current event, in your own series order */
+const HUB_SWITCH_LEAD_MIN=30;
+function headlineSeries(){
+  const fo=focusAt(cur); if(!fo) return null;
+  const order=orderedChamps().filter(c=>!c.optIn&&followed(c)), hit=fo.group.map(e=>order.find(c=>inChamp(c,e))).filter(Boolean).sort((a,b)=>order.indexOf(a)-order.indexOf(b))[0];
+  return hit?(hit.guide||hit.id):null;
+}
 /* which series the hub is about: the one live now, else the next one up (shared by What to watch, Standings and Live timing) */
 function hubFocusSeries(c){
   const {ss,now}=c, live=onTrackNow(ss,now);
@@ -1281,7 +1288,12 @@ function hubFocusSeries(c){
   const fav=favSeries();
   let sid=null;
   if(fav&&cand.some(c=>{ const sr=seriesFor(c.n); return sr&&sr.id===fav; })) sid=fav;
-  else for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
+  else{
+    /* overnight (nothing on, and the next session is on a later day than the last one, or the weekend has not started): show the headlining series' latest What to watch until HUB_SWITCH_LEAD_MIN before the day's first session, then follow whichever series is up next */
+    const next=live?null:ss.find(x=>x.start>now), prev=next&&ss.filter(x=>x.end<=now).pop();
+    if(next&&(!prev||prev.d!==next.d)&&next.start-now>HUB_SWITCH_LEAD_MIN*60000){ const h=headlineSeries(); if(h) sid=h; }
+    if(!sid) for(const c of cand){ const sr=seriesFor(c.n); if(sr){ sid=sr.id; break; } }
+  }
 
   /* off-week: no live or upcoming session to follow, so fall back to the series of the next event for standings */
   if(!sid){ const nx=CHAMPS.filter(c=>!c.optIn&&followed(c)).map(c=>({c,e:nextIn(c,cur)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)), pickS=nx.find(x=>standingsFor(x.c.guide||x.c.id))||nx[0]; if(pickS) sid=pickS.c.guide||pickS.c.id; }   /* the first series here that has standings to show */

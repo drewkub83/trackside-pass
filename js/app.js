@@ -98,7 +98,10 @@ const inChamp=(c,e)=>{ const hay=c.viaSupport?(e.support||[]).join(" | "):(e.s||
 const isImsa=e=>inChamp(champ("imsa"),e);
 function guessMin(n){ return /Qualif|Shootout/i.test(n)?25:/Race|8 Hour/i.test(n)?60:/Practice|Test/i.test(n)?50:30; }
 /* `e` (end time) is optional: some organisers only publish start times. Those sessions show a start time only and use `m` minutes (or a guess) to know when they are over. */
-function sessionsOf(t){ return (t.sessions||[]).map(s=>{ const start=localToDate(s.d,s.s,t.tz), est=!s.e; return {...s,start,est,end:est?new Date(+start+(s.m||guessMin(s.n))*60000):localToDate(s.d,s.e,t.tz)}; }).sort((a,b)=>a.start-b.start); }
+/* resolving every session time needs time-zone maths, and the home screen asks for it hundreds of times (eventDone for every event of every track): keep the result per track until its session list is replaced or changes length */
+const SESS_CACHE=new WeakMap();
+function sessionsOf(t){ const src=t.sessions||[], hit=SESS_CACHE.get(t); if(hit&&hit.src===src&&hit.n===src.length&&hit.tz===t.tz) return hit.out; const out=sessionsBuild(t); SESS_CACHE.set(t,{src,n:src.length,tz:t.tz,out}); return out; }
+function sessionsBuild(t){ return (t.sessions||[]).map(s=>{ const start=localToDate(s.d,s.s,t.tz), est=!s.e; return {...s,start,est,end:est?new Date(+start+(s.m||guessMin(s.n))*60000):localToDate(s.d,s.e,t.tz)}; }).sort((a,b)=>a.start-b.start); }
 /* an event is over after its last session ends (or after its last calendar day when there is no session list) */
 function eventDone(t,e){
   const last=eventEnd(e), ss=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=last);

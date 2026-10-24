@@ -245,5 +245,22 @@ const RESULTS = [
         "7. Payton Westcott"
       ] }
     ],
-    note:"Sources: F1 Academy, 'Opening Race: Alisha Palmowski claims her fifth victory of the season in commanding Austin drive' (f1academy.com); Formula1.com, 'Alisha Palmowski closes in on title with Opening Race victory in Austin'; Pit Debrief race report. Car numbers and teams other than the winner's are left out: the reports seen did not give them." }
+    note:"Sources: F1 Academy, 'Opening Race: Alisha Palmowski claims her fifth victory of the season in commanding Austin drive' (f1academy.com); Formula1.com, 'Alisha Palmowski closes in on title with Opening Race victory in Austin'; Pit Debrief race report. Car numbers and teams other than the winner's are left out: the reports seen did not give them." },
+  { t:"cota", d:"2026-10-23", s:"carrera", race:"Race 1 of 2 - Porsche Carrera Cup", event:"Porsche Carrera Cup North America, COTA: Race 1 of 2",
+    groups:[
+      { h:"Pro", order:[
+        "1. #40 ACI Motorsports — Janne Stiak",
+        "2. #24 Kellymoss — Aaron Jeansonne",
+        "3. #77 TOPP Racing — Tyler Maxson"
+      ] },
+      { h:"Pro-Am", order:[
+        "1. #14 GMG Racing — James Sofronas",
+        "2. #54 Patrick Mulcahy",
+        "3. #58 Kellymoss — Steve Wetterau"
+      ] },
+      { h:"Masters", order:[
+        "1. #45 Ruckus Racing — Scott Blind"
+      ] }
+    ],
+    note:"Sources: Porsche Motorsport North America (\"Stiak takes COTA win, Maxson clinches Mobil Pro class title\") and Sportscar365 (\"Stiak Earns Win, Maxson Clinches Pro Title in Race 1 at COTA\"), Oct 24, 2026 (via web search; direct fetch was blocked in this environment). Stiak's second win of the season; Maxson's third place clinched the 2026 Pro title (provisional, subject to post-race technical inspection). A late multi-car Masters incident meant the race ended under yellow. Sofronas led all 13 laps. Mulcahy's team was not given; places below those listed were not confirmed in these sources." }
 ];

@@ -435,5 +435,21 @@ const WATCH = [
         ["Feature Race, Sunday 12 PM local", "Grid from the full qualifying order -- the last points on offer before the Las Vegas finale."]
       ] }
     ],
-    note:"Sources: Motorsport Week ('Alisha Palmowski takes giant leap towards F1 Academy title with Race 1 victory,' Oct 24, 2026) and Dive-Bomb ('Alisha Palmowski steps closer to championship title after Opening Race win in Austin'), cross-checked on the Race 1 podium order and the dropped investigation; f1academy.com and motorsport.com's results pages could not be reached directly from this environment. Updated post-race points totals for Palmowski and Felbermayr were not found in sources checked, so only the pre-weekend 48-point gap (carried over from the Oct 21 entry) is given here." }
+    note:"Sources: Motorsport Week ('Alisha Palmowski takes giant leap towards F1 Academy title with Race 1 victory,' Oct 24, 2026) and Dive-Bomb ('Alisha Palmowski steps closer to championship title after Opening Race win in Austin'), cross-checked on the Race 1 podium order and the dropped investigation; f1academy.com and motorsport.com's results pages could not be reached directly from this environment. Updated post-race points totals for Palmowski and Felbermayr were not found in sources checked, so only the pre-weekend 48-point gap (carried over from the Oct 21 entry) is given here." },
+  { t:"cota", d:"2026-10-23", s:"carrera", from:"2026-10-24", at:"2026-10-24T18:22:48Z",
+    asOf:"Current after Saturday morning's qualifying at COTA (Oct 24). Race 1 follows Saturday afternoon, Race 2 Sunday morning.",
+    groups:[
+      { h:"Pro: Maxson smashes the COTA record, 29 points up with a title-clinching chance in Race 1", items:[
+        ["Tyler Maxson (TOPP Racing, No. 77)", "Took pole for Race 1 and the overall track record with a 2:04.869, well inside Ryan Yardley's previous mark of 2:06.221 from last year -- six drivers beat the old record. The pole's bonus point stretches his championship lead over Aaron Jeansonne to 29 points; a Race 1 win would clinch the Pro title outright, with Sunday's Race 2 still to come either way."],
+        ["Janne Stiak (ACI Motorsports, No. 40)", "Qualified second overall and in Pro at 2:05.359."],
+        ["Callum Hedge (JDX Racing, No. 9)", "Third at 2:05.573, also inside the old track record."]
+      ] },
+      { h:"Pro-Am", items:[
+        ["James Sofronas (GMG Racing, No. 14)", "Took the Pro-Am pole; Patrick Mulcahy has already clinched the Pro-Am title, so the class result is academic."]
+      ] },
+      { h:"Masters", items:[
+        ["Scott Blind (Ruckus Racing, No. 45)", "Topped the Masters class in qualifying at 2:08.096. Marco Cirone leads the Masters points standings entering the weekend."]
+      ] }
+    ],
+    note:"Sources: Sportscar365 ('Maxson Shatters COTA Record to Claim Race 1 Pole,' Oct 24, 2026, via web search; the site could not be reached directly from this environment), which also reported the 29-point post-qualifying gap over Jeansonne and the Race 1 title-clinch scenario. Sofronas's qualifying time, and the Masters points gap behind Cirone, were not given in sources found." }
 ];

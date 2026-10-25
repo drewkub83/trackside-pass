@@ -271,5 +271,28 @@ const RESULTS = [
         "3. Lisa Billard"
       ] }
     ],
-    note:"Sources: Pit Debrief, 'F1 Academy 2026 United States GP Reverse Grid Race report' and 'Reverse Grid Race results' (pitdebrief.com, Oct 24, 2026; via web search, direct fetch blocked here). Larsen's first F1 Academy win, from 4th on the grid; Palmowski came from 8th to 2nd and clinched the 2026 drivers' title; Billard's first series podium. A Safety Car followed a Turn 16 collision (Ferreira, Jacquet, Danielsson). Places below 3rd, car numbers and the other teams were not confirmed in the reports seen, so they are left out." }
+    note:"Sources: Pit Debrief, 'F1 Academy 2026 United States GP Reverse Grid Race report' and 'Reverse Grid Race results' (pitdebrief.com, Oct 24, 2026; via web search, direct fetch blocked here). Larsen's first F1 Academy win, from 4th on the grid; Palmowski came from 8th to 2nd and clinched the 2026 drivers' title; Billard's first series podium. A Safety Car followed a Turn 16 collision (Ferreira, Jacquet, Danielsson). Places below 3rd, car numbers and the other teams were not confirmed in the reports seen, so they are left out." },
+  { t:"cota", d:"2026-10-23", s:"carrera", race:"Race 2 of 2 - Porsche Carrera Cup", event:"Porsche Carrera Cup North America, COTA: Race 2 of 2 (season finale)",
+    groups:[
+      { h:"Pro", order:[
+        "1. #77 TOPP Racing — Tyler Maxson",
+        "2. #40 ACI Motorsports — Janne Stiak",
+        "3. #96 JTR Motorsports Engineering — Jared Thomas"
+      ] },
+      { h:"Pro-Am", order:[
+        "1. #54 ACI Motorsports — Patrick Mulcahy"
+      ] }
+    ],
+    note:"Source: Sportscar365, \"Maxson Captures Season Finale Win at COTA\" (Oct 25, 2026; via web search, direct fetch blocked here). Maxson, already 2026 Pro champion after Race 1, won by more than six seconds. Callum Hedge got a 10-second post-race penalty for track limits, which promoted Stiak to 2nd and Thomas to 3rd. Pro-Am places below the winner and the Masters class result were not in the report seen, so they are left out." },
+  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Feature Race - F1 Academy", event:"F1 Academy, Austin: Feature Race",
+    groups:[
+      { h:"Race", order:[
+        "1. Nina Gademan (MP Motorsport)",
+        "2. Payton Westcott",
+        "3. Natalia Granada",
+        "4. Jade Jacquet",
+        "5. Emma Felbermayr"
+      ] }
+    ],
+    note:"Sources: Pit Debrief, 'F1 Academy 2026 United States GP Feature Race report' and 'Feature Race results' (pitdebrief.com, Oct 25, 2026); Motorsport Week, 'F1 Academy 2026 US GP - Feature Race Results' (via web search). Gademan won from 3rd on the grid. Champion Alisha Palmowski and Alba Larsen collided on lap 10 while fighting for 2nd and both retired. Jacquet's 4th is her best F1 Academy finish. Car numbers and the other teams were not confirmed in the reports seen, so they are left out." }
 ];

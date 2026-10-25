@@ -512,5 +512,18 @@ const WATCH = [
         ["Race start, 3 PM local", "Antonelli starts from pole with both Red Bulls alongside and behind him and Ferrari further back than it ran all weekend in practice -- a shuffled grid from how practice pace suggested the weekend would go."]
       ] }
     ],
-    note:"Sources: Speedcafe.com and RaceFans ('Antonelli beats Red Bull pair to pole position in Austin,' both Oct 24, 2026, via web search; the sites could not be reached directly from this environment) agree on the pole time and top four. Athlon Sports' and Autosport's grid reports agree through 6th (Russell) but disagree on the order from 7th on, and a GPFans Dutch-language report conflicts with both on Piastri and Norris's positions, so positions below 6th are left unstated rather than guessed. Championship standings and the title-clinch scenario are carried over unchanged from the Oct 16 entry; qualifying positions are from the sources above." }
+    note:"Sources: Speedcafe.com and RaceFans ('Antonelli beats Red Bull pair to pole position in Austin,' both Oct 24, 2026, via web search; the sites could not be reached directly from this environment) agree on the pole time and top four. Athlon Sports' and Autosport's grid reports agree through 6th (Russell) but disagree on the order from 7th on, and a GPFans Dutch-language report conflicts with both on Piastri and Norris's positions, so positions below 6th are left unstated rather than guessed. Championship standings and the title-clinch scenario are carried over unchanged from the Oct 16 entry; qualifying positions are from the sources above." },
+  { t:"cota", d:"2026-10-23", s:"f1academy", from:"2026-10-24", at:"2026-10-25T00:22:47Z",
+    asOf:"Current after Saturday's Reverse Grid Race (Oct 24). The Feature Race follows Sunday at 12 PM local -- the last points of the 2026 season before the Las Vegas finale.",
+    groups:[
+      { h:"Reverse Grid Race: Palmowski's runner-up finish seals the title", items:[
+        ["Alisha Palmowski (Campos Racing)", "Started eighth and finished second, enough on its own to clinch the 2026 F1 Academy championship with the Feature Race still to run -- making her the series' youngest-ever champion. She came into the race having stretched her lead to 63 points over Emma Felbermayr with Friday's Opening Race win."],
+        ["Alba Larsen (MP Motorsport)", "Took her maiden F1 Academy win, moving up from fourth on the grid after early leader Rafaela Ferreira made contact with Jade Jacquet and lost the lead."],
+        ["Lisa Billard", "Completed the podium in third."]
+      ] },
+      { h:"What's left at COTA", items:[
+        ["Feature Race, Sunday 12 PM local", "The weekend's last points before Las Vegas; grid set by the full qualifying order. The title is now decided, so this one is about the fight for second in the championship and the remaining race wins."]
+      ] }
+    ],
+    note:"Sources: Motorsport Week ('Alisha Palmowski seals F1 Academy title with race to spare in Austin' and its Reverse Grid Race results page, both Oct 25, 2026) and Dive-Bomb ('Alisha Palmowski claims F1 Academy title as Alba Larsen wins Austin Reverse Grid Race'), both via web search (the sites could not be reached directly from this environment) and cross-checked on the finishing order, podium and title clinch. Palmowski's exact post-race points total and new margin over Felbermayr were not found in sources checked, so only the pre-race 63-point gap (carried over from the Oct 24 entry) is given here." }
 ];

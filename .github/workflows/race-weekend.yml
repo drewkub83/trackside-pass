@@ -22,6 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Install the PDF reader (WEC entry lists)
+        run: pip install --quiet pymupdf
       - name: Update race weekend data
         run: python3 tools/auto_update.py
       - name: Check, commit and push

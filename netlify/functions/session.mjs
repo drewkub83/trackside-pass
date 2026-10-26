@@ -1,7 +1,7 @@
 /* Qualifying order and race classification for a race weekend, read from the series' own published results and returned as small JSON:
    Formula 1 from the Jolpica F1 API (api.jolpi.ca, an Ergast-compatible mirror of the FIA's published results), IndyCar from INDYCAR's results service
    (www.indycar.com/api/results, the one tools/indycar_update.py uses), F1 Academy from the series' own results pages (their embedded page data says whether a result is
-   official), Porsche Carrera Cup North America from the series' results page (porschecarreracup.us/results). The app uses it for the Race Day hub's "Starting grid" card and for "Unofficial results" in the minutes
+   official), Porsche Carrera Cup North America from the series' results page (porschecarreracup.us/results), FIA Formula 2 and Formula 3 from their race pages. The app uses it for the Race Day hub's "Starting grid" card and for "Unofficial results" in the minutes
    before our own data/results.js entry (written by tools/f1_update.py) exists. It only fetches that one host; the answer is cached for 30 s so many
    phones cost one request. GET /api/session?s=f1&date=2026-10-25 (the race day in the track's own time zone; the race is matched within one day,
    because Jolpica dates a night race by its UTC day). Nothing is stored. */
@@ -120,6 +120,41 @@ async function carrera(date, name, track) {
   });
 }
 
+/* FIA Formula 2 / Formula 3: a round's page (fiaformula2.com/en/racing/<year>/<venue>) embeds every session's start time and, for the LATEST completed session only, its results
+   (Next.js page data, `"results":[...]` inside the session object, each row with a `version`). So the answer for an earlier session comes from a small memory kept in the edge cache
+   for 4 days each time the page is read (the app reads it while the hub is open); a session nobody saw while it was the latest has no results here. F3 qualifies in two groups
+   ("Qualifying 1" / "Qualifying 2"): the order combines the groups that were seen, fastest first. The venue slug comes from the app's track id. */
+const FIA_SLUG = { bahrain: "sakhir", jeddah: "jeddah", melbourne: "melbourne", montreal: "montreal", monaco: "monte-carlo", "red-bull-ring": "spielberg", silverstone: "silverstone", monza: "monza", madrid: "madrid", baku: "baku", istanbul: "istanbul", "mexico-city": "mexico-city", lusail: "lusail", "yas-marina": "yas-marina", "spa-francorchamps": "spa-francorchamps", hungaroring: "budapest", "barcelona-catalunya": "barcelona", miami: "miami-gardens" };
+const jsonAt = (t, i) => { let d = 0, str = false, esc = false; for (let k = i; k < t.length; k++) { const c = t[k]; if (str) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') str = false; continue; } if (c === '"') str = true; else if (c === "{") d++; else if (c === "}" && --d === 0) return t.slice(i, k + 1); } return ""; };
+const rscText = (h) => [...h.matchAll(/self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)/g)].map((m) => { try { return JSON.parse(m[1]); } catch (_) { return ""; } }).join("");
+const memoUrl = (k) => new Request("https://tracksidepass.com/__memo/" + encodeURIComponent(k));
+const memoPut = async (k, v) => { try { await caches.default.put(memoUrl(k), new Response(JSON.stringify(v), { headers: { "cache-control": "public, max-age=345600" } })); } catch (_) {} };
+const memoGet = async (k) => { try { const r = await caches.default.match(memoUrl(k)); return r ? await r.json() : null; } catch (_) { return null; } };
+const fiaTime = (x) => x.lapTime || x.bestLapTime || x.qualifyingTime || x.time || x.raceTime || "";
+async function fia(kind, date, name, track) {
+  const slug = FIA_SLUG[track]; if (!slug) return reply({ error: "unknown venue" }, 400);
+  const host = kind === "f2" ? "https://www.fiaformula2.com" : "https://www.fiaformula3.com", year = date.slice(0, 4);
+  const h = await page(`${host}/en/racing/${year}/${slug}`); if (!h) return reply({ error: "results page unreachable" }, 502);
+  const p = rscText(h), sessions = [];
+  for (const m of p.matchAll(/\{"session":"/g)) { try { const o = JSON.parse(jsonAt(p, m.index)); if (o && o.sessionType) sessions.push(o); } catch (_) {} }
+  if (!sessions.length) return reply({ error: "no sessions on that page" }, 404);
+  const rowOf = (x) => ({ pos: String(x.positionValue || x.positionNumber || ""), num: String(x.racingNumber || ""), name: sp(`${x.driverFirstName} ${x.driverLastName}`), team: sp(x.teamName), time: fiaTime(x), gap: x.gapToLeader, status: x.completionStatusCode, laps: String(x.lapsCompleted ?? ""), final: x.version === "Final" });
+  for (const o of sessions) {   // remember each session's results the moment it is the one the page carries
+    const k = `fia|${kind}|${year}|${o.meetingSessionKey}`;
+    if (Array.isArray(o.results) && o.results.length) { o.rows = o.results.map(rowOf); await memoPut(k, o.rows); } else { o.rows = await memoGet(k); }
+  }
+  const dayOf = (o) => String(o.startTime).slice(0, 10), nm = String(name || "").toLowerCase();
+  const races = sessions.filter((o) => o.sessionType === "Race"), race = races.find((o) => nm && nm.includes(String(o.shortName).toLowerCase())) || races.filter((o) => dayOf(o) === date).pop();
+  const qs = sessions.filter((o) => o.sessionType === "Qualifying" && o.rows && o.rows.length);
+  let qrows = null; if (qs.length) { qrows = qs.flatMap((o) => o.rows); if (qs.length > 1 || qrows.some((r, i) => i && r.pos === "1")) qrows.sort((a, b) => String(a.time).localeCompare(String(b.time), undefined, { numeric: true })); qrows = qrows.map((r, i) => ({ ...r, pos: qs.length > 1 ? i + 1 : r.pos })); }
+  const rr = race && race.rows;
+  return reply({
+    s: kind, season: year, race: race ? race.shortName : "Race", date, fetchedAt: new Date().toISOString(),
+    qualifying: qrows && qrows.map((r) => ({ pos: r.pos, num: r.num, name: r.name, team: r.team, time: r.time })), qualifyingOfficial: qs.length ? qs.every((o) => o.rows.every((r) => r.final)) : undefined,
+    result: rr && rr.length ? rr.map((r, i) => ({ pos: r.pos, num: r.num, name: r.name, team: r.team, grid: "", time: i === 0 ? r.time : (r.gap && r.gap !== "0" ? "+" + r.gap : r.status && r.status !== "OK" ? r.status : r.time), status: r.status === "OK" ? "" : r.status, laps: r.laps })) : null, resultOfficial: rr && rr.length ? rr.every((r) => r.final) : undefined,
+  });
+}
+
 export default async (req) => {
   const u = new URL(req.url), s = (u.searchParams.get("s") || "").toLowerCase(), date = u.searchParams.get("date") || "";
   if (!/^20\d\d-\d\d-\d\d$/.test(date)) return reply({ error: "bad date" }, 400);
@@ -128,5 +163,6 @@ export default async (req) => {
   const name = u.searchParams.get("name") || "", track = (u.searchParams.get("track") || "").toLowerCase();
   if (s === "f1academy") return f1academy(date, name);
   if (s === "carrera") return carrera(date, name, track);
+  if (s === "f2" || s === "f3") return fia(s, date, name, track);
   return reply({ error: "unknown series" }, 400);
 };

@@ -23,6 +23,6 @@ TRACKS.push({
   "nturns":16,
   "turns":[],
   "rev":1,
-  "sessions":[{"d":"2026-11-27","s":"16:30","e":"17:30","n":"Practice 1 - Formula 1"},{"d":"2026-11-27","s":"20:00","e":"21:00","n":"Practice 2 - Formula 1"},{"d":"2026-11-28","s":"17:30","e":"18:30","n":"Practice 3 - Formula 1"},{"d":"2026-11-28","s":"21:00","e":"22:00","n":"Qualifying - Formula 1"},{"d":"2026-11-29","s":"19:00","e":"21:00","n":"Race - Formula 1"}],
+  "sessions":[{"d":"2026-11-27","s":"12:00","e":"13:00","n":"Practice - FIA Formula 2"},{"d":"2026-11-27","s":"16:00","e":"17:00","n":"Qualifying - FIA Formula 2"},{"d":"2026-11-27","s":"16:30","e":"17:30","n":"Practice 1 - Formula 1"},{"d":"2026-11-27","s":"20:00","e":"21:00","n":"Practice 2 - Formula 1"},{"d":"2026-11-28","s":"13:00","e":"14:00","n":"Sprint Race - FIA Formula 2"},{"d":"2026-11-28","s":"17:30","e":"18:30","n":"Practice 3 - Formula 1"},{"d":"2026-11-28","s":"21:00","e":"22:00","n":"Qualifying - Formula 1"},{"d":"2026-11-29","s":"12:00","e":"13:00","n":"Feature Race - FIA Formula 2"},{"d":"2026-11-29","s":"19:00","e":"21:00","n":"Race - Formula 1"}],
   "lapRecord":[{"series":"Formula 1","time":"1:19.387","who":"Oscar Piastri","car":"McLaren MCL39","year":2025,"note":"fastest known lap (qualifying lap, 2025 Qatar GP); race lap record 1:22.384, Lando Norris, McLaren MCL38, 2024"}]
 });

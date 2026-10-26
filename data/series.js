@@ -274,6 +274,38 @@ const SERIES = [
     fine:"A spectator summary based on F1 Academy's own 2026 beginner's guide (f1academy.com). For official details, see f1academy.com."
   },
   {
+    id:"f2", sess:"f2", match:/Formula 2/i, timing:"https://www.fiaformula2.com/livetiming/index.html",
+    name:"Formula 2", tag:"The last step before Formula 1",
+    blurb:"The FIA Formula 2 Championship races on Formula 1 weekends and is the last step on the ladder before Formula 1. Every team runs the same car, so results come down to the drivers and the teams. A weekend has practice, qualifying, a Sprint Race and a Feature Race.",
+    cars:[
+      {n:"F2 2024", full:"Dallara F2 2024", type:"Formula 2 single-seater, one car for everyone", c:"#2F5D8C", fg:"#FFFFFF", pace:"Very fast",
+       text:"A Dallara chassis with a 3.4-liter turbocharged V6 from Mecachrome, rated at 620 hp and limited to 8,750 rpm. Pirelli supplies the tires, and the car runs on Aramco's advanced sustainable fuel.",
+       spot:"All the cars are the same shape, so tell them apart by number and team colours. The Monza round in 2026 had 22 cars on the grid."}
+    ],
+    watch:{
+      practice:"A practice session on the first day, before qualifying.",
+      qualifying:"Qualifying on the first day decides the starting order for the weekend.",
+      race:"Two races: the Sprint Race on Saturday and the Feature Race, the main race, on Sunday."
+    },
+    fine:"A spectator summary from fiaformula2.com and the published specifications of Dallara and Mecachrome. For official details, see fiaformula2.com."
+  },
+  {
+    id:"f3", sess:"f3", match:/Formula 3/i, timing:"https://www.fiaformula3.com/livetiming/index.html",
+    name:"Formula 3", tag:"The step below Formula 2",
+    blurb:"The FIA Formula 3 Championship races only on Formula 1 weekends and is the step below Formula 2. Every team runs the same car. A weekend has practice, qualifying in two groups, a Sprint Race and a Feature Race.",
+    cars:[
+      {n:"F3 2025", full:"Dallara F3 2025", type:"Formula 3 single-seater, one car for everyone", c:"#3F7F6B", fg:"#FFFFFF", pace:"Fast",
+       text:"A Dallara chassis with a 3.4-liter naturally aspirated V6 from Mecachrome, making 380 hp at 8,000 rpm. Pirelli supplies the tires, on 16-inch wheels, and the top speed is around 300 km/h (186 mph).",
+       spot:"All the cars are the same shape, so tell them apart by number and team colours. The Monza round in 2026 had 30 cars on the grid."}
+    ],
+    watch:{
+      practice:"A practice session on the first day, before qualifying.",
+      qualifying:"The field is split into two groups for qualifying, Group A and Group B, and the times decide the starting order.",
+      race:"Two races: the Sprint Race on Saturday and the Feature Race, the main race, on Sunday."
+    },
+    fine:"A spectator summary from fiaformula3.com, the FIA's 2026 Formula 3 technical regulations and the published specifications of Dallara and Mecachrome. For official details, see fiaformula3.com."
+  },
+  {
     id:"masters", match:/Masters Historic/i,
     name:"Masters Historic Racing", tag:"Classic Formula 1 cars, 1966 to 1985",
     blurb:"Historic Formula 1 cars racing again. At the United States Grand Prix the featured series is Masters Racing Legends, for 3-litre Formula 1 cars from 1966 to 1985, the era when the Cosworth DFV engine powered much of the grid. For 2026 the series also welcomes turbo-engined Formula 1 cars from 1977 to 1985.",

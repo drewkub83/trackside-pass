@@ -64,7 +64,7 @@ def main():
 def import_result(track, d, name, race, day):
     rows = sorted((r for r in race["records"] if r.get("PositionFinish")), key=lambda r: r["PositionFinish"])
     if len(rows) < 10: print("  race classification not complete yet"); return False
-    lines = ",\n".join("        " + json.dumps(f'{r["PositionFinish"]}. {r["DriverName"]} ({r["TeamName"]})', ensure_ascii=False) for r in rows[:10])
+    lines = ",\n".join("        " + json.dumps(f'{r["PositionFinish"]}. #{r["CarNumber"]} {r["DriverName"]} ({r["TeamName"]})', ensure_ascii=False) for r in rows[:10])
     entry = (f'  {{ t:{json.dumps(track)}, d:{json.dumps(d)}, s:"indycar", event:{json.dumps(name, ensure_ascii=False)},\n    groups:[\n      {{ h:"Race", order:[\n{lines}\n      ] }}\n    ],\n'
              f'    note:{json.dumps(MARK + "Source: INDYCAR.com official results (indycar.com/results/ntt-indycar-series), top ten of the race, race day " + day.isoformat() + ".")} }},\n')
     s = D.read("data/results.js")

@@ -12,6 +12,8 @@
    A session counts as ended 20 minutes after its end (results are published by then) and stays due for --hours hours (default 48).
    `suggestedFrom` (after items) is the `from` day to write: 14 hours before the newest session ended, so the entry shows for every time zone straight away.
    The last race of an event is not "due" for What to watch: results, standings and the podium game come from elsewhere.
+     "entries"     a series with `gameManual` in data/series.js (IMSA) whose weekend starts within --ahead days and has no entry in data/entries.js yet: the routine
+                   writes the "Pick your podium" entry list from the published entry list, then runs tools/game_odds.py for the chances
      "refresh"     the series' NEXT event already has a preview entry, but the series raced somewhere else after that entry was written (e.g. the
                    Mexico City preview was written before the Austin race) and the race's results are in data/results.js and it ended 6 hours to 7 days
                    ago: the entry still talks about the old standings and stories, so write a NEW preview for the next event (see the routine's prompt)
@@ -45,6 +47,7 @@ for (const t of tracks) for (const ev of t.events || []) {
   for (const s of (t.sessions || []).filter(x => x.d >= ev.d && x.d <= end)) { const sr = seriesFor(s.n); if (!sr || kindOf(s.n) !== "race") continue; const st = at(s.d, s.s, t.tz), en = s.e ? at(s.d, s.e, t.tz) : new Date(st.getTime() + 3600e3); if (!races[sr.id] || en > races[sr.id].end) races[sr.id] = { end: en, t: t.id, d: ev.d, event: ev.e }; }
   for (const [id, r] of Object.entries(races)) if (r.end < NOW && (!prevEvent[id] || r.end > prevEvent[id].end)) prevEvent[id] = r;
 }
+const ENTRIES = load("data/entries.js", "ENTRIES"), gameSeen = new Set();
 const due = [];
 for (const t of tracks) {
   for (const ev of t.events || []) {
@@ -58,6 +61,12 @@ for (const t of tracks) {
         const missing = races.filter((x, i) => NOW - x.end >= 20 * 60e3 && NOW - x.end <= HOURS * 3600e3 &&
           !res.some(r => r.race ? r.race === x.n : i === races.length - 1));
         if (missing.length) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "results", sessions: missing.map(x => ({ n: x.n, kind: x.kind, ended: x.end.toISOString() })) });
+      }
+      /* "Pick your podium" entry list for a series whose list cannot be read by a script (sr.gameManual): due from 8 days before until the race starts */
+      const firstRace0 = list.find(x => x.kind === "race"), gk = t.id + "|" + sr.id + "|" + (firstRace0 ? firstRace0.start.toISOString() : "");   // overlapping events at a track (Daytona lists two) share one entry
+      if (sr.gameManual && firstRace0 && !gameSeen.has(gk) && !ENTRIES.some(x => x.t === t.id && x.s === sr.id && x.d >= ev.d && x.d <= end)) {
+        gameSeen.add(gk); const firstRace = firstRace0;
+        if ((new Date(ev.d + "T00:00:00Z") - NOW) / 864e5 <= AHEAD && NOW < firstRace.start) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "entries", sessions: list.map(x => ({ n: x.n, start: x.start.toISOString() })) });
       }
       const entries = WATCH.filter(w => w.t === t.id && w.d === ev.d && w.s === sr.id), newest = entries.map(stamp).sort((a, b) => b - a)[0] || null;
       const daysTo = (new Date(ev.d + "T00:00:00Z") - NOW) / 864e5;

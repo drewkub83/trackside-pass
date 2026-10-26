@@ -47,7 +47,8 @@ for (const g of ENTRIES) {
   if (!race) { console.log(`skip ${g.t} ${g.d} ${g.s}: no race session in the schedule yet`); continue; }
   const qs = mine.filter((s) => kindOf(s.n) === "qualifying" && s.d >= g.d && s.d <= addDays(g.d, 8));
   const entries = {}; for (const c of g.classes) { entries[c.h] = {}; for (const r of c.cars) entries[c.h][r[0]] = typeof r[4] === "number" ? r[4] : 10; }
-  const res = RESULTS.filter((x) => x.t === g.t && x.d === g.d && x.s === g.s).pop() || null;
+  const allRes = RESULTS.filter((x) => x.t === g.t && x.d === g.d && x.s === g.s);   // a weekend with two races scores the race the picks lock at (same rule as gameResult() in js/app.js)
+  const res = allRes.some((x) => x.race) ? allRes.find((x) => x.race === race.n) || (allRes.length === 1 ? allRes[0] : null) : allRes.pop() || null;
   let result = null;
   if (res) { result = {}; for (const c of g.classes) { const p = podiumOf(res, c.h); if (p) result[c.h] = p; } if (!Object.keys(result).length) result = null; }
   const ser = SERIES.find((s) => s.id === g.s);

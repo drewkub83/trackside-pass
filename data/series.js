@@ -25,7 +25,7 @@
    GR Cup North America, GT America) since they share one event and one timing feed. Checked directly, Oct 5. */
 const SERIES = [
   {
-    id:"weathertech", match:/WeatherTech Championship|Petit Le Mans|Rolex 24|Twelve Hours/i, timing:"https://www.imsa.com/scoring/",
+    id:"weathertech", gameManual:true, match:/WeatherTech Championship|Petit Le Mans|Rolex 24|Twelve Hours/i, timing:"https://www.imsa.com/scoring/",
     name:"IMSA WeatherTech SportsCar Championship", tag:"4 classes on track at once",
     blurb:"IMSA's top series and the headline act. Four classes of cars race together on the same track at the same time, so faster cars are always lapping slower ones. Each class has its own winner, so pick a class to follow instead of only watching who is first overall.",
     cars:[

@@ -9,7 +9,11 @@
        as many places as the source actually gives (the Race Day hub shows the first 5, the Info tab all of
        them) -- use this when a real finishing order was published, which is the normal case; OR
      - the older winner/gap/podium shape (a single winner line plus an optional couple of names below it),
-       kept for entries where only the winner was confirmed. */
+       kept for entries where only the winner was confirmed.
+   "Pick your podium" (data/entries.js): when the weekend has an entry for the series there, the games are scored from these lines. Then (1) every group's `h` must be
+   EXACTLY a class name of that entry (IMSA: GTP, LMP2, GTD PRO, GTD; GT World Challenge America: Pro, Pro-Am, Am; Formula 1 and IndyCar: Race), never a variant such as
+   "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
+   (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
   { t:"cota", d:"2026-10-23", s:"f1", event:"United States Grand Prix",
     groups:[

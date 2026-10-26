@@ -1081,7 +1081,9 @@ function setPickP(g,cls,n,p){ const all=picksAll(), k=gameKey(g); all[k]=Object.
 function savePicks(g,cls,list){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} if(typeof schedulePickReminders==="function") schedulePickReminders(false); }
 const gameNum=str=>{ const m=/#(\d+)/.exec(str||""); return m?m[1]:null; };
 function gameResult(g){
-  const r=typeof RESULTS!=="undefined"?RESULTS.filter(x=>x.t===g.t&&x.d===g.d&&x.s===g.s).pop()||null:null; if(r) return r;
+  /* a weekend with two races (Carrera Cup, GT America sprint weekends, IndyCar's Milwaukee doubleheader) scores the race the picks lock at (gameLock): entries that name their race (`race`) are matched to it, older ones are not */
+  const all=typeof RESULTS!=="undefined"?RESULTS.filter(x=>x.t===g.t&&x.d===g.d&&x.s===g.s):[], lk=gameLock(g);
+  const r=all.some(x=>x.race)?(all.find(x=>x.race===(lk&&lk.n))||(all.length===1?all[0]:null)):(all.pop()||null); if(r) return r;   /* a lone entry also counts (an endurance race split into "hours 1-10" and "hours 11-24" is written once) */
   const race=liveRows(g,"main-race"); if(!race) return null;   /* the official classification, read live, until the permanent result is added */
   const by={}; race.forEach(x=>{ (by[x.cls]=by[x.cls]||[]).push(x); });
   return {live:true,groups:Object.keys(by).map(h=>({h,order:by[h].slice(0,5).map((x,i)=>`${i+1}. #${x.num} ${x.team} — ${x.drivers}`)}))};

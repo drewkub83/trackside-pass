@@ -1062,3 +1062,11 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 .hubEd.lifted .hubEdBody{animation:none}
 @keyframes hubWig{0%{transform:rotate(-.5deg)}50%{transform:rotate(.5deg)}100%{transform:rotate(-.5deg)}}
 @media (prefers-reduced-motion:no-preference){.hubEd:not(.lifted) .hubEdBody{animation:hubWig .3s ease-in-out infinite}.hubEd:nth-of-type(even):not(.lifted) .hubEdBody{animation-duration:.26s;animation-delay:-.1s}}
+
+/* weekend points recap pop-up */
+.rcpGame{padding:10px 0;border-top:1px solid var(--line)}
+.rcpHead{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.rcpHead b{font-size:16px}.rcpHead span{font-size:14px;color:var(--accent);font-weight:600}
+.rcpGame>small{display:block;color:var(--ink-2);font-size:12.5px;margin:2px 0 6px}
+.rcpCls{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.rcpCls i{font-style:normal;font-size:12px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-2);align-self:center;margin-right:2px}
+.rcp{font-size:12.5px;padding:3px 9px;border-radius:99px;background:var(--tint);color:var(--ink-2)}.rcp.hit{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--ink);font-weight:600}.rcp.near{background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--ink)}
+.rcpSeason{margin-top:8px}.rcpBtns{display:flex;gap:10px;margin-top:12px}.rcpBtns .btn{flex:1}

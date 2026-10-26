@@ -29,6 +29,8 @@ const K={
   alertsSeen:"paddock:alertsSeen",    /* whether the alerts permission prompt was shown */
   remind:"paddock:remind",        /* going-race reminders on/off */
   rainAlerts:"paddock:rainAlerts",    /* "0" = rain alerts switched off (the server also keeps the choice: profiles.rain_alerts) */
+  recapSeen:"paddock:recapSeen",      /* weekend points recaps already shown (game keys), so each pops up once */
+  sessFeed:"paddock:sessFeed",        /* the last qualifying order / race classification read from a series' results feed (kept so the hub still shows it with no signal) */
   checkinPush:"paddock:checkinPush",  /* "0" = no push when a friend checks in (the server also keeps the choice: profiles.checkin_push) */
   pickRemind:"paddock:pickRemind",    /* Thursday "lock in your picks" reminder on/off (iPhone/Android app) */
   goDays:"paddock:goDays",        /* how many days before a weekend the hub shows What to watch / the game */
@@ -103,10 +105,15 @@ function guessMin(n){ return /Qualif|Shootout/i.test(n)?25:/Race|8 Hour/i.test(n
 const SESS_CACHE=new WeakMap();
 function sessionsOf(t){ const src=t.sessions||[], hit=SESS_CACHE.get(t); if(hit&&hit.src===src&&hit.n===src.length&&hit.tz===t.tz) return hit.out; const out=sessionsBuild(t); SESS_CACHE.set(t,{src,n:src.length,tz:t.tz,out}); return out; }
 function sessionsBuild(t){ return (t.sessions||[]).map(s=>{ const start=localToDate(s.d,s.s,t.tz), est=!s.e; return {...s,start,est,end:est?new Date(+start+(s.m||guessMin(s.n))*60000):localToDate(s.d,s.e,t.tz)}; }).sort((a,b)=>a.start-b.start); }
-/* an event is over after its last session ends (or after its last calendar day when there is no session list) */
+/* an event is over after its last session ends (or after its last calendar day when there is no session list), but it stays "the weekend you are at"
+   until WEEKEND_GRACE_HOUR the next morning at the track (Monday morning after a Sunday race): the results, your points and the weekend's cards are
+   still there when you look back that evening, instead of the app having moved on to the next race */
+const WEEKEND_GRACE_HOUR=6, graceCache={};
+function graceEnd(t,e){ const k=t.id+"|"+e.d+"|"+t.tz; return graceCache[k]||(graceCache[k]=+localToDate(addDays(eventEnd(e),1),String(WEEKEND_GRACE_HOUR).padStart(2,"0")+":00",t.tz)); }
 function eventDone(t,e){
-  const last=eventEnd(e), ss=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=last);
-  return ss.length ? new Date()>new Date(Math.max(...ss.map(s=>+s.end))) : localToday()>last;
+  const last=eventEnd(e), ss=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=last), now=new Date();
+  const over=ss.length ? now>new Date(Math.max(...ss.map(s=>+s.end))) : localToday()>last;
+  return over&&now>=graceEnd(t,e);
 }
 /* the event weekend a track is "on" right now: its soonest unfinished event of any kind, plus anything that overlaps it (IMSA + IndyCar share a weekend).
    When that weekend ends it moves on to the next one by itself: no series has to be told about it. */
@@ -967,11 +974,11 @@ function openHubLiveYouTube(){ openLiveTiming(hubLiveUrl()); }
 function hubLiveHtml(){
   const head=`<div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Live now: ${esc(hubLive.name)} race</h4></div>`;
   const yt=(label,cls)=>`<button class="btn ${cls} hubLiveOpen" onclick="openHubLiveYouTube()">${label}</button>`;
-  if(!hubLive.playing) return head+`<div class="hubSessionSub" style="margin:4px 0 10px">Free on the series' YouTube channel.</div><button class="btn primary hubLivePlay" onclick="playHubLive()">Watch here</button> `+yt("Open in YouTube","quiet");
+  if(!hubLive.playing) return head+`<button class="btn primary hubLivePlay" style="margin-top:10px" onclick="playHubLive()">Watch here</button>`;
   if(hubLive.vid===null) return head+`<div class="liveWrap"><div class="liveFinding" style="position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:14px">Finding the stream…</div></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button>`;
   if(!hubLive.vid||!hubLive.embed) return head+`<div class="hubSessionSub" style="margin:4px 0 10px">${hubLive.vid?"The series only lets this stream play on YouTube itself, not inside other apps.":"Couldn't find the live video from here."}</div>`+yt("Watch on YouTube","primary")+` <button class="btn quiet hubLiveStop" onclick="stopHubLive()">Close</button>`;
   /* referrerpolicy: YouTube refuses to play embeds that arrive with no referrer (its "Error 153"), which an app web view can do */
-  return head+`<div class="liveWrap"><iframe src="https://www.youtube.com/embed/${hubLive.vid}?autoplay=1&playsinline=1&rel=0" title="${esc(hubLive.name)} live" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button> `+yt("Not playing? Open in YouTube","quiet");
+  return head+`<div class="liveWrap"><iframe src="https://www.youtube.com/embed/${hubLive.vid}?autoplay=1&playsinline=1&rel=0" title="${esc(hubLive.name)} live" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><button class="btn quiet hubLiveStop" onclick="stopHubLive()">Stop stream</button>`;
 }
 function playHubLive(){ hubLive.want=true; hubLive.playing=true; document.getElementById("hubLive").innerHTML=hubLiveHtml(); if(hubLive.vid===null) resolveHubLive(); }
 function stopHubLive(){ hubLive.want=false; hubLive.playing=false; hubLive.vid=null; hubLive.embed=true; document.getElementById("hubLive").innerHTML=hubLiveHtml(); }
@@ -988,7 +995,7 @@ async function refreshResults(){
     const fresh=new Function(await r.text()+";return RESULTS;")();
     if(!Array.isArray(fresh)||JSON.stringify(fresh)===JSON.stringify(RESULTS)) return;
     RESULTS.length=0; fresh.forEach(x=>RESULTS.push(x));
-    if(cur&&hubMode) renderHub();
+    if(cur&&hubMode) renderHub(); maybeWeekendRecap();
   }catch(e){}
 }
 /* ---- Live results ----
@@ -1149,6 +1156,32 @@ function gameSeason(year){
   rows.sort((a,b)=>b.g.d.localeCompare(a.g.d));
   return {rows,pts:rows.reduce((n,r)=>n+r.sc.pts,0),max:rows.reduce((n,r)=>n+r.sc.max,0),winners:rows.reduce((n,r)=>n+r.winners,0)};
 }
+/* ---- Weekend points recap: a pop-up inside the app (no push) the first time you open it after a weekend you played has an official result.
+   It shows once per game (K.recapSeen), for games whose race was within RECAP_DAYS, and only for weekends where you made picks. ---- */
+const RECAP_DAYS=7; let recapShowing=false;
+function recapSeenList(){ try{ return JSON.parse(LSget(K.recapSeen,"[]"))||[]; }catch(e){ return []; } }
+function weekendRecapRows(){
+  if(typeof ENTRIES==="undefined"||typeof RESULTS==="undefined") return []; const seen=recapSeenList(), today=localToday();
+  return ENTRIES.filter(g=>!seen.includes(gameKey(g))&&daysBetween(g.d,today)<=RECAP_DAYS&&RESULTS.some(r=>r.t===g.t&&r.d===g.d&&r.s===g.s))
+    .map(g=>({g,sc:gameScore(g)})).filter(x=>x.sc&&x.sc.cars>0).sort((a,b)=>a.g.d.localeCompare(b.g.d));
+}
+function weekendRecapHtml(rows){
+  const total=rows.reduce((n,r)=>n+r.sc.pts,0), max=rows.reduce((n,r)=>n+r.sc.max,0), y=rows[rows.length-1].g.d.slice(0,4), st=gameSeason(+y), nth=["1st","2nd","3rd"];
+  const word={hit:"right place",near:"on the podium",miss:"missed",open:"not settled yet"};
+  const block=({g,sc})=>{ const t=TRACKS.find(x=>x.id===g.t), win=sc.res&&sc.res.groups&&sc.res.groups[0]&&(sc.res.groups[0].order?sc.res.groups[0].order[0].replace(/^\d+\.\s*/,""):sc.res.groups[0].winner);
+    const cls=g.classes.filter(c=>(picksOf(g)[c.h]||[]).length).map(c=>`<div class="rcpCls">${g.classes.length>1?`<i>${esc(c.h)}</i>`:""}${(sc.per[c.h]||[]).map((m,i)=>`<span class="rcp ${m}">${nth[i]}: ${word[m]||m}${m==="hit"||m==="near"?` +${(sc.per[c.h+"#"]||[])[i]||0}`:""}</span>`).join("")}</div>`).join("");
+    return `<div class="rcpGame"><div class="rcpHead"><b>${esc(t?t.short:g.t)} · ${esc(watchSeriesName({s:g.s}))}</b><span>${sc.pts} of ${sc.max}</span></div>${win?`<small>Winner: ${esc(win)}</small>`:""}${cls}</div>`; };
+  return `<div class="mkick">Race weekend recap</div><h3 id="infoTitle">You scored ${total} point${total===1?"":"s"}</h3><p class="plRules">${rows.length>1?`Across ${rows.length} races, out of ${max} possible.`:`Out of ${max} possible.`} Scored against the official result.</p>${rows.map(block).join("")}
+    <p class="plRules rcpSeason">Your ${y} season: <b>${st.pts}</b> points over ${st.rows.length} weekend${st.rows.length===1?"":"s"}.</p>
+    <div class="rcpBtns"><button class="btn primary" onclick="closeInfo();homeTab('play')">See my season</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+}
+function maybeWeekendRecap(){
+  if(recapShowing) return; const m=document.getElementById("infoModal"), rw=document.getElementById("raceWeekModal"); if(!m||!m.hidden||(rw&&!rw.hidden)) return;
+  const rows=weekendRecapRows(); if(!rows.length) return;
+  recapShowing=true; try{ LSset(K.recapSeen,JSON.stringify(recapSeenList().concat(rows.map(r=>gameKey(r.g))).slice(-60))); }catch(e){}
+  document.getElementById("infoBody").innerHTML=weekendRecapHtml(rows); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
+  setTimeout(()=>{ recapShowing=false; },1000);
+}
 function gameRecordHtml(){
   const y=new Date().getFullYear(), st=gameSeason(y); if(!st.rows.length) return "";
   return `<div class="gmRecs"><h4>Your ${y} season</h4>${st.rows.map(r=>`<div class="gmRec"><span>${esc(r.name)}</span><b>${r.sc.pts}/${r.sc.max}</b></div>`).join("")}<div class="gmRec tot"><span>Total · ${st.winners} class winner${st.winners===1?"":"s"} called</span><b>${st.pts}</b></div></div>`;
@@ -1227,6 +1260,10 @@ function hubSessionCard(c){
     /* nothing left to show a countdown for: say when the next event is (the hub is the landing page, so this is
        what an off-season visit sees), or "no more sessions today" in the middle of an event weekend */
     const fo=focusAt(cur), away=fo?daysBetween(localToday(),fo.d):0;
+    if(fo&&away<=0&&ss.length&&ss.every(x=>x.end<=now)){   /* the weekend is over but still the one on screen (until the next morning): say so, and what comes next */
+      const after=(cur.events||[]).filter(e=>e.d>fo.end).sort((a,b)=>a.d.localeCompare(b.d))[0];
+      return `<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Weekend complete</h4><div class="hubSessionName">${esc([...new Set(fo.group.map(e=>e.e))].join(" · "))}</div><div class="hubSessionSub">${after?`Next here: ${esc(after.e)} · ${esc(fmtRange(after))}`:"Results and your points are below."}</div></div>${chev}</div></div>`;
+    }
     const sub=!fo?"No upcoming event listed":away>0?`${esc(fmtRange(fo.first))} · ${away===1?"tomorrow":"in "+away+" days"}`:"No more sessions today";
     sessionHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${fo&&away>0?"Next event":esc(cur.eventName||"This weekend")}</h4>${fo&&away>0?`<div class="hubSessionName">${esc(fo.first.e)}</div>`:""}<div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
   }
@@ -1335,7 +1372,11 @@ function hubResultsCard(c){
   /* uses every session ever listed for this track, not sessionsResolved() -- the instant the weekend's
      last session ends, focusAt(cur) flips to the track's NEXT event (possibly months away), which would
      make sessionsResolved() (and its date) empty right at the exact moment this card matters most. */
-  const doneAll=sessionsOf(cur).filter(s=>kindOf(s.n)==="race"&&s.end<=now&&now-s.end<=6*3600000).sort((a,b)=>b.end-a.end);
+  /* a race that is still inside its scheduled window counts as done once the series' results feed (see "Qualifying order and unofficial results" below) already has the classification */
+  const onNow=s=>{ const sr=seriesFor(s.n); if(!sr||!sr.sess||kindOf(s.n)!=="race"||s.start>now||now>=s.end) return false; sessWant[sr.sess+"|"+s.d]={sr,date:s.d}; const f=sessGet(sr,s.d); return !!(f&&f.result); };
+  /* a finished race keeps its card for 6 hours, or until the weekend is over (WEEKEND_GRACE_HOUR the next morning), whichever is later */
+  const weekendOn=s=>{ const ev=(cur.events||[]).find(e=>s.d>=e.d&&s.d<=eventEnd(e)); return !!ev&&!eventDone(cur,ev); };
+  const doneAll=sessionsOf(cur).filter(s=>kindOf(s.n)==="race"&&((s.end<=now&&(now-s.end<=6*3600000||weekendOn(s)))||onNow(s))).sort((a,b)=>b.end-a.end);
   const seenSr={}, doneRaces=doneAll.filter(s=>{ const r=seriesFor(s.n); if(!r||seenSr[r.id]) return false; seenSr[r.id]=1; return true; });
   let waitingRes=false;
   resultsHtml=doneRaces.map(jr=>{
@@ -1345,6 +1386,7 @@ function hubResultsCard(c){
     const all=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===evt.d&&r.s===sr.id):[];
     const res=all.some(r=>r.race)?all.find(r=>r.race===jr.n)||null:all.pop()||null;
     if(!res) waitingRes=true;
+    if(!res&&sr.sess){ sessWant[sr.sess+"|"+jr.d]={sr,date:jr.d}; const f=sessGet(sr,jr.d); if(f&&f.result) return sessUnofficialCard(sr,jr.d,f,c.chev); }
     /* until the result is in: the official timing page shows the final classification at once */
     const tl=sr.timing?{url:sr.timing}:TIMING_LINKS.find(x=>x.match.test(jr.n));
     const wait=sr.autoResults?"The race just ended. The official result usually shows here within the hour.":"The race just ended. The official result is added here from the race report, usually within an hour or two.";
@@ -1353,6 +1395,48 @@ function hubResultsCard(c){
   }).join("");
   if(waitingRes) refreshResults();
   return resultsHtml;
+}
+/* ---- Qualifying order and unofficial results from a series' results feed ----
+   A series with `sess` in data/series.js (Formula 1 so far) has a feed (netlify/functions/session.mjs, the Jolpica F1 API) that the hub reads while it is open: after qualifying
+   the "Qualifying order" card shows the top five and opens the full list; right after a race, "Unofficial results" shows the classification until our own data/results.js
+   entry (the official one) exists. The last answer is kept on the phone so the cards still show with no signal. The hub builders register what they need in sessWant. */
+const sessCache={}, SESS_POLL_MS=45000, sessAsked={}; let sessTimer=null, sessWant={}, sessOpen=null;
+function sessStored(){ try{ return JSON.parse(LSget(K.sessFeed,"{}"))||{}; }catch(e){ return {}; } }
+function sessGet(sr,date){ const k=sr.sess+"|"+date, c=sessCache[k]; if(c) return c.d; const o=sessStored()[k]; return o?o.d:null; }
+function sessSave(k,d){ const all=sessStored(); all[k]={d,t:Date.now()}; const out={}; Object.keys(all).sort((a,b)=>all[b].t-all[a].t).slice(0,6).forEach(x=>{ out[x]=all[x]; }); LSset(K.sessFeed,JSON.stringify(out)); }
+function sessFetch(sr,date){
+  const k=sr.sess+"|"+date;
+  return fetch(`${fnUrl("session")}?s=${encodeURIComponent(sr.sess)}&date=${date}`).then(r=>r.ok?r.json():null).then(d=>{ if(d&&(d.qualifying||d.result)){ sessCache[k]={t:Date.now(),d}; sessSave(k,d); return d; } return null; }).catch(()=>null);
+}
+const sessSig=d=>d?[(d.qualifying||[]).length,(d.result||[]).length,d.qualifying&&d.qualifying[0]&&d.qualifying[0].num,d.result&&d.result[0]&&d.result[0].num,d.result&&d.result.map(x=>x.pos+x.num).join("")].join("|"):"";
+function sessEnsure(){   /* after each hub render: read what the cards asked for now, then again every 45 s while the hub stays open */
+  if(!Object.keys(sessWant).length||!hubMode){ clearInterval(sessTimer); sessTimer=null; return; }
+  const run=ws=>{ Promise.all(ws.map(w=>{ const before=sessSig(sessGet(w.sr,w.date)); return sessFetch(w.sr,w.date).then(d=>!!d&&sessSig(d)!==before); })).then(ch=>{ if(ch.some(Boolean)&&hubMode){ renderHub(); if(sheetState==="shRes"&&sessOpen) renderSessSheet(); } }); };
+  const fresh=Object.entries(sessWant).filter(([k])=>!sessAsked[k]); fresh.forEach(([k])=>{ sessAsked[k]=true; }); if(fresh.length) run(fresh.map(x=>x[1]));
+  if(!sessTimer) sessTimer=setInterval(()=>{ if(!hubMode){ clearInterval(sessTimer); sessTimer=null; return; } run(Object.values(sessWant)); },SESS_POLL_MS);
+}
+const sessLine=x=>`${x.pos}. #${x.num} ${x.name} (${x.team})`;
+const sessAt=d=>{ try{ return new Date(d.fetchedAt).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}); }catch(e){ return ""; } };
+function hubGridCard(c){
+  const sr=c.sid&&SERIES.find(x=>x.id===c.sid); if(!sr||!sr.sess) return "";
+  const mine=c.ss.filter(x=>(seriesFor(x.n)||{}).id===sr.id), q=mine.filter(x=>kindOf(x.n)==="qualifying"), r=mine.filter(x=>kindOf(x.n)==="race");
+  if(!q.length||!r.length||q.some(x=>x.end>c.now)) return "";   /* every qualifying session of the series is over ... */
+  const gp=r[r.length-1]; if(gp.end<=c.now) return "";         /* ... and its last race (the one the grid is for) is not */
+  sessWant[sr.sess+"|"+gp.d]={sr,date:gp.d};
+  const d=sessGet(sr,gp.d); if(!d||!d.qualifying) return "";
+  return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${gp.d}','q')"><div class="hubCardRow"><div><h4>Qualifying order</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${c.chev}</div><p class="asof hubAsof">${esc(d.race)} · tap for every driver</p>${resultGroupHtml({h:"Qualifying",order:d.qualifying.slice(0,5).map(sessLine)},5)}</div>`;
+}
+function sessUnofficialCard(sr,date,d,chev){
+  return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${date}','r')"><div class="hubCardRow"><div><h4>Unofficial results</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${chev}</div><p class="asof hubAsof">Read from the series' results feed at ${esc(sessAt(d))}. Penalties can still change it; the official result replaces this. Tap for every driver.</p>${resultGroupHtml({h:"Race",order:d.result.slice(0,5).map(sessLine)},5)}</div>`;
+}
+function openSessSheet(key,kind){ sessOpen={key,kind}; renderSessSheet(); showSheet("shRes"); }
+function renderSessSheet(){
+  if(!sessOpen) return; const c=sessCache[sessOpen.key], o=sessStored()[sessOpen.key], d=c?c.d:o&&o.d, q=sessOpen.kind==="q"; if(!d) return;
+  const rows=q?d.qualifying:d.result; if(!rows) return;
+  document.getElementById("rsTitle").textContent=(q?"Qualifying order: ":"Unofficial results: ")+d.race;
+  document.getElementById("rsSub").textContent=q?`Read from the series' results feed at ${sessAt(d)}. Grid penalties are not applied here, so the official starting grid can differ.`:`Read from the series' results feed at ${sessAt(d)}. This is unofficial: penalties and protests can still change it, and the official result replaces it.`;
+  document.getElementById("rsTabs").innerHTML="";
+  document.getElementById("rsList").innerHTML=rows.map(x=>`<div class="rsRow"><span class="rsPos">${esc(x.pos)}</span><span class="gmNo">#${esc(x.num)}</span><span class="gmTxt"><b>${esc(x.name)}</b><small>${esc(x.team)}${!q&&x.grid?" · started "+esc(x.grid):""}</small></span><span class="rsTime">${esc(q?x.time:(x.time||x.status||""))}${q&&x.seg&&x.seg!=="Q3"?`<small>out in ${esc(x.seg)}</small>`:""}</span></div>`).join("");
 }
 const STREAM_TAIL_MIN=20;
 function hubLiveStream(c){
@@ -1407,7 +1491,7 @@ function hubBeforeWeekend(c){
 }
 /* ---- the Race Day hub's cards can be moved and hidden: Edit in the hub's top bar. Saved on this phone, the same for every track.
    With no changes and not editing, the cards come out in the default order exactly as before (no wrappers). ---- */
-const HUB_CARDS=[["session","Next on track"],["friends","Friends here"],["quick","I'm going"],["day","Plan your weekend"],["live","Live results"],["results","Results"],["game","Pick your podium"],["strip","Today's sessions"],["wx","Weather"],["timing","Live timing"],["actions","Shortcuts"],["watch","What to watch"],["standings","Standings"],["lastHere","Last time here"],["stream","Watch live"]];
+const HUB_CARDS=[["session","Next on track"],["friends","Friends here"],["quick","I'm going"],["day","Plan your weekend"],["live","Live results"],["results","Results"],["grid","Qualifying order"],["game","Pick your podium"],["strip","Today's sessions"],["wx","Weather"],["timing","Live timing"],["actions","Shortcuts"],["watch","What to watch"],["standings","Standings"],["lastHere","Last time here"],["stream","Watch live"]];
 let hubEditing=false, hubShownIds=[], hubDragging=false;
 function hubLayout(){ try{ const j=JSON.parse(LSget(K.hubLayout,"{}"))||{}; return {order:Array.isArray(j.order)?j.order:[],hidden:Array.isArray(j.hidden)?j.hidden:[]}; }catch(e){ return {order:[],hidden:[]}; } }
 function hubLayoutSave(l){ LSset(K.hubLayout,JSON.stringify(l)); renderHub(); }
@@ -1466,15 +1550,16 @@ function renderHub(){
   const ss=sessionsResolved(), now=new Date();
   const live=currentSession(ss,now), next=ss.find(s=>s.start>now);
   const chev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
-  const ctx={ss,now,live,next,chev,liveAll:ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000)};
+  const ctx={ss,now,live,next,chev,liveAll:ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000)}; sessWant={};
   const sessionHtml=hubSessionCard(ctx), stripHtml=hubTodayStrip(ctx), wxHtml=hubWeatherCard(), actionsHtml=hubActionTiles();
   const fs=hubFocusSeries(ctx); ctx.sid=fs.sid; ctx.fav=fs.fav;
   const watchHtml=hubWatchCard(ctx), standingsHtml=hubStandingsCard(ctx);
-  const resultsHtml=hubResultsCard(ctx); ctx.resultsHtml=resultsHtml;
+  const resultsHtml=hubResultsCard(ctx); ctx.resultsHtml=resultsHtml; const gridHtml=hubGridCard(ctx);
   const liveStreamHtml=hubLiveStream(ctx), liveTimingHtml=hubTimingCard(ctx);
   const {quickHtml,dayHtml,lastHereHtml}=hubBeforeWeekend(ctx);
   const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"", lv=liveSrc(), liveHtml=lv?liveCardHtml(lv,chev):""; if(lv) liveStart();
-  body.innerHTML=hubCompose([["session",sessionHtml],["friends",hubFriendsCard()],["quick",quickHtml],["day",dayHtml],["live",liveHtml],["results",resultsHtml],["game",gameHtml],["strip",stripHtml],["wx",wxHtml],["timing",liveTimingHtml],["actions",actionsHtml],["watch",watchHtml],["standings",standingsHtml],["lastHere",lastHereHtml],["stream",liveStreamHtml]]);
+  body.innerHTML=hubCompose([["session",sessionHtml],["friends",hubFriendsCard()],["quick",quickHtml],["day",dayHtml],["live",liveHtml],["results",resultsHtml],["grid",gridHtml],["game",gameHtml],["strip",stripHtml],["wx",wxHtml],["timing",liveTimingHtml],["actions",actionsHtml],["watch",watchHtml],["standings",standingsHtml],["lastHere",lastHereHtml],["stream",liveStreamHtml]]);
+  sessEnsure();
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
      every render unless we reposition it. */
@@ -1957,7 +2042,7 @@ function panTo(v){ view=clampView(v); fitted=null; if(!panRaf) panRaf=requestAni
 })();
 
 renderHome(); syncHomeTabs("home"); if(isWide()) showScreenWide("home");
-checkRaceWeek();
+checkRaceWeek(); setTimeout(maybeWeekendRecap,1500); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeout(maybeWeekendRecap,800); });
 
 /* ---- open straight at the track when you are there ----
    A web app cannot wake itself or run in the background, so this happens when you open it (or come back after a while).

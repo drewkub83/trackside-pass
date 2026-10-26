@@ -232,7 +232,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see GTAmerica.us."
 }
   ,{
-    id:"f1", autoResults:true, match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
+    id:"f1", autoResults:true, sess:"f1", match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
     name:"Formula 1", tag:"The top of single-seater racing",
     blurb:"The FIA Formula One World Championship, the highest level of single-seater racing. Eleven teams run two cars each at Grands Prix on circuits around the world, and every team designs and builds its own car, so the pace of the car matters as much as the driver. There are two titles: drivers and constructors (teams). 2026 brought a new generation of cars and two new teams, Audi and Cadillac.",
     cars:[

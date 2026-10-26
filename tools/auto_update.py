@@ -9,7 +9,7 @@ right now, then reports what changed (the workflow validates, commits and pushes
   25 minutes after the race is scheduled to end:           add the classification to data/results.js (re-read on later runs, so a post-race
                                                            penalty is picked up), then refresh the standings
   all weekend:                                             lower the venue's lap record if any session beat it (tools/gtwce_laprecords.py --weekend logic)
-  every run:                                               tools/indycar_update.py and tools/gtwca_update.py (IndyCar and GT World Challenge America: race result,
+  every run:                                               tools/feed_results.py (F1 Academy, Carrera Cup, F2, F3 race results from /api/session), tools/indycar_update.py and tools/gtwca_update.py (IndyCar and GT World Challenge America: race result,
                                                            standings, lap records, for races of the last 10 days at venues the app has an event for)
 Idempotent: running it again changes nothing. Options: --now 2026-10-17T20:00:00Z (pretend), --dry-run (say what would run).
 Needs node (reads the data files) and python 3.9+."""
@@ -106,7 +106,7 @@ def probe_sources():
     if st != old and not DRY: L.write(f, _j.dumps({"note": "Written by tools/auto_update.py when a source's state changes: whether the job's machine could read each series' own site.", "sources": st, "firstSeen": now.date().isoformat()}, indent=1) + "\n")
 probe_sources()
 # IndyCar and GT World Challenge America have their own readers (results, standings, lap records); each only acts on races of the last 10 days at venues the app has an event for
-for script in ("indycar_update.py", "gtwca_update.py", "f1_update.py"): run(script)
+for script in ("indycar_update.py", "gtwca_update.py", "f1_update.py", "feed_results.py", "fia_standings.py"): run(script)   # feed_results.py: F1 Academy, Carrera Cup, F2, F3 race results from the /api/session feed; fia_standings.py: F2 and F3 drivers' standings
 before_tracks = None
 changed = [f for f in before if before[f] != L.read(f)]
 if changed and not DRY: print("changed:", ", ".join(changed))   # the service worker VERSION is set by build.sh, no bump needed

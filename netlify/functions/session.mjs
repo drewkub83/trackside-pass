@@ -5,7 +5,8 @@
    because Jolpica dates a night race by its UTC day). Nothing is stored. */
 const JOLPICA = "https://api.jolpi.ca/ergast/f1/";
 const UA = { "user-agent": "Mozilla/5.0 (Trackside Pass results reader)" };
-const get = async (path) => { try { const r = await fetch(JOLPICA + path, { headers: UA }); return r.ok ? await r.json() : null; } catch (_) { return null; } };
+let why = "";   // the last failure, so an unreachable feed says why instead of "no race"
+const get = async (path) => { try { const r = await fetch(JOLPICA + path, { headers: UA }); if (!r.ok) { why = `feed answered ${r.status}`; return null; } return await r.json(); } catch (e) { why = "feed unreachable: " + String(e).slice(0, 80); return null; } };
 const day = (d) => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)) / 864e5;
 /* the same short names and team names as tools/f1_update.py (and formula1.com), so the cards read like our own results */
 const TEAMS = { "Red Bull": "Red Bull Racing", "RB F1 Team": "Racing Bulls", "Alpine F1 Team": "Alpine", "Haas F1 Team": "Haas", "Cadillac F1 Team": "Cadillac" }, NAMES = { "Andrea Kimi Antonelli": "Kimi Antonelli" };
@@ -19,7 +20,7 @@ export default async (req) => {
   if (!/^20\d\d-\d\d-\d\d$/.test(date)) return bad("bad date");
   const year = date.slice(0, 4), sched = await get(`${year}.json`), races = (sched && sched.MRData.RaceTable.Races) || [];
   const race = races.find((r) => Math.abs(day(r.date) - day(date)) <= 1);
-  if (!race) return bad("no race on that day", 404);
+  if (!race) return bad(why || "no race on that day", why ? 502 : 404);
   const [q, r] = await Promise.all([get(`${year}/${race.round}/qualifying.json`), get(`${year}/${race.round}/results.json`)]);
   const qr = q && q.MRData.RaceTable.Races[0] && q.MRData.RaceTable.Races[0].QualifyingResults, rr = r && r.MRData.RaceTable.Races[0] && r.MRData.RaceTable.Races[0].Results;
   const out = {

@@ -11,6 +11,22 @@
      - the older winner/gap/podium shape (a single winner line plus an optional couple of names below it),
        kept for entries where only the winner was confirmed. */
 const RESULTS = [
+  { t:"cota", d:"2026-10-23", s:"f1", event:"United States Grand Prix",
+    groups:[
+      { h:"Race", order:[
+        "1. #12 Kimi Antonelli (Mercedes)",
+        "2. #16 Charles Leclerc (Ferrari)",
+        "3. #3 Max Verstappen (Red Bull Racing)",
+        "4. #44 Lewis Hamilton (Ferrari)",
+        "5. #1 Lando Norris (McLaren)",
+        "6. #6 Isack Hadjar (Red Bull Racing)",
+        "7. #81 Oscar Piastri (McLaren)",
+        "8. #63 George Russell (Mercedes)",
+        "9. #30 Liam Lawson (Racing Bulls)",
+        "10. #10 Pierre Gasly (Alpine)"
+      ] }
+    ],
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), top ten of the Grand Prix on 2026-10-25. Sprint results are not included." },
   { t:"portimao", d:"2026-10-15", s:"gtwce", event:"GT World Challenge Europe: Portimão (Endurance Cup finale)",
     groups:[
       { h:"Pro", order:[

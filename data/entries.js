@@ -103,5 +103,33 @@ const ENTRIES = [
         ["5", "Gabriel Bortoleto", "Audi", "", 0.5, "Qualified 13th of 22. averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-25. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-25. Win chances are our own estimate, not betting odds. (automatic update)" },
+  { t:"mexico-city", d:"2026-10-30", s:"f1", oddsAsOf:"Before qualifying: recent form only (average points over each driver's last 6 races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Drivers who started the United States Grand Prix, with their official race numbers (Jolpica F1 API, a mirror of the FIA classification). Late changes are possible.",
+    classes:[
+      { h:"Race", cars:[
+        ["12", "Kimi Antonelli", "Mercedes", "", 36.2, "averaged 19.7 points a race over the last 6 Grands Prix", 0.787],
+        ["3", "Max Verstappen", "Red Bull Racing", "", 33.6, "averaged 19.3 points a race over the last 6 Grands Prix", 0.773],
+        ["16", "Charles Leclerc", "Ferrari", "", 6.7, "averaged 12.0 points a race over the last 6 Grands Prix", 0.48],
+        ["63", "George Russell", "Mercedes", "", 4.2, "averaged 9.8 points a race over the last 6 Grands Prix", 0.393],
+        ["44", "Lewis Hamilton", "Ferrari", "", 3.1, "averaged 8.5 points a race over the last 6 Grands Prix", 0.34],
+        ["1", "Lando Norris", "McLaren", "", 3.1, "averaged 8.5 points a race over the last 6 Grands Prix", 0.34],
+        ["6", "Isack Hadjar", "Red Bull Racing", "", 3.0, "averaged 8.3 points a race over the last 6 Grands Prix", 0.333],
+        ["81", "Oscar Piastri", "McLaren", "", 1.9, "averaged 6.3 points a race over the last 6 Grands Prix", 0.253],
+        ["30", "Liam Lawson", "Racing Bulls", "", 1.1, "averaged 3.7 points a race over the last 6 Grands Prix", 0.147],
+        ["41", "Arvid Lindblad", "Racing Bulls", "", 0.8, "averaged 2.2 points a race over the last 6 Grands Prix", 0.087],
+        ["43", "Franco Colapinto", "Alpine", "", 0.6, "averaged 1.3 points a race over the last 6 Grands Prix", 0.053],
+        ["10", "Pierre Gasly", "Alpine", "", 0.6, "averaged 1.2 points a race over the last 6 Grands Prix", 0.047],
+        ["27", "Nico Hülkenberg", "Audi", "", 0.6, "averaged 0.8 points a race over the last 6 Grands Prix", 0.033],
+        ["31", "Esteban Ocon", "Haas", "", 0.6, "averaged 0.7 points a race over the last 6 Grands Prix", 0.027],
+        ["14", "Fernando Alonso", "Aston Martin", "", 0.6, "averaged 0.7 points a race over the last 6 Grands Prix", 0.027],
+        ["87", "Oliver Bearman", "Haas", "", 0.5, "averaged 0.3 points a race over the last 6 Grands Prix", 0.013],
+        ["5", "Gabriel Bortoleto", "Audi", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["18", "Lance Stroll", "Aston Martin", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["23", "Alexander Albon", "Williams", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["55", "Carlos Sainz", "Williams", "", 0.5, "averaged 0.2 points a race over the last 6 Grands Prix", 0.007],
+        ["11", "Sergio Pérez", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["77", "Valtteri Bottas", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
+      ] }
+    ],
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-26. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

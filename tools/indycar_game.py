@@ -131,28 +131,39 @@ def build(race, history, track):
     cars_txt = ",\n".join("        [" + ", ".join(js(v) for v in r) + "]" for r in out)
     return qual, len(out), (f'  {{ t:{js(track)}, d:{js(race["_appday"])}, s:"indycar", oddsAsOf:{js(odds)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars_txt}\n      ] }}\n    ],\n    note:{js(note)} }}')
 
+OVAL_TRACKS = {"indianapolis-oval", "phoenix", "wwt-raceway", "milwaukee-mile"}
+def app_events(today):
+    """INDYCAR weekends in the app that start within 8 days or are under way: [{t, d, n, e}] (the app's calendar drives this, because INDYCAR's service has no race to read before its schedule is loaded)."""
+    js_txt = """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];const out=[];
+for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue } const t=T[0]; if(!t) continue;
+ for(const e of t.events||[]) if(/INDYCAR/i.test(e.s||'')) out.push({t:t.id,d:e.d,n:e.t||1,e:e.e||''}); } console.log(JSON.stringify(out))"""
+    import subprocess
+    evs = json.loads(subprocess.run(["node", "-e", js_txt], capture_output=True, text=True, cwd=D.ROOT).stdout or "[]")
+    return [e for e in evs if datetime.date.fromisoformat(e["d"]) - datetime.timedelta(days=8) <= today <= datetime.date.fromisoformat(e["d"]) + datetime.timedelta(days=e["n"] - 1)]
 def main():
-    today = now.date(); events = D.track_events()
+    today = now.date(); forced = opt("--event")
+    cands = [] if forced else app_events(today)
+    if not forced and not cands: print("no INDYCAR weekend within 8 days"); return
     history = seasons({str(today.year), str(today.year - 1), str(today.year - 2)})
     if not history: print("INDYCAR results service unreadable"); return
-    forced = opt("--event")
-    for race in history:
-        track = opt("--track") if forced and race["name"] == forced else (venue_of(race["name"]) if not forced else None)
-        if not track: continue
-        if forced and (race["name"] != forced): continue
-        day = race["date"]
-        if forced:
-            race["_appday"] = opt("--day", day.isoformat())
-        else:
-            appev = D.app_event(events, track, day.isoformat())
-            if not appev: continue
-            race["_appday"] = appev["d"]; evs = datetime.date.fromisoformat(appev["d"])
-            if not (evs - datetime.timedelta(days=8) <= today <= day): continue
-            if any(x["fin"] for x in race["rows"]): continue          # the race has been run: nothing left to pick
+    if forced:
+        race = next((r for r in history if r["name"] == forced), None)
+        if not race: print("no such event"); return
+        race["_appday"] = opt("--day", race["date"].isoformat()); todo = [(opt("--track"), race)]
+    else:
+        todo = []
+        for e in cands:
+            d0 = datetime.date.fromisoformat(e["d"]); race_day = d0 + datetime.timedelta(days=e["n"] - 1)
+            race = next((r for r in history if venue_of(r["name"]) == e["t"] and d0 <= r["date"] <= race_day), None)
+            if race and any(x["fin"] for x in race["rows"]): continue            # the race has been run: nothing left to pick
+            if not race:                                                          # the service has not loaded this weekend yet: build from the app's calendar and the latest field
+                race = {"date": race_day, "name": e["e"], "oval": e["t"] in OVAL_TRACKS, "rows": [], "ev": None, "sess": {}}
+            race["_appday"] = e["d"]; todo.append((e["t"], race))
+    for track, race in todo:
         res = build(race, history, track)
         if not res: print(f'{race["name"]}: no field to build from yet'); continue
         qual, n, text = res
-        print(f'{race["name"]} ({day}) -> {track}: {n} cars, {"after" if qual else "before"} qualifying')
+        print(f'{race["name"]} ({race["date"]}) -> {track}: {n} cars, {"after" if qual else "before"} qualifying')
         if PRINT: print(text)
         key = f'  {{ t:{js(track)}, d:{js(race["_appday"])}, s:"indycar"'
         if replace_entry("data/entries.js", lambda t: t.startswith(key), text): print("  entries: written" if not (DRY or PRINT) else "  entries: would write")

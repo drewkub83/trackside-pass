@@ -10,6 +10,34 @@
    the driver, not the car), so naming a fixed car number for someone who's since switched would be wrong --
    name the team/manufacturer instead and say so in `gap` if it's known (e.g. Laurin Heinrich below). */
 const STANDINGS = [
+  { s:"wec", asOf:"Current as of 2026-10-26, from fiawec.com (the series' own standings page).",
+    classes:[
+      { h:"Hypercar", rows:[
+        { pos:1, who:"#8 Brendon Hartley, Ryō Hirakawa, Sébastien Buemi", pts:114 },
+        { pos:2, who:"#7 Kamui Kobayashi, Mike Conway, Nyck de Vries", pts:97 },
+        { pos:3, who:"#15 Kevin Magnussen, Raffaele Marciello", pts:75 },
+        { pos:4, who:"#20 René Rast, Robin Frijns", pts:75 },
+        { pos:5, who:"#15 Dries Vanthoor", pts:69 },
+        { pos:6, who:"#50 Antonio Fuoco, Miguel Molina, Nicklas Nielsen", pts:69 },
+        { pos:7, who:"#20 Sheldon van der Linde", pts:65 },
+        { pos:8, who:"#51 Alessandro Pier Guidi, Antonio Giovinazzi, James Calado", pts:59 },
+        { pos:9, who:"#12 Norman Nato, Will Stevens", pts:58 },
+        { pos:10, who:"#35 Charles Milesi, Ferdinand Habsburg", pts:57 }
+      ] },
+      { h:"LMGT3", rows:[
+        { pos:1, who:"#33 TF Sport", pts:92 },
+        { pos:2, who:"#92 The Bend Manthey", pts:74 },
+        { pos:3, who:"#34 Racing Team Turkey By TF", pts:70 },
+        { pos:4, who:"#69 Team WRT", pts:66 },
+        { pos:5, who:"#21 Vista AF Corse", pts:64 },
+        { pos:6, who:"#27 Heart Of Racing Team", pts:62 },
+        { pos:7, who:"#10 Garage 59", pts:57 },
+        { pos:8, who:"#91 Manthey DK Engineering", pts:54 },
+        { pos:9, who:"#23 Heart Of Racing Team", pts:51 },
+        { pos:10, who:"#32 Team WRT", pts:48 }
+      ] }
+    ],
+    note:"(automatic update) Source: fiawec.com standings page, top ten of each table. Hypercar: crews (all drivers of a car share its points); LMGT3: teams, listed by car number. Check the site for the round count." },
   { s:"f3", asOf:"Current as of 2026-10-26, from www.fiaformula3.com (the series' own standings page).",
     classes:[
       { h:"Drivers", rows:[

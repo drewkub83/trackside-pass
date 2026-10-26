@@ -252,6 +252,26 @@ const SERIES = [
     fine:"A spectator summary based on Formula 1's published rules. For official details, see formula1.com."
   },
   {
+    id:"wec", autoResults:true, match:/FIA WEC|World Endurance/i,
+    name:"FIA World Endurance Championship", tag:"Hypercars and GT cars racing for hours",
+    blurb:"The FIA World Endurance Championship (WEC) races long-distance sports cars around the world, with the 24 Hours of Le Mans as its centrepiece. Two classes share the track: Hypercars at the front and LMGT3 production-based GT cars behind them, and each class has its own result. Most rounds are six hours long.",
+    cars:[
+      {n:"Hypercar", full:"Hypercar", type:"Top class: prototype sports cars built by manufacturers", c:"#B03A2E", fg:"#FFFFFF", pace:"Fastest",
+       text:"The fastest cars in the championship, entered by car makers. The provisional entry for the 2026 finale at Monza lists 17 Hypercars from eight makes: Alpine, Aston Martin, BMW, Cadillac, Ferrari, Genesis, Peugeot and Toyota. The series balances the cars (Balance of Performance) so the different makes stay close.",
+       spot:"Low, wide prototypes with closed cockpits and covered wheels, built to a different design by each maker. Tell them apart by number and colours: the entry list pairs each team's two or three cars."},
+      {n:"LMGT3", full:"LMGT3", type:"GT cars based on road cars", c:"#2E7D6B", fg:"#FFFFFF", pace:"Quick",
+       text:"Production-based GT cars run by teams. The Monza entry lists 18 cars from nine makes: Aston Martin, BMW, Chevrolet Corvette, Ferrari, Ford, Lexus, McLaren, Mercedes-AMG and Porsche.",
+       spot:"They look like road cars with racing wings and run slower than the Hypercars, so the fast cars lap them again and again. Watch the different classes race separately within the same race."}
+    ],
+    rule:"Each car has three drivers who share it. Every driver is rated Platinum, Gold, Silver or Bronze (P, G, S or B on the entry list): in the Monza entry list every LMGT3 crew includes a Bronze-rated driver.",
+    watch:{
+      practice:"Three free practice sessions: two on Friday and one on Saturday at Monza.",
+      qualifying:"Qualifying is run separately for LMGT3 and for Hypercar, each followed by a Hyperpole session that sets the front of that class's grid.",
+      race:"A long race (six hours at Monza, 11:00 to 17:00 local time). Cars from both classes are on track together, each class has its own winner, and the drivers change during pit stops."
+    },
+    fine:"A spectator summary from fiawec.com and the Monza provisional entry list (version 1, Oct 20, 2026). For official details, see fiawec.com."
+  },
+  {
     id:"f1academy", sess:"f1academy", match:/F1 Academy/i, timing:"https://www.f1academy.com/About/Live-Timing",
     name:"F1 Academy", tag:"All-female, one car for everyone",
     blurb:"A single-seater series for young women, run by Formula 1 as a step up from karting. Every driver has the same car, so results come down to the driver and the team. It races on Formula 1 weekends, and many of its cars carry the colours of Formula 1 teams.",

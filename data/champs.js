@@ -87,6 +87,12 @@ const CHAMPS = [
     note:"Historic Formula 1 cars at selected Grand Prix weekends." },
   { id:"hsr", region:"na", name:"HSR", tile:"HSR", full:"Historic Sportscar Racing", match:/HSR/i, optIn:true,
     note:"Vintage and historic sports and race cars, with its own race weekends at Daytona, Sebring, Road Atlanta and Watkins Glen. Dates come from HSR's published schedule; several are still provisional and can change." }
+  ,{ id:"wec", region:"world", name:"WEC", tile:"WEC", full:"FIA World Endurance Championship", match:/FIA WEC|World Endurance/i, guide:"wec",
+    note:"The 2026 season ends at Monza (Nov 6-8). The 2027 calendar has nine rounds, from the Qatar 1812km (Mar 25-27) to the 8 Hours of Bahrain (Nov 4-6), with the 24 Hours of Le Mans in June. Dates and venues come from fiawec.com (checked Oct 26, 2026); the 2027 session times are not published yet. Le Mans and Fuji show Map coming soon until their maps are added.",
+    stops:[
+      { id:"le-mans", short:"Le Mans", place:"Le Mans, France", kind:"Road course", e:"24 Hours of Le Mans", d:"2027-06-12", t:2 },
+      { id:"fuji", short:"Fuji", place:"Oyama, Shizuoka, Japan", kind:"Road course", e:"6 Hours of Fuji", d:"2027-09-24", t:3 }
+    ] }
   ,{ id:"f1", region:"world", name:"Formula 1", tile:"F1", full:"FIA Formula One World Championship", match:/Formula 1/i, guide:"f1",
     note:"The 2026 season has six races left, starting at Austin (Oct 23-25), where Mercedes' Kimi Antonelli leads the drivers' championship by 102 points. The 2027 calendar, announced Sep 16, 2026, has 24 Grands Prix from Bahrain (Mar 12-14) to Abu Dhabi (Dec 10-12), with Portimão returning and Spain moving to Madrid. Dates in the Middle East can still change. Circuits show Map coming soon until their maps are added.",
     stops:[

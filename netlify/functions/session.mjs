@@ -1,7 +1,7 @@
 /* Qualifying order and race classification for a race weekend, read from the series' own published results and returned as small JSON:
    Formula 1 from the Jolpica F1 API (api.jolpi.ca, an Ergast-compatible mirror of the FIA's published results), IndyCar from INDYCAR's results service
    (www.indycar.com/api/results, the one tools/indycar_update.py uses), F1 Academy from the series' own results pages (their embedded page data says whether a result is
-   official), Porsche Carrera Cup North America from the series' results page (porschecarreracup.us/results), FIA Formula 2 and Formula 3 from their race pages. The app uses it for the Race Day hub's "Starting grid" card and for "Unofficial results" in the minutes
+   official), Porsche Carrera Cup North America from the series' results page (porschecarreracup.us/results), FIA Formula 2 and Formula 3 from their race pages, the FIA World Endurance Championship from fiawec.com's session results pages (one list per class). The app uses it for the Race Day hub's "Starting grid" card and for "Unofficial results" in the minutes
    before our own data/results.js entry (written by tools/f1_update.py) exists. It only fetches that one host; the answer is cached for 30 s so many
    phones cost one request. GET /api/session?s=f1&date=2026-10-25 (the race day in the track's own time zone; the race is matched within one day,
    because Jolpica dates a night race by its UTC day). Nothing is stored. */
@@ -155,6 +155,42 @@ async function fia(kind, date, name, track) {
   });
 }
 
+/* FIA World Endurance Championship: the race page (fiawec.com/en/race/<event>-<year>) links every session's results page (/en/page/resultats-1?raceId=N&sessionId=M), a plain table
+   for ONE class (the page header says "Hypercar - Final" or "LMGT3 - Provisional"-style). The qualifying order of a class is its Hyperpole result for the top places, then the rest of
+   its Qualifying result; the race result comes from the race summary page (/en/race/summary/<id>, both classes) once it exists, else the race session page (the class it shows).
+   Rows carry `cls`. The event page is found from the track and the year. */
+const WEC = "https://www.fiawec.com";
+const WEC_KEY = { monza: "monza", lusail: "qatar", imola: "imola", silverstone: "silverstone", "spa-francorchamps": "spa", interlagos: "sao-paulo", cota: "lone-star", bahrain: "bahrain", fuji: "fuji", "le-mans": "le-mans", "barcelona-catalunya": "barcelona" };
+const cell = (c) => sp(String(c).replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&#0?39;/g, "'").replace(/&[a-z]+;/g, " "));
+const wecTables = (h) => [...h.matchAll(/<table[\s\S]*?<\/table>/g)].map((m) => {
+  const rows = [...m[0].matchAll(/<tr[\s\S]*?<\/tr>/g)].map((tr) => [...tr[0].matchAll(/<t[dh][\s\S]*?<\/t[dh]>/g)].map((c) => cell(c[0])));
+  const hd = [...h.slice(Math.max(0, m.index - 600), m.index).matchAll(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/g)].pop();
+  return { head: hd ? cell(hd[1]) : "", rows };
+});
+const wecRows = (rows, cls) => { const h = rows[0] || [], ip = h.indexOf("Pos."), inn = h.indexOf("N°"), it = h.findIndex((x) => /^Team/.test(x)), ib = h.indexOf("Best lap"), ig = h.indexOf("Gap"); if (ip < 0 || inn < 0 || it < 0) return [];
+  return rows.slice(1).filter((r) => /^\d+$/.test(r[ip] || "")).map((r) => ({ pos: r[ip], num: String(r[inn]).replace("#", ""), name: titleCase(r[it]), team: "", cls, time: ib >= 0 ? r[ib] || "" : "", gap: ig >= 0 ? r[ig] : "" })); };
+const KEEP = new Set(["BMW", "WRT", "TF", "AF", "DK", "ASP", "AMG", "GMR", "USA", "HRT", "M"]);
+const titleCase = (n) => sp(n).split(" ").map((w) => (KEEP.has(w) ? w : w === "TOTALENERGIES" ? "TotalEnergies" : w === w.toUpperCase() || w === w.toLowerCase() ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w)).join(" ");
+async function wec(date, name, track) {
+  const key = WEC_KEY[track]; if (!key) return reply({ error: "unknown venue" }, 400);
+  const year = date.slice(0, 4), home = await page(`${WEC}/en/`), slug = [...home.matchAll(/\/en\/race\/([a-z0-9-]+)/g)].map((m) => m[1]).find((x) => x.endsWith("-" + year) && x.includes(key) && !/prologue/.test(x));
+  if (!slug) return reply({ error: "no WEC round there that year" }, 404);
+  const rp = await page(`${WEC}/en/race/${slug}`), sessions = [];
+  for (const m of rp.matchAll(/resultats-1\?raceId=(\d+)&amp;sessionId=(\d+)/g)) { const pre = rp.slice(Math.max(0, m.index - 4000), m.index), lab = /((?:Free Practice \d|Qualifying - [A-Z0-9]+|Hyperpole - [A-Z0-9]+|Race))\s+\d{1,2}:\d{2}\s*[AP]M\s*$/i.exec(cell(pre.slice(0, pre.lastIndexOf("<a")))); if (lab) sessions.push({ label: lab[1], race: m[1], id: m[2] }); }
+  const grab = async (label) => { const x = sessions.find((y) => y.label.toLowerCase() === label.toLowerCase()); if (!x) return null; const h = await page(`${WEC}/en/page/resultats-1?raceId=${x.race}&sessionId=${x.id}`), t = wecTables(h)[0]; if (!t) return null; const cls = /LMGT3/i.test(h.slice(h.indexOf("text-uppercase"), h.indexOf("text-uppercase") + 400)) || /LMGT3/.test(label) ? "LMGT3" : "Hypercar"; return { rows: wecRows(t.rows, /HYPERCAR/i.test(label) ? "Hypercar" : /LMGT3/i.test(label) ? "LMGT3" : cls), final: /-\s*Final\b/.test(cell(h)) }; };
+  const order = async (cls, tag) => { const [hp, q] = await Promise.all([grab(`Hyperpole - ${tag}`), grab(`Qualifying - ${tag}`)]); if (!q && !hp) return null; const seen = new Set((hp ? hp.rows : []).map((r) => r.num)), rows = [...(hp ? hp.rows : []), ...((q ? q.rows : []).filter((r) => !seen.has(r.num)))].map((r, i) => ({ ...r, pos: String(i + 1) })); return { rows, final: !!((hp && hp.final) || (q && q.final)) && (!hp || hp.final) && (!q || q.final) }; };
+  const [qh, ql] = await Promise.all([order("Hypercar", "HYPERCAR"), order("LMGT3", "LMGT3")]);
+  const qual = [...(qh ? qh.rows : []), ...(ql ? ql.rows : [])];
+  let result = null, resultOfficial; const sm = /\/en\/race\/summary\/(\d+)/.exec(rp);
+  if (sm) { const tabs = wecTables(await page(`${WEC}/en/race/summary/${sm[1]}`)); result = []; for (const t of tabs) { const c = /^(Hypercar|LMGT3) results/.exec(t.head); if (c) result.push(...wecRows(t.rows, c[1])); } if (!result.length) result = null; else resultOfficial = true; }
+  if (!result && /^race/i.test(String(name).replace(/\s*-.*$/, "")) ) { const r = await grab("Race"); if (r && r.rows.length) { result = r.rows; resultOfficial = r.final; } }
+  return reply({
+    s: "wec", season: year, race: slug.replace(/-\d{4}$/, "").split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "), date, fetchedAt: new Date().toISOString(),
+    qualifying: qual.length ? qual : null, qualifyingOfficial: qual.length ? !!(qh && qh.final) && (!ql || ql.final) : undefined,
+    result: result && result.length ? result.map((r) => ({ pos: r.pos, num: r.num, name: r.name, team: "", cls: r.cls, grid: "", time: r.gap && r.gap !== "-" ? "+" + String(r.gap).replace(/^\+/, "") : "", status: "", laps: "" })) : null, resultOfficial,
+  });
+}
+
 export default async (req) => {
   const u = new URL(req.url), s = (u.searchParams.get("s") || "").toLowerCase(), date = u.searchParams.get("date") || "";
   if (!/^20\d\d-\d\d-\d\d$/.test(date)) return reply({ error: "bad date" }, 400);
@@ -164,5 +200,6 @@ export default async (req) => {
   if (s === "f1academy") return f1academy(date, name);
   if (s === "carrera") return carrera(date, name, track);
   if (s === "f2" || s === "f3") return fia(s, date, name, track);
+  if (s === "wec") return wec(date, name, track);
   return reply({ error: "unknown series" }, 400);
 };

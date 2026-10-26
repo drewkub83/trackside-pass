@@ -252,7 +252,7 @@ const SERIES = [
     fine:"A spectator summary based on Formula 1's published rules. For official details, see formula1.com."
   },
   {
-    id:"wec", autoResults:true, match:/FIA WEC|World Endurance/i,
+    id:"wec", sess:"wec", autoResults:true, match:/FIA WEC|World Endurance/i,
     name:"FIA World Endurance Championship", tag:"Hypercars and GT cars racing for hours",
     blurb:"The FIA World Endurance Championship (WEC) races long-distance sports cars around the world, with the 24 Hours of Le Mans as its centrepiece. Two classes share the track: Hypercars at the front and LMGT3 production-based GT cars behind them, and each class has its own result. Most rounds are six hours long.",
     cars:[

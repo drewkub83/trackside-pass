@@ -1417,7 +1417,11 @@ function sessEnsure(){   /* after each hub render: read what the cards asked for
   const fresh=Object.entries(sessWant).filter(([k])=>!sessAsked[k]); fresh.forEach(([k])=>{ sessAsked[k]=true; }); if(fresh.length) run(fresh.map(x=>x[1]));
   if(!sessTimer) sessTimer=setInterval(()=>{ if(!hubMode){ clearInterval(sessTimer); sessTimer=null; return; } run(Object.values(sessWant)); },SESS_POLL_MS);
 }
-const sessLine=x=>`${x.pos}. #${x.num} ${x.name} (${x.team})`;
+const sessLine=x=>`${x.pos}. #${x.num} ${x.name}${x.team?` (${x.team})`:""}`;
+/* a feed that has classes (the WEC's Hypercar and LMGT3) gives rows with `cls`: split them, in order of first appearance; without classes it is one list */
+const sessByClass=rows=>{ const m=new Map(); (rows||[]).forEach(r=>{ const k=r.cls||""; if(!m.has(k)) m.set(k,[]); m.get(k).push(r); }); return [...m.entries()]; };
+const sessGroupsHtml=(rows,title,cap)=>sessByClass(rows).map(([c,rs])=>resultGroupHtml({h:c||title,order:rs.slice(0,cap).map(sessLine)},cap)).join("");
+let sessCls="";
 const sessAt=d=>{ try{ return new Date(d.fetchedAt).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"}); }catch(e){ return ""; } };
 function hubGridCard(c){
   const sr=c.sid&&SERIES.find(x=>x.id===c.sid); if(!sr||!sr.sess) return "";
@@ -1426,10 +1430,10 @@ function hubGridCard(c){
   const gp=r[r.length-1]; if(gp.end<=c.now) return "";         /* ... and its last race (the one the grid is for) is not */
   sessWant[sr.sess+"|"+gp.d]={sr,date:gp.d,name:gp.n,track:cur.id};
   const d=sessGet(sr,gp.d); if(!d||!d.qualifying) return "";
-  return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${gp.d}','q')"><div class="hubCardRow"><div><h4>Qualifying order</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${c.chev}</div><p class="asof hubAsof">${esc(d.race)} · tap for every driver</p>${resultGroupHtml({h:"Qualifying",order:d.qualifying.slice(0,5).map(sessLine)},5)}</div>`;
+  return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${gp.d}','q')"><div class="hubCardRow"><div><h4>Qualifying order</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${c.chev}</div><p class="asof hubAsof">${esc(d.race)} · tap for every driver</p>${sessGroupsHtml(d.qualifying,"Qualifying",sessByClass(d.qualifying).length>1?3:5)}</div>`;
 }
 function sessUnofficialCard(sr,date,d,chev){
-  return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${date}','r')"><div class="hubCardRow"><div><h4>${d.resultOfficial?"Results":"Unofficial results"}</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${chev}</div><p class="asof hubAsof">${d.resultOfficial?`Marked official by the series, read at ${esc(sessAt(d))}. Tap for every driver.`:`Read from the series' results feed at ${esc(sessAt(d))}. Penalties can still change it; the official result replaces this. Tap for every driver.`}</p>${resultGroupHtml({h:"Race",order:d.result.slice(0,5).map(sessLine)},5)}</div>`;
+  return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${date}','r')"><div class="hubCardRow"><div><h4>${d.resultOfficial?"Results":"Unofficial results"}</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${chev}</div><p class="asof hubAsof">${d.resultOfficial?`Marked official by the series, read at ${esc(sessAt(d))}. Tap for every driver.`:`Read from the series' results feed at ${esc(sessAt(d))}. Penalties can still change it; the official result replaces this. Tap for every driver.`}</p>${sessGroupsHtml(d.result,"Race",sessByClass(d.result).length>1?3:5)}</div>`;
 }
 function openSessSheet(key,kind){ sessOpen={key,kind}; renderSessSheet(); showSheet("shRes"); }
 function renderSessSheet(){
@@ -1438,8 +1442,10 @@ function renderSessSheet(){
   const off=q?d.qualifyingOfficial:d.resultOfficial;
   document.getElementById("rsTitle").textContent=(q?"Qualifying order: ":off?"Results: ":"Unofficial results: ")+d.race;
   document.getElementById("rsSub").textContent=q?`Read from the series' results feed at ${sessAt(d)}${off?", marked official by the series":""}. Grid penalties are not applied here, so the official starting grid can differ.`:off?`Marked official by the series, read from its results feed at ${sessAt(d)}.`:`Read from the series' results feed at ${sessAt(d)}. This is unofficial: penalties and protests can still change it, and the official result replaces it.`;
-  document.getElementById("rsTabs").innerHTML="";
-  document.getElementById("rsList").innerHTML=rows.map(x=>`<div class="rsRow"><span class="rsPos">${esc(x.pos)}</span><span class="gmNo">#${esc(x.num)}</span><span class="gmTxt"><b>${esc(x.name)}</b><small>${esc(x.team)}${x.cls?" · "+esc(x.cls):""}${!q&&x.grid?" · started "+esc(x.grid):""}</small></span><span class="rsTime">${esc(q?x.time:(x.time||x.status||""))}${q&&x.seg&&x.seg!=="Q3"?`<small>out in ${esc(x.seg)}</small>`:""}</span></div>`).join("");
+  const cl=sessByClass(rows).map(x=>x[0]).filter(Boolean); if(cl.length&&!cl.includes(sessCls)) sessCls=cl[0];
+  document.getElementById("rsTabs").innerHTML=cl.length>1?cl.map(c=>`<button class="gmTab${c===sessCls?" on":""}" onclick="sessCls='${c}';renderSessSheet()">${esc(c)}</button>`).join(""):"";
+  const shown=cl.length>1?rows.filter(x=>x.cls===sessCls):rows;
+  document.getElementById("rsList").innerHTML=shown.map(x=>`<div class="rsRow"><span class="rsPos">${esc(x.pos)}</span><span class="gmNo">#${esc(x.num)}</span><span class="gmTxt"><b>${esc(x.name)}</b><small>${esc(x.team||"")}${x.cls&&cl.length<2?(x.team?" · ":"")+esc(x.cls):""}${!q&&x.grid?" · started "+esc(x.grid):""}</small></span><span class="rsTime">${esc(q?x.time:(x.time||x.status||""))}${q&&x.seg&&x.seg!=="Q3"?`<small>out in ${esc(x.seg)}</small>`:""}</span></div>`).join("");
 }
 const STREAM_TAIL_MIN=20;
 function hubLiveStream(c){

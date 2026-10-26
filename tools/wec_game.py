@@ -88,7 +88,7 @@ def season_history(year, before_slug):
         slugs.append(s)
     out = []
     for s in slugs:
-        m = re.search(r"/en/race/summary/(\d+)", get(f"/en/race/{s}"))
+        pg = get(f"/en/race/{s}"); rid = re.search(r"raceId=(\d+)", pg); m = re.search(r"/en/race/summary/(%s)\b" % rid.group(1), pg) if rid else None   # the round's own summary
         if not m: continue
         res = {}
         for hd, rows in tables(get(f"/en/race/summary/{m.group(1)}")):
@@ -169,7 +169,7 @@ def main():
     if opt("--slug"): todo = [(opt("--track"), opt("--day"), opt("--slug"))]
     else:
         evs = json.loads(subprocess.run(["node", "-e", """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];const out=[];
-for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue } const t=T[0]; if(!t) continue;
+for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue } const t=T[0]; if(!t) continue;
  for(const e of t.events||[]) if(/FIA WEC|World Endurance/i.test(e.s||'')) out.push({t:t.id,d:e.d,n:e.t||1,e:e.e||''}); } console.log(JSON.stringify(out))"""], capture_output=True, text=True, cwd=D.ROOT).stdout or "[]")
         for e in evs:
             d = datetime.date.fromisoformat(e["d"])

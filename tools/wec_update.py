@@ -78,7 +78,7 @@ def result_entry(track, day, event, tabs, src):
     return f'  {{ t:{js(track)}, d:{js(day)}, s:"wec", event:{js(event)},\n    groups:[\n{body}\n    ],\n    note:{js(note)} }}'
 def do_results():
     evs = json.loads(subprocess.run(["node", "-e", """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];const out=[];
-for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue } const t=T[0]; if(!t) continue;
+for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue } const t=T[0]; if(!t) continue;
  for(const e of t.events||[]) if(/FIA WEC|World Endurance/i.test(e.s||'')) out.push({t:t.id,d:e.d,n:e.t||1,e:e.e||''}); } console.log(JSON.stringify(out))"""], capture_output=True, text=True, cwd=D.ROOT).stdout or "[]")
     todo = []
     if opt("--slug"): todo = [(opt("--track"), opt("--day"), opt("--slug"), opt("--slug"))]
@@ -87,7 +87,8 @@ for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\\\.js$/.test(f)||skip.
             d = datetime.date.fromisoformat(e["d"])
             if d <= now.date() <= d + datetime.timedelta(days=e["n"] + 9): todo.append((e["t"], e["d"], slug(e["e"], d.year), e["e"]))
     for track, day, sl, name in todo:
-        page = get(f"/en/race/{sl}"); m = re.search(r"/en/race/summary/(\d+)", page)
+        page = get(f"/en/race/{sl}"); rid = re.search(r"raceId=(\d+)", page)   # the page links every round's summary: only this round's own id counts
+        m = re.search(r"/en/race/summary/(%s)\b" % rid.group(1), page) if rid else None
         if not m: print(f"{sl}: no summary page yet"); continue
         tabs = tables(get(f"/en/race/summary/{m.group(1)}")); text = result_entry(track, day, name, tabs, f"race/summary/{m.group(1)}")
         if not text: print(f"{sl}: the summary page has no class tables yet"); continue

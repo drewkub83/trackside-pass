@@ -181,7 +181,7 @@ async function wec(date, name, track) {
   const order = async (cls, tag) => { const [hp, q] = await Promise.all([grab(`Hyperpole - ${tag}`), grab(`Qualifying - ${tag}`)]); if (!q && !hp) return null; const seen = new Set((hp ? hp.rows : []).map((r) => r.num)), rows = [...(hp ? hp.rows : []), ...((q ? q.rows : []).filter((r) => !seen.has(r.num)))].map((r, i) => ({ ...r, pos: String(i + 1) })); return { rows, final: !!((hp && hp.final) || (q && q.final)) && (!hp || hp.final) && (!q || q.final) }; };
   const [qh, ql] = await Promise.all([order("Hypercar", "HYPERCAR"), order("LMGT3", "LMGT3")]);
   const qual = [...(qh ? qh.rows : []), ...(ql ? ql.rows : [])];
-  let result = null, resultOfficial; const sm = /\/en\/race\/summary\/(\d+)/.exec(rp);
+  let result = null, resultOfficial; const rid = (/raceId=(\d+)/.exec(rp) || [])[1], sm = rid && rp.includes("/en/race/summary/" + rid) ? [null, rid] : null;   // the round's OWN summary: the page also links every other round's
   if (sm) { const tabs = wecTables(await page(`${WEC}/en/race/summary/${sm[1]}`)); result = []; for (const t of tabs) { const c = /^(Hypercar|LMGT3) results/.exec(t.head); if (c) result.push(...wecRows(t.rows, c[1])); } if (!result.length) result = null; else resultOfficial = true; }
   if (!result && /^race/i.test(String(name).replace(/\s*-.*$/, "")) ) { const r = await grab("Race"); if (r && r.rows.length) { result = r.rows; resultOfficial = r.final; } }
   return reply({

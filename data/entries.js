@@ -131,5 +131,48 @@ const ENTRIES = [
         ["77", "Valtteri Bottas", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-26. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-26. Win chances are our own estimate, not betting odds. (automatic update)" },
+  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-10-26. Late changes are possible.",
+    classes:[
+      { h:"Hypercar", cars:[
+        ["8", "Toyota Racing", "Sébastien Buemi / Brendon Hartley / Ryō Hirakawa", "Toyota TR010 Hybrid", 9.1, "averaged top 33% of Hypercar over 7 earlier races this season", 0.667],
+        ["15", "BMW M Team WRT", "Kevin Magnussen / Raffaele Marciello / Dries Vanthoor", "BMW M Hybrid V8", 8.4, "averaged top 36% of Hypercar over 7 earlier races this season", 0.638],
+        ["7", "Toyota Racing", "Mike Conway / Kamui Kobayashi / Nyck de Vries", "Toyota TR010 Hybrid", 7.6, "averaged top 40% of Hypercar over 7 earlier races this season", 0.604],
+        ["35", "Alpine Endurance Team", "Charles Milesi / Ferdinand Habsburg", "Alpine A424", 7.5, "averaged top 40% of Hypercar over 7 earlier races this season", 0.599],
+        ["50", "Ferrari AF Corse", "Antonio Fuoco / Miguel Molina / Nicklas Nielsen", "Ferrari 499P", 7.2, "averaged top 41% of Hypercar over 7 earlier races this season", 0.589],
+        ["12", "Cadillac Hertz Team Jota", "Will Stevens / Norman Nato / Alex Lynn", "Cadillac V-Series.R", 7.1, "averaged top 42% of Hypercar over 7 earlier races this season", 0.585],
+        ["20", "BMW M Team WRT", "Robin Frijns / René Rast / Sheldon van der Linde", "BMW M Hybrid V8", 6.5, "averaged top 44% of Hypercar over 7 earlier races this season", 0.556],
+        ["38", "Cadillac Hertz Team Jota", "Earl Bamber / Sébastien Bourdais / Jack Aitken", "Cadillac V-Series.R", 6.3, "averaged top 46% of Hypercar over 7 earlier races this season", 0.542],
+        ["36", "Alpine Endurance Team", "Jules Gounon / Victor Martins", "Alpine A424", 6.2, "averaged top 46% of Hypercar over 7 earlier races this season", 0.538],
+        ["83", "AF Corse", "Yifei Ye / Robert Kubica / Philip Hanson", "Ferrari 499P", 6.1, "averaged top 47% of Hypercar over 7 earlier races this season", 0.53],
+        ["51", "Ferrari AF Corse", "Alessandro Pier Guidi / James Calado / Antonio Giovinazzi", "Ferrari 499P", 5.9, "averaged top 48% of Hypercar over 7 earlier races this season", 0.522],
+        ["007", "Aston Martin Thor Team", "Harry Tincknell / Tom Gamble", "Aston Martin Valkyrie", 5.7, "averaged top 49% of Hypercar over 7 earlier races this season", 0.51],
+        ["009", "Aston Martin Thor Team", "Alex Riberas / Marco Sørensen", "Aston Martin Valkyrie", 3.8, "averaged top 63% of Hypercar over 7 earlier races this season", 0.373],
+        ["94", "Peugeot TotalEnergies", "Loïc Duval / Malthe Jakobsen / Théo Pourchaire", "Peugeot 9X8", 3.8, "averaged top 63% of Hypercar over 7 earlier races this season", 0.372],
+        ["17", "Genesis Magma Racing", "André Lotterer / Luis Felipe Derani / Mathys Jaubert", "Genesis GMR-001-Hypercar", 3.0, "averaged top 70% of Hypercar over 7 earlier races this season", 0.298],
+        ["19", "Genesis Magma Racing", "Mathieu Jaminet / Paul-Loup Chatin / Daniel Juncadella", "Genesis GMR-001-Hypercar", 3.0, "averaged top 70% of Hypercar over 7 earlier races this season", 0.297],
+        ["93", "Peugeot TotalEnergies", "Paul di Resta / Nick Cassidy / Alex Quinn", "Peugeot 9X8", 2.8, "averaged top 72% of Hypercar over 7 earlier races this season", 0.275]
+      ] },
+      { h:"LMGT3", cars:[
+        ["33", "TF Sport", "Ben Keating / Jonny Edgar / Nicky Catsburg", "Corvette Z06 LMGT3.R", 8.4, "averaged top 35% of LMGT3 over 7 earlier races this season", 0.654],
+        ["21", "Vista AF Corse", "François Hériau / Simon Mann / Alessio Rovera", "Ferrari 296 LMGT3 Evo", 8.0, "averaged top 36% of LMGT3 over 7 earlier races this season", 0.635],
+        ["92", "The Bend Manthey", "Yasser Shahin / Riccardo Pera / Richard Lietz", "Porsche 911 GT3 R LMGT3", 7.9, "averaged top 37% of LMGT3 over 7 earlier races this season", 0.631],
+        ["69", "Team WRT", "Anthony McIntosh / Parker Thompson / Daniel Harper", "BMW M4 LMGT3 Evo", 7.7, "averaged top 38% of LMGT3 over 7 earlier races this season", 0.623],
+        ["34", "Racing Team Turkey by TF", "Peter Dempsey / Salih Yoluç / Charlie Eastwood", "Corvette Z06 LMGT3.R", 7.1, "averaged top 40% of LMGT3 over 7 earlier races this season", 0.598],
+        ["91", "Manthey DK Engineering", "James Cottingham / Timur Boguslavskiy / Ayhancan Güven", "Porsche 911 GT3 R LMGT3", 6.7, "averaged top 42% of LMGT3 over 7 earlier races this season", 0.579],
+        ["27", "Heart of Racing Team", "Ian James / Zacharie Robichon / Mattia Drudi", "Aston Martin Vantage AMR LMGT3", 5.7, "averaged top 48% of LMGT3 over 7 earlier races this season", 0.523],
+        ["32", "Team WRT", "Darren Leung / Sean Gelael / Augusto Farfus", "BMW M4 LMGT3 Evo", 5.7, "averaged top 48% of LMGT3 over 7 earlier races this season", 0.521],
+        ["10", "Garage 59", "Antares Au / Thomas Fleming / Marvin Kirchhöfer", "McLaren 720S LMGT3 Evo", 5.4, "averaged top 50% of LMGT3 over 7 earlier races this season", 0.505],
+        ["58", "Garage 59", "Alexander West / Finn Gehrsitz / Benjamin Goethe", "McLaren 720S LMGT3 Evo", 5.2, "averaged top 51% of LMGT3 over 7 earlier races this season", 0.491],
+        ["23", "Heart of Racing Team", "Gray Newell / Eduardo Barrichello / Jonny Adam", "Aston Martin Vantage AMR LMGT3", 4.9, "averaged top 53% of LMGT3 over 7 earlier races this season", 0.474],
+        ["87", "Akkodis ASP Team", "Petru Umbrărescu / Clemens Schmid / José María López", "Lexus RC F LMGT3", 4.8, "averaged top 53% of LMGT3 over 7 earlier races this season", 0.47],
+        ["61", "Iron Lynx", "Martin Berry / Rui Andrade / Maxime Martin", "Mercedes-AMG LMGT3", 4.2, "averaged top 58% of LMGT3 over 7 earlier races this season", 0.423],
+        ["88", "Proton Competition", "Stefano Gattuso / Giammarco Levorato / Logan Sargeant", "Ford Mustang LMGT3", 4.0, "averaged top 60% of LMGT3 over 7 earlier races this season", 0.403],
+        ["77", "Proton Competition", "Eric Powell / Ben Tuck / Sebastian Priaulx", "Ford Mustang LMGT3", 3.8, "averaged top 61% of LMGT3 over 7 earlier races this season", 0.391],
+        ["54", "Vista AF Corse", "Thomas Flohr / Francesco Castellacci / Davide Rigon", "Ferrari 296 LMGT3 Evo", 3.7, "averaged top 62% of LMGT3 over 7 earlier races this season", 0.375],
+        ["79", "Iron Lynx", "Johannes Zelger / Matteo Cressoni / Lin Hodenius", "Mercedes-AMG LMGT3", 3.5, "averaged top 64% of LMGT3 over 7 earlier races this season", 0.36],
+        ["78", "Akkodis ASP Team", "Tom van Rompuy / Hadrien David / Esteban Masson", "Lexus RC F LMGT3", 3.4, "averaged top 65% of LMGT3 over 7 earlier races this season", 0.355]
+      ] }
+    ],
+    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-10-26. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" }
 ];

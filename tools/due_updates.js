@@ -12,6 +12,9 @@
    A session counts as ended 20 minutes after its end (results are published by then) and stays due for --hours hours (default 48).
    `suggestedFrom` (after items) is the `from` day to write: 14 hours before the newest session ended, so the entry shows for every time zone straight away.
    The last race of an event is not "due" for What to watch: results, standings and the podium game come from elsewhere.
+     "refresh"     the series' NEXT event already has a preview entry, but the series raced somewhere else after that entry was written (e.g. the
+                   Mexico City preview was written before the Austin race) and the race's results are in data/results.js and it ended 6 hours to 7 days
+                   ago: the entry still talks about the old standings and stories, so write a NEW preview for the next event (see the routine's prompt)
      "results"     a race of a series WITHOUT automatic results (no `autoResults` in data/series.js: IMSA, Carrera Cup, F1 Academy ...)
                    ended at least 20 minutes ago (up to --hours) and data/results.js has no entry for it yet. An entry covers a race
                    when its `race` is the session's name; an older entry without `race` covers the series' last race of that event.
@@ -35,6 +38,13 @@ function at(d, hm, tz) {
   let t = guess - off(guess); t = guess - off(t); return new Date(t);
 }
 const stamp = w => w.at ? new Date(w.at) : w.from ? new Date(w.from + "T00:00:00Z") : new Date(w.d + "T00:00:00Z");
+/* the series' most recent finished event: its last race and when it ended (for "refresh") */
+const REFRESH_WAIT_H = 6, REFRESH_DAYS = 7, prevEvent = {};
+for (const t of tracks) for (const ev of t.events || []) {
+  const end = addDays(ev.d, (ev.t || 1) - 1), races = {};
+  for (const s of (t.sessions || []).filter(x => x.d >= ev.d && x.d <= end)) { const sr = seriesFor(s.n); if (!sr || kindOf(s.n) !== "race") continue; const st = at(s.d, s.s, t.tz), en = s.e ? at(s.d, s.e, t.tz) : new Date(st.getTime() + 3600e3); if (!races[sr.id] || en > races[sr.id].end) races[sr.id] = { end: en, t: t.id, d: ev.d, event: ev.e }; }
+  for (const [id, r] of Object.entries(races)) if (r.end < NOW && (!prevEvent[id] || r.end > prevEvent[id].end)) prevEvent[id] = r;
+}
 const due = [];
 for (const t of tracks) {
   for (const ev of t.events || []) {
@@ -53,6 +63,11 @@ for (const t of tracks) {
       const daysTo = (new Date(ev.d + "T00:00:00Z") - NOW) / 864e5;
       if (!entries.length && daysTo <= AHEAD && NOW <= new Date(end + "T23:59:59Z")) { due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "preview", sessions: list.map(x => ({ n: x.n, start: x.start.toISOString() })) }); continue; }
       if (!entries.length) continue;       // an older event of a series nobody wrote a preview for: not worth a late entry
+      const pv = prevEvent[sr.id];
+      if (pv && (pv.t !== t.id || pv.d !== ev.d) && list[0].start > NOW && pv.end > newest && NOW - pv.end >= REFRESH_WAIT_H * 3600e3 && NOW - pv.end <= REFRESH_DAYS * 864e5 && RESULTS.some(r => r.s === sr.id && r.t === pv.t && r.d === pv.d)) {
+        due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "refresh", previous: { t: pv.t, d: pv.d, event: pv.event, ended: pv.end.toISOString() }, lastEntry: { from: entries.at(-1).from || null, at: entries.at(-1).at || null, asOf: String(entries.at(-1).asOf).slice(0, 90) }, suggestedFrom: NOW.toISOString().slice(0, 10), sessions: list.map(x => ({ n: x.n, start: x.start.toISOString() })) });
+        continue;
+      }
       const lastRaceIdx = list.map(x => x.kind).lastIndexOf("race");
       const done = list.filter((x, i) => NOW - x.end >= 20 * 60e3 && NOW - x.end <= HOURS * 3600e3 && x.end > newest && !(x.kind === "race" && i === lastRaceIdx));
       if (done.length) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "after", lastEntry: { from: entries.at(-1).from || null, at: entries.at(-1).at || null, asOf: String(entries.at(-1).asOf).slice(0, 90) }, suggestedFrom: new Date(Math.max(...done.map(x => +x.end)) - 14 * 3600e3).toISOString().slice(0, 10), sessions: done.map(x => ({ n: x.n, kind: x.kind, ended: x.end.toISOString() })) });

@@ -126,7 +126,7 @@ const SERIES = [
     watch:{ race:"Same car for everyone, with four driver classes racing in one field. Each class has its own winner." }
   }
   ,{
-    id:"indycar", autoResults:true, match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
+    id:"indycar", sess:"indycar", autoResults:true, match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
     name:"NTT INDYCAR SERIES", tag:"One car, three kinds of track",
     blurb:"North America's top open-wheel series. Every team runs the same Dallara chassis with the same aero kit, powered by a Chevrolet or Honda engine, so results come down to drivers, teams and strategy. The season mixes street circuits, permanent road courses and ovals, and it builds to the Indianapolis 500.",
     cars:[

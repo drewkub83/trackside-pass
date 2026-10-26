@@ -208,6 +208,12 @@ SPECS=[
   blurb="The Milwaukee Mile, a 1.015-mile (1.634 km) oval at Wisconsin State Fair Park in West Allis, Wisconsin, with racing since 1903, commonly called the world's oldest operating motor speedway. NTT INDYCAR SERIES races here on the Saturday and Sunday of its late-August 2027 weekend.",
   sig=None,
   events=[dict(d="2027-08-27",e="NTT INDYCAR SERIES at the Milwaukee Mile (races on Saturday and Sunday)",s="NTT INDYCAR SERIES",t=3)]),
+ dict(id="fuji", name="Fuji Speedway", short="Fuji", place="Oyama, Shizuoka, Japan", tz="Asia/Tokyo", center=[35.3717,138.9271],
+  circuit=[148622740], pit=148621414, official="4.563 km", length="4.563 km (2.835 mi)", opened=None, nturns=16, lap=None,
+  rename={"Fuji Speedway":None},
+  blurb="Fuji Speedway, a 4.563 km, 16-turn circuit at Oyama in Shizuoka, Japan, in the foothills of Mount Fuji. It hosts the 6 Hours of Fuji in the FIA World Endurance Championship (Sep 24-26, 2027).",
+  sig=None,
+  events=[dict(d="2027-09-24",e="6 Hours of Fuji",s="FIA World Endurance Championship",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

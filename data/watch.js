@@ -525,5 +525,28 @@ const WATCH = [
         ["Feature Race, Sunday 12 PM local", "The weekend's last points before Las Vegas; grid set by the full qualifying order. The title is now decided, so this one is about the fight for second in the championship and the remaining race wins."]
       ] }
     ],
-    note:"Sources: Motorsport Week ('Alisha Palmowski seals F1 Academy title with race to spare in Austin' and its Reverse Grid Race results page, both Oct 25, 2026) and Dive-Bomb ('Alisha Palmowski claims F1 Academy title as Alba Larsen wins Austin Reverse Grid Race'), both via web search (the sites could not be reached directly from this environment) and cross-checked on the finishing order, podium and title clinch. Palmowski's exact post-race points total and new margin over Felbermayr were not found in sources checked, so only the pre-race 63-point gap (carried over from the Oct 24 entry) is given here." }
+    note:"Sources: Motorsport Week ('Alisha Palmowski seals F1 Academy title with race to spare in Austin' and its Reverse Grid Race results page, both Oct 25, 2026) and Dive-Bomb ('Alisha Palmowski claims F1 Academy title as Alba Larsen wins Austin Reverse Grid Race'), both via web search (the sites could not be reached directly from this environment) and cross-checked on the finishing order, podium and title clinch. Palmowski's exact post-race points total and new margin over Felbermayr were not found in sources checked, so only the pre-race 63-point gap (carried over from the Oct 24 entry) is given here." },
+  { t:"mexico-city", d:"2026-10-30", s:"f1", from:"2026-10-26", at:"2026-10-26T17:32:44Z",
+    asOf:"Current after the United States Grand Prix (Oct 25): Kimi Antonelli won from pole at Austin, and the drivers'/constructors' standings are this app's own post-race figures (read Oct 26).",
+    groups:[
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "A dominant win from pole at Austin -- more than 13 seconds clear of Charles Leclerc -- while team-mate and title rival George Russell could only manage eighth. The lead is now 123 points with five races left (this one plus four after). The maths means he can wrap up the championship as early as this weekend: the fight only continues past Sunday if Russell wins the race AND Antonelli finishes ninth or lower."],
+        ["George Russell (Mercedes)", "Second on 242 points after an eighth-place finish at Austin that barely dented the gap. Needs a big result here, and a poor one for Antonelli, just to keep the fight alive into São Paulo."]
+      ] },
+      { h:"The chasers", items:[
+        ["Lewis Hamilton (Ferrari)", "Third on 241 points after finishing fourth at Austin."],
+        ["Max Verstappen (Red Bull Racing)", "Fourth on 236 points; ran second for part of the Austin race before Leclerc got by, settling for third there."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 233 points after splitting the Mercedes and Red Bull to finish second at Austin."],
+        ["Lando Norris (McLaren)", "Sixth on 211 points after fading onto older tyres to finish fifth at Austin. Won last year's Mexico City GP from pole, leading every lap for his first win at this circuit. McLaren and Red Bull Racing are now level on 355 points apiece for third in the constructors' championship."]
+      ] },
+      { h:"Checo Perez's home race", items:[
+        ["Sergio Perez (Cadillac)", "Back at his home race after missing the 2025 edition, in his first season with Cadillac's debut F1 team alongside Valtteri Bottas; both are still on zero points this year. The weekend doubles as a celebration of his 300th grand prix start -- Cadillac is holding a public show run on Paseo de la Reforma in Mexico City on Wednesday, Oct 28, around 10:00 (registration is requested through Cadillac's official X account; the route and exact times may still change)."]
+      ] },
+      { h:"What to look for", items:[
+        ["Thin air at 2,240 m", "The Autodromo Hermanos Rodriguez is one of the highest circuits on the calendar; the altitude cuts aerodynamic downforce and strains engine cooling, which is why cars run unusually high-drag wings here."],
+        ["The stadium section", "The track cuts through the old Foro Sol arena for its final sector -- McLaren's own site calls it one of the loudest sections on the calendar."],
+        ["No sprint", "A normal weekend: two practice sessions Friday, one more and qualifying Saturday, race Sunday. Neither of the last two winners here was a Red Bull car -- Carlos Sainz (Ferrari) in 2024, Norris (McLaren) in 2025."]
+      ] }
+    ],
+    note:"Sources: this app's own data/results.js (United States Grand Prix classification, from api.jolpi.ca, the Ergast-compatible mirror of the official FIA results) and data/standings.js (2026 points after that race), cross-checked against silverstone.co.uk's and planetf1.com's Austin race reports via web search (the sites could not be reached directly from this environment; read Oct 26, 2026) for how the race unfolded. mclaren.com for Norris's 2025 Mexico City win, and f1-fansite.com for this weekend's session times (both unchanged from the last entry). riverramayanews.mx and cronica.com.mx for Perez's 300th start and the Oct 28 Reforma show run (unchanged since the last entry)." }
 ];

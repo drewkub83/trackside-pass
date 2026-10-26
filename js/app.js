@@ -1373,7 +1373,7 @@ function hubResultsCard(c){
      last session ends, focusAt(cur) flips to the track's NEXT event (possibly months away), which would
      make sessionsResolved() (and its date) empty right at the exact moment this card matters most. */
   /* a race that is still inside its scheduled window counts as done once the series' results feed (see "Qualifying order and unofficial results" below) already has the classification */
-  const onNow=s=>{ const sr=seriesFor(s.n); if(!sr||!sr.sess||kindOf(s.n)!=="race"||s.start>now||now>=s.end) return false; sessWant[sr.sess+"|"+s.d]={sr,date:s.d}; const f=sessGet(sr,s.d); return !!(f&&f.result); };
+  const onNow=s=>{ const sr=seriesFor(s.n); if(!sr||!sr.sess||kindOf(s.n)!=="race"||s.start>now||now>=s.end) return false; sessWant[sr.sess+"|"+s.d]={sr,date:s.d,name:s.n,track:cur.id}; const f=sessGet(sr,s.d); return !!(f&&f.result); };
   /* a finished race keeps its card for 6 hours, or until the weekend is over (WEEKEND_GRACE_HOUR the next morning), whichever is later */
   const weekendOn=s=>{ const ev=(cur.events||[]).find(e=>s.d>=e.d&&s.d<=eventEnd(e)); return !!ev&&!eventDone(cur,ev); };
   const doneAll=sessionsOf(cur).filter(s=>kindOf(s.n)==="race"&&((s.end<=now&&(now-s.end<=6*3600000||weekendOn(s)))||onNow(s))).sort((a,b)=>b.end-a.end);
@@ -1386,7 +1386,7 @@ function hubResultsCard(c){
     const all=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===evt.d&&r.s===sr.id):[];
     const res=all.some(r=>r.race)?all.find(r=>r.race===jr.n)||null:all.pop()||null;
     if(!res) waitingRes=true;
-    if(!res&&sr.sess){ sessWant[sr.sess+"|"+jr.d]={sr,date:jr.d}; const f=sessGet(sr,jr.d); if(f&&f.result) return sessUnofficialCard(sr,jr.d,f,c.chev); }
+    if(!res&&sr.sess){ sessWant[sr.sess+"|"+jr.d]={sr,date:jr.d,name:jr.n,track:cur.id}; const f=sessGet(sr,jr.d); if(f&&f.result) return sessUnofficialCard(sr,jr.d,f,c.chev); }
     /* until the result is in: the official timing page shows the final classification at once */
     const tl=sr.timing?{url:sr.timing}:TIMING_LINKS.find(x=>x.match.test(jr.n));
     const wait=sr.autoResults?"The race just ended. The official result usually shows here within the hour.":"The race just ended. The official result is added here from the race report, usually within an hour or two.";
@@ -1404,14 +1404,14 @@ const sessCache={}, SESS_POLL_MS=45000, sessAsked={}; let sessTimer=null, sessWa
 function sessStored(){ try{ return JSON.parse(LSget(K.sessFeed,"{}"))||{}; }catch(e){ return {}; } }
 function sessGet(sr,date){ const k=sr.sess+"|"+date, c=sessCache[k]; if(c) return c.d; const o=sessStored()[k]; return o?o.d:null; }
 function sessSave(k,d){ const all=sessStored(); all[k]={d,t:Date.now()}; const out={}; Object.keys(all).sort((a,b)=>all[b].t-all[a].t).slice(0,6).forEach(x=>{ out[x]=all[x]; }); LSset(K.sessFeed,JSON.stringify(out)); }
-function sessFetch(sr,date){
-  const k=sr.sess+"|"+date;
-  return fetch(`${fnUrl("session")}?s=${encodeURIComponent(sr.sess)}&date=${date}`).then(r=>r.ok?r.json():null).then(d=>{ if(d&&(d.qualifying||d.result)){ sessCache[k]={t:Date.now(),d}; sessSave(k,d); return d; } return null; }).catch(()=>null);
+function sessFetch(w){
+  const sr=w.sr, k=sr.sess+"|"+w.date;
+  return fetch(`${fnUrl("session")}?s=${encodeURIComponent(sr.sess)}&date=${w.date}&track=${encodeURIComponent(w.track||"")}&name=${encodeURIComponent(w.name||"")}`).then(r=>r.ok?r.json():null).then(d=>{ if(d&&(d.qualifying||d.result)){ sessCache[k]={t:Date.now(),d}; sessSave(k,d); return d; } return null; }).catch(()=>null);
 }
 const sessSig=d=>d?[(d.qualifying||[]).length,(d.result||[]).length,d.qualifying&&d.qualifying[0]&&d.qualifying[0].num,d.result&&d.result[0]&&d.result[0].num,d.result&&d.result.map(x=>x.pos+x.num).join("")].join("|"):"";
 function sessEnsure(){   /* after each hub render: read what the cards asked for now, then again every 45 s while the hub stays open */
   if(!Object.keys(sessWant).length||!hubMode){ clearInterval(sessTimer); sessTimer=null; return; }
-  const run=ws=>{ Promise.all(ws.map(w=>{ const before=sessSig(sessGet(w.sr,w.date)); return sessFetch(w.sr,w.date).then(d=>!!d&&sessSig(d)!==before); })).then(ch=>{ if(ch.some(Boolean)&&hubMode){ renderHub(); if(sheetState==="shRes"&&sessOpen) renderSessSheet(); } }); };
+  const run=ws=>{ Promise.all(ws.map(w=>{ const before=sessSig(sessGet(w.sr,w.date)); return sessFetch(w).then(d=>!!d&&sessSig(d)!==before); })).then(ch=>{ if(ch.some(Boolean)&&hubMode){ renderHub(); if(sheetState==="shRes"&&sessOpen) renderSessSheet(); } }); };
   const fresh=Object.entries(sessWant).filter(([k])=>!sessAsked[k]); fresh.forEach(([k])=>{ sessAsked[k]=true; }); if(fresh.length) run(fresh.map(x=>x[1]));
   if(!sessTimer) sessTimer=setInterval(()=>{ if(!hubMode){ clearInterval(sessTimer); sessTimer=null; return; } run(Object.values(sessWant)); },SESS_POLL_MS);
 }
@@ -1422,21 +1422,22 @@ function hubGridCard(c){
   const mine=c.ss.filter(x=>(seriesFor(x.n)||{}).id===sr.id), q=mine.filter(x=>kindOf(x.n)==="qualifying"), r=mine.filter(x=>kindOf(x.n)==="race");
   if(!q.length||!r.length||q.some(x=>x.end>c.now)) return "";   /* every qualifying session of the series is over ... */
   const gp=r[r.length-1]; if(gp.end<=c.now) return "";         /* ... and its last race (the one the grid is for) is not */
-  sessWant[sr.sess+"|"+gp.d]={sr,date:gp.d};
+  sessWant[sr.sess+"|"+gp.d]={sr,date:gp.d,name:gp.n,track:cur.id};
   const d=sessGet(sr,gp.d); if(!d||!d.qualifying) return "";
   return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${gp.d}','q')"><div class="hubCardRow"><div><h4>Qualifying order</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${c.chev}</div><p class="asof hubAsof">${esc(d.race)} · tap for every driver</p>${resultGroupHtml({h:"Qualifying",order:d.qualifying.slice(0,5).map(sessLine)},5)}</div>`;
 }
 function sessUnofficialCard(sr,date,d,chev){
-  return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${date}','r')"><div class="hubCardRow"><div><h4>Unofficial results</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${chev}</div><p class="asof hubAsof">Read from the series' results feed at ${esc(sessAt(d))}. Penalties can still change it; the official result replaces this. Tap for every driver.</p>${resultGroupHtml({h:"Race",order:d.result.slice(0,5).map(sessLine)},5)}</div>`;
+  return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${date}','r')"><div class="hubCardRow"><div><h4>${d.resultOfficial?"Results":"Unofficial results"}</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${chev}</div><p class="asof hubAsof">${d.resultOfficial?`Marked official by the series, read at ${esc(sessAt(d))}. Tap for every driver.`:`Read from the series' results feed at ${esc(sessAt(d))}. Penalties can still change it; the official result replaces this. Tap for every driver.`}</p>${resultGroupHtml({h:"Race",order:d.result.slice(0,5).map(sessLine)},5)}</div>`;
 }
 function openSessSheet(key,kind){ sessOpen={key,kind}; renderSessSheet(); showSheet("shRes"); }
 function renderSessSheet(){
   if(!sessOpen) return; const c=sessCache[sessOpen.key], o=sessStored()[sessOpen.key], d=c?c.d:o&&o.d, q=sessOpen.kind==="q"; if(!d) return;
   const rows=q?d.qualifying:d.result; if(!rows) return;
-  document.getElementById("rsTitle").textContent=(q?"Qualifying order: ":"Unofficial results: ")+d.race;
-  document.getElementById("rsSub").textContent=q?`Read from the series' results feed at ${sessAt(d)}. Grid penalties are not applied here, so the official starting grid can differ.`:`Read from the series' results feed at ${sessAt(d)}. This is unofficial: penalties and protests can still change it, and the official result replaces it.`;
+  const off=q?d.qualifyingOfficial:d.resultOfficial;
+  document.getElementById("rsTitle").textContent=(q?"Qualifying order: ":off?"Results: ":"Unofficial results: ")+d.race;
+  document.getElementById("rsSub").textContent=q?`Read from the series' results feed at ${sessAt(d)}${off?", marked official by the series":""}. Grid penalties are not applied here, so the official starting grid can differ.`:off?`Marked official by the series, read from its results feed at ${sessAt(d)}.`:`Read from the series' results feed at ${sessAt(d)}. This is unofficial: penalties and protests can still change it, and the official result replaces it.`;
   document.getElementById("rsTabs").innerHTML="";
-  document.getElementById("rsList").innerHTML=rows.map(x=>`<div class="rsRow"><span class="rsPos">${esc(x.pos)}</span><span class="gmNo">#${esc(x.num)}</span><span class="gmTxt"><b>${esc(x.name)}</b><small>${esc(x.team)}${!q&&x.grid?" · started "+esc(x.grid):""}</small></span><span class="rsTime">${esc(q?x.time:(x.time||x.status||""))}${q&&x.seg&&x.seg!=="Q3"?`<small>out in ${esc(x.seg)}</small>`:""}</span></div>`).join("");
+  document.getElementById("rsList").innerHTML=rows.map(x=>`<div class="rsRow"><span class="rsPos">${esc(x.pos)}</span><span class="gmNo">#${esc(x.num)}</span><span class="gmTxt"><b>${esc(x.name)}</b><small>${esc(x.team)}${x.cls?" · "+esc(x.cls):""}${!q&&x.grid?" · started "+esc(x.grid):""}</small></span><span class="rsTime">${esc(q?x.time:(x.time||x.status||""))}${q&&x.seg&&x.seg!=="Q3"?`<small>out in ${esc(x.seg)}</small>`:""}</span></div>`).join("");
 }
 const STREAM_TAIL_MIN=20;
 function hubLiveStream(c){

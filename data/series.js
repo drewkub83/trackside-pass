@@ -102,7 +102,7 @@ const SERIES = [
     watch:{ race:"Every car is identical, so watch the draft. Packs of cars swap places on the straights, and the finish is often decided in the last corner." }
   },
   {
-    id:"carrera", match:/Carrera Cup/i, yt:"UCch613iK0dXuGLlvFSePzwA", timing:"https://racing.porsche.com/en-US/live-timing/carrera-cup-north-america",
+    id:"carrera", sess:"carrera", match:/Carrera Cup/i, yt:"UCch613iK0dXuGLlvFSePzwA", timing:"https://racing.porsche.com/en-US/live-timing/carrera-cup-north-america",
     name:"Porsche Carrera Cup North America", tag:"One car, driver classes",
     blurb:"Every car is a Porsche 911 GT3 Cup, so it is the driver that makes the difference. The classes are for drivers, not cars, so Pro, Pro-Am and Masters drivers race in the same pack.",
     cars:[
@@ -252,7 +252,7 @@ const SERIES = [
     fine:"A spectator summary based on Formula 1's published rules. For official details, see formula1.com."
   },
   {
-    id:"f1academy", match:/F1 Academy/i, timing:"https://www.f1academy.com/About/Live-Timing",
+    id:"f1academy", sess:"f1academy", match:/F1 Academy/i, timing:"https://www.f1academy.com/About/Live-Timing",
     name:"F1 Academy", tag:"All-female, one car for everyone",
     blurb:"A single-seater series for young women, run by Formula 1 as a step up from karting. Every driver has the same car, so results come down to the driver and the team. It races on Formula 1 weekends, and many of its cars carry the colours of Formula 1 teams.",
     cars:[

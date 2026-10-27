@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"6 Hours of Fuji",
   "nturns":16,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"WEC Hypercar","time":"1:27.794","who":"Kamui Kobayashi","car":"Toyota GR010 Hybrid","year":2023,"note":"pole lap, 6 Hours of Fuji (Toyota's release called it a new Hypercar lap record; later poles 1:28.236 in 2025, 1:28.901 in 2024)"},{"series":"WEC LMGT3","time":"1:39.981","who":"Eduardo Barrichello","car":"Aston Martin Vantage AMR GT3 Evo","year":2025,"note":"Hyperpole qualifying lap (pole), 6 Hours of Fuji; Racing Spirit of Léman #10. Source: fiawec.com results"}]
 });

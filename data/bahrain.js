@@ -23,5 +23,5 @@ TRACKS.push({
   "nturns":15,
   "turns":[],
   "rev":1,
-  "lapRecord":[{"series":"Formula 1","time":"1:27.264","who":"Lewis Hamilton","car":"Mercedes W11","year":2020,"note":"fastest lap ever (Q3 pole lap, 2020 Bahrain GP); race lap record 1:31.447, Pedro de la Rosa, McLaren MP4-20, 2005"}]
+  "lapRecord":[{"series":"Formula 1","time":"1:27.264","who":"Lewis Hamilton","car":"Mercedes W11","year":2020,"note":"fastest lap ever (Q3 pole lap, 2020 Bahrain GP); race lap record 1:31.447, Pedro de la Rosa, McLaren MP4-20, 2005"},{"series":"WEC Hypercar","time":"1:46.250","who":"Kamui Kobayashi","car":"Toyota GR010 Hybrid","year":2021,"note":"pole lap, 8 Hours of Bahrain (Grand Prix layout): the fastest Hypercar lap here (later pole laps 1:46.564 in 2023, 1:46.714 in 2024, 1:46.826 in 2025). Source: the series' reports; Toyota Gazoo Racing"},{"series":"WEC LMGT3","time":"2:01.661","who":"Finn Gehrsitz","car":"Lexus RC F GT3","year":2025,"note":"Hyperpole qualifying lap (pole), 8 Hours of Bahrain; Akkodis ASP Team #78. Source: fiawec.com results"}]
 });

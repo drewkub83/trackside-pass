@@ -24,7 +24,7 @@ TRACKS.push({
   "turns":[],
   "rev":1,
   "sessions":[{"d":"2026-11-06","s":"12:30","e":"13:30","n":"Practice 1 - Formula 1"},{"d":"2026-11-06","s":"16:00","e":"17:00","n":"Practice 2 - Formula 1"},{"d":"2026-11-07","s":"11:30","e":"12:30","n":"Practice 3 - Formula 1"},{"d":"2026-11-07","s":"15:00","e":"16:00","n":"Qualifying - Formula 1"},{"d":"2026-11-08","s":"14:00","e":"16:00","n":"Race - Formula 1"}],
-  "lapRecord":[{"series":"Formula 1","time":"1:07.281","who":"Lewis Hamilton","car":"Mercedes W09","year":2018,"note":"fastest known lap (pole lap, 2018 Brazilian GP); race lap record 1:10.540, Valtteri Bottas, Mercedes W09, 2018"}],
+  "lapRecord":[{"series":"Formula 1","time":"1:07.281","who":"Lewis Hamilton","car":"Mercedes W09","year":2018,"note":"fastest known lap (pole lap, 2018 Brazilian GP); race lap record 1:10.540, Valtteri Bottas, Mercedes W09, 2018"},{"series":"WEC Hypercar","time":"1:22.570","who":"Alex Lynn","car":"Cadillac V-Series.R","year":2025,"note":"Hyperpole qualifying lap (pole), 6 Hours of São Paulo; Cadillac Hertz Team JOTA #12. Source: fiawec.com results"},{"series":"WEC LMGT3","time":"1:33.350","who":"Kobe Pauwels","car":"Aston Martin Vantage AMR GT3 Evo","year":2026,"note":"Hyperpole qualifying lap (pole), 6 Hours of São Paulo; Heart of Racing Team #23. Source: fiawec.com results"}],
   "tw":3.1,
   "lw":0.44
 });

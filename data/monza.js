@@ -24,5 +24,5 @@ TRACKS.push({
   "nturns":11,
   "turns":[],
   "rev":1,
-  "lapRecord":[{"series":"Formula 1","time":"1:18.792","who":"Max Verstappen","car":"Red Bull RB21","year":2025,"note":"fastest lap ever (Q3 pole lap, 2025 Italian GP); race lap record 1:20.901, Lando Norris, McLaren MCL39, 2025"}]
+  "lapRecord":[{"series":"Formula 1","time":"1:18.792","who":"Max Verstappen","car":"Red Bull RB21","year":2025,"note":"fastest lap ever (Q3 pole lap, 2025 Italian GP); race lap record 1:20.901, Lando Norris, McLaren MCL39, 2025"},{"series":"WEC Hypercar","time":"1:35.358","who":"Kamui Kobayashi","car":"Toyota GR010 Hybrid","year":2023,"note":"pole lap, 6 Hours of Monza (Toyota's release called it the fastest Hypercar lap of the circuit). LMGT3 has not raced here yet (first WEC LMGT3 round is Nov 2026)"}]
 });

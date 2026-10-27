@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"24 Hours of Le Mans",
   "nturns":38,
   "turns":[],
-  "rev":3
+  "rev":3,
+  "lapRecord":[{"series":"WEC Hypercar","time":"3:22.564","who":"Dries Vanthoor","car":"BMW M Hybrid V8","year":2026,"note":"Hyperpole 2 qualifying lap (pole), 24 Hours of Le Mans; BMW M Team WRT #15. Source: fiawec.com results; BMW. Jack Aitken's faster Hyperpole lap for Cadillac #38 was deleted. This is the Hypercar-era record on the current layout (previous: 3:22.742, Cadillac Whelen #311, 2025)"},{"series":"WEC LMGT3","time":"3:52.433","who":"Mattia Drudi","car":"Aston Martin Vantage AMR GT3 Evo","year":2026,"note":"Hyperpole 2 qualifying lap (pole), 24 Hours of Le Mans; Heart of Racing Team #27 (Motorsport.com, Motorsport Magazine and Pit Debrief agree; the series' own LMGT3 results page could not be read automatically)"}]
 });

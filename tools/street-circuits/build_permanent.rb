@@ -43,7 +43,9 @@ ring.pop if ring.size > 2 && ring.first == ring.last
 if (n = C[:smooth].to_i) > 0 then ring = chaikin(ring + [ring.first], n)[0..-2] end
 lap = poly_len(ring) + dm(ring.last, ring.first)
 puts "circuit: %d points, %.0f m = %.3f mi (official %s)"%[ring.size, lap, lap / 1609.34, C[:official_mi]]
-pit_ll = if C[:pit].is_a?(Array)        # the pit road can also be several OpenStreetMap pieces, in order (same as circuit above)
+pit_ll = if C[:pit_file]                # the pit road as coordinates: a JSON list of [lat, lon]
+           JSON.parse(File.read(File.expand_path(C[:pit_file], __dir__)))
+         elsif C[:pit].is_a?(Array)        # the pit road can also be several OpenStreetMap pieces, in order (same as circuit above)
            C[:pit].flat_map.with_index { |wid, i| g = ll.(way.(wid.abs)); g = g.reverse if wid < 0; i.zero? ? g : g[1..-1] }
          else ll.(way.(C[:pit])) end
 closed = ring + [ring.first]

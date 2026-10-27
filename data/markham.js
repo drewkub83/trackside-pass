@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NTT INDYCAR SERIES: Streets of Markham",
   "nturns":12,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"IndyCar","time":"1:13.2383","who":"Louis Foster","car":"Dallara IR-18","year":2026,"note":"fastest lap of any session (qualifying Firestone Fast 6, Rahal Letterman Lanigan Racing), the first INDYCAR race here"}]
 });

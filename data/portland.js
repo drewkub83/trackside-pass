@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NTT INDYCAR SERIES at Portland International Raceway",
   "nturns":12,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"IndyCar","time":"0:57.2143","who":"Will Power","car":"Dallara IR-18","year":2018,"note":"fastest lap of any session on the layout in use since 2018 (qualifying round 1, Team Penske; 123.577 mph)"}]
 });

@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NTT INDYCAR SERIES at the Milwaukee Mile (races on Saturday and Sunday)",
   "nturns":4,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"IndyCar","time":"0:21.5629","who":"Dario Franchitti","car":"Dallara IR-05","year":2011,"note":"fastest lap of any session on the 1.015-mile oval (practice 3, The Milwaukee 225, Target Chip Ganassi Racing; 169.458 mph). INDYCAR's results service holds lap times from 2010 only; the CART-era pole lap (Patrick Carpentier, 20.028 s, 1998) was set on the older 1.032-mile configuration"}]
 });

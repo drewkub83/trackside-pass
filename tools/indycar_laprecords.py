@@ -41,13 +41,17 @@ VENUES = {
  "arlington": (r"Arlington", 2026),
  "mid-ohio": (r"Mid-Ohio", 2010),
  "road-america": (r"Road America", 2016),
+ "wwt-raceway": (r"Bommarito|World Wide Technology|Gateway", 2010),
+ "portland": (r"Portland", 2018),
+ "milwaukee-mile": (r"Milwaukee", 2010),
+ "markham": (r"Markham", 2026),
 }
 def best(tracks, top=5):
     rows = [r for r in json.load(open(F)) if r.get("top")]
     for t in tracks:
         rx, since = VENUES[t][0], VENUES[t][1]; out = []
         for r in rows:
-            if not re.search(rx, r["e"] or "", re.I) or re.search(r"nxt|lights|test", r["e"] or "", re.I): continue
+            if not re.search(rx, r["e"] or "", re.I) or re.search(r"nxt|lights|test|usf|mazda|pro 2000|f2000", r["e"] or "", re.I): continue
             y = int(r["d"].split("/")[-1])
             if y < since: continue
             for x in r["top"][:1]: out.append((x["s"], x["t"], y, r["e"], r["s"], r["ty"], x["n"], x["c"], x["tm"], x["mph"]))

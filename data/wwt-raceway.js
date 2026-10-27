@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NTT INDYCAR SERIES at World Wide Technology Raceway",
   "nturns":4,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"IndyCar","time":"0:24.2521","who":"Will Power","car":"Dallara DW12","year":2017,"note":"fastest lap of any session on the 1.25-mile oval (practice 1, Bommarito Automotive Group 500, Team Penske; 185.551 mph). INDYCAR's results service holds lap times from 2010 only, and publishes no single qualifying laps for ovals, only the average"}]
 });

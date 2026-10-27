@@ -34,7 +34,9 @@ cen = ->(e) { e["type"] == "node" ? [e["lat"], e["lon"]] : (g = ll.(e); [g.sum {
 way = ->(wid) { ways.find { |w| w["id"] == wid } or abort "OpenStreetMap way #{wid} not found" }
 
 # ---------- circuit ----------
-ring = if C[:circuit].is_a?(Array)      # a loop made of several OpenStreetMap pieces, in driving order
+ring = if C[:circuit_file]            # a lap given as coordinates: a JSON list of [lat, lon] in driving order (Le Mans: public roads plus the circuit's own pieces)
+         JSON.parse(File.read(File.expand_path(C[:circuit_file], __dir__)))
+       elsif C[:circuit].is_a?(Array)      # a loop made of several OpenStreetMap pieces, in driving order
          C[:circuit].flat_map.with_index { |wid, i| g = ll.(way.(wid.abs)); g = g.reverse if wid < 0; i.zero? ? g : g[1..-1] }
        else ll.(way.(C[:circuit])) end
 ring.pop if ring.size > 2 && ring.first == ring.last
@@ -88,6 +90,10 @@ end
   pois << h
 end
 lot_ways.uniq! { |w, _| w["id"] }
+if C[:keep_within_m]    # a big downloaded area (Le Mans): keep only badges and lots this close to the lap
+  cl = ring + [ring.first]; near_lap = ->(pt) { snap_to_poly(pt, cl)[3] <= C[:keep_within_m] }
+  pois.select! { |q| near_lap.(q["ll"]) }; lot_ways.select! { |w, _| near_lap.(cen.(w)) }
+end
 lot_rename = {}
 (C[:lot_names] || []).each do |la, lo, nm|
   w, = lot_ways.select { |x, _| x["tags"]["name"].to_s.empty? && !lot_rename[x["id"]] }.min_by { |x, _| dm(cen.(x), [la, lo]) }

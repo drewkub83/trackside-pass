@@ -688,6 +688,15 @@ create or replace function public.set_pick_reminders(p_on boolean) returns void 
 $$;
 revoke all on function public.set_pick_reminders(boolean) from public, anon;
 grant execute on function public.set_pick_reminders(boolean) to authenticated;
+-- The series a player follows (the phone sends it, see pickSeriesSync in js/app.js): the Thursday reminder only covers games of those series.
+-- NULL = the phone has not said yet (an older app version): every game, as before.
+alter table public.profiles add column if not exists pick_series text[];
+create or replace function public.set_pick_series(p_series text[]) returns boolean language sql security definer set search_path = public as $$
+  with u as (update public.profiles set pick_series = (select coalesce(array_agg(distinct left(x, 40)), '{}') from unnest(p_series[1:60]) x) where id = auth.uid() returning 1)
+  select exists (select 1 from u)
+$$;
+revoke all on function public.set_pick_series(text[]) from public, anon;
+grant execute on function public.set_pick_series(text[]) to authenticated;
 create or replace function public.pick_reminder_targets(p_day date default current_date) returns table (token text, platform text, game_key text, title text, quali_start timestamptz)
 language sql stable security definer set search_path = public as $$
   select t.token, t.platform, g.game_key, g.title, g.quali_start
@@ -695,6 +704,7 @@ language sql stable security definer set search_path = public as $$
   join public.push_tokens t on true
   join public.profiles pr on pr.id = t.user_id and pr.pick_remind
   where g.race_start > now()
+    and (pr.pick_series is null or g.series = any(pr.pick_series))
     and g.event_start >= p_day
     and g.event_start - ((extract(dow from g.event_start)::int + 3) % 7) = p_day
     and exists (select 1 from jsonb_object_keys(g.entries) c

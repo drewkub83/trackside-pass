@@ -32,6 +32,7 @@ const K={
   recapSeen:"paddock:recapSeen",      /* weekend points recaps already shown (game keys), so each pops up once */
   sessFeed:"paddock:sessFeed",        /* the last qualifying order / race classification read from a series' results feed (kept so the hub still shows it with no signal) */
   checkinPush:"paddock:checkinPush",  /* "0" = no push when a friend checks in (the server also keeps the choice: profiles.checkin_push) */
+  pickSeries:"paddock:pickSeries",   /* the followed series last sent to the server for the Thursday pick reminder (with the account id) */
   pickRemind:"paddock:pickRemind",    /* Thursday "lock in your picks" reminder on/off (iPhone/Android app) */
   goDays:"paddock:goDays",        /* how many days before a weekend the hub shows What to watch / the game */
   going:"paddock:going",         /* races you are going to */
@@ -2255,8 +2256,9 @@ async function schedulePickReminders(ask){
   /* signed in with phone notifications on: the server's Thursday push does this (one notification, not two) */
   try{ if(typeof sbSession==="function"&&sbSession()&&typeof pushState==="function"&&await pushState()==="on") return; }catch(e){}
   const now=Date.now(), out=[]; let id=PICK_ID_BASE;
+  const mine=followedGameSeries();
   ENTRIES.slice().sort((a,b)=>a.d.localeCompare(b.d)).forEach(g=>{
-    const t=TRACKS.find(x=>x.id===g.t); if(!t||gameResult(g)||gameLocked(g)||!g.classes.some(c=>(picksOf(g)[c.h]||[]).length<3)) return;
+    const t=TRACKS.find(x=>x.id===g.t); if(!t||!mine.includes(g.s)||gameResult(g)||gameLocked(g)||!g.classes.some(c=>(picksOf(g)[c.h]||[]).length<3)) return;
     const [y,m,d]=g.d.split("-").map(Number), start=new Date(y,m-1,d), back=(start.getDay()-4+7)%7, thu=new Date(y,m-1,d-back);
     if(thu.getTime()-now>16*86400000) return;
     let at=new Date(thu.getFullYear(),thu.getMonth(),thu.getDate(),12,0,0); if(at.getTime()<=now) at=new Date(thu.getFullYear(),thu.getMonth(),thu.getDate(),18,0,0);
@@ -2556,12 +2558,20 @@ function followed(c){
 const segHtml=(now,opts,fn)=>opts.map(([k,l])=>`<button class="${String(k)===String(now)?"on":""}" onclick="${fn}('${k}')">${l}</button>`).join("");
 function setGoDays(v){ LSset(K.goDays,v); renderSettingsMore(); renderHero(); if(cur) renderWatch(); }
 function setTimes(v){ LSset(K.times,v); renderSettingsMore(); if(cur){ renderNow(); renderSchedule(); } }
+/* game series ids (data/entries.js `s`) of the series you follow: the Thursday pick reminder, on the phone and on the server, only covers these */
+function followedGameSeries(){ return [...new Set(CHAMPS.filter(followed).map(c=>c.guide||c.id))]; }
+async function pickSeriesSync(){
+  if(typeof sbRpc!=="function"||typeof sbSession!=="function") return; const ses=sbSession(); if(!ses) return;
+  const list=followedGameSeries().sort(), key=((ses.user&&ses.user.id)||"")+"|"+list.join(",");
+  if(LSget(K.pickSeries,"")===key) return;
+  try{ if(await sbRpc("set_pick_series",{p_series:list})===true) LSset(K.pickSeries,key); }catch(e){}   /* offline, or no profile yet (the server says false): it goes next time */
+}
 function toggleFollow(id){
   const c=champ(id); if(!c) return;
-  if(c.optIn){ let s=followedSub(); s=s.includes(id)?s.filter(x=>x!==id):s.concat(id); LSset(K.followSub,JSON.stringify(s)); renderSettingsMore(); renderHome(); return; }
+  if(c.optIn){ let s=followedSub(); s=s.includes(id)?s.filter(x=>x!==id):s.concat(id); LSset(K.followSub,JSON.stringify(s)); renderSettingsMore(); renderHome(); schedulePickReminders(false); pickSeriesSync(); return; }
   let h=hiddenSeries(); const mainCount=CHAMPS.filter(x=>!x.optIn).length;
   if(h.includes(id)) h=h.filter(x=>x!==id); else{ if(h.length>=mainCount-1){ toast("Keep at least one series"); return; } h.push(id); }
-  LSset(K.unfollow,JSON.stringify(h)); renderSettingsMore(); renderHome();
+  LSset(K.unfollow,JSON.stringify(h)); renderSettingsMore(); renderHome(); schedulePickReminders(false); pickSeriesSync();
 }
 function toggleAwake(){ LSset(K.awake,LSget(K.awake,"0")==="1"?"0":"1"); renderSettingsMore(); updateWake(); }
 function toggleHaptics(){ LSset(K.haptics,LSget(K.haptics,"1")==="1"?"0":"1"); renderSettingsMore(); if(LSget(K.haptics,"1")==="1"){ try{ navigator.vibrate&&navigator.vibrate(30); }catch(e){} } }

@@ -584,7 +584,7 @@ function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg
 function watchNow(){
   const fo=focusAt(cur); if(!fo||typeof WATCH==="undefined"||daysBetween(localToday(),fo.d)>goDays()) return [];   /* shown from two weeks before the weekend until it is over */
   const today=localToday(), best={};
-  WATCH.forEach(x=>{ if(x.t!==cur.id||x.d<fo.d||x.d>fo.end||(x.from&&x.from>today)) return; const k=x.s||x.groups[0].h; if(!best[k]||(x.from||x.d)>=(best[k].from||best[k].d)) best[k]=x; });
+  WATCH.forEach(x=>{ if(x.t!==cur.id||x.d<fo.d||x.d>fo.end||(x.from&&x.from>today)) return; const k=x.s||x.groups[0].h; if(!best[k]||(x.from||"")>=(best[k].from||"")) best[k]=x; });   /* an entry with no "from" is the weekend's first preview: any entry with a "from" (e.g. the Monday refresh after the last race) replaces it, and among equals the later one in the array wins */
   return Object.values(best);
 }
 function watchSeriesName(x){ const sr=SERIES.find(r=>r.id===x.s); return sr?sr.name:""; }

@@ -292,6 +292,12 @@ SPECS=[
   blurb="Pocono Raceway, the 2.5-mile triangular \"Tricky Triangle\" at Long Pond, Pennsylvania, opened in 1968, with three turns. The NASCAR Cup Series races here on Jun 13, 2027.",
   sig=None,
   events=[dict(d="2027-06-11",e="NASCAR at Pocono",s="NASCAR Cup Series",t=3)]),
+ dict(id="michigan", name="Michigan International Speedway", short="Michigan", place="Brooklyn, Michigan", tz="America/Detroit", center=[42.0666, -84.2423],
+  circuit=[205025109], pit=205025116, official="3.219 km", length="3.219 km (2.0 mi)", opened=1968, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Michigan International Speedway, the two-mile oval at Brooklyn, Michigan, opened in 1968. The NASCAR Cup Series races here on Jun 20, 2027.",
+  sig=None,
+  events=[dict(d="2027-06-18",e="NASCAR at Michigan",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

@@ -286,6 +286,12 @@ SPECS=[
   blurb="Nashville Superspeedway, the 1.33-mile concrete oval at Lebanon, Tennessee, east of Nashville, opened in 2001. The NASCAR Cup Series races here on Jun 6, 2027.",
   sig=None,
   events=[dict(d="2027-06-04",e="NASCAR at Nashville",s="NASCAR Cup Series",t=3)]),
+ dict(id="pocono", name="Pocono Raceway", short="Pocono", place="Long Pond, Pennsylvania", tz="America/New_York", center=[41.0556, -75.5112],
+  circuit=[109767460], pit=563465040, official="4.023 km", length="4.023 km (2.5 mi)", opened=1968, nturns=3, lap=None,
+  rename={"*":None},
+  blurb="Pocono Raceway, the 2.5-mile triangular \"Tricky Triangle\" at Long Pond, Pennsylvania, opened in 1968, with three turns. The NASCAR Cup Series races here on Jun 13, 2027.",
+  sig=None,
+  events=[dict(d="2027-06-11",e="NASCAR at Pocono",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

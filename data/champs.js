@@ -131,7 +131,6 @@ const CHAMPS = [
     note:"NASCAR's 2027 Cup Series schedule (36 points races plus the Clash and the All-Star Race) was released on Aug 26, 2026; the 2026 season ends at Martinsville (Nov 1) and the Championship at Homestead-Miami (Nov 8). Venues without a map show Map coming soon; session times come once NASCAR publishes them.",
     stops:[
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2026-11-06", t:3 },
-      { id:"kansas", short:"Kansas", place:"Kansas City, Kansas", kind:"Oval", e:"NASCAR at Kansas", d:"2027-05-07", t:3 },
       { id:"dover", short:"Dover", place:"Dover, Delaware", kind:"Oval", e:"NASCAR at Dover", d:"2027-05-14", t:3 },
       { id:"north-wilkesboro", short:"North Wilkesboro", place:"North Wilkesboro, North Carolina", kind:"Oval", e:"NASCAR All-Star Race", d:"2027-05-21", t:3 },
       { id:"charlotte", short:"Charlotte", place:"Concord, North Carolina", kind:"Oval", e:"Coca-Cola 600", d:"2027-05-28", t:3 },
@@ -143,7 +142,6 @@ const CHAMPS = [
       { id:"naval-base-coronado", short:"San Diego", place:"Coronado, California", kind:"Street circuit", e:"NASCAR San Diego", d:"2027-07-30", t:3 },
       { id:"richmond", short:"Richmond", place:"Richmond, Virginia", kind:"Oval", e:"NASCAR at Richmond (Chase opener)", d:"2027-09-10", t:2 },
       { id:"new-hampshire", short:"New Hampshire", place:"Loudon, New Hampshire", kind:"Oval", e:"NASCAR at New Hampshire", d:"2027-09-24", t:3 },
-      { id:"kansas", short:"Kansas", place:"Kansas City, Kansas", kind:"Oval", e:"NASCAR at Kansas", d:"2027-10-01", t:3 },
       { id:"charlotte", short:"Charlotte", place:"Concord, North Carolina", kind:"Oval", e:"NASCAR at Charlotte", d:"2027-10-15", t:3 },
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2027-11-12", t:3 }    ] }
 ];

@@ -262,6 +262,12 @@ SPECS=[
   blurb="Texas Motor Speedway, the 1.5-mile oval at Fort Worth, Texas, opened in 1997. The NASCAR Cup Series races here on May 2, 2027.",
   sig=None,
   events=[dict(d="2027-04-30",e="NASCAR at Texas",s="NASCAR Cup Series",t=3)]),
+ dict(id="kansas", name="Kansas Speedway", short="Kansas", place="Kansas City, Kansas", tz="America/Chicago", center=[39.1156, -94.8311],
+  circuit=[37552701], pit=42240617, official="2.414 km", length="2.414 km (1.5 mi)", opened=2001, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Kansas Speedway, the 1.5-mile tri-oval at Kansas City, Kansas, opened in 2001. The NASCAR Cup Series races here on May 9, 2027, Oct 3, 2027.",
+  sig=None,
+  events=[dict(d="2027-05-07",e="NASCAR at Kansas",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

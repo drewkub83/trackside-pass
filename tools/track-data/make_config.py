@@ -310,6 +310,12 @@ SPECS=[
   blurb="Iowa Speedway, the 0.875-mile short track at Newton, Iowa, opened in 2006. The NASCAR Cup Series races here on Jul 4, 2027.",
   sig=None,
   events=[dict(d="2027-07-02",e="NASCAR at Iowa",s="NASCAR Cup Series",t=3)]),
+ dict(id="richmond", name="Richmond Raceway", short="Richmond", place="Richmond, Virginia", tz="America/New_York", center=[37.592, -77.42],
+  circuit=[452377300], pit=452377297, official="1.207 km", length="1.207 km (0.75 mi)", opened=1946, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Richmond Raceway, the 0.75-mile D-shaped oval at Richmond, Virginia, with racing since 1946. The NASCAR Cup Series races here on Sep 11, 2027.",
+  sig=None,
+  events=[dict(d="2027-09-10",e="NASCAR at Richmond (Chase opener)",s="NASCAR Cup Series",t=2)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

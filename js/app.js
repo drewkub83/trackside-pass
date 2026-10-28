@@ -219,7 +219,7 @@ function renderHero(){
    a season opener/finale tag, and -- only while the NEXT race is in the same season as the last result -- who won last
    and who leads. Across a season break (IMSA's Petit Le Mans -> next year's Rolex 24) last/leads are last season's news,
    so they are left off. */
-const SEASON_CARD_DAYS=30;
+const SEASON_CARD_DAYS=14;   /* two weeks ahead; one card per series (its next race only), so back-to-back weekends show just the current one */
 function seasonRole(c,pick){
   const yr=pick.e.d.slice(0,4), all=[];
   TRACKS.forEach(t=>t.events.forEach(e=>{ if(inChamp(c,e)) all.push(e.d); })); (c.stops||[]).forEach(st=>all.push(st.d));
@@ -238,7 +238,7 @@ function renderSeason(){
     const g0=lastOk&&last.groups[0], win0=g0?(g0.order?g0.order[0].replace(/^\d+\.\s*/,""):g0.winner):"", win=win0.includes(" \u2014 ")?win0.split(" \u2014 ").pop():win0;   /* drivers, not the car */
     const std=standingsFor(c.guide), stYr=std&&((std.asOf||"").match(/20\d\d/)||[])[0], lead=std&&(stYr?stYr===yr:lastOk)&&std.classes[0]&&std.classes[0].rows[0];
     const role=seasonRole(c,pick);
-    return `<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`; }).filter(Boolean).slice(0,4);
+    return {d:pick.e.d,h:`<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`}; }).filter(Boolean).sort((a,b)=>a.d.localeCompare(b.d)).map(x=>x.h).slice(0,6);   /* by race date, whatever order the series are arranged in */
   el.innerHTML=cards.length?`<div class="sect">Your series, next up</div><div class="scards">${cards.join("")}</div>`:"";
 }
 function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
@@ -1993,7 +1993,7 @@ function computeLimits(){
   cur.pois.map(p=>applyOv(p,ov[pid(p)])).concat(userStands()).forEach(p=>{ if(p.del) return; x0=Math.min(x0,p.x); y0=Math.min(y0,p.y); x1=Math.max(x1,p.x); y1=Math.max(y1,p.y); });
   const px=(x1-x0)*.06, py=(y1-y0)*.06, v=cur.vb; x0=Math.max(v[0],x0-px); y0=Math.max(v[1],y0-py); x1=Math.min(v[0]+v[2],x1+px); y1=Math.min(v[1]+v[3],y1+py);
   const fv=viewFor(f,...c);   /* the fitted view's visible part (middle two thirds of the holder): always allowed, so the opening view is never pushed */
-  limits={fw:fv[2],F:{x:fv[0]+fv[2]/6,y:fv[1]+fv[3]/6,w:fv[2]/1.5,h:fv[3]/1.5},B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.min(Math.max(viewFor(f,x0,y0,x1,y1)[2],viewFor(f,...c)[2]*1.12),viewFor(f,...c)[2]*1.25)}   /* zoom-out stops at 1.25x the fitted circuit: further out just shrinks the track to a speck */;
+  limits={fw:fv[2],F:{x:fv[0]+fv[2]/6,y:fv[1]+fv[3]/6,w:fv[2]/1.5,h:fv[3]/1.5},B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.max(viewFor(f,x0,y0,x1,y1)[2],viewFor(f,...c)[2]*1.25)}   /* zoom-out reaches the whole venue (circuit + every badge, so a short track with far-off parking can be seen whole); at least 1.25x the fitted circuit */;
 }
 function clampView(v){
   if(!limits) computeLimits(); if(!limits) return v;

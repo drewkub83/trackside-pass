@@ -684,7 +684,7 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
   --track:#FF5A1F; --track-edge:#FFFFFF; --pit:#566170;
   --glass:#FFFFFF; --glass-strong:#FFFFFF; --glass-edge:rgba(11,13,18,.10);
   --shadow:0 1px 2px rgba(11,13,18,.06); --glow:0 6px 16px rgba(255,90,31,.35);
-  --s-gtwca:#1F3BFF; --s-gtwce:#E4202A; --s-imsa:#F5A500; --s-indycar:#0FA968; --s-other:#6B7683;
+  --s-gtwca:#1F3BFF; --s-gtwce:#E4202A; --s-imsa:#F5A500; --s-indycar:#0FA968; --s-other:#6B7683; --s-l:44%;
 }
 @media (prefers-color-scheme: dark){
   :root[data-style="race"]:not([data-theme="light"]){
@@ -693,7 +693,7 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
     --tint:rgba(255,255,255,.08); --tint-2:rgba(255,255,255,.06);
     --accent:#FF6A33; --accent-2:#FF8A5C; --nav:#1C1F24; --track:#FF5A1F; --track-edge:#000000; --pit:#8E949C;
     --glass:rgba(21,23,27,.94); --glass-strong:#15171B; --glass-edge:rgba(255,255,255,.10); --shadow:none;
-    --s-gtwca:#5C78FF; --s-gtwce:#FF5058; --s-imsa:#FFB82E; --s-indycar:#2BD38E; --s-other:#8E949C;
+    --s-gtwca:#5C78FF; --s-gtwce:#FF5058; --s-imsa:#FFB82E; --s-indycar:#2BD38E; --s-other:#8E949C; --s-l:62%;
   }
 }
 :root[data-style="race"][data-theme="dark"]{
@@ -702,7 +702,7 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
   --tint:rgba(255,255,255,.08); --tint-2:rgba(255,255,255,.06);
   --accent:#FF6A33; --accent-2:#FF8A5C; --nav:#1C1F24; --track:#FF5A1F; --track-edge:#000000; --pit:#8E949C;
   --glass:rgba(21,23,27,.94); --glass-strong:#15171B; --glass-edge:rgba(255,255,255,.10); --shadow:none;
-  --s-gtwca:#5C78FF; --s-gtwce:#FF5058; --s-imsa:#FFB82E; --s-indycar:#2BD38E; --s-other:#8E949C;
+  --s-gtwca:#5C78FF; --s-gtwce:#FF5058; --s-imsa:#FFB82E; --s-indycar:#2BD38E; --s-other:#8E949C; --s-l:62%;
 }
 /* type */
 :root[data-style="race"] body{font-family:var(--font)}
@@ -1071,3 +1071,34 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 .rcpCls{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.rcpCls i{font-style:normal;font-size:12px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-2);align-self:center;margin-right:2px}
 .rcp{font-size:12.5px;padding:3px 9px;border-radius:99px;background:var(--tint);color:var(--ink-2)}.rcp.hit{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--ink);font-weight:600}.rcp.near{background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--ink)}
 .rcpSeason{margin-top:8px}.rcpBtns{display:flex;gap:10px;margin-top:12px}.rcpBtns .btn{flex:1}
+
+/* every series and category gets its own colour: --h is its hue, the lightness follows the theme (--s-l). The four earliest series keep their hand-picked --s-* colours above (higher specificity). */
+:root[data-style="race"] [data-s="f1"]{--h:330}
+:root[data-style="race"] [data-s="f2"]{--h:300}
+:root[data-style="race"] [data-s="f3"]{--h:350}
+:root[data-style="race"] [data-s="f1academy"]{--h:315}
+:root[data-style="race"] [data-s="wec"]{--h:265}
+:root[data-style="race"] [data-s="vpracing"]{--h:200}
+:root[data-style="race"] [data-s="gtamerica"]{--h:215}
+:root[data-style="race"] [data-s="gt4america"]{--h:125}
+:root[data-style="race"] [data-s="gt2europe"]{--h:160}
+:root[data-style="race"] [data-s="gt4europe"]{--h:140}
+:root[data-style="race"] [data-s="mclarentrophy"]{--h:25}
+:root[data-style="race"] [data-s="nascar"]{--h:195}
+:root[data-style="race"] [data-s="carreracup"]{--h:50}
+:root[data-style="race"] [data-s="pilotchallenge"]{--h:170}
+:root[data-style="race"] [data-s="mx5"]{--h:100}
+:root[data-style="race"] [data-s="lambo"]{--h:75}
+:root[data-style="race"] [data-s="tcamerica"]{--h:245}
+:root[data-style="race"] [data-s="grcup"]{--h:35}
+:root[data-style="race"] [data-s="supercup"]{--h:205}
+:root[data-style="race"] [data-s="gt3revival"]{--h:28}
+:root[data-style="race"] [data-s="masters"]{--h:45}
+:root[data-style="race"] [data-s="hsr"]{--h:150}
+:root[data-style="race"] [data-s="cat-openwheel"]{--h:330}
+:root[data-style="race"] [data-s="cat-endurance"]{--h:265}
+:root[data-style="race"] [data-s="cat-gt"]{--h:175}
+:root[data-style="race"] [data-s="cat-onemake"]{--h:45}
+:root[data-style="race"] [data-s="cat-historic"]{--h:30}
+:root[data-style="race"] [data-s="cat-stock"]{--h:195}
+:root[data-style="race"] [data-s]{--sc:hsl(var(--h) 78% var(--s-l))}

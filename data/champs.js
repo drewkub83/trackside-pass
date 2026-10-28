@@ -21,7 +21,8 @@ const CATS = [
   { id:"endurance", name:"Endurance", tile:"ENDU" },
   { id:"gt", name:"GT", tile:"GT" },
   { id:"onemake", name:"One-make and touring", tile:"ONE" },
-  { id:"historic", name:"Historic", tile:"HIST" }
+  { id:"historic", name:"Historic", tile:"HIST" },
+  { id:"stock", name:"Stock car", tile:"STOCK" }
 ];
 const REGIONS = { na:"North America", eu:"Europe", world:"Worldwide" };   /* add a key here (and region:"…" on its series) when a new part of the world is added */
 const CHAMPS = [
@@ -126,4 +127,37 @@ const CHAMPS = [
       { id:"istanbul", short:"Turkey", place:"Istanbul, Turkey", kind:"Road course", e:"Turkish Grand Prix", d:"2027-10-01", t:3 },
       { id:"marina-bay", short:"Singapore", place:"Singapore", kind:"Street circuit", e:"Singapore Grand Prix", d:"2027-10-08", t:3 }
     ] }
+  ,{ id:"nascar", cat:"stock", region:"na", name:"NASCAR", tile:"NASCAR", full:"NASCAR Cup Series", match:/NASCAR/i, guide:"nascar",
+    note:"NASCAR's 2027 Cup Series schedule (36 points races plus the Clash and the All-Star Race) was released on Aug 26, 2026; the 2026 season ends at Martinsville (Nov 1) and the Championship at Homestead-Miami (Nov 8). Venues without a map show Map coming soon; session times come once NASCAR publishes them.",
+    stops:[
+      { id:"martinsville", short:"Martinsville", place:"Ridgeway, Virginia", kind:"Oval", e:"NASCAR at Martinsville (Round of 8 finale)", d:"2026-10-30", t:3 },
+      { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2026-11-06", t:3 },
+      { id:"atlanta", short:"Atlanta", place:"Hampton, Georgia", kind:"Oval", e:"NASCAR at Atlanta", d:"2027-02-26", t:3 },
+      { id:"las-vegas-motor-speedway", short:"Las Vegas", place:"Las Vegas, Nevada", kind:"Oval", e:"NASCAR at Las Vegas", d:"2027-03-19", t:3 },
+      { id:"darlington", short:"Darlington", place:"Darlington, South Carolina", kind:"Oval", e:"NASCAR at Darlington", d:"2027-04-02", t:3 },
+      { id:"bristol", short:"Bristol", place:"Bristol, Tennessee", kind:"Oval", e:"NASCAR at Bristol", d:"2027-04-09", t:3 },
+      { id:"martinsville", short:"Martinsville", place:"Ridgeway, Virginia", kind:"Oval", e:"NASCAR at Martinsville", d:"2027-04-16", t:3 },
+      { id:"talladega", short:"Talladega", place:"Talladega, Alabama", kind:"Oval", e:"NASCAR at Talladega", d:"2027-04-23", t:3 },
+      { id:"texas-motor-speedway", short:"Texas", place:"Fort Worth, Texas", kind:"Oval", e:"NASCAR at Texas", d:"2027-04-30", t:3 },
+      { id:"kansas", short:"Kansas", place:"Kansas City, Kansas", kind:"Oval", e:"NASCAR at Kansas", d:"2027-05-07", t:3 },
+      { id:"dover", short:"Dover", place:"Dover, Delaware", kind:"Oval", e:"NASCAR at Dover", d:"2027-05-14", t:3 },
+      { id:"north-wilkesboro", short:"North Wilkesboro", place:"North Wilkesboro, North Carolina", kind:"Oval", e:"NASCAR All-Star Race", d:"2027-05-21", t:3 },
+      { id:"charlotte", short:"Charlotte", place:"Concord, North Carolina", kind:"Oval", e:"Coca-Cola 600", d:"2027-05-28", t:3 },
+      { id:"nashville-superspeedway", short:"Nashville", place:"Lebanon, Tennessee", kind:"Oval", e:"NASCAR at Nashville", d:"2027-06-04", t:3 },
+      { id:"pocono", short:"Pocono", place:"Long Pond, Pennsylvania", kind:"Oval", e:"NASCAR at Pocono", d:"2027-06-11", t:3 },
+      { id:"michigan", short:"Michigan", place:"Brooklyn, Michigan", kind:"Oval", e:"NASCAR at Michigan", d:"2027-06-18", t:3 },
+      { id:"chicagoland", short:"Chicagoland", place:"Joliet, Illinois", kind:"Oval", e:"NASCAR at Chicagoland", d:"2027-06-25", t:3 },
+      { id:"iowa", short:"Iowa", place:"Newton, Iowa", kind:"Oval", e:"NASCAR at Iowa", d:"2027-07-02", t:3 },
+      { id:"atlanta", short:"Atlanta", place:"Hampton, Georgia", kind:"Oval", e:"NASCAR at Atlanta", d:"2027-07-16", t:3 },
+      { id:"naval-base-coronado", short:"San Diego", place:"Coronado, California", kind:"Street circuit", e:"NASCAR San Diego", d:"2027-07-30", t:3 },
+      { id:"bristol", short:"Bristol", place:"Bristol, Tennessee", kind:"Oval", e:"NASCAR at Bristol (night race)", d:"2027-08-13", t:2 },
+      { id:"darlington", short:"Darlington", place:"Darlington, South Carolina", kind:"Oval", e:"NASCAR at Darlington", d:"2027-09-03", t:3 },
+      { id:"richmond", short:"Richmond", place:"Richmond, Virginia", kind:"Oval", e:"NASCAR at Richmond (Chase opener)", d:"2027-09-10", t:2 },
+      { id:"new-hampshire", short:"New Hampshire", place:"Loudon, New Hampshire", kind:"Oval", e:"NASCAR at New Hampshire", d:"2027-09-24", t:3 },
+      { id:"kansas", short:"Kansas", place:"Kansas City, Kansas", kind:"Oval", e:"NASCAR at Kansas", d:"2027-10-01", t:3 },
+      { id:"las-vegas-motor-speedway", short:"Las Vegas", place:"Las Vegas, Nevada", kind:"Oval", e:"NASCAR at Las Vegas", d:"2027-10-08", t:3 },
+      { id:"charlotte", short:"Charlotte", place:"Concord, North Carolina", kind:"Oval", e:"NASCAR at Charlotte", d:"2027-10-15", t:3 },
+      { id:"talladega", short:"Talladega", place:"Talladega, Alabama", kind:"Oval", e:"NASCAR at Talladega", d:"2027-10-29", t:3 },
+      { id:"martinsville", short:"Martinsville", place:"Ridgeway, Virginia", kind:"Oval", e:"NASCAR at Martinsville", d:"2027-11-05", t:3 },
+      { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2027-11-12", t:3 }    ] }
 ];

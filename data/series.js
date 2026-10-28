@@ -272,6 +272,23 @@ const SERIES = [
     fine:"A spectator summary from fiawec.com and the Monza provisional entry list (version 1, Oct 20, 2026). For official details, see fiawec.com."
   },
   {
+    id:"nascar", match:/NASCAR/i, timing:"https://www.nascar.com/followlive/",
+    name:"NASCAR Cup Series", tag:"Stock cars, ovals and a few road courses",
+    blurb:"The NASCAR Cup Series is American stock car racing's top series: up to 40 identical-looking cars racing wheel to wheel, mostly on oval tracks from short bullrings to the huge Daytona and Talladega superspeedways, plus a few road courses. The 2027 season has 36 points races from the Daytona 500 in February to the Championship at Homestead-Miami in November, with the non-points Clash and All-Star Race on top.",
+    cars:[
+      {n:"Next Gen", full:"NASCAR Next Gen car", type:"One class: Chevrolet, Ford and Toyota stock cars", c:"#C28A00", fg:"#1B1B1B", pace:"Very fast",
+       text:"Every team races the same Next Gen car design: a chassis from one supplier (Technique Chassis), carbon-composite bodies, 18-inch aluminum wheels and a V8 engine. Chevrolet (Camaro), Ford (Mustang) and Toyota (Camry) supply the bodies and engines. Power is about 670 horsepower at most tracks and 510 at the superspeedways (Daytona and Talladega); from 2026 it is 750 at road courses and at ovals shorter than 1.5 miles.",
+       spot:"The cars look like a Camaro, Mustang or Camry but are all built to the same rules, so tell them apart by number, sponsor colors and the manufacturer on the nose. Up to 40 cars start each race and they race as one pack."}
+    ],
+    rule:"Each race is split into three stages with a caution at the end of the first two. Stage results and the finish earn points: the winner gets 55, and the top 10 at the end of each of the first two stages get 10 down to 1. After 26 regular-season races the top 16 drivers in points start The Chase (10 races, one points reset), and the one with the most points at the Homestead-Miami finale is the champion. There are no more eliminations.",
+    watch:{
+      practice:"Practice and qualifying times change from track to track (some weekends have little or no practice), so check the weekend's schedule once NASCAR publishes it.",
+      qualifying:"Qualifying sets the starting grid, run as single cars or in short groups depending on the track.",
+      race:"Races last 2 to 4 hours (the Coca-Cola 600 is 600 miles) and are run on Sundays, with a few Saturday-night races. Most weekends also include the O'Reilly Auto Parts Series and Craftsman Truck Series."
+    },
+    fine:"A spectator summary based on NASCAR's 2027 schedule release (Aug 26, 2026) and published reports of the Next Gen car and the 2026 Chase format. For official details, see nascar.com."
+  },
+  {
     id:"f1academy", sess:"f1academy", match:/F1 Academy/i, timing:"https://www.f1academy.com/About/Live-Timing",
     name:"F1 Academy", tag:"All-female, one car for everyone",
     blurb:"A single-seater series for young women, run by Formula 1 as a step up from karting. Every driver has the same car, so results come down to the driver and the team. It races on Formula 1 weekends, and many of its cars carry the colours of Formula 1 teams.",

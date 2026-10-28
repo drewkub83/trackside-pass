@@ -322,6 +322,12 @@ SPECS=[
   blurb="New Hampshire Motor Speedway, the 1.058-mile oval at Loudon, New Hampshire, opened in 1990. The NASCAR Cup Series races here on Sep 26, 2027.",
   sig=None,
   events=[dict(d="2027-09-24",e="NASCAR at New Hampshire",s="NASCAR Cup Series",t=3)]),
+ dict(id="homestead-miami", name="Homestead-Miami Speedway", short="Homestead-Miami", place="Homestead, Florida", tz="America/New_York", center=[25.451, -80.4094],
+  circuit=[108159182, 1146967012, 1146967009, 1146967010, 1146967011], pit=1328685646, official="2.414 km", length="2.414 km (1.5 mi)", opened=1995, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Homestead-Miami Speedway, the 1.5-mile oval at Homestead, Florida, opened in 1995. The NASCAR Cup Series races here on Nov 8, 2026, Nov 14, 2027.",
+  sig=None,
+  events=[dict(d="2026-11-06",e="NASCAR Championship",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

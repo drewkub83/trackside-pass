@@ -280,6 +280,12 @@ SPECS=[
   blurb="Charlotte Motor Speedway, the 1.5-mile quad-oval at Concord, North Carolina, opened in 1960, home of the Coca-Cola 600. The NASCAR Cup Series races here on May 30, 2027, Oct 17, 2027.",
   sig=None,
   events=[dict(d="2027-05-28",e="Coca-Cola 600",s="NASCAR Cup Series",t=3)]),
+ dict(id="nashville-superspeedway", name="Nashville Superspeedway", short="Nashville", place="Lebanon, Tennessee", tz="America/Chicago", center=[36.0445, -86.389],
+  circuit=[185563917], pit=358925177, official="2.140 km", length="2.140 km (1.33 mi)", opened=2001, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Nashville Superspeedway, the 1.33-mile concrete oval at Lebanon, Tennessee, east of Nashville, opened in 2001. The NASCAR Cup Series races here on Jun 6, 2027.",
+  sig=None,
+  events=[dict(d="2027-06-04",e="NASCAR at Nashville",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

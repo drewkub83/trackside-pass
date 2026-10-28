@@ -268,6 +268,12 @@ SPECS=[
   blurb="Kansas Speedway, the 1.5-mile tri-oval at Kansas City, Kansas, opened in 2001. The NASCAR Cup Series races here on May 9, 2027, Oct 3, 2027.",
   sig=None,
   events=[dict(d="2027-05-07",e="NASCAR at Kansas",s="NASCAR Cup Series",t=3)]),
+ dict(id="dover", name="Dover Motor Speedway", short="Dover", place="Dover, Delaware", tz="America/New_York", center=[39.19, -75.5309],
+  circuit=[350676133], pit=395874675, official="1.609 km", length="1.609 km (1.0 mi)", opened=1969, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Dover Motor Speedway, the one-mile concrete oval at Dover, Delaware, opened in 1969. The NASCAR Cup Series races here on May 16, 2027.",
+  sig=None,
+  events=[dict(d="2027-05-14",e="NASCAR at Dover",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

@@ -214,6 +214,12 @@ SPECS=[
   blurb="Fuji Speedway, a 4.563 km, 16-turn circuit at Oyama in Shizuoka, Japan, in the foothills of Mount Fuji. It hosts the 6 Hours of Fuji in the FIA World Endurance Championship (Sep 24-26, 2027).",
   sig=None,
   events=[dict(d="2027-09-24",e="6 Hours of Fuji",s="FIA World Endurance Championship",t=3)]),
+ dict(id="daytona-oval", name="Daytona International Speedway", short="Daytona", place="Daytona Beach, Florida", tz="America/New_York", center=[29.1852, -81.0705],
+  circuit=[-11371365, -352070316, -352070309, -352070311, -352067004], pit=352067003, official="4.023 km", length="4.023 km (2.5 mi)", opened=1959, nturns=4, lap=None,
+  rename={},
+  blurb="Daytona International Speedway, the 2.5-mile (4.023 km) tri-oval in Daytona Beach, Florida, that opened in 1959. It hosts the NASCAR Cup Series Speedweeks from the Wheatley Vodka Clash (Feb 13, 2027) to the Daytona 500 (Feb 21), and returns for a summer race on Aug 28.",
+  sig=None,
+  events=[dict(d="2027-02-13",e="Wheatley Vodka Clash",s="NASCAR Cup Series",t=1)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):
@@ -229,12 +235,12 @@ for S in SPECS:
     els=json.load(open(OSM+S["id"]+".json"))["elements"]; W={e["id"]:e for e in els if e.get("type")=="way"}
     labels=[]; seen=set()
     for wid in S["circuit"]:
-        nm=W[wid].get("tags",{}).get("name","").strip()
+        nm=W[abs(wid)].get("tags",{}).get("name","").strip()
         if not nm or nm in seen: continue
         seen.add(nm); 
         txt=S["rename"].get(nm,nm)
         if txt is None: continue
-        g=W[wid]["geometry"]; m=g[len(g)//2]; labels.append([txt,round(m["lat"],6),round(m["lon"],6),True])
+        g=W[abs(wid)]["geometry"]; m=g[len(g)//2]; labels.append([txt,round(m["lat"],6),round(m["lon"],6),True])
     cfg=f'''{{
   id: {rb(S["id"])}, name: {rb(S["name"])}, short: {rb(S["short"])}, place: {rb(S["place"])}, tz: {rb(S["tz"])},
   center: {rb(S["center"])}, circuit: {rb(S["circuit"])}, pit: {rb(S["pit"])},{(" pit_slice: "+rb(S["pit_slice"])+",") if S.get("pit_slice") else ""}

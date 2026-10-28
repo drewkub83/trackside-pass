@@ -41,6 +41,12 @@ ALIAS = {"daytona-oval": "daytona"}   # until the Daytona oval has its own track
 built = {v for v in V if os.path.exists(os.path.join(ROOT, "data", v + ".js"))}
 for a, b in ALIAS.items():
     if a not in built and os.path.exists(os.path.join(ROOT, "data", b + ".js")): built.add(a)
+for a, b in ALIAS.items():          # once the real track exists, the NASCAR events on the stand-in file move to it
+    if os.path.exists(os.path.join(ROOT, "data", a + ".js")) and os.path.exists(os.path.join(ROOT, "data", b + ".js")):
+        T = B.load(b); ev = [e for e in T["events"] if not e.get("s", "").startswith(SER)]
+        if ev != T["events"]:
+            print("moving NASCAR events off", b)
+            if not DRY: T["events"] = ev; B.save(b, T)
 today = datetime.date.today().isoformat()
 stops = []
 for day, vid, name in RACES:

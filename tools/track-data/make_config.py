@@ -274,6 +274,12 @@ SPECS=[
   blurb="Dover Motor Speedway, the one-mile concrete oval at Dover, Delaware, opened in 1969. The NASCAR Cup Series races here on May 16, 2027.",
   sig=None,
   events=[dict(d="2027-05-14",e="NASCAR at Dover",s="NASCAR Cup Series",t=3)]),
+ dict(id="charlotte", name="Charlotte Motor Speedway", short="Charlotte", place="Concord, North Carolina", tz="America/New_York", center=[35.3519, -80.683],
+  circuit=[116034341, 402168709, 1052107104, 402168711, 396483278], pit=116034339, official="2.414 km", length="2.414 km (1.5 mi)", opened=1960, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Charlotte Motor Speedway, the 1.5-mile quad-oval at Concord, North Carolina, opened in 1960, home of the Coca-Cola 600. The NASCAR Cup Series races here on May 30, 2027, Oct 17, 2027.",
+  sig=None,
+  events=[dict(d="2027-05-28",e="Coca-Cola 600",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

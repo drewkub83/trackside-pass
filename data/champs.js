@@ -131,7 +131,6 @@ const CHAMPS = [
     note:"NASCAR's 2027 Cup Series schedule (36 points races plus the Clash and the All-Star Race) was released on Aug 26, 2026; the 2026 season ends at Martinsville (Nov 1) and the Championship at Homestead-Miami (Nov 8). Venues without a map show Map coming soon; session times come once NASCAR publishes them.",
     stops:[
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2026-11-06", t:3 },
-      { id:"talladega", short:"Talladega", place:"Talladega, Alabama", kind:"Oval", e:"NASCAR at Talladega", d:"2027-04-23", t:3 },
       { id:"texas-motor-speedway", short:"Texas", place:"Fort Worth, Texas", kind:"Oval", e:"NASCAR at Texas", d:"2027-04-30", t:3 },
       { id:"kansas", short:"Kansas", place:"Kansas City, Kansas", kind:"Oval", e:"NASCAR at Kansas", d:"2027-05-07", t:3 },
       { id:"dover", short:"Dover", place:"Dover, Delaware", kind:"Oval", e:"NASCAR at Dover", d:"2027-05-14", t:3 },
@@ -147,6 +146,5 @@ const CHAMPS = [
       { id:"new-hampshire", short:"New Hampshire", place:"Loudon, New Hampshire", kind:"Oval", e:"NASCAR at New Hampshire", d:"2027-09-24", t:3 },
       { id:"kansas", short:"Kansas", place:"Kansas City, Kansas", kind:"Oval", e:"NASCAR at Kansas", d:"2027-10-01", t:3 },
       { id:"charlotte", short:"Charlotte", place:"Concord, North Carolina", kind:"Oval", e:"NASCAR at Charlotte", d:"2027-10-15", t:3 },
-      { id:"talladega", short:"Talladega", place:"Talladega, Alabama", kind:"Oval", e:"NASCAR at Talladega", d:"2027-10-29", t:3 },
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2027-11-12", t:3 }    ] }
 ];

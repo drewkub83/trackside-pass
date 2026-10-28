@@ -132,7 +132,6 @@ const CHAMPS = [
     stops:[
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2026-11-06", t:3 },
       { id:"north-wilkesboro", short:"North Wilkesboro", place:"North Wilkesboro, North Carolina", kind:"Oval", e:"NASCAR All-Star Race", d:"2027-05-21", t:3 },
-      { id:"chicagoland", short:"Chicagoland", place:"Joliet, Illinois", kind:"Oval", e:"NASCAR at Chicagoland", d:"2027-06-25", t:3 },
       { id:"iowa", short:"Iowa", place:"Newton, Iowa", kind:"Oval", e:"NASCAR at Iowa", d:"2027-07-02", t:3 },
       { id:"naval-base-coronado", short:"San Diego", place:"Coronado, California", kind:"Street circuit", e:"NASCAR San Diego", d:"2027-07-30", t:3 },
       { id:"richmond", short:"Richmond", place:"Richmond, Virginia", kind:"Oval", e:"NASCAR at Richmond (Chase opener)", d:"2027-09-10", t:2 },

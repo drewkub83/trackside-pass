@@ -298,6 +298,12 @@ SPECS=[
   blurb="Michigan International Speedway, the two-mile oval at Brooklyn, Michigan, opened in 1968. The NASCAR Cup Series races here on Jun 20, 2027.",
   sig=None,
   events=[dict(d="2027-06-18",e="NASCAR at Michigan",s="NASCAR Cup Series",t=3)]),
+ dict(id="chicagoland", name="Chicagoland Speedway", short="Chicagoland", place="Joliet, Illinois", tz="America/Chicago", center=[41.477, -88.06],
+  circuit=[33119599], pit=33119615, official="2.414 km", length="2.414 km (1.5 mi)", opened=2001, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Chicagoland Speedway, the 1.5-mile tri-oval at Joliet, Illinois, opened in 2001. The NASCAR Cup Series races here on Jun 27, 2027.",
+  sig=None,
+  events=[dict(d="2027-06-25",e="NASCAR at Chicagoland",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

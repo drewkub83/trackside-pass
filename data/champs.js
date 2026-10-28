@@ -133,6 +133,5 @@ const CHAMPS = [
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2026-11-06", t:3 },
       { id:"north-wilkesboro", short:"North Wilkesboro", place:"North Wilkesboro, North Carolina", kind:"Oval", e:"NASCAR All-Star Race", d:"2027-05-21", t:3 },
       { id:"naval-base-coronado", short:"San Diego", place:"Coronado, California", kind:"Street circuit", e:"NASCAR San Diego", d:"2027-07-30", t:3 },
-      { id:"new-hampshire", short:"New Hampshire", place:"Loudon, New Hampshire", kind:"Oval", e:"NASCAR at New Hampshire", d:"2027-09-24", t:3 },
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2027-11-12", t:3 }    ] }
 ];

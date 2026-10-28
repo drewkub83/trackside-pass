@@ -316,6 +316,12 @@ SPECS=[
   blurb="Richmond Raceway, the 0.75-mile D-shaped oval at Richmond, Virginia, with racing since 1946. The NASCAR Cup Series races here on Sep 11, 2027.",
   sig=None,
   events=[dict(d="2027-09-10",e="NASCAR at Richmond (Chase opener)",s="NASCAR Cup Series",t=2)]),
+ dict(id="new-hampshire", name="New Hampshire Motor Speedway", short="New Hampshire", place="Loudon, New Hampshire", tz="America/New_York", center=[43.3634, -71.4612],
+  circuit=[766389943, 766389942, 60096117, 766389945, 766389944], pit=78277613, official="1.703 km", length="1.703 km (1.058 mi)", opened=1990, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="New Hampshire Motor Speedway, the 1.058-mile oval at Loudon, New Hampshire, opened in 1990. The NASCAR Cup Series races here on Sep 26, 2027.",
+  sig=None,
+  events=[dict(d="2027-09-24",e="NASCAR at New Hampshire",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

@@ -328,6 +328,12 @@ SPECS=[
   blurb="Homestead-Miami Speedway, the 1.5-mile oval at Homestead, Florida, opened in 1995. The NASCAR Cup Series races here on Nov 8, 2026, Nov 14, 2027.",
   sig=None,
   events=[dict(d="2026-11-06",e="NASCAR Championship",s="NASCAR Cup Series",t=3)]),
+ dict(id="north-wilkesboro", name="North Wilkesboro Speedway", short="North Wilkesboro", place="North Wilkesboro, North Carolina", tz="America/New_York", center=[36.1421, -81.0715],
+  circuit=[18928710], pit=377180179, official="1.006 km", length="1.006 km (0.625 mi)", opened=1947, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="North Wilkesboro Speedway, the short track at North Wilkesboro, North Carolina, opened in 1947. The NASCAR Cup Series races here on May 23, 2027.",
+  sig=None,
+  events=[dict(d="2027-05-21",e="NASCAR All-Star Race",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

@@ -216,10 +216,16 @@ SPECS=[
   events=[dict(d="2027-09-24",e="6 Hours of Fuji",s="FIA World Endurance Championship",t=3)]),
  dict(id="daytona-oval", name="Daytona International Speedway", short="Daytona", place="Daytona Beach, Florida", tz="America/New_York", center=[29.1852, -81.0705],
   circuit=[-11371365, -352070316, -352070309, -352070311, -352067004], pit=352067003, official="4.023 km", length="4.023 km (2.5 mi)", opened=1959, nturns=4, lap=None,
-  rename={},
+  rename={"*":None},
   blurb="Daytona International Speedway, the 2.5-mile (4.023 km) tri-oval in Daytona Beach, Florida, that opened in 1959. It hosts the NASCAR Cup Series Speedweeks from the Wheatley Vodka Clash (Feb 13, 2027) to the Daytona 500 (Feb 21), and returns for a summer race on Aug 28.",
   sig=None,
   events=[dict(d="2027-02-13",e="Wheatley Vodka Clash",s="NASCAR Cup Series",t=1)]),
+ dict(id="atlanta", name="EchoPark Speedway", short="Atlanta", place="Hampton, Georgia", tz="America/New_York", center=[33.3855, -84.3167],
+  circuit=[288853230], pit=288853232, official="2.478 km", length="2.478 km (1.54 mi)", opened=1960, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="EchoPark Speedway (Atlanta Motor Speedway), the 1.54-mile (2.479 km) oval at Hampton, Georgia, south of Atlanta, opened in 1960. The NASCAR Cup Series races here twice in 2027: Feb 28 and Jul 18.",
+  sig=None,
+  events=[dict(d="2027-02-26",e="NASCAR at Atlanta",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):
@@ -238,7 +244,7 @@ for S in SPECS:
         nm=W[abs(wid)].get("tags",{}).get("name","").strip()
         if not nm or nm in seen: continue
         seen.add(nm); 
-        txt=S["rename"].get(nm,nm)
+        txt=None if "*" in S["rename"] else S["rename"].get(nm,nm)
         if txt is None: continue
         g=W[abs(wid)]["geometry"]; m=g[len(g)//2]; labels.append([txt,round(m["lat"],6),round(m["lon"],6),True])
     cfg=f'''{{

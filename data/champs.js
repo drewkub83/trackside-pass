@@ -132,7 +132,6 @@ const CHAMPS = [
     stops:[
       { id:"martinsville", short:"Martinsville", place:"Ridgeway, Virginia", kind:"Oval", e:"NASCAR at Martinsville (Round of 8 finale)", d:"2026-10-30", t:3 },
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2026-11-06", t:3 },
-      { id:"atlanta", short:"Atlanta", place:"Hampton, Georgia", kind:"Oval", e:"NASCAR at Atlanta", d:"2027-02-26", t:3 },
       { id:"las-vegas-motor-speedway", short:"Las Vegas", place:"Las Vegas, Nevada", kind:"Oval", e:"NASCAR at Las Vegas", d:"2027-03-19", t:3 },
       { id:"darlington", short:"Darlington", place:"Darlington, South Carolina", kind:"Oval", e:"NASCAR at Darlington", d:"2027-04-02", t:3 },
       { id:"bristol", short:"Bristol", place:"Bristol, Tennessee", kind:"Oval", e:"NASCAR at Bristol", d:"2027-04-09", t:3 },
@@ -148,7 +147,6 @@ const CHAMPS = [
       { id:"michigan", short:"Michigan", place:"Brooklyn, Michigan", kind:"Oval", e:"NASCAR at Michigan", d:"2027-06-18", t:3 },
       { id:"chicagoland", short:"Chicagoland", place:"Joliet, Illinois", kind:"Oval", e:"NASCAR at Chicagoland", d:"2027-06-25", t:3 },
       { id:"iowa", short:"Iowa", place:"Newton, Iowa", kind:"Oval", e:"NASCAR at Iowa", d:"2027-07-02", t:3 },
-      { id:"atlanta", short:"Atlanta", place:"Hampton, Georgia", kind:"Oval", e:"NASCAR at Atlanta", d:"2027-07-16", t:3 },
       { id:"naval-base-coronado", short:"San Diego", place:"Coronado, California", kind:"Street circuit", e:"NASCAR San Diego", d:"2027-07-30", t:3 },
       { id:"bristol", short:"Bristol", place:"Bristol, Tennessee", kind:"Oval", e:"NASCAR at Bristol (night race)", d:"2027-08-13", t:2 },
       { id:"darlington", short:"Darlington", place:"Darlington, South Carolina", kind:"Oval", e:"NASCAR at Darlington", d:"2027-09-03", t:3 },

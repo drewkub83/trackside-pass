@@ -28,7 +28,7 @@ const CHAMPS = [
       { id:"markham",        short:"Markham",        place:"Markham, Ontario",        kind:"Street circuit", e:"NTT INDYCAR SERIES: Streets of Markham", d:"2027-08-13", t:3 },
       { id:"milwaukee-mile", short:"Milwaukee Mile", place:"West Allis, Wisconsin",   kind:"Oval",           e:"NTT INDYCAR SERIES at the Milwaukee Mile (races on Saturday and Sunday)", d:"2027-08-27", t:3 }
     ] },
-  { id:"gtwca", region:"na", name:"GT World Challenge", group:"GT World Challenge America", tile:"GTWC", full:"GT World Challenge America Powered by AWS", match:/GT World Challenge America|Texas 8 Hour/i, guide:"gtwca",
+  { id:"gtwca", region:"na", name:"GT World America", group:"GT World America", tile:"GTWA", full:"GT World Challenge America Powered by AWS", match:/GT World Challenge America|Texas 8 Hour/i, guide:"gtwca",
     note:"Barber (Sep 25-27) and the Indianapolis 8 Hour (Oct 9-11) finish the 2026 season. Then the provisional 2027 calendar: seven rounds, including the first Texas 8 Hour at Circuit of the Americas and the return of Watkins Glen. Dates can still change.",
     stops:[
       { id:"sonoma", short:"Sonoma", place:"Sonoma, California", kind:"Road course", e:"GT World Challenge America", d:"2027-04-02", t:3 },

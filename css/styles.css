@@ -646,10 +646,7 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 @keyframes sgin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .regionHead{list-style:none;padding:12px 26px 4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
 .regionHead:first-child{padding-top:0}
-.catBack{list-style:none;padding:0 18px 8px;display:flex;align-items:center;gap:10px}
-.catBack button{display:flex;align-items:center;gap:4px;background:none;border:0;color:var(--ink-2);font:inherit;font-size:14px;padding:6px 8px 6px 0;cursor:pointer}
-.catBack button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.catBack h3{margin:0;font-size:18px;font-weight:600}
+@media (prefers-reduced-motion:no-preference){.catIn{animation:catIn .22s ease-out}@keyframes catIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}}
 
 /* what is on track right now: clearly green in the event tab and the Race Day hub */
 .sess.live{background:color-mix(in srgb,#4FA37A 14%,var(--glass));box-shadow:inset 0 0 0 2px #4FA37A,var(--shadow)}

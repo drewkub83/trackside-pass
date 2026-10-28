@@ -256,8 +256,9 @@ function seriesOrderIds(){
 }
 function setSeriesOrderIds(ids){ LSset(SERIES_ORDER_KEY,JSON.stringify(ids)); }
 function orderedChamps(){ const byId=Object.fromEntries(CHAMPS.map(c=>[c.id,c])); return seriesOrderIds().map(id=>byId[id]).filter(Boolean); }
+function serBar(name){ const t=document.getElementById("serListTitle"), b=document.getElementById("serCatBack"); if(t) t.textContent=name||"Series"; if(b) b.hidden=!name; }
 let serCat=null;   /* the category open on the Series tab (null = the category list) */
-function openSerCat(id){ serCat=id; renderChampList(); const sc=document.getElementById("seriesList"); if(sc) sc.scrollTop=0; window.scrollTo(0,0); }
+function openSerCat(id){ serCat=id; renderChampList(); const l=document.getElementById("champList"); if(l){ l.classList.remove("catIn"); void l.offsetWidth; l.classList.add("catIn"); } const sc=document.getElementById("seriesList"); if(sc) sc.scrollTop=0; window.scrollTo(0,0); }
 function champCat(c){ return CATS.some(x=>x.id===c.cat)?c.cat:"other"; }
 function renderChampList(){
   const el=document.getElementById("champList"); if(!el) return;
@@ -270,8 +271,10 @@ function renderChampList(){
   /* five or more series across two or more categories: a list of categories, each opening its own series */
   if(ordered.length>=5&&cats.length>=2){
     if(serCat&&!cats.includes(serCat)) serCat=null;
+    if(!serCat) serBar(null);
     if(serCat){ const ct=CATS.find(x=>x.id===serCat)||{name:"Other series"};
-      el.innerHTML=`<li class="catBack"><button onclick="openSerCat(null)" aria-label="All categories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>All series</button><h3>${ct.name}</h3></li>`+ordered.filter(c=>champCat(c)===serCat).map(row).join("");
+      el.innerHTML=ordered.filter(c=>champCat(c)===serCat).map(row).join("");
+      serBar(ct.name);
       return; }
     el.innerHTML=cats.map(id=>{ const ct=CATS.find(x=>x.id===id)||{id:"other",name:"Other series",tile:"MORE"}, list=ordered.filter(c=>champCat(c)===id), nxt=list.map(c=>orderOf(c)[0]).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d))[0];
       return `<li><button class="track-row series cat" data-s="cat-${ct.id}" onclick="openSerCat('${ct.id}')"><span class="tile txt">${ct.tile}</span>
@@ -280,7 +283,7 @@ function renderChampList(){
     return; }
   /* once the series you follow span more than one part of the world, group them under region headings (your own
      order still rules within a region, and the regions follow whichever of your series comes first) */
-  const regions=[...new Set(ordered.map(c=>c.region||"na"))];
+  serBar(null); const regions=[...new Set(ordered.map(c=>c.region||"na"))];
   el.innerHTML=regions.length<2?ordered.map(row).join(""):regions.map(r=>`<li class="regionHead">${REGIONS[r]||r}</li>`+ordered.filter(c=>(c.region||"na")===r).map(row).join("")).join("");
 }
 let curChamp=null, serRows=[];

@@ -25,6 +25,7 @@ const loadGlobal = (file, name, prelude = "") => {
 };
 const SERIES = loadGlobal("data/series.js", "SERIES") || [];
 const CHAMPS = loadGlobal("data/champs.js", "CHAMPS") || [];
+const CATS = loadGlobal("data/champs.js", "CATS") || [];
 const WATCH = loadGlobal("data/watch.js", "WATCH") || [];
 const RESULTS = loadGlobal("data/results.js", "RESULTS", "const SERIES=[];") || [];
 const STANDINGS = loadGlobal("data/standings.js", "STANDINGS") || [];
@@ -67,6 +68,7 @@ for (const e of ENTRIES) {
   }
   if (!nums.size) warn(`entries: ${e.t} ${e.d} has no cars yet`);
 }
+for (const c of CHAMPS) if (!CATS.some((k) => k.id === c.cat)) err(`champs: "${c.id}" has no valid cat (Series tab category)`);
 for (const c of CHAMPS) if (c.guide && !seriesIds.has(c.guide)) err(`champs: "${c.id}" points at unknown series guide "${c.guide}"`);
 
 /* 5. service worker and index.html agree with the data folder */

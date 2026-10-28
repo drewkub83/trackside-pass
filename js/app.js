@@ -256,6 +256,9 @@ function seriesOrderIds(){
 }
 function setSeriesOrderIds(ids){ LSset(SERIES_ORDER_KEY,JSON.stringify(ids)); }
 function orderedChamps(){ const byId=Object.fromEntries(CHAMPS.map(c=>[c.id,c])); return seriesOrderIds().map(id=>byId[id]).filter(Boolean); }
+let serCat=null;   /* the category open on the Series tab (null = the category list) */
+function openSerCat(id){ serCat=id; renderChampList(); const sc=document.getElementById("seriesList"); if(sc) sc.scrollTop=0; window.scrollTo(0,0); }
+function champCat(c){ return CATS.some(x=>x.id===c.cat)?c.cat:"other"; }
 function renderChampList(){
   const el=document.getElementById("champList"); if(!el) return;
   const ordered=orderedChamps().filter(followed);
@@ -263,6 +266,18 @@ function renderChampList(){
     return `<li><button class="track-row series${same?" same":""}" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt${mk?" mk":""}">${mk||c.tile}</span>
       <div><h2>${c.name}</h2><div class="meta"><span class="mfull">${c.full}<span class="msep"> · </span></span>${n} venue${n===1?"":"s"}</div></div>
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; };
+  const cats=[...CATS.map(x=>x.id),"other"].filter(id=>ordered.some(c=>champCat(c)===id));
+  /* five or more series across two or more categories: a list of categories, each opening its own series */
+  if(ordered.length>=5&&cats.length>=2){
+    if(serCat&&!cats.includes(serCat)) serCat=null;
+    if(serCat){ const ct=CATS.find(x=>x.id===serCat)||{name:"Other series"};
+      el.innerHTML=`<li class="catBack"><button onclick="openSerCat(null)" aria-label="All categories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>All series</button><h3>${ct.name}</h3></li>`+ordered.filter(c=>champCat(c)===serCat).map(row).join("");
+      return; }
+    el.innerHTML=cats.map(id=>{ const ct=CATS.find(x=>x.id===id)||{id:"other",name:"Other series",tile:"MORE"}, list=ordered.filter(c=>champCat(c)===id), nxt=list.map(c=>orderOf(c)[0]).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d))[0];
+      return `<li><button class="track-row series cat" data-s="cat-${ct.id}" onclick="openSerCat('${ct.id}')"><span class="tile txt">${ct.tile}</span>
+        <div><h2>${ct.name}</h2><div class="meta">${list.length} series${nxt?" · next "+nxt.t.short+", "+fmt(nxt.e.d):""}</div></div>
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; }).join("");
+    return; }
   /* once the series you follow span more than one part of the world, group them under region headings (your own
      order still rules within a region, and the regions follow whichever of your series comes first) */
   const regions=[...new Set(ordered.map(c=>c.region||"na"))];
@@ -2498,6 +2513,7 @@ function swipeBack(){
   if(hubBack()) return;
   const sh=document.getElementById("sheet"); if(sh&&!sh.hidden){ closeSheet(); return; }
   const sc=document.querySelector(".screen.on"); if(!sc||sc.id==="home") return;
+  if(sc.id==="seriesList"&&serCat){ openSerCat(null); return; }
   if(["seriesList","play","board","account"].includes(sc.id)){ showScreen("home"); return; }
   /* the detail screen's tabs are Hub/Map/Events/Info: one swipe from Map/Events/Info goes back to the hub, and a
      second swipe from the hub exits to the track list (goHome does both). */

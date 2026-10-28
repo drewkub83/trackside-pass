@@ -1101,4 +1101,6 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="race"] [data-s="cat-onemake"]{--h:45}
 :root[data-style="race"] [data-s="cat-historic"]{--h:30}
 :root[data-style="race"] [data-s="cat-stock"]{--h:195}
+:root[data-style="race"] [data-s="oreilly"]{--h:140}
+:root[data-style="race"] [data-s="trucks"]{--h:25}
 :root[data-style="race"] [data-s]{--sc:hsl(var(--h) 78% var(--s-l))}

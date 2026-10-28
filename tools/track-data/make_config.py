@@ -244,6 +244,12 @@ SPECS=[
   blurb="Bristol Motor Speedway, the high-banked short track at Bristol, Tennessee, opened in 1961. The NASCAR Cup Series races here on Apr 11, 2027, Aug 14, 2027.",
   sig=None,
   events=[dict(d="2027-04-09",e="NASCAR at Bristol",s="NASCAR Cup Series",t=3)]),
+ dict(id="martinsville", name="Martinsville Speedway", short="Martinsville", place="Ridgeway, Virginia", tz="America/New_York", center=[36.6342, -79.8517],
+  circuit=[402168721, 448515178, 448515177], pit=402168723, official="0.847 km", length="0.847 km (0.526 mi)", opened=1947, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Martinsville Speedway, the short track at Ridgeway, Virginia, shaped like a paperclip, with racing since 1947. The NASCAR Cup Series races here on Nov 1, 2026, Apr 18, 2027, Nov 7, 2027.",
+  sig=None,
+  events=[dict(d="2026-10-30",e="NASCAR at Martinsville (Round of 8 finale)",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

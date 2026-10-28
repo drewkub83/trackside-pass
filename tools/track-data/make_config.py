@@ -256,6 +256,12 @@ SPECS=[
   blurb="Talladega Superspeedway, the 2.66-mile tri-oval superspeedway at Talladega, Alabama, opened in 1969. The NASCAR Cup Series races here on Apr 25, 2027, Oct 31, 2027.",
   sig=None,
   events=[dict(d="2027-04-23",e="NASCAR at Talladega",s="NASCAR Cup Series",t=3)]),
+ dict(id="texas-motor-speedway", name="Texas Motor Speedway", short="Texas", place="Fort Worth, Texas", tz="America/Chicago", center=[33.0372, -97.282],
+  circuit=[104503520, 261968503, 489172062, 261968505, 261968502, 489172989, 261968504], pit=1448242327, official="2.414 km", length="2.414 km (1.5 mi)", opened=1997, nturns=4, lap=None,
+  rename={"*":None},
+  blurb="Texas Motor Speedway, the 1.5-mile oval at Fort Worth, Texas, opened in 1997. The NASCAR Cup Series races here on May 2, 2027.",
+  sig=None,
+  events=[dict(d="2027-04-30",e="NASCAR at Texas",s="NASCAR Cup Series",t=3)]),
 ]
 def L(g): return sum(math.hypot((b["lat"]-a["lat"])*110900,(b["lon"]-a["lon"])*111320*math.cos(math.radians(a["lat"]))) for a,b in zip(g,g[1:]))
 def rb(v):

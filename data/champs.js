@@ -131,7 +131,6 @@ const CHAMPS = [
     note:"NASCAR's 2027 Cup Series schedule (36 points races plus the Clash and the All-Star Race) was released on Aug 26, 2026; the 2026 season ends at Martinsville (Nov 1) and the Championship at Homestead-Miami (Nov 8). Venues without a map show Map coming soon; session times come once NASCAR publishes them.",
     stops:[
       { id:"homestead-miami", short:"Homestead-Miami", place:"Homestead, Florida", kind:"Oval", e:"NASCAR Championship", d:"2026-11-06", t:3 },
-      { id:"texas-motor-speedway", short:"Texas", place:"Fort Worth, Texas", kind:"Oval", e:"NASCAR at Texas", d:"2027-04-30", t:3 },
       { id:"kansas", short:"Kansas", place:"Kansas City, Kansas", kind:"Oval", e:"NASCAR at Kansas", d:"2027-05-07", t:3 },
       { id:"dover", short:"Dover", place:"Dover, Delaware", kind:"Oval", e:"NASCAR at Dover", d:"2027-05-14", t:3 },
       { id:"north-wilkesboro", short:"North Wilkesboro", place:"North Wilkesboro, North Carolina", kind:"Oval", e:"NASCAR All-Star Race", d:"2027-05-21", t:3 },

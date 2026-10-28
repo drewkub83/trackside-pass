@@ -4,10 +4,10 @@
    - After that: opens instantly from the phone, then quietly refreshes files in the background
      when there is a connection, so edits show up on the next launch.
    Bump VERSION to force a clean re-download of everything. */
-const VERSION = "v241";
+const VERSION = "v242";
 const CACHE = "paddock-" + VERSION;
 const FONT_CACHE = "paddock-fonts";
-const TRACKS = ["daytona","sebring","laguna-seca","watkins-glen","road-america","vir","indianapolis","road-atlanta","mid-ohio","long-beach","detroit","canadian-tire-motorsport-park","phoenix","barber","st-petersburg","arlington","cota","sonoma","indianapolis-oval","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya","portimao","brands-hatch","imola","misano","magny-cours","zandvoort","hungaroring","interlagos","lusail","mexico-city","yas-marina","las-vegas","miami","montreal","lime-rock","bahrain","jeddah","suzuka","silverstone","shanghai","red-bull-ring","monza","istanbul","melbourne","monaco","marina-bay","baku","madrid","milwaukee-mile","wwt-raceway","portland","fuji","le-mans","markham","daytona-oval","atlanta","las-vegas-motor-speedway","darlington","bristol","martinsville","talladega"];
+const TRACKS = ["daytona","sebring","laguna-seca","watkins-glen","road-america","vir","indianapolis","road-atlanta","mid-ohio","long-beach","detroit","canadian-tire-motorsport-park","phoenix","barber","st-petersburg","arlington","cota","sonoma","indianapolis-oval","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya","portimao","brands-hatch","imola","misano","magny-cours","zandvoort","hungaroring","interlagos","lusail","mexico-city","yas-marina","las-vegas","miami","montreal","lime-rock","bahrain","jeddah","suzuka","silverstone","shanghai","red-bull-ring","monza","istanbul","melbourne","monaco","marina-bay","baku","madrid","milwaukee-mile","wwt-raceway","portland","fuji","le-mans","markham","daytona-oval","atlanta","las-vegas-motor-speedway","darlington","bristol","martinsville","talladega","texas-motor-speedway"];
 const SHELL = [
   "./", "index.html", "css/styles.css", "js/native.js", "js/app.js", "js/account.js", "js/avatar.js", "js/passport.js", "data/series.js", "data/champs.js", "data/watch.js", "data/results.js", "data/standings.js", "data/entries.js", "manifest.webmanifest",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-192.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon.svg", "icons/favicon-32.png", "icons/pin.svg",

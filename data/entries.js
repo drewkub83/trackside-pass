@@ -131,8 +131,8 @@ const ENTRIES = [
         ["77", "Valtteri Bottas", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-27. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-10-26. Late changes are possible.",
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-29. Win chances are our own estimate, not betting odds. (automatic update)" },
+  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-10-29. Late changes are possible.",
     classes:[
       { h:"Hypercar", cars:[
         ["8", "Toyota Racing", "Sébastien Buemi / Brendon Hartley / Ryō Hirakawa", "Toyota TR010 Hybrid", 9.1, "averaged top 33% of Hypercar over 7 earlier races this season", 0.667],
@@ -174,5 +174,5 @@ const ENTRIES = [
         ["78", "Akkodis ASP Team", "Tom van Rompuy / Hadrien David / Esteban Masson", "Lexus RC F LMGT3", 3.4, "averaged top 65% of LMGT3 over 7 earlier races this season", 0.355]
       ] }
     ],
-    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-10-26. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" }
+    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-10-29. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" }
 ];

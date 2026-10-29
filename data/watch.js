@@ -684,5 +684,25 @@ const WATCH = [
         ["Shortest of NASCAR's three series", "Truck races run about 100 to 250 miles in 2026; this one goes off Friday night, the weekend's first championship race."]
       ] }
     ],
-    note:"Sources: NASCAR.com and Racer.com/Deadspin reporting on the post-Talladega Truck standings (Honeycutt leading, Riggs -43, Majeski -141); this app's own data/series.js for the 2026 Chase format (no elimination, New Hampshire reset, Homestead finale); NASCAR.com and si.com/onsi/racing-america reporting (also used for the Cup entry at this track) and Goodyear's tire-wear characterization of Homestead-Miami's track surface, all via web search (the sites could not be reached directly from this environment). Championship picture will change after Martinsville on Oct 30; check back closer to the race." }
+    note:"Sources: NASCAR.com and Racer.com/Deadspin reporting on the post-Talladega Truck standings (Honeycutt leading, Riggs -43, Majeski -141); this app's own data/series.js for the 2026 Chase format (no elimination, New Hampshire reset, Homestead finale); NASCAR.com and si.com/onsi/racing-america reporting (also used for the Cup entry at this track) and Goodyear's tire-wear characterization of Homestead-Miami's track surface, all via web search (the sites could not be reached directly from this environment). Championship picture will change after Martinsville on Oct 30; check back closer to the race." },
+  { t:"lusail", d:"2026-11-06", s:"motogp", at:"2026-10-29T18:24:06Z",
+    asOf:"Current entering the Malaysia weekend (Oct 30-Nov 1) -- the round right before this one: standings are after the Australian Grand Prix at Phillip Island. This entry doesn't guess at how Malaysia changes them.",
+    groups:[
+      { h:"The title fight", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Leads Jorge Martin by 10 points, 365 to 355, after a season that swung back and forth -- Martin led by as much as 31 points at Silverstone before Marquez clawed back on top. Three rounds remain after Malaysia (this one, then Portugal and the Valencia finale), each worth up to 37 points, so the gap is still well inside reach either way."],
+        ["Jorge Martin (Aprilia Racing)", "Ten points back entering Malaysia, needs a strong weekend there to keep the pressure on heading into Qatar's stretch run."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Third on 315, 50 points off Marquez -- a long shot for the title but still shaping the podium and manufacturers' fights."]
+      ] },
+      { h:"Also chasing points", items:[
+        ["Pedro Acosta (Red Bull KTM Factory Racing)", "Fourth on 263."],
+        ["Ai Ogura (Trackhouse MotoGP Team)", "Fifth on 259, the highest-placed rookie."],
+        ["Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", "Sixth on 252."]
+      ] },
+      { h:"Lusail, under the lights", items:[
+        ["MotoGP's only night race", "Saturday's Sprint and Sunday's Grand Prix both start after dark under Lusail's floodlights (formerly Losail International Circuit) -- the one round on the 2026 calendar run that way."],
+        ["Hard on tyres", "Qatar's heat and blowing desert sand have historically made this one of the more abrasive stops on the calendar, pushing teams toward harder, more durable tyre choices than the lap times alone would suggest."],
+        ["Back after a reshuffle", "This round was originally scheduled for April 2026 before being postponed; it was rebooked for Nov 6-8 in March, and Qatari organizers confirmed in mid-October that the circuit is preparing to host it on that date."]
+      ] }
+    ],
+    note:"Sources: this app's own data/standings.js (2026 MotoGP riders' standings, automatic update from the series' results service) for the points, cross-checked against statsniper.com's Oct 24, 2026 preview citing the same post-Phillip Island figures (Marquez 365, Martin 355, Bezzecchi 315) via web search; crash.net reporting (via web search) for the Silverstone/Aragon swings in the points lead earlier in the season; this app's own data/series.js for the Sprint/Grand Prix points structure (up to 37 a weekend); Wikipedia and motogp.com/crash.net reporting (via web search) for Lusail's night-race format and tyre-wear characteristics; qna.org.qa ('Lusail circuit prepares to host MotoGP Grand Prix next month,' Oct 13, 2026) and qatar-tribune.com for the event's April-to-November rescheduling and current Nov 6-8 status, via web search (the sites could not be reached directly from this environment). The sprint/race results for Phillip Island itself were not independently confirmed beyond the standings total; Malaysia (Oct 30-Nov 1) will change the numbers above before this race." }
 ];

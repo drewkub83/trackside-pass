@@ -548,5 +548,82 @@ const WATCH = [
         ["No sprint", "A normal weekend: two practice sessions Friday, one more and qualifying Saturday, race Sunday. Neither of the last two winners here was a Red Bull car -- Carlos Sainz (Ferrari) in 2024, Norris (McLaren) in 2025."]
       ] }
     ],
-    note:"Sources: this app's own data/results.js (United States Grand Prix classification, from api.jolpi.ca, the Ergast-compatible mirror of the official FIA results) and data/standings.js (2026 points after that race), cross-checked against silverstone.co.uk's and planetf1.com's Austin race reports via web search (the sites could not be reached directly from this environment; read Oct 26, 2026) for how the race unfolded. mclaren.com for Norris's 2025 Mexico City win, and f1-fansite.com for this weekend's session times (both unchanged from the last entry). riverramayanews.mx and cronica.com.mx for Perez's 300th start and the Oct 28 Reforma show run (unchanged since the last entry)." }
+    note:"Sources: this app's own data/results.js (United States Grand Prix classification, from api.jolpi.ca, the Ergast-compatible mirror of the official FIA results) and data/standings.js (2026 points after that race), cross-checked against silverstone.co.uk's and planetf1.com's Austin race reports via web search (the sites could not be reached directly from this environment; read Oct 26, 2026) for how the race unfolded. mclaren.com for Norris's 2025 Mexico City win, and f1-fansite.com for this weekend's session times (both unchanged from the last entry). riverramayanews.mx and cronica.com.mx for Perez's 300th start and the Oct 28 Reforma show run (unchanged since the last entry)." },
+  { t:"mexico-city", d:"2026-10-30", s:"masters", at:"2026-10-29T00:27:24Z",
+    asOf:"Current as of this writing: no 2026 Mexico City entry list, driver roster or car count was found in sources checked.",
+    groups:[
+      { h:"What to expect", items:[
+        ["Masters Racing Legends, 1966-85 Formula 1 cars", "A practice, qualifying and two-race weekend for pre-1986 Grand Prix cars (3-litre machines from 1966-85, plus turbo-era F1 cars from 1977-85 under a rule change for 2026), run alongside the Mexico City Grand Prix. Each race is 25 minutes; this year's entry list wasn't published in sources checked, so which cars and drivers make the trip isn't confirmed yet."],
+        ["Limited grid, strong demand", "A Historic Motor Racing News report on Masters' expanded 2026 Formula 1 support-race programme (which includes this Mexico City round) describes grid slots as limited with already-significant demand, though it doesn't name who has a seat here."]
+      ] }
+    ],
+    note:"Sources: Masters Historic Racing's own event page (mastershistoricracing.com) confirming the Oct 30-Nov 1 dates at Autodromo Hermanos Rodriguez; Autocosmos (autocosmos.com.mx, Sept 2026) confirming Historic Racing as a Mexico City GP support series; Historic Motor Racing News (historicmotorracingnews.com) on the Masters Racing Legends format (1966-85 F1 cars, now also 1977-85 turbo cars) and the 2026 F1 support-race programme's grid demand, read via web search (the site could not be reached directly from this environment). No 2026 Mexico City entry list was found as of this writing. Check back closer to the weekend." },
+  { t:"martinsville", d:"2026-10-30", s:"nascar", at:"2026-10-29T00:27:24Z",
+    asOf:"Current after Talladega (Oct 25, 2026): two races remain in the 2026 Chase -- this one and the Nov 8 championship finale at Homestead-Miami.",
+    groups:[
+      { h:"The championship fight", items:[
+        ["Kyle Larson (Hendrick Motorsports)", "Leads the Chase by 73 points over Denny Hamlin after a wild Talladega win -- he was 11th with one lap to go, then passed seven cars in the final quarter-mile in overtime for his first career superspeedway victory. Two races are left before Homestead-Miami decides the title."],
+        ["Denny Hamlin (Joe Gibbs Racing)", "Second, 73 points back."],
+        ["Christopher Bell (Joe Gibbs Racing)", "Third, 74 points back; briefly led Larson by 5 after Larson's bad day at Phoenix (a blown tire dropped him to 34th), before Larson's Talladega win reopened the gap."],
+        ["Chase Briscoe (Joe Gibbs Racing)", "Fourth, about 77-79 points back (outlets differ slightly on the exact gap)."]
+      ] },
+      { h:"How the 2026 Chase works", items:[
+        ["No elimination this year", "NASCAR replaced its 2014-2025 elimination playoff with a new format for 2026: the top 16 drivers after 26 regular-season races get one points reset, then race the final 10 (the Chase) with nobody cut. Whoever has the most points after the last race, Nov 8 at Homestead-Miami, is champion -- so unlike past years, nobody is eliminated at Martinsville."]
+      ] },
+      { h:"Martinsville Speedway", items:[
+        ["The shortest track on the schedule", "A 0.526-mile oval nicknamed 'The Paperclip' for its tight, rounded-rectangle shape and shallow 12-degree banking -- it rewards patience and braking over raw speed, and short-track scrapes are common."],
+        ["The grandfather clock", "Martinsville has awarded a grandfather clock as its race trophy since 1964, a tradition track founder H. Clay Earles started after being told he needed to find storage room for conventional trophies. Richard Petty has won more clocks than anyone, with 12."]
+      ] }
+    ],
+    note:"Sources: NASCAR.com's own Talladega Chase race recap and its 'Chase Report' after Phoenix (nascar.com, read Oct 29, 2026), an AP report via tsn.ca on Larson's 73-point lead, Heavy.com's post-Talladega standings table (cross-checked against NASCAR.com's figures, which differ slightly on Briscoe's gap), Sportsnaut's championship-scenarios piece, and an NBC-affiliate explainer on NASCAR's new 2026 Chase format (no elimination rounds, replacing the 2014-2025 system). Martinsville Speedway and grandfather-clock facts from NASCAR.com and frontstretch.com, cross-checked. Note: this track's event name in data/martinsville.js still reads '(Round of 8 finale)', a leftover from the old elimination format -- not repeated here since the 2026 Chase has no such round; worth fixing separately." },
+  { t:"interlagos", d:"2026-11-06", s:"f1", at:"2026-10-29T00:27:24Z",
+    asOf:"Current on Oct 29, before the Mexico City weekend (Oct 30-Nov 1): the standings are after the United States Grand Prix (Oct 25). Mexico City runs before this one and will likely change these numbers -- they'll be out of date by the time São Paulo starts.",
+    groups:[
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads the championship by 123 points over team-mate George Russell with five races left after Austin (Mexico City, this one, then Las Vegas, Qatar and Abu Dhabi). Whether he can already clinch the title by São Paulo depends on what happens at Mexico City five days earlier -- if the gap is still large after that race, this could be the weekend it's settled."],
+        ["George Russell (Mercedes)", "Second on 242 points after an eighth-place finish at Austin. Needs a big result at Mexico City just to keep the fight alive into this race."]
+      ] },
+      { h:"The chasers", items:[
+        ["Lewis Hamilton (Ferrari)", "Third on 241 points."],
+        ["Max Verstappen (Red Bull Racing)", "Fourth on 236 points."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 233 points."],
+        ["Lando Norris (McLaren)", "Sixth on 211 points. Won last year's São Paulo GP from pole, leading every lap for his seventh win of 2025."]
+      ] },
+      { h:"What to look for", items:[
+        ["Altitude again", "Interlagos sits about 800m above sea level, the second-highest circuit on the calendar after Mexico City -- back-to-back high-altitude races test engine cooling and aero set-up two weekends running."],
+        ["A history of chaos", "Interlagos has decided championships in the rain before -- most famously 2008, when a late downpour let Lewis Hamilton pass Timo Glock at the final corner to take the title by one point. Brazil's unpredictable weather is always part of the story here."],
+        ["No sprint", "A normal weekend: three practice sessions, qualifying Saturday, race Sunday -- not one of this year's sprint rounds."]
+      ] }
+    ],
+    note:"Sources: this app's own data/standings.js (2026 points after the United States GP) and data/interlagos.js (confirmed session format: 3 practices, no sprint). racingnews365.com for the post-Austin calendar order (Mexico City, São Paulo, Las Vegas, Qatar, Abu Dhabi) via web search (the site could not be reached directly from this environment; read Oct 29, 2026). crash.net for the 2025 São Paulo GP result (Norris's win from pole, his 7th of the season) via web search. gpdestinations.com and formula1.com for Interlagos's altitude and the 2008 title-decider rain story, both via web search." },
+  { t:"homestead-miami", d:"2026-11-06", s:"nascar", at:"2026-10-29T00:27:24Z",
+    asOf:"Current as of Oct 29, 2026, after the Talladega race (Oct 25): two of the ten Chase races remain, Martinsville on Nov 1 and this one. Martinsville will decide who arrives here still mathematically alive and by how much -- this entry doesn't guess at that.",
+    groups:[
+      { h:"A new-old format, decided here", items:[
+        ["No more win-take-all finale", "NASCAR scrapped the Championship 4 for 2026 and revived an old name, The Chase: the 16 playoff drivers' points reset once after the regular season, there are no elimination rounds, and the champion is simply whoever has the most points after all ten Chase races -- Talladega, then Martinsville, then this one. Unlike the format NASCAR used from 2014-2025, a big points day elsewhere can't be wiped out by someone else merely winning the last race."],
+        ["Homestead's return", "The track crowned NASCAR's champion every year from 2002 to 2019 under earlier points formats, before the finale moved to Phoenix for the Championship 4 era (2020-2025). It's back for 2026 -- and has already been confirmed to host again in 2027 -- backed by a $20 million renovation (a new main entrance, an expanded fan zone, a renovated Ally Champions Club; the racing surface itself wasn't touched)."]
+      ] },
+      { h:"Where the points stand", items:[
+        ["Kyle Larson's lead", "Won the Oct 25 Talladega race and leads the Chase afterward on 2,441 points, 73 ahead of second-placed Denny Hamlin with two races left. Christopher Bell is third (74 back) and Chase Briscoe fourth (about 77-79 back, outlets differ slightly). That's within the roughly 150 points a single race (plus its two stage wins) can swing, so the title is still open -- Martinsville on Nov 1 will set the real picture coming into Homestead."],
+        ["The track", "A 1.5-mile oval, last repaved in 2003; Goodyear calls it one of the Cup Series' highest tire-wear tracks, and the aged, abrasive surface lets drivers run multiple grooves, with the fast lane usually drifting up against the outside wall late in a run -- a track that tends to reward whoever manages their tires best."]
+      ] }
+    ],
+    note:"Sources: nascar.com's Jan 12, 2026 format announcement and si.com/onsi/racing-america's summary (The Chase: 16 drivers, one points reset, 10 races, no elimination rounds) via web search. Bleacher Report, racingnews.co, MotorBiscuit and Heavy.com roundups (Oct 25-26, 2026) for the post-Talladega standings and Larson's win -- Briscoe's exact gap to the leader is given as both 77 and 79 points by different outlets, so both are noted. NASCAR.com (May 6, 2025) and racer.com (Aug 18, 2026) for Homestead-Miami hosting 2026 and 2027, and EssentiallySports for the $20M renovation. NASCAR.com/Goodyear reporting for the track's tire-wear and multi-groove reputation. None of these sites could be reached directly from this environment, so all of the above is pieced together from web-search result summaries, cross-checked across multiple independent outlets where possible." },
+  { t:"monza", d:"2026-11-06", s:"wec", at:"2026-10-29T00:27:24Z",
+    asOf:"Current after the 6 Hours of Barcelona (Oct 16-18): Toyota swept 1-2, which already wrapped up the manufacturers' title, but the drivers' title is still open between the two Toyota crews heading into the season finale.",
+    groups:[
+      { h:"The drivers' title: Toyota vs Toyota", items:[
+        ["#8 Sebastien Buemi, Brendon Hartley, Ryo Hirakawa (Toyota)", "Won at Barcelona, edging their own team-mates in the #7 by just 0.583 seconds, and lead the drivers' standings by 17 points (114 to 97) going into Monza. That Barcelona result already secured Toyota's manufacturers' title."],
+        ["#7 Kamui Kobayashi, Mike Conway, Nyck de Vries (Toyota)", "17 points back. A standard WEC race pays 25 points for the win plus 1 for pole, so a maximum 26-point swing is enough to flip a 17-point gap -- the title is still mathematically open, even though it's an all-Toyota fight: the next-best crew, 39 points back on 75, has no realistic path to either of them."]
+      ] },
+      { h:"LMGT3: Manthey's Porsche chasing TF Sport's Aston Martin", items:[
+        ["#33 TF Sport (Aston Martin)", "Leads the LMGT3 teams' standings by 18 points, 92 to 74, over the second-placed Porsche crew below."],
+        ["#92 The Bend/Manthey (Porsche)", "Won at Barcelona -- the car's first class win of the 2026 season -- and sits 18 points back, with Monza's maximum 26 points on offer still enough to take the title."]
+      ] },
+      { h:"What to watch at Monza", items:[
+        ["Ferrari's late push", "The #50 499P took third at Barcelona, its best finish in several rounds, but at 69 points (6th, 45 behind the leader) it's out of the Hypercar title fight -- still, a strong run here would be a confidence boost into 2027."],
+        ["Monza returns to the calendar", "Replacing the cancelled Qatar and Bahrain rounds, this is WEC's first visit to the Autodromo Nazionale Monza since 2023. The track's banked oval loops, built in 1922 and rebuilt in the mid-1950s, were dropped from use for safety decades ago; the modern road course instead runs through the Lesmo curves and the Parabolica."]
+      ] }
+    ],
+    note:"Sources: Business Day ('Toyota seals World Sports Car title with victory in 6 Hours of Barcelona,' Oct 19, 2026) and Alpinestars' own Barcelona race report for the result, margin and manufacturers'-title clinch; data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gaps; RacingNews365's Barcelona results page for the LMGT3 winner; TotalEnergies' published WEC regulations page for the standard-race points scale (25-18-15-...-1 plus a pole-position point), used to check whether the titles are clinched; Racer.com and Autosport for the Qatar/Bahrain-to-Barcelona/Monza calendar swap and Monza's 2021-23 WEC history; gpfans.com and circuitsofthepast.com for Monza's banked-oval history, all via web search (the sites could not be reached directly from this environment). No 2026 Monza entry list was found as of this writing." }
 ];

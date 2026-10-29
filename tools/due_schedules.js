@@ -17,6 +17,7 @@ const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js",
 const tracks = fs.readdirSync(path.join(ROOT, "data")).filter(f => f.endsWith(".js") && !NON.includes(f)).map(f => { const T = []; new Function("TRACKS", fs.readFileSync(path.join(ROOT, "data", f), "utf8"))(T); return T[0]; });
 const addDays = (d, n) => { const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
 const inChamp = (c, e) => { const hay = c.viaSupport ? (e.support || []).join(" | ") : (e.s || ""); return c.match.test(hay) && !(c.skip && c.skip.test(hay)); };
+const AUTO = new Set(["motogp"]);   // series whose session times tools/motogp_update.py writes by itself (every 30 minutes) from the series' own results service
 const due = [], today = NOW.toISOString().slice(0, 10);
 for (const t of tracks) for (const ev of t.events || []) {
   const end = addDays(ev.d, (ev.t || 1) - 1), daysTo = Math.round((new Date(ev.d + "T00:00:00Z") - new Date(today + "T00:00:00Z")) / 864e5);
@@ -24,7 +25,7 @@ for (const t of tracks) for (const ev of t.events || []) {
   const sess = (t.sessions || []).filter(s => s.d >= ev.d && s.d <= end);
   const has = c => sess.some(s => c.match.test(s.n));
   const main = CHAMPS.filter(c => !c.viaSupport && inChamp(c, ev)), sup = CHAMPS.filter(c => c.viaSupport && inChamp(c, ev));
-  const missMain = main.filter(c => !has(c)); if (!missMain.length) continue;
+  const missMain = main.filter(c => !has(c) && !AUTO.has(c.id)); if (!missMain.length) continue;
   due.push({ t: t.id, tz: t.tz, d: ev.d, end, event: ev.e, days: daysTo, series: missMain.map(c => ({ id: c.id, name: c.name, full: c.full })),
     support: sup.filter(c => !has(c)).map(c => ({ id: c.id, name: c.name, full: c.full })), haveSessions: sess.length, late: daysTo <= 3 });
 }

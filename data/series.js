@@ -272,6 +272,23 @@ const SERIES = [
     fine:"A spectator summary from fiawec.com and the Monza provisional entry list (version 1, Oct 20, 2026). For official details, see fiawec.com."
   },
   {
+    id:"motogp", autoResults:true, match:/MotoGP/i, timing:"https://www.motogp.com/en/live",
+    name:"MotoGP", tag:"Motorcycle road racing's top class",
+    blurb:"MotoGP is the world championship of motorcycle road racing: purpose-built prototype bikes (nothing you can buy) ridden by about 22 of the fastest riders on earth, on permanent road circuits and a few street tracks. Every weekend has two races, a short Sprint on Saturday and the full-distance Grand Prix on Sunday, and both score championship points. Moto2 and Moto3, the two smaller classes, race at the same events.",
+    cars:[
+      {n:"MotoGP", full:"MotoGP class", type:"Prototype motorcycles from Ducati, Aprilia, KTM, Honda and Yamaha", c:"#E0143C", fg:"#FFFFFF", pace:"Fastest class",
+       text:"Five manufacturers build the bikes: Ducati, Aprilia, KTM, Honda and Yamaha. Teams run two riders each, and both riders in a team are on the same make (the factory teams and the satellite teams that lease their bikes). Today's bikes have 1000cc four-stroke engines; from 2027 the rules change to 850cc engines, a ban on ride-height devices, smaller front aerodynamics and new Pirelli tyres in place of Michelin.",
+       spot:"Tell the makes apart by the logo on the nose and the shape of the fairing, and the riders by the number on the nose and the name on the tail. The team name is on the side of the fairing."}
+    ],
+    rule:"Saturday's Sprint is half the distance of the Sunday Grand Prix and scores half the points: 12, 9, 7, 6, 5, 4, 3, 2, 1 for the top nine. The Sunday race scores 25, 20, 16, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 for the top 15, so a rider can take up to 37 points in one weekend. The Sprint does not set the Sunday grid: that comes from Saturday's qualifying.",
+    watch:{
+      practice:"Friday has two practice sessions: the timed afternoon session ranks the riders, and the ten fastest over Friday and Saturday skip Q1 and go straight to Q2. Saturday morning has one more practice.",
+      qualifying:"Qualifying is in two parts on Saturday. Riders outside the top ten of practice fight in Q1 for two spots in Q2; Q2 decides pole and the first four rows of the grid, and Q1 sets the grid from 13th back.",
+      race:"Two races a weekend: the Sprint on Saturday afternoon and the Grand Prix on Sunday. Both start from the grid qualifying set and are decided on laps of a few minutes, so a bad first corner matters. Sunday morning has a short warm-up session before the Grand Prix."
+    },
+    fine:"A spectator summary from motogp.com (what a race weekend looks like, the Sprint and points explainers, the 2027 regulations announcement) and the series' own results service (the five manufacturers and the Sprint and race points). For official details, see motogp.com."
+  },
+  {
     id:"nascar", autoResults:true, match:/NASCAR/i, timing:"https://www.nascar.com/followlive/",
     name:"NASCAR Cup Series", tag:"Stock cars, ovals and a few road courses",
     blurb:"The NASCAR Cup Series is American stock car racing's top series: up to 40 identical-looking cars racing wheel to wheel, mostly on oval tracks from short bullrings to the huge Daytona and Talladega superspeedways, plus a few road courses. The 2027 season has 36 points races from the Daytona 500 in February to the Championship at Homestead-Miami in November, with the non-points Clash and All-Star Race on top.",

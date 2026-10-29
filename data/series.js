@@ -272,7 +272,7 @@ const SERIES = [
     fine:"A spectator summary from fiawec.com and the Monza provisional entry list (version 1, Oct 20, 2026). For official details, see fiawec.com."
   },
   {
-    id:"nascar", match:/NASCAR/i, timing:"https://www.nascar.com/followlive/",
+    id:"nascar", autoResults:true, match:/NASCAR/i, timing:"https://www.nascar.com/followlive/",
     name:"NASCAR Cup Series", tag:"Stock cars, ovals and a few road courses",
     blurb:"The NASCAR Cup Series is American stock car racing's top series: up to 40 identical-looking cars racing wheel to wheel, mostly on oval tracks from short bullrings to the huge Daytona and Talladega superspeedways, plus a few road courses. The 2027 season has 36 points races from the Daytona 500 in February to the Championship at Homestead-Miami in November, with the non-points Clash and All-Star Race on top.",
     cars:[

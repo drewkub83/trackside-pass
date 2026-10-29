@@ -21,7 +21,7 @@ V = {"daytona-oval": ("Daytona", "Daytona Beach, Florida", "Oval"), "atlanta": (
      "wwt-raceway": ("WWT Raceway", "Madison, Illinois", "Oval"), "richmond": ("Richmond", "Richmond, Virginia", "Oval"), "watkins-glen-nascar": ("Watkins Glen (NASCAR)", "Watkins Glen, New York", "Road course"),
      "new-hampshire": ("New Hampshire", "Loudon, New Hampshire", "Oval"), "homestead-miami": ("Homestead-Miami", "Homestead, Florida", "Oval")}
 # (race day, venue, event name)
-RACES = [("2026-11-01","martinsville","NASCAR at Martinsville (Round of 8 finale)"),("2026-11-08","homestead-miami","NASCAR Championship"),
+RACES = [("2026-11-01","martinsville","NASCAR at Martinsville"),("2026-11-08","homestead-miami","NASCAR Championship"),
  ("2027-02-13","daytona-oval","Wheatley Vodka Clash"),("2027-02-21","daytona-oval","DAYTONA 500"),("2027-02-28","atlanta","NASCAR at Atlanta"),("2027-03-07","cota-nascar","NASCAR at COTA"),
  ("2027-03-14","phoenix","NASCAR at Phoenix"),("2027-03-21","las-vegas-motor-speedway","NASCAR at Las Vegas"),("2027-04-04","darlington","NASCAR at Darlington"),("2027-04-11","bristol","NASCAR at Bristol"),
  ("2027-04-18","martinsville","NASCAR at Martinsville"),("2027-04-25","talladega","NASCAR at Talladega"),("2027-05-02","texas-motor-speedway","NASCAR at Texas"),("2027-05-09","kansas","NASCAR at Kansas"),

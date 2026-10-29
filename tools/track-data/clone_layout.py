@@ -99,7 +99,15 @@ for l in base["lines"]:
     q = B.pts(l["d"]); far = sum(1 for p in q if near_poly(p, pts)[0] * mpu > 25)
     if far > .7 * len(q) and not (spec.get("pit_way") and False): l["k"] = "service"; n_un += 1
 print("raceway pieces turned into service roads:", n_un)
-for k in ("route", "elev"): pass
+# part of the source lap the new lap does not use (the base map may not carry it as a raceway line): keep it drawn as a plain road
+if spec.get("keep_unused_lap"):
+    farp = [near_poly(p, pts)[0] * mpu > 15 for p in old]; run = []; added = 0
+    for p, f in zip(old + [old[0]], farp + [False]):
+        if f: run.append(p)
+        elif run:
+            if len(run) > 1: base["lines"].append({"k": "service", "d": "M" + " L".join("%.1f,%.1f" % q for q in run)}); added += 1
+            run = []
+    print("unused stretches of the old lap kept as service roads:", added)
 B.save(spec["new"], N)
 if spec.get("move_events_from_src"):
     S = B.load(spec["src"]); pre = spec["move_events_from_src"]

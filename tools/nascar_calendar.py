@@ -10,7 +10,7 @@ import build_route as B
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 DRY = "--dry-run" in sys.argv
 # id: (short, place, kind)
-V = {"daytona-oval": ("Daytona", "Daytona Beach, Florida", "Oval"), "atlanta": ("Atlanta", "Hampton, Georgia", "Oval"), "cota": ("COTA", "Austin, Texas", "Road course"),
+V = {"daytona-oval": ("Daytona", "Daytona Beach, Florida", "Oval"), "atlanta": ("Atlanta", "Hampton, Georgia", "Oval"), "cota-nascar": ("COTA (NASCAR)", "Austin, Texas", "Road course"),
      "phoenix": ("Phoenix", "Avondale, Arizona", "Oval"), "las-vegas-motor-speedway": ("Las Vegas", "Las Vegas, Nevada", "Oval"), "darlington": ("Darlington", "Darlington, South Carolina", "Oval"),
      "bristol": ("Bristol", "Bristol, Tennessee", "Oval"), "martinsville": ("Martinsville", "Ridgeway, Virginia", "Oval"), "talladega": ("Talladega", "Talladega, Alabama", "Oval"),
      "texas-motor-speedway": ("Texas", "Fort Worth, Texas", "Oval"), "kansas": ("Kansas", "Kansas City, Kansas", "Oval"), "dover": ("Dover", "Dover, Delaware", "Oval"),
@@ -22,7 +22,7 @@ V = {"daytona-oval": ("Daytona", "Daytona Beach, Florida", "Oval"), "atlanta": (
      "new-hampshire": ("New Hampshire", "Loudon, New Hampshire", "Oval"), "homestead-miami": ("Homestead-Miami", "Homestead, Florida", "Oval")}
 # (race day, venue, event name)
 RACES = [("2026-11-01","martinsville","NASCAR at Martinsville (Round of 8 finale)"),("2026-11-08","homestead-miami","NASCAR Championship"),
- ("2027-02-13","daytona-oval","Wheatley Vodka Clash"),("2027-02-21","daytona-oval","DAYTONA 500"),("2027-02-28","atlanta","NASCAR at Atlanta"),("2027-03-07","cota","NASCAR at COTA"),
+ ("2027-02-13","daytona-oval","Wheatley Vodka Clash"),("2027-02-21","daytona-oval","DAYTONA 500"),("2027-02-28","atlanta","NASCAR at Atlanta"),("2027-03-07","cota-nascar","NASCAR at COTA"),
  ("2027-03-14","phoenix","NASCAR at Phoenix"),("2027-03-21","las-vegas-motor-speedway","NASCAR at Las Vegas"),("2027-04-04","darlington","NASCAR at Darlington"),("2027-04-11","bristol","NASCAR at Bristol"),
  ("2027-04-18","martinsville","NASCAR at Martinsville"),("2027-04-25","talladega","NASCAR at Talladega"),("2027-05-02","texas-motor-speedway","NASCAR at Texas"),("2027-05-09","kansas","NASCAR at Kansas"),
  ("2027-05-16","dover","NASCAR at Dover"),("2027-05-23","north-wilkesboro","NASCAR All-Star Race"),("2027-05-30","charlotte","Coca-Cola 600"),("2027-06-06","nashville-superspeedway","NASCAR at Nashville"),

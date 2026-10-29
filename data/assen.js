@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"Grand Prix Of The Netherlands",
   "nturns":18,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"MotoGP","time":"1:30.540","who":"Francesco Bagnaia","car":"Ducati","year":2024,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
 });

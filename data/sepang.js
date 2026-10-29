@@ -23,5 +23,6 @@ TRACKS.push({
   "eventName":"Grand Prix Of Malaysia",
   "nturns":15,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"MotoGP","time":"1:56.337","who":"Francesco Bagnaia","car":"Ducati","year":2024,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
 });

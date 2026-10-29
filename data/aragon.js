@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"Grand Prix Of Aragon",
   "nturns":17,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"MotoGP","time":"1:44.962","who":"Marco Bezzecchi","car":"Aprilia","year":2026,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
 });

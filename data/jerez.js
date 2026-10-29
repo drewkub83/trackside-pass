@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"Grand Prix Of Spain",
   "nturns":13,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"MotoGP","time":"1:35.610","who":"Fabio Quartararo","car":"Yamaha","year":2025,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
 });

@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"Grand Prix of France",
   "nturns":14,
   "turns":[],
-  "rev":2
+  "rev":2,
+  "lapRecord":[{"series":"MotoGP","time":"1:29.288","who":"Marc Márquez","car":"Ducati","year":2026,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
 });

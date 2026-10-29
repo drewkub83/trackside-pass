@@ -23,7 +23,7 @@ TRACKS.push({
   "nturns":16,
   "turns":[],
   "rev":1,
-  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:30.762","who":"Raffaele Marciello","car":"Mercedes-AMG GT3 Evo","year":2023,"note":"fastest lap of any session (Sprint Cup qualifying 1, pole for race 1, #88 Akkodis ASP)"}],
+  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:30.762","who":"Raffaele Marciello","car":"Mercedes-AMG GT3 Evo","year":2023,"note":"fastest lap of any session (Sprint Cup qualifying 1, pole for race 1, #88 Akkodis ASP)"},{"series":"MotoGP","time":"1:29.982","who":"Marco Bezzecchi","car":"Aprilia","year":2026,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}],
   "tw":5.4,
   "lw":0.77
 });

@@ -23,5 +23,6 @@ TRACKS.push({
   "eventName":"Grand Prix Of Valencia",
   "nturns":14,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"MotoGP","time":"1:28.809","who":"Marco Bezzecchi","car":"","year":2025,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
 });

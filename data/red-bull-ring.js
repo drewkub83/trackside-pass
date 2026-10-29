@@ -23,5 +23,5 @@ TRACKS.push({
   "nturns":10,
   "turns":[],
   "rev":1,
-  "lapRecord":[{"series":"Formula 1","time":"1:03.971","who":"Lando Norris","car":"McLaren MCL39","year":2025,"note":"fastest lap on the current layout (Q3 pole lap, 2025 Austrian GP); race lap record 1:07.924, Oscar Piastri, McLaren MCL39, 2025"}]
+  "lapRecord":[{"series":"Formula 1","time":"1:03.971","who":"Lando Norris","car":"McLaren MCL39","year":2025,"note":"fastest lap on the current layout (Q3 pole lap, 2025 Austrian GP); race lap record 1:07.924, Oscar Piastri, McLaren MCL39, 2025"},{"series":"MotoGP","time":"1:27.748","who":"Jorge Martín","car":"Ducati","year":2024,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
 });

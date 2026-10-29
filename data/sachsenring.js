@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"Grand Prix Of Germany",
   "nturns":13,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "lapRecord":[{"series":"MotoGP","time":"1:19.041","who":"Marc Márquez","car":"Ducati","year":2026,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
 });

@@ -127,9 +127,9 @@ const CHAMPS = [
       { id:"istanbul", short:"Turkey", place:"Istanbul, Turkey", kind:"Road course", e:"Turkish Grand Prix", d:"2027-10-01", t:3 },
       { id:"marina-bay", short:"Singapore", place:"Singapore", kind:"Street circuit", e:"Singapore Grand Prix", d:"2027-10-08", t:3 }
     ] }
-  ,{ id:"oreilly", cat:"stock", region:"na", name:"O'Reilly Auto Parts Series", tile:"ORLY", full:"NASCAR O'Reilly Auto Parts Series", match:/O'Reilly Auto Parts/i, viaSupport:true, optIn:true, parent:"nascar",
+  ,{ id:"oreilly", cat:"stock", region:"na", name:"O'Reilly Auto Parts Series", tile:"ORLY", full:"NASCAR O'Reilly Auto Parts Series", match:/O'Reilly Auto Parts/i, viaSupport:true, optIn:true, parent:"nascar", guide:"oreilly",
     note:"NASCAR's second national series. Only the weekends whose session times the tracks have published are in so far (Martinsville and the Homestead-Miami finale); the rest of the calendar is added as NASCAR releases it." }
-  ,{ id:"trucks", cat:"stock", region:"na", name:"Craftsman Truck Series", tile:"TRUCK", full:"NASCAR Craftsman Truck Series", match:/Craftsman Truck/i, viaSupport:true, optIn:true, parent:"nascar",
+  ,{ id:"trucks", cat:"stock", region:"na", name:"Craftsman Truck Series", tile:"TRUCK", full:"NASCAR Craftsman Truck Series", match:/Craftsman Truck/i, viaSupport:true, optIn:true, parent:"nascar", guide:"trucks",
     note:"NASCAR's truck series. Only the weekends whose session times the tracks have published are in so far (Martinsville and the Homestead-Miami finale); the rest of the calendar is added as NASCAR releases it." }
   ,{ id:"nascar", cat:"stock", region:"na", name:"NASCAR", tile:"NASCAR", full:"NASCAR Cup Series", match:/NASCAR/i, guide:"nascar",
     note:"NASCAR's 2027 Cup Series schedule (36 points races plus the Clash and the All-Star Race) was released on Aug 26, 2026; the 2026 season ends at Martinsville (Nov 1) and the Championship at Homestead-Miami (Nov 8). Venues without a map show Map coming soon; session times come once NASCAR publishes them.",

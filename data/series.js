@@ -289,6 +289,40 @@ const SERIES = [
     fine:"A spectator summary based on NASCAR's 2027 schedule release (Aug 26, 2026) and published reports of the Next Gen car and the 2026 Chase format. For official details, see nascar.com."
   },
   {
+    id:"oreilly", match:/O'Reilly Auto Parts/i, timing:"https://www.nascar.com/followlive/",
+    name:"NASCAR O'Reilly Auto Parts Series", tag:"Stock cars, one step below the Cup Series",
+    blurb:"NASCAR's second-tier national series (it used to be called the Xfinity Series): about 38 stock cars racing wheel to wheel, usually at the same tracks and on the same weekends as the Cup Series, often on Saturday. Many drivers are young talent on their way up, mixed with veterans and a few Cup stars. The 2026 season has 33 races and ends with the championship race at Homestead-Miami on Nov 7.",
+    cars:[
+      {n:"Stock car", full:"NASCAR O'Reilly Auto Parts Series car", type:"One class: Chevrolet Camaro, Ford Mustang and Toyota Supra", c:"#2E8B57", fg:"#FFFFFF", pace:"Fast",
+       text:"Every team races the same kind of stock car, with Chevrolet (Camaro), Ford (Mustang) and Toyota (Supra) bodies. About 38 cars start each race.",
+       spot:"Chevrolet is by far the most common badge in the field; Toyota is next and Ford the rarest, so a Mustang stands out. Tell the cars apart by number and sponsor colors, and remember a Cup star can be in any of them."}
+    ],
+    rule:"Each race is split into stages with a caution at the end of the first stages, and the winner earns 55 points. In 2026 NASCAR replaced the elimination playoff with The Chase: after the regular-season finale at Daytona the top 12 drivers in points are reseeded (the first seed starts with 2,100 points, 25 more than second), race the final 9 races with nobody cut, and the driver with the most points after Homestead-Miami is champion. Full-time Cup drivers who race here (up to 10 times a season in 2026) cannot score points or race in the finale or postseason.",
+    watch:{
+      practice:"Practice and qualifying are short and change from track to track, and are often held the day before the race.",
+      qualifying:"Qualifying sets the starting grid, run in single cars or short groups depending on the track.",
+      race:"Races are shorter than the Cup Series' (for example 250 laps at Martinsville and 200 at Homestead) and usually run on Saturday, with stage cautions that bunch the field up."
+    },
+    fine:"A spectator summary from NASCAR's own race data (nascar.com, read Oct 29, 2026: 2026 calendar, field sizes and car makes), the 2026 Chase format announcement and NASCAR's November 2025 rule release. For official details, see nascar.com."
+  },
+  {
+    id:"trucks", match:/Craftsman Truck/i, timing:"https://www.nascar.com/followlive/",
+    name:"NASCAR Craftsman Truck Series", tag:"Pickup-truck racing",
+    blurb:"NASCAR's truck series: about 36 race-prepared pickup trucks, often the weekend's first race. The 2026 season has 25 races and ends with the championship race at Homestead-Miami on Nov 6.",
+    cars:[
+      {n:"Truck", full:"NASCAR Craftsman Truck Series truck", type:"One class: Chevrolet Silverado, Ford F-150, Toyota Tundra and RAM 1500", c:"#B5651D", fg:"#FFFFFF", pace:"Fast",
+       text:"All teams race purpose-built pickup trucks with bodies shaped like Chevrolet Silverados, Ford F-150s, Toyota Tundras and RAM 1500s. About 36 trucks start each race.",
+       spot:"They look like pickups, so the badge on the front is the easiest tell: Chevrolet and Ford are the most common, then Toyota, with RAM the rarest."}
+    ],
+    rule:"Races are split into stages, and points go to stage finishers and the race result. In 2026 NASCAR replaced the elimination playoff with The Chase: the top 10 drivers in points after the regular-season finale at New Hampshire are reseeded (the first seed starts with 2,100 points, 25 more than second), race the final 7 races from Bristol to Homestead-Miami with nobody cut, and the driver with the most points after Homestead is champion. Full-time Cup drivers who race here (up to 8 times a season in 2026) cannot race in the regular-season finale or the postseason.",
+    watch:{
+      practice:"Practice and qualifying are short and change from track to track, often on the day before the race.",
+      qualifying:"Qualifying sets the starting grid, run in single trucks or short groups depending on the track.",
+      race:"Truck races are the shortest of NASCAR's three national series (about 100 to 250 miles in 2026), so there is little time to recover from a bad restart."
+    },
+    fine:"A spectator summary from NASCAR's own race data (nascar.com, read Oct 29, 2026: 2026 calendar, field sizes and truck makes), the 2026 Chase format announcement and NASCAR's November 2025 rule release. For official details, see nascar.com."
+  },
+  {
     id:"f1academy", sess:"f1academy", match:/F1 Academy/i, timing:"https://www.f1academy.com/About/Live-Timing",
     name:"F1 Academy", tag:"All-female, one car for everyone",
     blurb:"A single-seater series for young women, run by Formula 1 as a step up from karting. Every driver has the same car, so results come down to the driver and the team. It races on Formula 1 weekends, and many of its cars carry the colours of Formula 1 teams.",

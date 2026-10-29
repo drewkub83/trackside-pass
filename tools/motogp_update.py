@@ -154,7 +154,7 @@ def results_and_standings():
     cl = [x for x in (st or {}).get("classification") or [] if x.get("position")]
     if len(cl) < 10: return
     cl.sort(key=lambda x: x["position"])
-    done = [e for e in (get(f"results/events?seasonUuid={S['id']}&isFinished=true") or []) if e.get("kind") in (None, "GP")]
+    done = [e for e in events(now.year) if e.get("status") == "FINISHED"]   # the calendar's own status (the results list also holds the weekend under way)
     lastev = sorted(done, key=lambda e: e.get("date_start", ""))[-1] if done else None
     asof = f"Current after the {pretty_event(lastev['name'])} ({local_date(lastev['date_end'])})." if lastev else "Current standings."
     rows = ",\n".join("        { pos:%d, who:%s, pts:%d }" % (x["position"], js(f'{x["rider"]["full_name"]} ({x["team"]["name"]})'), x["points"]) for x in cl[:15])

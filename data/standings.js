@@ -10,7 +10,7 @@
    the driver, not the car), so naming a fixed car number for someone who's since switched would be wrong --
    name the team/manufacturer instead and say so in `gap` if it's known (e.g. Laurin Heinrich below). */
 const STANDINGS = [
-  { s:"motogp", asOf:"Current after the Grand Prix of Malaysia (2026-11-01).",
+  { s:"motogp", asOf:"Current after the Red Bull Grand Prix of Australia (2026-10-25).",
     classes:[
       { h:"Riders", rows:[
         { pos:1, who:"Marc Marquez (Ducati Lenovo Team)", pts:365 },

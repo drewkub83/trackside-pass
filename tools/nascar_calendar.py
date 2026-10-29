@@ -16,9 +16,9 @@ V = {"daytona-oval": ("Daytona", "Daytona Beach, Florida", "Oval"), "atlanta": (
      "texas-motor-speedway": ("Texas", "Fort Worth, Texas", "Oval"), "kansas": ("Kansas", "Kansas City, Kansas", "Oval"), "dover": ("Dover", "Dover, Delaware", "Oval"),
      "north-wilkesboro": ("North Wilkesboro", "North Wilkesboro, North Carolina", "Oval"), "charlotte": ("Charlotte", "Concord, North Carolina", "Oval"),
      "nashville-superspeedway": ("Nashville", "Lebanon, Tennessee", "Oval"), "pocono": ("Pocono", "Long Pond, Pennsylvania", "Oval"), "michigan": ("Michigan", "Brooklyn, Michigan", "Oval"),
-     "chicagoland": ("Chicagoland", "Joliet, Illinois", "Oval"), "iowa": ("Iowa", "Newton, Iowa", "Oval"), "sonoma": ("Sonoma", "Sonoma, California", "Road course"),
+     "chicagoland": ("Chicagoland", "Joliet, Illinois", "Oval"), "iowa": ("Iowa", "Newton, Iowa", "Oval"), "sonoma-nascar": ("Sonoma (NASCAR)", "Sonoma, California", "Road course"),
      "indianapolis-oval": ("Indianapolis", "Speedway, Indiana", "Oval"), "naval-base-coronado": ("San Diego", "Coronado, California", "Street circuit"),
-     "wwt-raceway": ("WWT Raceway", "Madison, Illinois", "Oval"), "richmond": ("Richmond", "Richmond, Virginia", "Oval"), "watkins-glen": ("Watkins Glen", "Watkins Glen, New York", "Road course"),
+     "wwt-raceway": ("WWT Raceway", "Madison, Illinois", "Oval"), "richmond": ("Richmond", "Richmond, Virginia", "Oval"), "watkins-glen-nascar": ("Watkins Glen (NASCAR)", "Watkins Glen, New York", "Road course"),
      "new-hampshire": ("New Hampshire", "Loudon, New Hampshire", "Oval"), "homestead-miami": ("Homestead-Miami", "Homestead, Florida", "Oval")}
 # (race day, venue, event name)
 RACES = [("2026-11-01","martinsville","NASCAR at Martinsville (Round of 8 finale)"),("2026-11-08","homestead-miami","NASCAR Championship"),
@@ -27,9 +27,9 @@ RACES = [("2026-11-01","martinsville","NASCAR at Martinsville (Round of 8 finale
  ("2027-04-18","martinsville","NASCAR at Martinsville"),("2027-04-25","talladega","NASCAR at Talladega"),("2027-05-02","texas-motor-speedway","NASCAR at Texas"),("2027-05-09","kansas","NASCAR at Kansas"),
  ("2027-05-16","dover","NASCAR at Dover"),("2027-05-23","north-wilkesboro","NASCAR All-Star Race"),("2027-05-30","charlotte","Coca-Cola 600"),("2027-06-06","nashville-superspeedway","NASCAR at Nashville"),
  ("2027-06-13","pocono","NASCAR at Pocono"),("2027-06-20","michigan","NASCAR at Michigan"),("2027-06-27","chicagoland","NASCAR at Chicagoland"),("2027-07-04","iowa","NASCAR at Iowa"),
- ("2027-07-11","sonoma","NASCAR at Sonoma"),("2027-07-18","atlanta","NASCAR at Atlanta"),("2027-07-25","indianapolis-oval","NASCAR at Indianapolis"),("2027-08-01","naval-base-coronado","NASCAR San Diego"),
+ ("2027-07-11","sonoma-nascar","NASCAR at Sonoma"),("2027-07-18","atlanta","NASCAR at Atlanta"),("2027-07-25","indianapolis-oval","NASCAR at Indianapolis"),("2027-08-01","naval-base-coronado","NASCAR San Diego"),
  ("2027-08-14","bristol","NASCAR at Bristol (night race)"),("2027-08-22","wwt-raceway","NASCAR at WWT Raceway"),("2027-08-28","daytona-oval","NASCAR at Daytona"),("2027-09-05","darlington","NASCAR at Darlington"),
- ("2027-09-11","richmond","NASCAR at Richmond (Chase opener)"),("2027-09-19","watkins-glen","NASCAR at Watkins Glen"),("2027-09-26","new-hampshire","NASCAR at New Hampshire"),
+ ("2027-09-11","richmond","NASCAR at Richmond (Chase opener)"),("2027-09-19","watkins-glen-nascar","NASCAR at Watkins Glen"),("2027-09-26","new-hampshire","NASCAR at New Hampshire"),
  ("2027-10-03","kansas","NASCAR at Kansas"),("2027-10-10","las-vegas-motor-speedway","NASCAR at Las Vegas"),("2027-10-17","charlotte","NASCAR at Charlotte"),("2027-10-24","phoenix","NASCAR at Phoenix"),
  ("2027-10-31","talladega","NASCAR at Talladega"),("2027-11-07","martinsville","NASCAR at Martinsville"),("2027-11-14","homestead-miami","NASCAR Championship")]
 SER = "NASCAR Cup Series"
@@ -52,8 +52,10 @@ stops = []
 for day, vid, name in RACES:
     d, t = wk(day)
     if vid in built:
-        vf = vid if os.path.exists(os.path.join(ROOT, "data", vid + ".js")) else ALIAS[vid]; T = B.load(vf); ev = [e for e in T["events"] if not (e.get("s", "").startswith(SER) and (e["d"] == d or e["d"] == day or (e["d"][:7] == d[:7] and abs((datetime.date.fromisoformat(e["d"]) - datetime.date.fromisoformat(d)).days) <= 3 and e.get("s","").startswith(SER))))]
+        vf = vid if os.path.exists(os.path.join(ROOT, "data", vid + ".js")) else ALIAS[vid]; T = B.load(vf); old_ev = {e["d"]: e for e in T["events"] if e.get("s", "").startswith(SER)}; ev = [e for e in T["events"] if not (e.get("s", "").startswith(SER) and (e["d"] == d or e["d"] == day or (e["d"][:7] == d[:7] and abs((datetime.date.fromisoformat(e["d"]) - datetime.date.fromisoformat(d)).days) <= 3 and e.get("s","").startswith(SER))))]
         ev.append({"d": d, "e": name, "s": SER + (", playoff race" if (day >= "2027-09-11" or day.startswith("2026")) else (", exhibition race" if re.search(r"Clash|All-Star", name) else "")), "t": t}); ev.sort(key=lambda e: e["d"])
+        for e in ev:        # keep the support series (O'Reilly, Trucks) written for a weekend by hand or by the schedule routine
+            if e["d"] == d and old_ev.get(d, {}).get("support"): e["support"] = old_ev[d]["support"]
         if ev != T["events"]:
             print("event", vid, d, name)
             if not DRY: T["events"] = ev; B.save(vf, T)

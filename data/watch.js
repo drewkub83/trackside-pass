@@ -625,5 +625,64 @@ const WATCH = [
         ["Monza returns to the calendar", "Replacing the cancelled Qatar and Bahrain rounds, this is WEC's first visit to the Autodromo Nazionale Monza since 2023. The track's banked oval loops, built in 1922 and rebuilt in the mid-1950s, were dropped from use for safety decades ago; the modern road course instead runs through the Lesmo curves and the Parabolica."]
       ] }
     ],
-    note:"Sources: Business Day ('Toyota seals World Sports Car title with victory in 6 Hours of Barcelona,' Oct 19, 2026) and Alpinestars' own Barcelona race report for the result, margin and manufacturers'-title clinch; data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gaps; RacingNews365's Barcelona results page for the LMGT3 winner; TotalEnergies' published WEC regulations page for the standard-race points scale (25-18-15-...-1 plus a pole-position point), used to check whether the titles are clinched; Racer.com and Autosport for the Qatar/Bahrain-to-Barcelona/Monza calendar swap and Monza's 2021-23 WEC history; gpfans.com and circuitsofthepast.com for Monza's banked-oval history, all via web search (the sites could not be reached directly from this environment). No 2026 Monza entry list was found as of this writing." }
+    note:"Sources: Business Day ('Toyota seals World Sports Car title with victory in 6 Hours of Barcelona,' Oct 19, 2026) and Alpinestars' own Barcelona race report for the result, margin and manufacturers'-title clinch; data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gaps; RacingNews365's Barcelona results page for the LMGT3 winner; TotalEnergies' published WEC regulations page for the standard-race points scale (25-18-15-...-1 plus a pole-position point), used to check whether the titles are clinched; Racer.com and Autosport for the Qatar/Bahrain-to-Barcelona/Monza calendar swap and Monza's 2021-23 WEC history; gpfans.com and circuitsofthepast.com for Monza's banked-oval history, all via web search (the sites could not be reached directly from this environment). No 2026 Monza entry list was found as of this writing." },
+  { t:"martinsville", d:"2026-10-30", s:"oreilly", at:"2026-10-29T17:37:36Z",
+    asOf:"Current after Talladega (Oct 24, 2026): two Chase races remain, this one and the Nov 7 finale at Homestead-Miami.",
+    groups:[
+      { h:"The championship fight", items:[
+        ["Jesse Love (Richard Childress Racing)", "Leads the Chase on 2,401 points after a third-place finish at Talladega -- a day he called \"the most boring, annoying race I've ever ran in my life\" after NASCAR penalized his team for improper fueling on pit road, sending him to the rear before he fought back. He won the previous race at Phoenix."],
+        ["Justin Allgaier", "Second, 19 points back."],
+        ["Sam Day", "Third, 29 points back."],
+        ["Austin Creed", "Fourth, 50 points back."],
+        ["Tyler Kvapil", "Close behind in the top five, about 59 points back."]
+      ] },
+      { h:"How the 2026 Chase works", items:[
+        ["No elimination this year", "NASCAR replaced its old elimination playoff with The Chase for 2026: the top 12 drivers after the Daytona regular-season finale got one points reset, then race the final 9 with nobody cut. Whoever has the most points after Homestead-Miami on Nov 7 is champion -- so nobody is eliminated at Martinsville, unlike in past seasons. Full-time Cup drivers who race in this series cannot score points toward the title."],
+        ["Shorter than Cup's race", "The O'Reilly race here runs 250 laps on Martinsville's tight half-mile, well short of Sunday's Cup race, and goes off Saturday afternoon."]
+      ] }
+    ],
+    note:"Sources: Heavy.com ('NASCAR O'Reilly Series Chase Standings: Where Drivers Rank After Talladega,' Oct 2026) for the post-Talladega points gaps (Love 2,401, Allgaier -19, Day -29, Creed -50, Kvapil -59); Heavy.com ('Why Did NASCAR Hit Jesse Love With Tough Penalty in Today's Talladega Race?') and Sportskeeda for the pit-road fueling penalty and Love's own comments on the race; Jayski and Racer.com (Oct 17, 2026) for Love's Phoenix win and his 36-point lead entering Talladega; this app's own data/series.js for the 2026 Chase format (no elimination, Daytona reset, Homestead finale) and Cup-driver points restriction. All read via web search (the sites could not be reached directly from this environment); the exact remaining gap for lower Chase positions was not independently confirmed." },
+  { t:"martinsville", d:"2026-10-30", s:"trucks", at:"2026-10-29T17:37:36Z",
+    asOf:"Current after Talladega (Oct 23, 2026): two Chase races remain, this one and the Nov 6 finale at Homestead-Miami.",
+    groups:[
+      { h:"The championship fight", items:[
+        ["Kaden Honeycutt (Tricon Garage)", "Leads the Chase after Talladega, where he ran with the lead pack most of the night before losing position in the final overtime scramble (he said he moved too early, the same mistake he made at Daytona) and finished fifth. He's already been signed to return to Tricon for 2027."],
+        ["Layne Riggs", "Closest challenger, 43 points back after finishing eighth at Talladega."],
+        ["Ty Majeski", "Further back, about 141 points behind, after leading late but finishing fourth."]
+      ] },
+      { h:"What happened at Talladega", items:[
+        ["Sammy Smith's first win", "Smith took the checkered flag in overtime for his first career Truck Series victory, in a race delayed by an early Lap 17 wreck (Stewart Friesen's truck got loose and was hit by Andres Perez, collecting Layne Riggs among others)."]
+      ] },
+      { h:"How the 2026 Chase works", items:[
+        ["No elimination this year", "NASCAR replaced its old elimination playoff with The Chase for 2026: the top 10 drivers after the New Hampshire regular-season finale got one points reset, then race the final 7 from Bristol to Homestead-Miami with nobody cut. Whoever has the most points after Homestead on Nov 6 is champion. Full-time Cup drivers who race in this series cannot race in the postseason."],
+        ["Shortest of NASCAR's three series", "Truck races run about 100 to 250 miles in 2026, so there's little time to recover from a bad restart -- this one goes off Friday afternoon at Martinsville's tight half-mile."]
+      ] }
+    ],
+    note:"Sources: NASCAR.com's post-Talladega coverage (Honeycutt and Majeski piece) and Racer.com/Deadspin ('Sammy Smith captures first Truck Series victory as Honeycutt inches closer to championship,' Oct 23, 2026) for the race result, the Lap 17 wreck and the points gaps (Riggs -43, Majeski -141); Jayski.com for the same race recap and Honeycutt's return to Tricon for 2027; this app's own data/series.js for the 2026 Chase format (no elimination, New Hampshire reset, Homestead finale) and Cup-driver postseason restriction. All read via web search (the sites could not be reached directly from this environment)." },
+  { t:"homestead-miami", d:"2026-11-06", s:"oreilly", at:"2026-10-29T17:37:36Z",
+    asOf:"Current after Talladega (Oct 24, 2026): Martinsville on Oct 31 is the last race before this one decides the title. This entry doesn't guess at who arrives here still in contention.",
+    groups:[
+      { h:"The championship, decided here", items:[
+        ["Jesse Love (Richard Childress Racing)", "Leads the Chase entering the stretch run, on 2,401 points after Talladega -- 19 ahead of Justin Allgaier, 29 ahead of Sam Day, with Austin Creed and Tyler Kvapil also inside the top five. Whoever has the most points after this race is champion; Martinsville will reshuffle these gaps before the season finishes here."],
+        ["No more elimination rounds", "NASCAR replaced its old elimination playoff with The Chase for 2026: the top 12 drivers after Daytona's regular-season finale got one points reset, then race the final 9 with nobody cut. The champion is simply whoever leads points after this race -- there's no win-and-in finale format."]
+      ] },
+      { h:"Homestead's return", items:[
+        ["Back on the calendar", "The track hosted NASCAR's championship-deciding race every year from 2002 to 2019, before the finale moved to Phoenix for 2020-2025. It's back for the O'Reilly Series title decider in 2026, on a 1.5-mile oval whose aged, abrasive surface is known for heavy tire wear and multiple racing grooves."],
+        ["Shorter than Cup's race", "The O'Reilly race here runs 200 laps, shorter than Sunday's Cup finale."]
+      ] }
+    ],
+    note:"Sources: Heavy.com ('NASCAR O'Reilly Series Chase Standings: Where Drivers Rank After Talladega,' Oct 2026) for the post-Talladega points gaps; this app's own data/series.js for the 2026 Chase format (no elimination, Daytona reset, Homestead finale) and the O'Reilly race-distance note; NASCAR.com and si.com/onsi/racing-america reporting (also used for the Cup entry at this track) and Goodyear's tire-wear characterization of Homestead-Miami's track surface, all via web search (the sites could not be reached directly from this environment). Championship picture will change after Martinsville on Oct 31; check back closer to the race." },
+  { t:"homestead-miami", d:"2026-11-06", s:"trucks", at:"2026-10-29T17:37:36Z",
+    asOf:"Current after Talladega (Oct 23, 2026): Martinsville on Oct 30 is the last race before this one decides the title. This entry doesn't guess at who arrives here still in contention.",
+    groups:[
+      { h:"The championship, decided here", items:[
+        ["Kaden Honeycutt (Tricon Garage)", "Leads the Chase entering the stretch run after Talladega, 43 points ahead of Layne Riggs and about 141 ahead of Ty Majeski. Whoever has the most points after this race is champion; Martinsville will reshuffle these gaps before the season finishes here."],
+        ["No more elimination rounds", "NASCAR replaced its old elimination playoff with The Chase for 2026: the top 10 drivers after the New Hampshire regular-season finale got one points reset, then race the final 7 from Bristol to Homestead with nobody cut. The champion is simply whoever leads points after this race."]
+      ] },
+      { h:"Homestead's return", items:[
+        ["Back on the calendar", "The track hosted NASCAR's championship-deciding race every year from 2002 to 2019, before the finale moved to Phoenix for 2020-2025. It's back for the Truck Series title decider in 2026, on a 1.5-mile oval whose aged, abrasive surface is known for heavy tire wear and multiple racing grooves."],
+        ["Shortest of NASCAR's three series", "Truck races run about 100 to 250 miles in 2026; this one goes off Friday night, the weekend's first championship race."]
+      ] }
+    ],
+    note:"Sources: NASCAR.com and Racer.com/Deadspin reporting on the post-Talladega Truck standings (Honeycutt leading, Riggs -43, Majeski -141); this app's own data/series.js for the 2026 Chase format (no elimination, New Hampshire reset, Homestead finale); NASCAR.com and si.com/onsi/racing-america reporting (also used for the Cup entry at this track) and Goodyear's tire-wear characterization of Homestead-Miami's track surface, all via web search (the sites could not be reached directly from this environment). Championship picture will change after Martinsville on Oct 30; check back closer to the race." }
 ];

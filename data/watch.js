@@ -744,5 +744,24 @@ const WATCH = [
         ["Saturday: qualifying and the Sprint", "Qualifying (late Saturday morning local time) sets the Sprint grid; the Sprint itself is the last data point before Sunday's Grand Prix."]
       ] }
     ],
-    note:"Sources: this app's own data/standings.js (2026 MotoGP riders' standings) for the championship points and data/sepang.js for the rest of the weekend's schedule; crash.net's live Friday-practice coverage and FP1 results report ('Sepang MotoGP LIVE: Friday practice updates as Jorge Martin returns' and the accompanying results page) for the FP1 times, Martin's lap count and gap, Raul Fernandez's withdrawal and the Manuel Gonzalez crash, read via web search (the site could not be reached directly from this environment, so these are as summarized by the search results rather than read first-hand off the timesheet). FP1 ended only a few hours before this was written; check back after Friday's afternoon Practice and Saturday's qualifying." }
+    note:"Sources: this app's own data/standings.js (2026 MotoGP riders' standings) for the championship points and data/sepang.js for the rest of the weekend's schedule; crash.net's live Friday-practice coverage and FP1 results report ('Sepang MotoGP LIVE: Friday practice updates as Jorge Martin returns' and the accompanying results page) for the FP1 times, Martin's lap count and gap, Raul Fernandez's withdrawal and the Manuel Gonzalez crash, read via web search (the site could not be reached directly from this environment, so these are as summarized by the search results rather than read first-hand off the timesheet). FP1 ended only a few hours before this was written; check back after Friday's afternoon Practice and Saturday's qualifying." },
+  { t:"sepang", d:"2026-10-30", s:"motogp", from:"2026-10-29", at:"2026-10-30T08:24:22Z",
+    asOf:"Current after Friday's full day of MotoGP running at Sepang (Oct 30): Marc Marquez fastest in both FP1 and the afternoon Practice, Jorge Martin completed Practice on his fractured wrist but ended it last on the time sheet.",
+    groups:[
+      { h:"What Friday showed", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Topped both of Friday's sessions -- a 1:58.912 in the morning FP1, then quicker again in the afternoon Practice -- setting the pace ahead of Saturday's combined-time cut for direct entry into Q2."],
+        ["Alex Marquez (BK8 Gresini Racing MotoGP)", "Right with his brother in the afternoon, about a tenth back -- the closest anyone got to Marc all day."],
+        ["Jorge Martin (Aprilia Racing)", "Rode through both sessions on his fractured right wrist and is confirmed to race this weekend, but was well off the pace in Practice -- last on the time sheet, roughly 2.6 seconds off Marquez -- after what reports described as a shortened afternoon run to manage the injury. The group behind Marquez and the Marquez brothers (Acosta, Bezzecchi, Di Giannantonio and others) was tightly bunched, though reports disagree on the exact order."],
+        ["Raul Fernandez (Trackhouse MotoGP Team)", "Still out of this Malaysian Grand Prix altogether with the right index finger injury that ended his Friday morning after five laps."]
+      ] },
+      { h:"The title fight, unchanged on points", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Still leads Jorge Martin by 10 points, 365 to 355, heading into qualifying -- Friday's practice pace was the strongest signal yet that his form hasn't suffered from the injury that's hampering Martin."],
+        ["Jorge Martin (Aprilia Racing)", "Ten points back and racing through the wrist fracture; Friday's times suggest a difficult weekend for pace, even with his grid spot not in question."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Third on 315 points, in the mix near the front of Friday's times but, like the rest of the group behind the Marquez brothers, not clearly placed by the available reports."]
+      ] },
+      { h:"Up next", items:[
+        ["Saturday: FP2, qualifying and the Sprint", "A short Saturday-morning Free Practice 2 is followed by Qualifying 1 and 2, then the Sprint -- the last word before Sunday's Grand Prix on whether Martin can convert speed into results on the injured wrist."]
+      ] }
+    ],
+    note:"Sources: this app's own data/standings.js (2026 MotoGP riders' standings) for the championship points and data/sepang.js for the weekend's schedule; crash.net's 'Sepang MotoGP LIVE: Friday Practice updates' live blog and its '2026 Malaysian MotoGP, Sepang - Friday Practice Results' results page, gpblog.com's practice results page, mcnews.com.au's FP1 report and motorsport-total.com's practice report, all read via web search (the sites could not be reached directly from this environment). Marquez's afternoon Practice time and the Marquez-Marquez 0.109s gap are corroborated by two independent reports; the order from 3rd through 10th in Practice is NOT reported consistently between crash.net and gpblog.com and is left out rather than guessed. Check back after Saturday's FP2, qualifying and Sprint." }
 ];

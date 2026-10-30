@@ -771,5 +771,24 @@ const WATCH = [
         ["Masters Racing Legends, 1966-85 (plus 1977-85 turbo) F1 cars", "Friday's 25-minute practice ran as scheduled alongside the Mexico City Grand Prix weekend at the Autodromo Hermanos Rodriguez; a 25-minute qualifying session and two 25-minute races follow through the rest of the weekend. No entry list, car count or practice times have been found in sources checked, so which cars and drivers are running, and how practice went, isn't confirmed."]
       ] }
     ],
-    note:"Sources: Masters Historic Racing's own event page confirms the Oct 30-Nov 1 dates and the one-practice/one-qualifying/two-race weekend format but could not be reached directly from this environment to check for a published entry list, timetable or results; further web searches today (including for a MEX26-style entry-list PDF matching the naming pattern used for other 2026 Masters events) found none. No 2026 Mexico City entry list, car count or practice results were found as of this writing, consistent with the lack of an entry list throughout this series' recent US Grand Prix weekend at COTA. Check back once the series or a race report publishes the grid and times." }
+    note:"Sources: Masters Historic Racing's own event page confirms the Oct 30-Nov 1 dates and the one-practice/one-qualifying/two-race weekend format but could not be reached directly from this environment to check for a published entry list, timetable or results; further web searches today (including for a MEX26-style entry-list PDF matching the naming pattern used for other 2026 Masters events) found none. No 2026 Mexico City entry list, car count or practice results were found as of this writing, consistent with the lack of an entry list throughout this series' recent US Grand Prix weekend at COTA. Check back once the series or a race report publishes the grid and times." },
+  { t:"martinsville", d:"2026-10-30", s:"trucks", from:"2026-10-30", at:"2026-10-30T19:23:23Z",
+    asOf:"Current after Friday's practice and qualifying, ahead of tonight's 6 p.m. ET Black's Tire 200: the Chase picture itself is unchanged from after Talladega, but the grid is now set.",
+    groups:[
+      { h:"Qualifying: a 16-year-old grabs his first pole", items:[
+        ["Tristan McKee (#77 Spire Motorsports Chevrolet)", "Turned a 19.549-second lap for his first career Truck Series pole -- in just his fifth series start. He's 16."],
+        ["Layne Riggs (#34 Front Row Motorsports Ford)", "Missed the pole by 0.018 seconds (19.567) and starts second. He's also the Chase's closest challenger to the points leader, so a strong run tonight matters on two fronts."],
+        ["Chandler Smith (#38 Front Row Motorsports Ford)", "Starts third (19.584) after also topping final practice."]
+      ] },
+      { h:"Where the Chase stands going in", items:[
+        ["Kaden Honeycutt (#11 Tricon Garage Toyota)", "Still leads on 2,371 points after Talladega, 43 ahead of Riggs, and starts fifth tonight. He can't lock up the title here -- that's still a Nov 6 Homestead-Miami question -- but a strong run would stretch the cushion."],
+        ["Ty Majeski (#88 ThorSport Ford)", "Starts sixth, further back in the standings (roughly 141 points off the lead after Talladega) with two Chase races left."],
+        ["Five drivers already out of the math", "Gio Ruggiero, Daniel Hemric, Ben Rhodes, Tyler Ankrum and Grant Enfinger are reported mathematically unable to catch the points lead with only this race and Homestead left, even with a maximum run in both -- there's no formal cut in this year's Chase, but the numbers have done the eliminating on their own."]
+      ] },
+      { h:"From practice", items:[
+        ["All 36 trucks passed inspection", "Every entered truck cleared pre-race inspection Thursday -- no late scrambles to fix issues before tonight's green flag."],
+        ["Jake Garcia's late crash", "Wrecked in final practice and failed to post a qualifying lap, so he starts 35th; Gavan Boschele also went off the pace chart and starts 36th."]
+      ] }
+    ],
+    note:"Sources: Yahoo Sports/Heavy.com's qualifying-order and starting-lineup reporting (McKee 19.549, Riggs 19.567, Smith 19.584; Honeycutt starting 5th, Majeski starting 6th), cross-checked against Catchfence's and RacingNews.co's own Martinsville qualifying reports; Heavy.com's Martinsville starting-lineup piece for McKee's age and start count, the final-practice order (Smith fastest, McKee second) and the Garcia/Boschele qualifying misses; Yahoo Sports/NASCAR.com's pre-Martinsville Chase-picture reporting for Honeycutt's 2,371-point lead, the 43-point gap to Riggs, and the five drivers reported mathematically eliminated (Ruggiero, Hemric, Rhodes, Ankrum, Enfinger); this app's own prior data/watch.js entry (written after Talladega) for Majeski's roughly 141-point deficit, not independently re-confirmed today. All read via web search; the sites themselves could not be reached directly from this environment. Tonight's Black's Tire 200 result was not yet known at the time of writing -- check back after the race." }
 ];

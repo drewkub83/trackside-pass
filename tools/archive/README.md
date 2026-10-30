@@ -1,0 +1,1 @@
+One-off scripts from building individual circuits (Sonoma, St. Petersburg, Arlington, Canadian Tire, Madrid) and early experiments (IMSA apply, OpenStreetMap amenities, RANSAC alignment). Nothing in the app, the builds or the automatic jobs calls them; they are kept for reference only. Delete a file here when you are sure its technique is not needed again (git history keeps it).

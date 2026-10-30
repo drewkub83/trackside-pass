@@ -790,5 +790,44 @@ const WATCH = [
         ["Jake Garcia's late crash", "Wrecked in final practice and failed to post a qualifying lap, so he starts 35th; Gavan Boschele also went off the pace chart and starts 36th."]
       ] }
     ],
-    note:"Sources: Yahoo Sports/Heavy.com's qualifying-order and starting-lineup reporting (McKee 19.549, Riggs 19.567, Smith 19.584; Honeycutt starting 5th, Majeski starting 6th), cross-checked against Catchfence's and RacingNews.co's own Martinsville qualifying reports; Heavy.com's Martinsville starting-lineup piece for McKee's age and start count, the final-practice order (Smith fastest, McKee second) and the Garcia/Boschele qualifying misses; Yahoo Sports/NASCAR.com's pre-Martinsville Chase-picture reporting for Honeycutt's 2,371-point lead, the 43-point gap to Riggs, and the five drivers reported mathematically eliminated (Ruggiero, Hemric, Rhodes, Ankrum, Enfinger); this app's own prior data/watch.js entry (written after Talladega) for Majeski's roughly 141-point deficit, not independently re-confirmed today. All read via web search; the sites themselves could not be reached directly from this environment. Tonight's Black's Tire 200 result was not yet known at the time of writing -- check back after the race." }
+    note:"Sources: Yahoo Sports/Heavy.com's qualifying-order and starting-lineup reporting (McKee 19.549, Riggs 19.567, Smith 19.584; Honeycutt starting 5th, Majeski starting 6th), cross-checked against Catchfence's and RacingNews.co's own Martinsville qualifying reports; Heavy.com's Martinsville starting-lineup piece for McKee's age and start count, the final-practice order (Smith fastest, McKee second) and the Garcia/Boschele qualifying misses; Yahoo Sports/NASCAR.com's pre-Martinsville Chase-picture reporting for Honeycutt's 2,371-point lead, the 43-point gap to Riggs, and the five drivers reported mathematically eliminated (Ruggiero, Hemric, Rhodes, Ankrum, Enfinger); this app's own prior data/watch.js entry (written after Talladega) for Majeski's roughly 141-point deficit, not independently re-confirmed today. All read via web search; the sites themselves could not be reached directly from this environment. Tonight's Black's Tire 200 result was not yet known at the time of writing -- check back after the race." },
+  { t:"martinsville", d:"2026-10-30", s:"oreilly", from:"2026-10-30", at:"2026-10-30T22:25:18Z",
+    asOf:"Current after Friday's practice and qualifying at Martinsville: the Chase standings are unchanged from after Talladega (only tonight's race will move them), but the grid is now set.",
+    groups:[
+      { h:"Qualifying: Carson Kvapil takes his third pole of the season", items:[
+        ["Carson Kvapil", "Won the pole, his third of 2026 and third of his O'Reilly career, with Rajah Caruth alongside him on the front row."],
+        ["Justin Allgaier", "Third on the grid, with Parker Retzlaff fourth and William Sawalich fifth rounding out the top five."],
+        ["Jesse Love (Richard Childress Racing)", "The Chase points leader starts eighth, in a group with Sammy Smith, Sheldon Creed, Corey Day and Taylor Gray."],
+        ["Chase drivers further back", "Three more Chase contenders start outside the top ten: Brandon Jones 12th, Sam Mayer 14th and Austin Hill 21st."]
+      ] },
+      { h:"Where the Chase stands going in", items:[
+        ["Jesse Love (Richard Childress Racing)", "Leads on 2,401 points after Talladega, 19 ahead of Justin Allgaier, 29 ahead of Corey Day, with Sheldon Creed (-50) and Carson Kvapil (-59) rounding out the top five. Qualifying doesn't move these numbers -- only tonight's race does."],
+        ["No elimination this year", "NASCAR replaced its old elimination playoff with The Chase for 2026: the top 12 drivers after Daytona's regular-season finale got one points reset, then race the final 9 with nobody cut. Whoever has the most points after Homestead-Miami on Nov 7 is champion, so nobody is eliminated tonight."]
+      ] },
+      { h:"Tonight's race", items:[
+        ["250 laps on the half-mile", "Shorter than Sunday's Cup race, and goes off this Saturday afternoon on Martinsville's tight, flat oval -- a track where short-track contact is common."]
+      ] }
+    ],
+    note:"Sources: Frontstretch's Martinsville O'Reilly qualifying report ('Carson Kvapil Takes O'Reilly Martinsville Pole'), via web search (the site could not be reached directly from this environment), for the qualifying order (Kvapil, Caruth, Allgaier, Retzlaff, Sawalich up front; Love 8th with Smith/Creed/Day/Gray; Jones 12th, Mayer 14th, Hill 21st). Heavy.com's post-Talladega Chase-standings report for the points gaps, cross-checked against Racer.com's and NASCAR.com's own driver pages, which confirm Sheldon Creed (No. 00 Haas Factory Team, a Darlington and Bristol Chase winner) and Carson Kvapil (an Indianapolis and Iowa winner this season, brother of ARCA/Late Model driver Caden Kvapil) as the actual 4th- and 5th-place Chase drivers -- correcting this app's Oct 29 entry, which had misnamed them 'Austin Creed' and 'Tyler Kvapil'; Corey Day (a 2026 Talladega spring winner) is likewise confirmed over the Oct 29 entry's 'Sam Day'. No published practice-session results (speeds, incidents) were found in sources checked." },
+  { t:"mexico-city", d:"2026-10-30", s:"f1", from:"2026-10-30", at:"2026-10-30T22:25:18Z",
+    asOf:"Current after Friday's Free Practice 1 at Mexico City (12:30 PM local). Free Practice 2 follows at 4 PM local; FP3 and qualifying are Saturday, the race Sunday at 2 PM local.",
+    groups:[
+      { h:"FP1: Leclerc fastest as Ferrari's altitude pace shows, Mercedes reserve impresses", items:[
+        ["Charles Leclerc (Ferrari)", "Set the pace with a 1:18.128, including three purple sectors -- Ferrari's power unit is expected to suit the thin air at altitude."],
+        ["Kimi Antonelli (Mercedes)", "Second, 0.659s off Leclerc. He's the championship leader, in his own car all session."],
+        ["Frederik Vesti (Mercedes)", "Third, just 0.074s behind Antonelli, standing in for title contender George Russell for this practice-only session under F1's rookie rule -- Russell is back in the car from FP2 on."],
+        ["Ayumu Iwasa (Red Bull Racing)", "Fifth, filling the same kind of rookie seat for Max Verstappen, who also returns for FP2."],
+        ["Pierre Gasly (Alpine)", "Sixth."],
+        ["Rookie session", "Ten rookies took part this weekend under the rule requiring two per car across the season; Ferrari was the only team that ran both of its regular race drivers all session. Colton Herta was 22nd."]
+      ] },
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads team-mate George Russell by 123 points with five races left, starting with this one. FP1 times don't change the standings or the title-clinch math for the weekend."],
+        ["George Russell (Mercedes)", "Second on 242 points, back in his own car from FP2 after Vesti's rookie outing."]
+      ] },
+      { h:"What to look for", items:[
+        ["FP2, 4 PM local", "The session that actually counts toward Sunday's set-up, with both championship contenders and both Red Bull regulars back in their cars."],
+        ["Qualifying, Saturday 3 PM local", "Sets Sunday's grid directly -- no sprint this weekend."]
+      ] }
+    ],
+    note:"Sources: Racer.com's FP1 report ('Leclerc leads opening Mexico City GP practice') and Yahoo Sports/Sky Sports News coverage of the same session, both via web search (the sites could not be reached directly from this environment), for the times, gaps, rookie-session detail and Herta's 22nd place; this app's own data/standings.js (2026 points after the United States Grand Prix) for the unchanged championship gap, carried over from the Oct 26 entry for this weekend. A Formula1.com 'home hero Perez targeting pole' article turned up in search results but was confirmed (via a further search) to be from 2021, not 2026, so nothing from it is repeated here." }
 ];

@@ -829,5 +829,26 @@ const WATCH = [
         ["Qualifying, Saturday 3 PM local", "Sets Sunday's grid directly -- no sprint this weekend."]
       ] }
     ],
-    note:"Sources: Racer.com's FP1 report ('Leclerc leads opening Mexico City GP practice') and Yahoo Sports/Sky Sports News coverage of the same session, both via web search (the sites could not be reached directly from this environment), for the times, gaps, rookie-session detail and Herta's 22nd place; this app's own data/standings.js (2026 points after the United States Grand Prix) for the unchanged championship gap, carried over from the Oct 26 entry for this weekend. A Formula1.com 'home hero Perez targeting pole' article turned up in search results but was confirmed (via a further search) to be from 2021, not 2026, so nothing from it is repeated here." }
+    note:"Sources: Racer.com's FP1 report ('Leclerc leads opening Mexico City GP practice') and Yahoo Sports/Sky Sports News coverage of the same session, both via web search (the sites could not be reached directly from this environment), for the times, gaps, rookie-session detail and Herta's 22nd place; this app's own data/standings.js (2026 points after the United States Grand Prix) for the unchanged championship gap, carried over from the Oct 26 entry for this weekend. A Formula1.com 'home hero Perez targeting pole' article turned up in search results but was confirmed (via a further search) to be from 2021, not 2026, so nothing from it is repeated here." },
+  { t:"mexico-city", d:"2026-10-30", s:"f1", from:"2026-10-30", at:"2026-10-30T23:23:06Z",
+    asOf:"Current after Friday's Free Practice 2 at Mexico City (4 PM local), which was interrupted by a red flag. FP3 and qualifying are Saturday, the race Sunday at 2 PM local.",
+    groups:[
+      { h:"FP2: Leclerc tops a red-flagged session after Verstappen and Lawson make contact", items:[
+        ["Charles Leclerc (Ferrari)", "Fastest with a 1:17.827, 0.103s clear of Norris -- Ferrari's altitude pace held up from FP1."],
+        ["Lando Norris (McLaren)", "Second, the closest McLaren got to the top all day."],
+        ["George Russell (Mercedes)", "Third, back in his own car after Vesti's FP1 outing under the rookie rule."],
+        ["Kimi Antonelli (Mercedes)", "Fourth. He's the championship leader; Friday's times don't change the title picture."],
+        ["Max Verstappen (Red Bull Racing)", "Fifth despite the damage: he made contact with Liam Lawson's Racing Bulls, which brought out the red flag, and continued after repairs. Both drivers were summoned to the stewards after the session; no decision had been issued at writing."],
+        ["Lewis Hamilton (Ferrari)", "Stopped on track with a problem partway through the hour and ended up 11th, his running cut short."]
+      ] },
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads team-mate George Russell by 123 points with five races left, starting with this one. Friday's practice times don't move the standings."],
+        ["George Russell (Mercedes)", "Second on 242 points."]
+      ] },
+      { h:"What to look for", items:[
+        ["Stewards' decision", "Whether Verstappen, Lawson or neither is penalized for the FP2 contact, and how much overnight repair work Red Bull needs."],
+        ["Qualifying, Saturday 3 PM local", "Sets Sunday's grid directly -- no sprint this weekend."]
+      ] }
+    ],
+    note:"Sources: PlanetF1 ('2026 Mexican Grand Prix FP2 report'), The Race ('Verstappen collides with Lawson as Leclerc tops Mexico FP2'), Speedcafe.com and Crash.net coverage of the same session, all via web search (the sites could not be reached directly from this environment), for the times, gaps, the Verstappen/Lawson incident and Hamilton's stoppage; this app's own data/standings.js (2026 points after the United States Grand Prix) for the unchanged championship gap. The stewards' ruling on the Verstappen/Lawson contact had not been published at writing." }
 ];

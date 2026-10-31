@@ -43,7 +43,7 @@ for (const g of ENTRIES) {
   const t = tracks[g.t]; if (!t) { console.log(`skip ${g.t} ${g.d}: no such track`); continue; }
   const ss = (t.sessions || []).map((s) => ({ ...s, start: localToDate(s.d, s.s, t.tz) })).map((s) => ({ ...s, end: s.e ? localToDate(s.d, s.e, t.tz) : new Date(+s.start + 120 * 60000) })).sort((a, b) => a.start - b.start);
   const mine = ss.filter((s) => { const sr = seriesFor(s.n); return sr && sr.id === g.s; });
-  const race = mine.find((s) => kindOf(s.n) === "race" && s.d >= g.d);
+  const race = mine.find((s) => kindOf(s.n) === "race" && s.d >= g.d && (!g.lockRace || new RegExp(g.lockRace, "i").test(s.n)));   // lockRace: lock at that race, not the weekend's first (MotoGP: the Sunday Grand Prix)
   if (!race) { console.log(`skip ${g.t} ${g.d} ${g.s}: no race session in the schedule yet`); continue; }
   const qs = mine.filter((s) => kindOf(s.n) === "qualifying" && s.d >= g.d && s.d <= addDays(g.d, 8));
   const entries = {}; for (const c of g.classes) { entries[c.h] = {}; for (const r of c.cars) entries[c.h][r[0]] = typeof r[4] === "number" ? r[4] : 10; }

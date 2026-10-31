@@ -201,11 +201,14 @@ function allOrderOf(c){ return TRACKS.flatMap(t=>t.events.filter(e=>inChamp(c,e)
 function stopsOf(c){ return (c.stops||[]).filter(s=>!TRACKS.some(t=>t.id===s.id)&&localToday()<=eventEnd(s)).sort((a,b)=>a.d.localeCompare(b.d)); }   /* venues without a map yet */
 const imsaOrder=()=>orderOf(champ("imsa")), imsaCurrent=()=>imsaOrder()[0]||null;   /* IMSA: the race on now, or the next one */
 /* the soonest race at each venue across every championship (home hero, passport order, weather, sun times) */
-function anyOrder(){ return TRACKS.map(t=>{ const x=CHAMPS.filter(followed).map(c=>({c,e:nextIn(c,t)})).filter(z=>z.e).sort((a,b)=>a.e.d.localeCompare(b.e.d))[0]; return x?{t,e:x.e,c:x.c}:null; }).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d)); }
+function anyOrder(){ const rank=c=>{ const i=orderedChamps().findIndex(x=>x.id===c.id); return i<0?99:i; };   /* weekends that start the same day: the series you arranged first leads */
+  return TRACKS.map(t=>{ const x=CHAMPS.filter(followed).map(c=>({c,e:nextIn(c,t)})).filter(z=>z.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)||rank(a.c)-rank(b.c))[0]; return x?{t,e:x.e,c:x.c}:null; }).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d)||rank(a.c)-rank(b.c)); }
 const nextAny=()=>anyOrder()[0]||null;
 function nextAt(t){ return CHAMPS.map(c=>nextIn(c,t)).filter(Boolean).sort((a,b)=>a.d.localeCompare(b.d))[0]||null; }
 function champsAt(t,e){ const last=eventEnd(e); return CHAMPS.filter(c=>{ if(c.optIn) return false; const n=nextIn(c,t); return n&&n.d<=last&&eventEnd(n)>=e.d; }); }   /* which series race at this venue that weekend -- support series never headline this */
 
+/* the weekend the big Home tile shows (also used to keep it out of "Your series, next up") */
+function heroPick(){ const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(); return c?{t:c.t,e:c.e}:null; }
 function renderHero(){
   const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(), el=document.getElementById("hero"); if(!c){ el.innerHTML=""; return; }
   const {t,e}=c, today=localToday(), on=e.d<=today, n=daysBetween(today,e.d), day=Math.min(e.t||1,daysBetween(e.d,today)+1), who=champsAt(t,e).map(x=>x.name).join(" + ")||e.s;
@@ -230,15 +233,17 @@ function seasonRole(c,pick){
 }
 function renderSeason(){
   const el=document.getElementById("season"); if(!el) return; const today=localToday();
+  const hero=(typeof heroPick==='function')?heroPick():null;
   const cards=orderedChamps().filter(followed).map(c=>{
-    const o=orderOf(c)[0], st=stopsOf(c)[0], pick=o&&(!st||o.e.d<=st.d)?{t:o.t.short,e:o.e}:st?{t:st.short,e:st}:null; if(!pick) return "";
+    const o=orderOf(c)[0], st=stopsOf(c)[0], pick=o&&(!st||o.e.d<=st.d)?{t:o.t.short,e:o.e,id:o.t.id}:st?{t:st.short,e:st}:null; if(!pick) return "";
+    if(hero&&pick.id===hero.t.id&&pick.e.d===hero.e.d) return "";   /* the big tile above already shows this weekend */
     const n=daysBetween(today,pick.e.d); if(n>SEASON_CARD_DAYS) return "";
     const when=pick.e.d<=today?"On now":n===1?"Tomorrow":`In ${n} days`, yr=pick.e.d.slice(0,4);
     const last=typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.s===c.guide).sort((a,b)=>b.d.localeCompare(a.d))[0]:null, lastOk=last&&last.d.slice(0,4)===yr;
     const g0=lastOk&&last.groups[0], win0=g0?(g0.order?g0.order[0].replace(/^\d+\.\s*/,""):g0.winner):"", win=win0.includes(" \u2014 ")?win0.split(" \u2014 ").pop():win0;   /* drivers, not the car */
     const std=standingsFor(c.guide), stYr=std&&((std.asOf||"").match(/20\d\d/)||[])[0], lead=std&&(stYr?stYr===yr:lastOk)&&std.classes[0]&&std.classes[0].rows[0];
     const role=seasonRole(c,pick);
-    return {d:pick.e.d,h:`<button class="scard" data-s="${c.id}" onclick="openSeries('${c.id}')"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`}; }).filter(Boolean).sort((a,b)=>a.d.localeCompare(b.d)).map(x=>x.h).slice(0,6);   /* by race date, whatever order the series are arranged in */
+    return {d:pick.e.d,h:`<button class="scard" data-s="${c.id}" onclick="${pick.id&&pick.e.d<=today?`openTrack('${pick.id}','home')`:`openSeries('${c.id}')`}"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`}; }).filter(Boolean).sort((a,b)=>a.d.localeCompare(b.d)).map(x=>x.h).slice(0,6);   /* by race date, whatever order the series are arranged in */
   el.innerHTML=cards.length?`<div class="sect">Your series, next up</div><div class="scards">${cards.join("")}</div>`:"";
 }
 function renderHome(){ renderHero(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
@@ -1132,7 +1137,7 @@ function gameNow(){
   return ENTRIES.find(x=>x.t===cur.id&&x.d>=fo.d&&x.d<=fo.end)||null;
 }
 function gameLock(g){   /* when the race starts: picks freeze then (or as soon as a result exists) */
-  const race=sessionsOf(TRACKS.find(x=>x.id===g.t)||cur).filter(s=>{ const sr=seriesFor(s.n); return sr&&sr.id===g.s&&kindOf(s.n)==="race"&&s.d>=g.d; })[0];
+  const race=sessionsOf(TRACKS.find(x=>x.id===g.t)||cur).filter(s=>{ const sr=seriesFor(s.n); return sr&&sr.id===g.s&&kindOf(s.n)==="race"&&s.d>=g.d&&(!g.lockRace||new RegExp(g.lockRace,"i").test(s.n)); })[0];   /* lockRace: an entry that locks at a later race than the weekend's first (MotoGP: the Sunday Grand Prix, not the Sprint) */
   return race||null;
 }
 const gameLocked=g=>{ const l=gameLock(g); return !!gameResult(g)||(l&&l.start<=new Date()); };
@@ -1143,16 +1148,16 @@ function gameCardHtml(g,chev){
   return `<div class="hubCard hubTap" role="button" onclick="openGame()"><div class="hubCardRow"><div><h4>Pick your podium</h4><div class="hubSessionSub">${line}</div></div>${chev}</div></div>`;
 }
 function openGame(){
-  const g=gameNow(); if(!g) return; gameG=g; if(!gameCls||!g.classes.some(c=>c.h===gameCls)) gameCls=g.classes[0].h; renderGame(); showSheet("shGame");
+  const g=gameNow(); if(!g) return; gameG=g; gameSel=null; if(!gameCls||!g.classes.some(c=>c.h===gameCls)) gameCls=g.classes[0].h; renderGame(); showSheet("shGame");
 }
 function renderGame(){
   const g=gameG; if(!g) return; const locked=gameLocked(g), sc=gameScore(g), lock=gameLock(g), pk=picksOf(g), c=g.classes.find(x=>x.h===gameCls), mine=pk[c.h]||[];
   document.getElementById("gmTitle").textContent=`${watchSeriesName({s:g.s})}: pick your podium`;
   document.getElementById("gmSub").textContent=sc?`Scored against the official result: ${sc.pts} of ${sc.max} points.`:locked?"Picks are locked.":`Tap ${g.classes.length>1?"cars":"drivers"} to fill 1st, 2nd and 3rd${g.classes.length>1?" in each class":""}. Picks lock at the start of the race${lock?`, ${fmtWhen(lock.start,cur.tz)}`:""}.${gameTiming(g).label?" "+gameTiming(g).label+".":""}`;
   const tabsEl=document.getElementById("gmTabs"); tabsEl.hidden=g.classes.length<2;
-  tabsEl.innerHTML=g.classes.map(x=>{ const n=(pk[x.h]||[]).length; return `<button class="gmTab${x.h===gameCls?" on":""}" onclick="gameCls='${x.h}';renderGame()">${esc(x.h)}${n?`<i>${n}/3</i>`:""}</button>`; }).join("");
+  tabsEl.innerHTML=g.classes.map(x=>{ const n=(pk[x.h]||[]).length; return `<button class="gmTab${x.h===gameCls?" on":""}" onclick="gameCls='${x.h}';gameSel=null;renderGame()">${esc(x.h)}${n?`<i>${n}/3</i>`:""}</button>`; }).join("");
   const pd=sc&&gamePodium(sc.res,c.h), marks=(sc&&sc.per[c.h])||[], find=n=>c.cars.find(r=>r[0]===n);
-  document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}" ${locked||!n?"disabled":""} onclick="gameDrop(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="open"?"?":"+"+(((sc&&sc.per[c.h+"#"])||[])[i]||0)}</em>`:n&&!locked?`<em>${gameExact(pickP(g,c.h,n),pickM(g,c.h,n))} pts</em>`:""}</button>`; }).join("");
+  document.getElementById("gmSlots").innerHTML=[0,1,2].map(i=>{ const n=mine[i], r=n&&find(n), mk=marks[i]; return `<button class="gmSlot${n?" full":""}${mk?" "+mk:""}${gameSel===i&&n?" sel":""}" ${locked||(!n&&gameSel===null)?"disabled":""} onclick="gameSlot(${i})"><b>${i+1}</b><span>${r?`<strong>#${esc(r[0])}</strong> ${esc(r[1])}`:"Empty"}</span>${mk?`<em>${mk==="open"?"?":"+"+(((sc&&sc.per[c.h+"#"])||[])[i]||0)}</em>`:n&&!locked?`<em>${gameExact(pickP(g,c.h,n),pickM(g,c.h,n))} pts</em><i class="gmX" role="button" aria-label="Remove this pick" onclick="event.stopPropagation();gameDrop(${i})">\u2715</i>`:""}</button>`; }).join("");
   const real=pd?`<div class="gmReal"><b>Official result</b> ${pd.exact.map((n,i)=>n?`${i+1}. #${n}`:`${i+1}. not listed`).join(" · ")}${pd.extra?` · also on the podium: ${pd.podium.slice(1).map(n=>"#"+n).join(", ")}`:""}</div>`:sc?`<div class="gmReal">The result for this class is not in yet.</div>`:"";
   const tm0=gameTiming(g).m, probs=gameProbs(g,c.h)||{}, gridOn=!!(g.live&&liveRows(g,"qualifying-combined")&&c.cars.every(r=>typeof r[6]==="number")), hasP=c.cars.some(r=>typeof r[4]==="number"), cars=hasP?c.cars.slice().sort((a,b)=>(probs[b[0]]||0)-(probs[a[0]]||0)):c.cars;
   const note=hasP?`<div class="gmNote"><b>Win chances, favourites first.</b> ${esc(gridOn?"Rebuilt from the official class grid, live from the series' qualifying result: starting position now drives the chances.":(g.oddsAsOf||"Our own estimate."))} A form guide, not betting odds or a prediction: it knows nothing about balance of performance, weather or strategy. Longer shots score more, early picks score more, and each pick keeps the chance and bonus it had when you made it.</div>`:"";
@@ -1166,7 +1171,15 @@ function gamePick(n){
   if(at>=0){ list.splice(at,1); setPickP(g,gameCls,n,null); } else if(list.length<3){ list.push(n); setPickP(g,gameCls,n,carP(g,gameCls,n)); } else { toast("Remove a pick first (tap it in the slots above)"); return; }
   savePicks(g,gameCls,list); if(typeof acctAfterPick==="function") acctAfterPick(g,gameCls); renderGame(); if(hubMode) renderHub();
 }
-function gameDrop(i){ const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), gone=list.splice(i,1)[0]; setPickP(g,gameCls,gone,null); savePicks(g,gameCls,list); if(typeof acctAfterPick==="function") acctAfterPick(g,gameCls); renderGame(); if(hubMode) renderHub(); }
+let gameSel=null;   /* the filled slot picked up to be moved: tap another slot to swap (or an empty one to move there), tap it again to put it down */
+function gameSlot(i){
+  const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice();
+  if(gameSel===null){ if(list[i]===undefined) return; gameSel=i; toast("Tap another slot to move it there"); renderGame(); return; }
+  if(gameSel===i){ gameSel=null; renderGame(); return; }
+  const item=list[gameSel]; if(i<list.length){ list[gameSel]=list[i]; list[i]=item; } else { list.splice(gameSel,1); list.push(item); }
+  gameSel=null; savePicks(g,gameCls,list); if(typeof acctAfterPick==="function") acctAfterPick(g,gameCls); renderGame(); if(hubMode) renderHub();
+}
+function gameDrop(i){ gameSel=null; const g=gameG; if(!g||gameLocked(g)) return; const list=(picksOf(g)[gameCls]||[]).slice(), gone=list.splice(i,1)[0]; setPickP(g,gameCls,gone,null); savePicks(g,gameCls,list); if(typeof acctAfterPick==="function") acctAfterPick(g,gameCls); renderGame(); if(hubMode) renderHub(); }
 /* your season: every weekend you played in a calendar year, all series together, with a running total (the Home screen card and the
    bottom of the picker sheet). Counts only weekends that have a result; picks on this phone only. */
 function gameSeason(year){
@@ -1355,7 +1368,8 @@ function hubFocusSeries(c){
   }
 
   /* off-week: no live or upcoming session to follow, so fall back to the series of the next event for standings */
-  if(!sid){ const nx=CHAMPS.filter(c=>!c.optIn&&followed(c)).map(c=>({c,e:nextIn(c,cur)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)), pickS=nx.find(x=>standingsFor(x.c.guide||x.c.id))||nx[0]; if(pickS) sid=pickS.c.guide||pickS.c.id; }   /* the first series here that has standings to show */
+  const fo0=focusAt(cur), vintage=!!fo0&&!fo0.group.some(e=>CHAMPS.some(c=>!c.optIn&&inChamp(c,e)));   /* a weekend of a series without championship pages (HSR's vintage racing) shows no other series' standings or storylines */
+  if(!sid&&!vintage){ const nx=CHAMPS.filter(c=>!c.optIn&&followed(c)).map(c=>({c,e:nextIn(c,cur)})).filter(x=>x.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)), pickS=nx.find(x=>standingsFor(x.c.guide||x.c.id))||nx[0]; if(pickS) sid=pickS.c.guide||pickS.c.id; }   /* the first series here that has standings to show */
   return {sid,fav};
 }
 function hubWatchCard(c){

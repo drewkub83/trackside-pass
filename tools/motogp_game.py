@@ -133,10 +133,10 @@ def build(e, hist):
         out.append([x["num"], x["name"], x["team"], "", round(p * 100, 1), basis, round(x["f"], 3)])
     odds = ("After qualifying (grid from Q2, then Q1): grid position now drives the chances, tilted by recent form. Penalties are not applied." if qual
             else "Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.")
-    as_of = f"Riders from the {src}, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the first race of the weekend, the Saturday Sprint, starts; the game scores the Sunday Grand Prix."
+    as_of = f"Riders from the {src}, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it)."
     note = f"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read {now.date().isoformat()}. Win chances are our own estimate, not betting odds. {MARK}"
     cars_txt = ",\n".join("        [" + ", ".join(js(v) for v in row) + "]" for row in out)
-    return qual, len(out), (f'  {{ t:{js(e["t"])}, d:{js(d0)}, s:"motogp", oddsAsOf:{js(odds)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars_txt}\n      ] }}\n    ],\n    note:{js(note)} }}')
+    return qual, len(out), (f'  {{ t:{js(e["t"])}, d:{js(d0)}, s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:{js(odds)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars_txt}\n      ] }}\n    ],\n    note:{js(note)} }}')
 def main():
     if "--backtest" in A: return backtest()
     cands = app_events(now.date())

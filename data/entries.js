@@ -218,7 +218,7 @@ const ENTRIES = [
       ] }
     ],
     note:"Source: NASCAR race data (cf.nascar.com, the files nascar.com's race pages use), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"lusail", d:"2026-11-06", s:"motogp", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the the field of the latest Sunday race, the Grand Prix of Indonesia (2026-10-09), until this weekend's practice is published, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the first race of the weekend, the Saturday Sprint, starts; the game scores the Sunday Grand Prix.",
+  { t:"lusail", d:"2026-11-06", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the the field of the latest Sunday race, the Grand Prix of Indonesia (2026-10-09), until this weekend's practice is published, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
         ["89", "Jorge Martin", "Aprilia Racing", "", 20.0, "averaged top 20% of the field over his last 6 Sunday races", 0.796],
@@ -245,7 +245,7 @@ const ENTRIES = [
       ] }
     ],
     note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"sepang", d:"2026-10-30", s:"motogp", oddsAsOf:"After qualifying (grid from Q2, then Q1): grid position now drives the chances, tilted by recent form. Penalties are not applied.", asOf:"Riders from the practice sessions of this weekend, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the first race of the weekend, the Saturday Sprint, starts; the game scores the Sunday Grand Prix.",
+  { t:"sepang", d:"2026-10-30", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"After qualifying (grid from Q2, then Q1): grid position now drives the chances, tilted by recent form. Penalties are not applied.", asOf:"Riders from the practice sessions of this weekend, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
         ["93", "Marc Marquez", "Ducati Lenovo Team", "", 39.8, "Qualified 2nd of 22. averaged top 21% of the field over his last 6 Sunday races", 0.786],

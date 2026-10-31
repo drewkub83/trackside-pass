@@ -850,5 +850,14 @@ const WATCH = [
         ["Qualifying, Saturday 3 PM local", "Sets Sunday's grid directly -- no sprint this weekend."]
       ] }
     ],
-    note:"Sources: PlanetF1 ('2026 Mexican Grand Prix FP2 report'), The Race ('Verstappen collides with Lawson as Leclerc tops Mexico FP2'), Speedcafe.com and Crash.net coverage of the same session, all via web search (the sites could not be reached directly from this environment), for the times, gaps, the Verstappen/Lawson incident and Hamilton's stoppage; this app's own data/standings.js (2026 points after the United States Grand Prix) for the unchanged championship gap. The stewards' ruling on the Verstappen/Lawson contact had not been published at writing." }
+    note:"Sources: PlanetF1 ('2026 Mexican Grand Prix FP2 report'), The Race ('Verstappen collides with Lawson as Leclerc tops Mexico FP2'), Speedcafe.com and Crash.net coverage of the same session, all via web search (the sites could not be reached directly from this environment), for the times, gaps, the Verstappen/Lawson incident and Hamilton's stoppage; this app's own data/standings.js (2026 points after the United States Grand Prix) for the unchanged championship gap. The stewards' ruling on the Verstappen/Lawson contact had not been published at writing." },
+  { t:"mexico-city", d:"2026-10-30", s:"masters", from:"2026-10-30", at:"2026-10-31T01:22:38Z",
+    asOf:"Current after Friday's qualifying session at Mexico City (Oct 30): still no 2026 entry list, driver roster, car count, practice times or qualifying grid have turned up in sources checked, despite repeated searches of Masters Historic Racing's own site and race-media coverage.",
+    groups:[
+      { h:"What's known", items:[
+        ["Masters Racing Legends, 1966-85 (plus 1977-85 turbo) F1 cars", "Friday's practice and qualifying both ran as scheduled alongside the Mexico City Grand Prix weekend at the Autodromo Hermanos Rodriguez. No entry list, car count, practice times or qualifying order have been found in sources checked, so which cars and drivers are running, and how the session went, isn't confirmed."],
+        ["Two races left", "A 30-minute race on Saturday and another on Sunday morning round out the weekend; results for either have not been found yet."]
+      ] }
+    ],
+    note:"Sources: Masters Historic Racing's own event page for the Oct 30-Nov 1 Mexico City weekend could not be reached directly from this environment to check for a published entry list, timetable or results; further web searches today (for an entry list, pole position, grid or practice times) found none, consistent with the lack of published results throughout this series' recent US Grand Prix weekend at COTA. No 2026 Mexico City entry list, car count or session results were found as of this writing. Check back once the series or a race report publishes the grid and times." }
 ];

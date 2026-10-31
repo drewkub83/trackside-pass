@@ -314,5 +314,16 @@ const RESULTS = [
         "5. Emma Felbermayr"
       ] }
     ],
-    note:"Sources: Pit Debrief, 'F1 Academy 2026 United States GP Feature Race report' and 'Feature Race results' (pitdebrief.com, Oct 25, 2026); Motorsport Week, 'F1 Academy 2026 US GP - Feature Race Results' (via web search). Gademan won from 3rd on the grid. Champion Alisha Palmowski and Alba Larsen collided on lap 10 while fighting for 2nd and both retired. Jacquet's 4th is her best F1 Academy finish. Car numbers and the other teams were not confirmed in the reports seen, so they are left out." }
+    note:"Sources: Pit Debrief, 'F1 Academy 2026 United States GP Feature Race report' and 'Feature Race results' (pitdebrief.com, Oct 25, 2026); Motorsport Week, 'F1 Academy 2026 US GP - Feature Race Results' (via web search). Gademan won from 3rd on the grid. Champion Alisha Palmowski and Alba Larsen collided on lap 10 while fighting for 2nd and both retired. Jacquet's 4th is her best F1 Academy finish. Car numbers and the other teams were not confirmed in the reports seen, so they are left out." },
+  { t:"martinsville", d:"2026-10-30", s:"trucks", race:"Race - Craftsman Truck Series", event:"NASCAR Craftsman Truck Series, Martinsville: Black's Tire 200",
+    groups:[
+      { h:"Race", order:[
+        "1. Chandler Smith (Front Row Motorsports)",
+        "2. Ben Rhodes",
+        "3. Layne Riggs (Front Row Motorsports)",
+        "4. Ty Majeski",
+        "5. Tristan McKee"
+      ] }
+    ],
+    note:"Sources: Yahoo Sports, 'Race Results: 2026 NASCAR Truck Series Black's Tire 200 at Martinsville' and 'Chandler Smith wins Martinsville as NASCAR Truck title fight tightens'; Yardbarker, 'Chandler Smith wins NASCAR Truck Series race at Martinsville; Layne Riggs gains on Kaden Honeycutt'; Racing News, 'Martinsville Race Results: NASCAR Trucks (October 30, 2026)' (Oct 30, 2026; via web search, direct fetch blocked here). Results were unofficial when reported. Smith passed teammate Riggs on the final restart and won by 0.574s; pole-sitter McKee (16) became the youngest pole winner in series history. Points leader Kaden Honeycutt finished 14th and leads Riggs by 20 points going to Homestead. Truck numbers and the teams of Rhodes, Majeski and McKee were not confirmed in the reports seen, so they are left out." }
 ];

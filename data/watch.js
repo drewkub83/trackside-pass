@@ -917,5 +917,42 @@ const WATCH = [
         ["Sunday's Malaysian Grand Prix, 3 PM local (7 AM UTC)", "Warm-Up Practice at 10:40 AM local comes first; the race is the last word on how much further Marquez can stretch his lead before the season's final round."]
       ] }
     ],
-    note:"Sources: mcnews.com.au's Sepang Sprint report (Acosta's win, Alex Marquez crashing from the lead, Marc Marquez second, Bezzecchi third and Ogura fourth) and gpblog.com's and motogpnews.com's reports of the same Sprint (Acosta's win and Alex Marquez's crash from the lead), all read via web search (the sites could not be reached directly from this environment); the new championship point totals (374, 355, 322) were cross-checked by applying the Sprint's points (12/9/7/6...) to this app's own pre-Sprint data/standings.js (365, 355, 315, Acosta 263) and matched exactly, which is also why Acosta's new total (275) is given even though no source stated it directly. This app's own data/sepang.js for Sunday's schedule. The finishing order from 5th through 9th, the details of Alex Marquez's crash, and any tyre/weather detail were not confirmed in sources checked and are left out rather than guessed." }
+    note:"Sources: mcnews.com.au's Sepang Sprint report (Acosta's win, Alex Marquez crashing from the lead, Marc Marquez second, Bezzecchi third and Ogura fourth) and gpblog.com's and motogpnews.com's reports of the same Sprint (Acosta's win and Alex Marquez's crash from the lead), all read via web search (the sites could not be reached directly from this environment); the new championship point totals (374, 355, 322) were cross-checked by applying the Sprint's points (12/9/7/6...) to this app's own pre-Sprint data/standings.js (365, 355, 315, Acosta 263) and matched exactly, which is also why Acosta's new total (275) is given even though no source stated it directly. This app's own data/sepang.js for Sunday's schedule. The finishing order from 5th through 9th, the details of Alex Marquez's crash, and any tyre/weather detail were not confirmed in sources checked and are left out rather than guessed." },
+  { t:"mexico-city", d:"2026-10-30", s:"f1", from:"2026-10-31", at:"2026-10-31T19:24:48Z",
+    asOf:"Current after Saturday morning's Practice 3 at Mexico City (11:30 AM local): Lando Norris edged Kimi Antonelli by 0.001s, and Haas benched Esteban Ocon for the rest of the weekend. Qualifying is at 3 PM local today; the race is Sunday at 2 PM local.",
+    groups:[
+      { h:"FP3: Norris pips Antonelli by a thousandth as Haas drops Ocon", items:[
+        ["Lando Norris (McLaren)", "Topped final practice with a 1:17.600, just 0.001s clear of championship leader Kimi Antonelli -- the tightest session of the weekend. Charles Leclerc was third (+0.117s), Oscar Piastri fourth (+0.195s), Max Verstappen fifth (+0.351s), Lewis Hamilton sixth and George Russell seventh."],
+        ["Haas benches Esteban Ocon", "Haas pulled Ocon out of the car before FP3 even started and handed it to reserve driver Ryo Hirakawa for the rest of the weekend -- qualifying and Sunday's race, not just a practice outing. The team said only that it was 'not due to illness' and has not given a reason; some reports point to a heated exchange between Ocon and his race engineer during Friday's FP2, but that has not been confirmed. The FIA approved the one-race swap under the 2026 sporting regulations; Ocon's already-announced departure from Haas at season's end is unaffected, and whether he's back in the car for Sao Paulo isn't known yet."],
+        ["Stewards rule on the Verstappen/Lawson clash", "Friday's FP2 contact between Red Bull team-mates Max Verstappen and Liam Lawson through the stadium section, which had brought out a red flag, earned both drivers a one-place grid penalty for Sunday's race plus a penalty point on their licence. The stewards called the move 'unacceptable', citing a warning already given to team managers over similar incidents, and judged both drivers equally at fault."]
+      ] },
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads team-mate George Russell by 123 points with five races left, starting with this one. Practice times don't move the standings."],
+        ["George Russell (Mercedes)", "Second on 242 points, seventh-fastest in FP3."]
+      ] },
+      { h:"What to look for", items:[
+        ["Qualifying, 3 PM local", "Sets Sunday's grid directly -- no sprint this weekend. Verstappen and Lawson's one-place penalties apply to wherever they end up qualifying."],
+        ["Hirakawa's race weekend", "His first full race weekend of 2026 (he'd previously only driven an FP1 outing) -- racing qualifying and Sunday's Grand Prix in place of Ocon."]
+      ] }
+    ],
+    note:"Sources: Formula1.com's own FP3 report ('Norris pips Antonelli and Leclerc to top spot in final practice for Mexico City GP') for the session times and order; RacingNews365's FP3 report, Autosport's and Grande Premio's reports on the Ocon/Hirakawa swap (Haas's 'not due to illness' statement, the FIA's one-race approval) and Crash.net's report raising, without confirming, a race-engineer dispute as a possible reason; ESPN ('Max Verstappen and Liam Lawson given one-place grid penalty at Mexico City Grand Prix'), RacingNews365 and Sky Sports for the stewards' ruling on the FP2 Verstappen/Lawson contact; this app's own data/standings.js (2026 points after the United States Grand Prix) for the unchanged championship gap. All read via web search (the sites could not be reached directly from this environment). The exact reason for Ocon's benching and whether he returns at Sao Paulo were not confirmed anywhere checked and are left out rather than guessed." },
+  { t:"martinsville", d:"2026-10-30", s:"nascar", from:"2026-10-31", at:"2026-10-31T19:24:48Z",
+    asOf:"Current after Saturday's Cup Series qualifying at Martinsville (Oct 31): Denny Hamlin took his second straight pole here. Sunday's Xfinity 500, 2 PM local, is the penultimate race of the 2026 Chase.",
+    groups:[
+      { h:"Qualifying: Hamlin's second straight Martinsville pole", items:[
+        ["Denny Hamlin (Joe Gibbs Racing)", "Won the pole with a 19.226-second lap (98.492 mph) around the half-mile oval, his second consecutive Martinsville pole and a bid for his seventh career win here on Sunday."],
+        ["Ty Gibbs (Joe Gibbs Racing)", "Second, just 0.049s off his team-mate, giving Toyota the front row."],
+        ["Kyle Larson (Hendrick Motorsports)", "Third -- the Chase points leader starts up front, with Austin Cindric fourth and Joey Logano fifth completing the top five."],
+        ["The rest of the top ten", "Ryan Preece, Alex Bowman, William Byron, Chase Elliott and Josh Berry rounded out the top ten; Chase Briscoe starts 11th and Ryan Blaney 13th."]
+      ] },
+      { h:"The championship fight", items:[
+        ["Kyle Larson (Hendrick Motorsports)", "Still leads the Chase by 73 points over Denny Hamlin after Talladega, and starts Sunday's race third on the grid -- one of only two races left before the Nov 8 finale at Homestead-Miami."],
+        ["Denny Hamlin (Joe Gibbs Racing)", "Second, 73 points back, starts from pole."],
+        ["Chase Briscoe (Joe Gibbs Racing)", "Fourth in the standings, about 77-79 points back (outlets differ slightly on the exact gap); starts 11th on Sunday."]
+      ] },
+      { h:"What to watch Sunday", items:[
+        ["The Xfinity 500, 2 PM local", "250 laps on Martinsville's tight, flat half-mile -- short-track contact is common here, and with no elimination round this year every point still matters for all 16 Chase drivers heading into the Homestead finale."]
+      ] }
+    ],
+    note:"Sources: RotoBaller's and Sportsnaut's NASCAR Cup qualifying reports for Martinsville's fall 2026 race (Hamlin's pole time and margin over Gibbs, the full top-10 starting order, Briscoe 11th and Blaney 13th), cross-checked against an On3/Yahoo Sports 'Official Starting Lineup' report and an Athlon Sports qualifying report, both of which independently confirm Hamlin's 19.226s/98.492mph pole and his 0.049s margin over Gibbs; this app's own prior data/watch.js entry (written after Talladega) for the still-current Chase points gaps (Larson's 73-point lead over Hamlin, Briscoe's 77-79-point gap in fourth), not independently re-confirmed today since no race has run since. All read via web search (the sites could not be reached directly from this environment). No official report on Saturday's Cup practice speeds was found in sources checked, so it is left out rather than guessed; Christopher Bell's exact starting position was likewise not found and is left out." }
 ];

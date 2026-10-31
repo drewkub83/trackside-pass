@@ -131,8 +131,8 @@ const ENTRIES = [
         ["77", "Valtteri Bottas", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-30. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-10-30. Late changes are possible.",
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" },
+  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-10-31. Late changes are possible.",
     classes:[
       { h:"Hypercar", cars:[
         ["8", "Toyota Racing", "Sébastien Buemi / Brendon Hartley / Ryō Hirakawa", "Toyota TR010 Hybrid", 9.1, "averaged top 33% of Hypercar over 7 earlier races this season", 0.667],
@@ -174,7 +174,7 @@ const ENTRIES = [
         ["78", "Akkodis ASP Team", "Tom van Rompuy / Hadrien David / Esteban Masson", "Lexus RC F LMGT3", 3.4, "averaged top 65% of LMGT3 over 7 earlier races this season", 0.355]
       ] }
     ],
-    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-10-30. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" },
+    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-10-31. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" },
   { t:"martinsville", d:"2026-10-30", s:"nascar", oddsAsOf:"Before qualifying: recent form only (each driver's average finishing position over his last 6 Cup races). The chances are rebuilt from the starting grid once qualifying is published.", asOf:"Entry list from NASCAR's race data (nascar.com), with the official car numbers. Late changes are possible.",
     classes:[
       { h:"Race", cars:[
@@ -217,7 +217,7 @@ const ENTRIES = [
         ["66", "Josh Bilicki", "Garage 66", "Ford Mustang", 0.5, "averaged top 81% of the field over his last 6 Cup races", 0.186]
       ] }
     ],
-    note:"Source: NASCAR race data (cf.nascar.com, the files nascar.com's race pages use), read 2026-10-30. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: NASCAR race data (cf.nascar.com, the files nascar.com's race pages use), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"lusail", d:"2026-11-06", s:"motogp", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the the field of the latest Sunday race, the Grand Prix of Indonesia (2026-10-09), until this weekend's practice is published, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the first race of the weekend, the Saturday Sprint, starts; the game scores the Sunday Grand Prix.",
     classes:[
       { h:"Race", cars:[
@@ -244,7 +244,7 @@ const ENTRIES = [
         ["63", "Francesco Bagnaia", "Ducati Lenovo Team", "", 0.5, "averaged top 70% of the field over his last 6 Sunday races", 0.298]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-10-30. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"sepang", d:"2026-10-30", s:"motogp", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the practice sessions of this weekend, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the first race of the weekend, the Saturday Sprint, starts; the game scores the Sunday Grand Prix.",
     classes:[
       { h:"Race", cars:[
@@ -272,5 +272,5 @@ const ENTRIES = [
         ["47", "Augusto Fernandez", "Prima Pramac Yamaha MotoGP", "", 0.5, "averaged top 68% of the field over his last 6 Sunday races", 0.319]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-10-30. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

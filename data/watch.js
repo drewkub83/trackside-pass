@@ -859,5 +859,25 @@ const WATCH = [
         ["Two races left", "A 30-minute race on Saturday and another on Sunday morning round out the weekend; results for either have not been found yet."]
       ] }
     ],
-    note:"Sources: Masters Historic Racing's own event page for the Oct 30-Nov 1 Mexico City weekend could not be reached directly from this environment to check for a published entry list, timetable or results; further web searches today (for an entry list, pole position, grid or practice times) found none, consistent with the lack of published results throughout this series' recent US Grand Prix weekend at COTA. No 2026 Mexico City entry list, car count or session results were found as of this writing. Check back once the series or a race report publishes the grid and times." }
+    note:"Sources: Masters Historic Racing's own event page for the Oct 30-Nov 1 Mexico City weekend could not be reached directly from this environment to check for a published entry list, timetable or results; further web searches today (for an entry list, pole position, grid or practice times) found none, consistent with the lack of published results throughout this series' recent US Grand Prix weekend at COTA. No 2026 Mexico City entry list, car count or session results were found as of this writing. Check back once the series or a race report publishes the grid and times." },
+  { t:"sepang", d:"2026-10-30", s:"motogp", from:"2026-10-30", at:"2026-10-31T04:26:00Z",
+    asOf:"Current after Saturday's FP2 and qualifying at Sepang (Oct 31): Jorge Martin has withdrawn from the rest of the Malaysian Grand Prix, and Alex Marquez took pole from his brother Marc.",
+    groups:[
+      { h:"Martin's weekend is over", items:[
+        ["Jorge Martin (Aprilia Racing)", "Rode only eight laps of Saturday morning's FP2 -- ending it last on the combined time sheet -- before walking out of the garage and not returning for Qualifying 1. Aprilia confirmed he has withdrawn from the rest of the Malaysian GP, meaning no Sprint and no Grand Prix start, to keep recovering from the wrist he fractured in last weekend's Phillip Island sprint crash. Team manager Paolo Bonora said he couldn't put any force into the bike in the braking areas."],
+        ["Marc Marquez (Ducati Lenovo Team)", "With Martin scoring nothing at all here, Marquez's 10-point championship lead (365 to 355) is guaranteed to grow this weekend no matter what he does himself -- he just has to keep the bike on track."]
+      ] },
+      { h:"Qualifying: Alex Marquez on pole", items:[
+        ["Alex Marquez (BK8 Gresini Racing MotoGP)", "Took pole with a 1:56.493, beating his older brother Marc by just 0.070s -- Alex won last year's Malaysian Grand Prix and goes into today's Sprint as the man to beat."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Second on the grid, 0.070s off his brother's time, after topping Friday's practice; Pedro Acosta (Red Bull KTM Factory Racing) completes the front row in third."],
+        ["Row two and three", "Ai Ogura (Trackhouse MotoGP Team) qualified fourth and Marco Bezzecchi (Aprilia Racing) fifth -- the top five covered by just 0.175s -- with Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team) sixth. Enea Bastianini (Ducati Lenovo Team), Johann Zarco and Franco Morbidelli make up row three."]
+      ] },
+      { h:"What FP2 showed", items:[
+        ["Enea Bastianini (Ducati Lenovo Team)", "Topped Saturday morning's Free Practice 2 on a late run on fresh soft tyres, with Alex Marquez second on the same strategy -- Marc Marquez, who led both of Friday's sessions, was down in eighth."]
+      ] },
+      { h:"Up next", items:[
+        ["Today's Sprint, 15:00 local (07:00 UTC)", "The last word before Sunday's Grand Prix, run without Martin on the grid at all -- a first for his title challenge this season."]
+      ] }
+    ],
+    note:"Sources: crash.net's 'Alex Marquez snatches Sepang MotoGP pole' and 'Official: Jorge Martin out of Malaysia MotoGP', the-race.com's 'Martin out of Sepang MotoGP weekend, Alex Marquez on pole', motorsport-total.com's 'MotoGP-Qualifying Sepang 2026: Jorge Martin gibt auf, Alex Marquez auf Pole', freemalaysiatoday.com's 'Injured Martin out of Malaysian MotoGP in big title blow' and streamlinefeed.co.ke's report on Martin's FP2/withdrawal, all read via web search (the sites could not be reached directly from this environment); this app's own data/standings.js for the championship points and data/sepang.js for the weekend's schedule. The order from 4th through 9th in FP2 was not found and is left out rather than guessed; check back after today's Sprint." }
 ];

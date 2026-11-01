@@ -325,5 +325,15 @@ const RESULTS = [
         "5. Tristan McKee"
       ] }
     ],
-    note:"Sources: Yahoo Sports, 'Race Results: 2026 NASCAR Truck Series Black's Tire 200 at Martinsville' and 'Chandler Smith wins Martinsville as NASCAR Truck title fight tightens'; Yardbarker, 'Chandler Smith wins NASCAR Truck Series race at Martinsville; Layne Riggs gains on Kaden Honeycutt'; Racing News, 'Martinsville Race Results: NASCAR Trucks (October 30, 2026)' (Oct 30, 2026; via web search, direct fetch blocked here). Results were unofficial when reported. Smith passed teammate Riggs on the final restart and won by 0.574s; pole-sitter McKee (16) became the youngest pole winner in series history. Points leader Kaden Honeycutt finished 14th and leads Riggs by 20 points going to Homestead. Truck numbers and the teams of Rhodes, Majeski and McKee were not confirmed in the reports seen, so they are left out." }
+    note:"Sources: Yahoo Sports, 'Race Results: 2026 NASCAR Truck Series Black's Tire 200 at Martinsville' and 'Chandler Smith wins Martinsville as NASCAR Truck title fight tightens'; Yardbarker, 'Chandler Smith wins NASCAR Truck Series race at Martinsville; Layne Riggs gains on Kaden Honeycutt'; Racing News, 'Martinsville Race Results: NASCAR Trucks (October 30, 2026)' (Oct 30, 2026; via web search, direct fetch blocked here). Results were unofficial when reported. Smith passed teammate Riggs on the final restart and won by 0.574s; pole-sitter McKee (16) became the youngest pole winner in series history. Points leader Kaden Honeycutt finished 14th and leads Riggs by 20 points going to Homestead. Truck numbers and the teams of Rhodes, Majeski and McKee were not confirmed in the reports seen, so they are left out." },
+  { t:"martinsville", d:"2026-10-30", s:"oreilly", race:"Race - O'Reilly Auto Parts Series", event:"NASCAR O'Reilly Auto Parts Series, Martinsville: National Debt Relief 250",
+    groups:[
+      { h:"Race", order:[
+        "1. #1 Carson Kvapil (JR Motorsports)",
+        "2. #7 Justin Allgaier (JR Motorsports)",
+        "3. #17 Corey Day (Hendrick Motorsports)",
+        "4. #20 Brandon Jones (Joe Gibbs Racing)"
+      ] }
+    ],
+    note:"Sources: Motorsport.com, 'Carson Kvapil wins Martinsville as Justin Allgaier takes NASCAR O'Reilly points lead'; Yahoo Sports, 'Who won NASCAR O'Reilly Series Martinsville race? Winner is Carson Kvapil plus full results'; Jayski, 'Carson Kvapil delivers clutch performance at Martinsville to keep championship hopes alive' (Oct 31, 2026; via web search, direct fetch blocked here). Results were unofficial when reported. Kvapil led a race-high 121 laps and beat teammate Allgaier by 0.434s; Allgaier took the points lead from Jesse Love, who finished 30th. Places below 4th were not confirmed in the reports seen, so they are left out." }
 ];

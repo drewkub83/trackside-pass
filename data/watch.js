@@ -954,5 +954,50 @@ const WATCH = [
         ["The Xfinity 500, 2 PM local", "250 laps on Martinsville's tight, flat half-mile -- short-track contact is common here, and with no elimination round this year every point still matters for all 16 Chase drivers heading into the Homestead finale."]
       ] }
     ],
-    note:"Sources: RotoBaller's and Sportsnaut's NASCAR Cup qualifying reports for Martinsville's fall 2026 race (Hamlin's pole time and margin over Gibbs, the full top-10 starting order, Briscoe 11th and Blaney 13th), cross-checked against an On3/Yahoo Sports 'Official Starting Lineup' report and an Athlon Sports qualifying report, both of which independently confirm Hamlin's 19.226s/98.492mph pole and his 0.049s margin over Gibbs; this app's own prior data/watch.js entry (written after Talladega) for the still-current Chase points gaps (Larson's 73-point lead over Hamlin, Briscoe's 77-79-point gap in fourth), not independently re-confirmed today since no race has run since. All read via web search (the sites could not be reached directly from this environment). No official report on Saturday's Cup practice speeds was found in sources checked, so it is left out rather than guessed; Christopher Bell's exact starting position was likewise not found and is left out." }
+    note:"Sources: RotoBaller's and Sportsnaut's NASCAR Cup qualifying reports for Martinsville's fall 2026 race (Hamlin's pole time and margin over Gibbs, the full top-10 starting order, Briscoe 11th and Blaney 13th), cross-checked against an On3/Yahoo Sports 'Official Starting Lineup' report and an Athlon Sports qualifying report, both of which independently confirm Hamlin's 19.226s/98.492mph pole and his 0.049s margin over Gibbs; this app's own prior data/watch.js entry (written after Talladega) for the still-current Chase points gaps (Larson's 73-point lead over Hamlin, Briscoe's 77-79-point gap in fourth), not independently re-confirmed today since no race has run since. All read via web search (the sites could not be reached directly from this environment). No official report on Saturday's Cup practice speeds was found in sources checked, so it is left out rather than guessed; Christopher Bell's exact starting position was likewise not found and is left out." },
+  { t:"mexico-city", d:"2026-10-30", s:"f1", from:"2026-10-31", at:"2026-11-01T11:26:58Z",
+    asOf:"Current after Saturday's qualifying at Mexico City (Oct 31): Lewis Hamilton took a shock first Ferrari pole, with George Russell just 0.009s behind and Max Verstappen dropping off the front two rows under a grid penalty. Sunday's race is at 2 PM local (8 PM UTC).",
+    groups:[
+      { h:"Qualifying: Hamilton's shock first Ferrari pole", items:[
+        ["Lewis Hamilton (Ferrari)", "Took pole with a 1:16.514, just 0.009s clear of George Russell -- his first pole for Ferrari, and, per the FIA's own report, the oldest polesitter since Mario Andretti in 1982."],
+        ["George Russell (Mercedes)", "Second, 0.009s off Hamilton's time, keeping a Mercedes on the front row."],
+        ["Charles Leclerc (Ferrari)", "Third in 1:16.633, putting both Ferraris inside the top three."],
+        ["Max Verstappen (Red Bull Racing)", "Set the fourth-fastest time but lines up lower on the grid under the one-place penalty (shared with Liam Lawson) already handed down for Friday's FP2 clash through the stadium section, which promotes Kimi Antonelli -- fifth-fastest, 1:16.707 -- ahead of him."],
+        ["Lando Norris (McLaren)", "Sixth in 1:16.824. The rest of the top ten was not confirmed in sources checked today and is left out rather than guessed."]
+      ] },
+      { h:"The title fight: Mercedes", items:[
+        ["Kimi Antonelli (Mercedes)", "Leads team-mate Russell by 123 points with five races left; practice and qualifying don't move the standings, and he qualified ahead of Verstappen only because of the Red Bull's grid penalty."],
+        ["George Russell (Mercedes)", "Second on 242 points, and starts Sunday from the front row alongside Hamilton."],
+        ["Lewis Hamilton (Ferrari)", "Third on 241 points -- just one behind Russell -- and now has a genuine shot at a win from pole."]
+      ] },
+      { h:"What to watch Sunday", items:[
+        ["The race, 2 PM local", "Can Hamilton convert Ferrari's first pole of the year into a win, with Russell alongside and Leclerc right behind? Verstappen and Antonelli's grid swap from the penalty is the other thing to watch into Turn 1."]
+      ] }
+    ],
+    note:"Sources: the FIA's own report ('F1: Hamilton claims first Ferrari pole position in thrilling Mexico City qualifying') and Motorsport.com's qualifying report for Hamilton's pole time and margin over Russell; two independent syntheses of qualifying coverage (including a RacingNews365 'adjusted results' report) that agree on Leclerc third (1:16.633), Antonelli fifth (1:16.707) and Norris sixth (1:16.824); this app's own prior data/watch.js entry (written after Friday's FP2, sourced from ESPN/RacingNews365/Sky Sports) for the already-confirmed Verstappen/Lawson one-place grid penalty; this app's own data/standings.js for the unchanged championship points after the United States Grand Prix. All read via web search (the sites could not be reached directly from this environment), which also surfaced several contradictory and clearly out-of-season 'results' for this event (other drivers credited with pole in different sources); only the claims corroborated by at least two independent, named outlets are kept here. Positions 7 through 10, the exact grid once both Verstappen's and Lawson's penalties are applied, and any detail on Oscar Piastri's session (sources disagreed sharply on his result) were not confirmed and are left out rather than guessed." },
+  { t:"mexico-city", d:"2026-10-30", s:"masters", from:"2026-10-31", at:"2026-11-01T11:26:58Z",
+    asOf:"Current after Saturday's Race 1 of 2 at Mexico City (Oct 31): still no 2026 entry list, car count or any session result -- practice, qualifying or Race 1 -- has turned up anywhere in sources checked, continuing the total blackout on this weekend's coverage.",
+    groups:[
+      { h:"What's known", items:[
+        ["Masters Racing Legends, 1966-85 (plus 1977-85 turbo) F1 cars", "Race 1 of 2 ran as scheduled on Saturday alongside the Mexico City Grand Prix weekend at the Autodromo Hermanos Rodriguez. No entry list, car count, practice or qualifying times, or a Race 1 classification have been found in sources checked, including the series' own event and race-report pages, so who's racing and how Race 1 went isn't confirmed."],
+        ["One race left", "Race 2 of 2 runs Sunday morning; no results for it will be available until after it runs."]
+      ] }
+    ],
+    note:"Sources: Masters Historic Racing's own event and race-report pages for the Oct 30-Nov 1 Mexico City weekend could not be reached directly from this environment to check for a published entry list, timetable or results; further web searches today (for an entry list, pole position, grid, practice times or a Race 1 result) found none -- the only Masters Mexico City race reports that turned up were from 2015 and 2024, not 2026 -- consistent with this app's own prior data/watch.js entries for this same weekend, which likewise found nothing published. No 2026 Mexico City entry list, car count or session results were found as of this writing. Check back once the series or a race report publishes an entry list or results." },
+  { t:"sepang", d:"2026-10-30", s:"motogp", from:"2026-10-31", at:"2026-11-01T11:26:58Z",
+    asOf:"Current after Sunday morning's Warm-Up Practice at Sepang (Nov 1): Marc Marquez was fastest, with Alex Marquez, Pedro Acosta and Ai Ogura close behind. Today's Malaysian Grand Prix, 3 PM local (7 AM UTC), is the one that matters.",
+    groups:[
+      { h:"Warm-Up: Marquez tops it late", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Fastest in the 10-minute session on a 1:58.902, set on just three laps after waiting until halfway through to head out."],
+        ["Alex Marquez (BK8 Gresini Racing MotoGP)", "Second, 0.486s back -- yesterday's Sprint winner Pedro Acosta was third (+0.503s) and Ai Ogura fourth (+0.669s)."]
+      ] },
+      { h:"The title fight: a shot at a mathematical head start", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Leads Jorge Martin 374 to 355 -- a 19-point gap -- heading into today's race. Martin remains sidelined by the wrist he fractured at Phillip Island, so Marquez scores points today no matter where he finishes, while Martin scores none."],
+        ["Jorge Martin (Aprilia Racing)", "Stays on 355, still out for the rest of this Malaysian Grand Prix weekend."]
+      ] },
+      { h:"What to watch today", items:[
+        ["The Malaysian Grand Prix, 3 PM local", "The season's penultimate round and the last word on how far Marquez can stretch his lead before a possible title-clinching chance next time out at Qatar."]
+      ] }
+    ],
+    note:"Sources: Crash.net's and Racesport.nl's reports of Sunday's Sepang warm-up (Marc Marquez's 1:58.902 fastest lap taken on three laps after a late start, and the order behind him: Alex Marquez, Pedro Acosta, Ai Ogura), both read via web search (the sites could not be reached directly from this environment); this app's own data/standings.js (374-355, unchanged since Saturday's Sprint) for the championship gap and data/sepang.js for today's schedule. This entry covers only the warm-up and the build-up to today's Grand Prix, which this app's own automatic MotoGP results/standings tooling (tools/motogp_update.py) covers separately once it is run; the race result itself is intentionally left out of this What to watch entry." }
 ];

@@ -999,5 +999,24 @@ const WATCH = [
         ["The Malaysian Grand Prix, 3 PM local", "The season's penultimate round and the last word on how far Marquez can stretch his lead before a possible title-clinching chance next time out at Qatar."]
       ] }
     ],
-    note:"Sources: Crash.net's and Racesport.nl's reports of Sunday's Sepang warm-up (Marc Marquez's 1:58.902 fastest lap taken on three laps after a late start, and the order behind him: Alex Marquez, Pedro Acosta, Ai Ogura), both read via web search (the sites could not be reached directly from this environment); this app's own data/standings.js (374-355, unchanged since Saturday's Sprint) for the championship gap and data/sepang.js for today's schedule. This entry covers only the warm-up and the build-up to today's Grand Prix, which this app's own automatic MotoGP results/standings tooling (tools/motogp_update.py) covers separately once it is run; the race result itself is intentionally left out of this What to watch entry." }
+    note:"Sources: Crash.net's and Racesport.nl's reports of Sunday's Sepang warm-up (Marc Marquez's 1:58.902 fastest lap taken on three laps after a late start, and the order behind him: Alex Marquez, Pedro Acosta, Ai Ogura), both read via web search (the sites could not be reached directly from this environment); this app's own data/standings.js (374-355, unchanged since Saturday's Sprint) for the championship gap and data/sepang.js for today's schedule. This entry covers only the warm-up and the build-up to today's Grand Prix, which this app's own automatic MotoGP results/standings tooling (tools/motogp_update.py) covers separately once it is run; the race result itself is intentionally left out of this What to watch entry." },
+  { t:"homestead-miami", d:"2026-11-06", s:"oreilly", from:"2026-11-01", at:"2026-11-01T12:22:14Z",
+    asOf:"Current after Martinsville (Oct 31, 2026), the last race before this one decides the title.",
+    groups:[
+      { h:"The championship, decided here", items:[
+        ["Justin Allgaier (JR Motorsports)", "Took the points lead at Martinsville, finishing a close second to teammate Carson Kvapil, and now leads on 2,436 points. He's also the defending race winner at Homestead."],
+        ["Jesse Love (Richard Childress Racing)", "Second, 22 points back, after a tire rub in the second stage at Martinsville turned into a water-line issue; he lost his brakes going into a corner, spun and finished 30th, nine laps down."],
+        ["Corey Day (Hendrick Motorsports)", "Third, 23 points back, after finishing third at Martinsville."],
+        ["Carson Kvapil (JR Motorsports)", "Fourth, 31 points back, after winning at Martinsville -- his second straight win there. He and his team have said he likely needs to win at Homestead too, since a DNF is close to the only way Allgaier doesn't claim the title outright."],
+        ["Sheldon Creed", "Fifth and the last driver mathematically alive, 42 points back."]
+      ] },
+      { h:"No more elimination rounds", items:[
+        ["How the 2026 Chase works", "NASCAR replaced its old elimination playoff with The Chase for 2026: the top 12 drivers after Daytona's regular-season finale got one points reset, then raced the final 9 with nobody cut. The champion is simply whoever leads points after this race -- there's no separate win-and-in finale format, so the five drivers above are the only ones who can still win it mathematically."]
+      ] },
+      { h:"Homestead's return", items:[
+        ["Back on the calendar", "The track hosted NASCAR's championship-deciding race every year from 2002 to 2019, before the finale moved to Phoenix for 2020-2025. It's back for the O'Reilly Series title decider in 2026, on a 1.5-mile oval whose aged, abrasive surface is known for heavy tire wear and multiple racing grooves."],
+        ["Shorter than Cup's race", "The O'Reilly race here runs 200 laps, shorter than Sunday's Cup finale."]
+      ] }
+    ],
+    note:"Sources: Yahoo Sports ('Justin Allgaier Takes Championship Lead After Martinsville' and 'NASCAR points standings: O'Reilly Series points update after Martinsville race,' Oct 31, 2026), Racer.com ('Kvapil delivers clutch performance at Martinsville to keep O'Reilly Series championship hopes alive,' Oct 31, 2026) and On3.com ('NASCAR O'Reilly Auto Parts Series Chase standings updated after Martinsville') for the race result, Love's tire-rub/water-line/spin, and the post-Martinsville points (Allgaier 2,436; Love 2,414; Day 2,413; Kvapil 2,405; Creed 2,394), all via web search (the sites could not be reached directly from this environment); this app's own data/results.js (Martinsville race order) for the top finishers; this app's own data/series.js for the 2026 Chase format (no elimination, Daytona reset, Homestead finale); carried over from the previous entry for this event: NASCAR.com/si.com reporting and Goodyear's tire-wear characterization of Homestead-Miami's track surface, and the track's 2002-2019 championship-race history and return in 2026." }
 ];

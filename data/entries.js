@@ -131,8 +131,8 @@ const ENTRIES = [
         ["77", "Valtteri Bottas", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-10-31. Late changes are possible.",
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" },
+  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-11-01. Late changes are possible.",
     classes:[
       { h:"Hypercar", cars:[
         ["8", "Toyota Racing", "Sébastien Buemi / Brendon Hartley / Ryō Hirakawa", "Toyota TR010 Hybrid", 9.1, "averaged top 33% of Hypercar over 7 earlier races this season", 0.667],
@@ -174,50 +174,50 @@ const ENTRIES = [
         ["78", "Akkodis ASP Team", "Tom van Rompuy / Hadrien David / Esteban Masson", "Lexus RC F LMGT3", 3.4, "averaged top 65% of LMGT3 over 7 earlier races this season", 0.355]
       ] }
     ],
-    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-10-31. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" },
-  { t:"martinsville", d:"2026-10-30", s:"nascar", oddsAsOf:"Before qualifying: recent form only (each driver's average finishing position over his last 6 Cup races). The chances are rebuilt from the starting grid once qualifying is published.", asOf:"Entry list from NASCAR's race data (nascar.com), with the official car numbers. Late changes are possible.",
+    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-11-01. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" },
+  { t:"martinsville", d:"2026-10-30", s:"nascar", oddsAsOf:"After qualifying (starting grid from NASCAR's race data): grid position now drives the chances, tilted by recent form.", asOf:"Entry list from NASCAR's race data (nascar.com), with the official car numbers. Late changes are possible.",
     classes:[
       { h:"Race", cars:[
-        ["5", "Kyle Larson", "Hendrick Motorsports", "Chevrolet Camaro", 11.7, "averaged top 26% of the field over his last 6 Cup races", 0.737],
-        ["11", "Denny Hamlin", "Joe Gibbs Racing", "Toyota Camry", 6.4, "averaged top 34% of the field over his last 6 Cup races", 0.661],
-        ["19", "Chase Briscoe", "Joe Gibbs Racing", "Toyota Camry", 5.7, "averaged top 35% of the field over his last 6 Cup races", 0.647],
-        ["20", "Christopher Bell", "Joe Gibbs Racing", "Toyota Camry", 5.6, "averaged top 35% of the field over his last 6 Cup races", 0.645],
-        ["45", "Tyler Reddick", "23XI Racing", "Toyota Camry", 5.2, "averaged top 37% of the field over his last 6 Cup races", 0.635],
-        ["2", "Austin Cindric", "Team Penske", "Ford Mustang", 4.9, "averaged top 37% of the field over his last 6 Cup races", 0.628],
-        ["22", "Joey Logano", "Team Penske", "Ford Mustang", 4.8, "averaged top 37% of the field over his last 6 Cup races", 0.626],
-        ["7", "Daniel Suárez", "Spire Motorsports", "Chevrolet Camaro", 4.7, "averaged top 38% of the field over his last 6 Cup races", 0.622],
-        ["77", "Carson Hocevar", "Spire Motorsports", "Chevrolet Camaro", 4.5, "averaged top 38% of the field over his last 6 Cup races", 0.618],
-        ["24", "William Byron", "Hendrick Motorsports", "Chevrolet Camaro", 4.3, "averaged top 39% of the field over his last 6 Cup races", 0.61],
-        ["12", "Ryan Blaney", "Team Penske", "Ford Mustang", 4.1, "averaged top 39% of the field over his last 6 Cup races", 0.607],
-        ["9", "Chase Elliott", "Hendrick Motorsports", "Chevrolet Camaro", 3.8, "averaged top 40% of the field over his last 6 Cup races", 0.597],
-        ["1", "Ross Chastain", "Trackhouse Racing", "Chevrolet Camaro", 3.8, "averaged top 40% of the field over his last 6 Cup races", 0.596],
-        ["60", "Ryan Preece", "RFK Racing", "Ford Mustang", 3.1, "averaged top 43% of the field over his last 6 Cup races", 0.572],
-        ["21", "Josh Berry", "Wood Brothers Racing", "Ford Mustang", 3.0, "averaged top 43% of the field over his last 6 Cup races", 0.567],
-        ["23", "Bubba Wallace", "23XI Racing", "Toyota Camry", 2.8, "averaged top 44% of the field over his last 6 Cup races", 0.559],
-        ["54", "Ty Gibbs", "Joe Gibbs Racing", "Toyota Camry", 2.7, "averaged top 44% of the field over his last 6 Cup races", 0.556],
-        ["17", "Chris Buescher", "RFK Racing", "Ford Mustang", 1.9, "averaged top 49% of the field over his last 6 Cup races", 0.51],
-        ["34", "Todd Gilliland", "Front Row Motorsports", "Ford Mustang", 1.8, "averaged top 50% of the field over his last 6 Cup races", 0.5],
-        ["97", "Shane Van Gisbergen", "Trackhouse Racing", "Chevrolet Camaro", 1.7, "averaged top 50% of the field over his last 6 Cup races", 0.499],
-        ["6", "Brad Keselowski", "RFK Racing", "Ford Mustang", 1.6, "averaged top 51% of the field over his last 6 Cup races", 0.487],
-        ["4", "Noah Gragson", "Front Row Motorsports", "Ford Mustang", 1.2, "averaged top 55% of the field over his last 6 Cup races", 0.449],
-        ["3", "Austin Dillon", "Richard Childress Racing", "Chevrolet Camaro", 1.1, "averaged top 56% of the field over his last 6 Cup races", 0.444],
-        ["71", "Michael McDowell", "Spire Motorsports", "Chevrolet Camaro", 1.0, "averaged top 57% of the field over his last 6 Cup races", 0.432],
-        ["48", "Alex Bowman", "Hendrick Motorsports", "Chevrolet Camaro", 0.9, "averaged top 58% of the field over his last 6 Cup races", 0.416],
-        ["16", "AJ Allmendinger", "Kaulig Racing", "Chevrolet Camaro", 0.9, "averaged top 58% of the field over his last 6 Cup races", 0.416],
-        ["41", "Cole Custer", "Haas Factory Team", "Chevrolet Camaro", 0.8, "averaged top 60% of the field over his last 6 Cup races", 0.403],
-        ["33", "Austin Hill", "Richard Childress Racing", "Chevrolet Camaro", 0.7, "averaged top 61% of the field over his last 6 Cup races", 0.39],
-        ["43", "Erik Jones", "Legacy Motor Club", "Toyota Camry", 0.7, "averaged top 62% of the field over his last 6 Cup races", 0.383],
-        ["38", "Zane Smith", "Front Row Motorsports", "Ford Mustang", 0.7, "averaged top 62% of the field over his last 6 Cup races", 0.38],
-        ["47", "Ricky Stenhouse Jr", "HYAK Motorsports", "Chevrolet Camaro", 0.6, "averaged top 63% of the field over his last 6 Cup races", 0.373],
-        ["35", "Riley Herbst", "23XI Racing", "Toyota Camry", 0.6, "averaged top 63% of the field over his last 6 Cup races", 0.37],
-        ["88", "Connor Zilisch", "Trackhouse Racing", "Chevrolet Camaro", 0.5, "averaged top 65% of the field over his last 6 Cup races", 0.352],
-        ["42", "John H. Nemechek", "Legacy Motor Club", "Toyota Camry", 0.5, "averaged top 70% of the field over his last 6 Cup races", 0.304],
-        ["10", "Ty Dillon", "Kaulig Racing", "Chevrolet Camaro", 0.5, "averaged top 69% of the field over his last 6 Cup races", 0.305],
-        ["51", "Cody Ware", "Rick Ware Racing", "Chevrolet Camaro", 0.5, "averaged top 73% of the field over his last 6 Cup races", 0.27],
-        ["66", "Josh Bilicki", "Garage 66", "Ford Mustang", 0.5, "averaged top 81% of the field over his last 6 Cup races", 0.186]
+        ["11", "Denny Hamlin", "Joe Gibbs Racing", "Toyota Camry", 15.5, "Qualified 1st of 37. averaged top 34% of the field over his last 6 Cup races", 0.661],
+        ["5", "Kyle Larson", "Hendrick Motorsports", "Chevrolet Camaro", 14.4, "Qualified 3rd of 37. averaged top 26% of the field over his last 6 Cup races", 0.737],
+        ["54", "Ty Gibbs", "Joe Gibbs Racing", "Toyota Camry", 9.7, "Qualified 2nd of 37. averaged top 44% of the field over his last 6 Cup races", 0.556],
+        ["2", "Austin Cindric", "Team Penske", "Ford Mustang", 9.0, "Qualified 4th of 37. averaged top 37% of the field over his last 6 Cup races", 0.628],
+        ["22", "Joey Logano", "Team Penske", "Ford Mustang", 7.7, "Qualified 5th of 37. averaged top 37% of the field over his last 6 Cup races", 0.626],
+        ["60", "Ryan Preece", "RFK Racing", "Ford Mustang", 5.6, "Qualified 6th of 37. averaged top 43% of the field over his last 6 Cup races", 0.572],
+        ["24", "William Byron", "Hendrick Motorsports", "Chevrolet Camaro", 4.7, "Qualified 8th of 37. averaged top 39% of the field over his last 6 Cup races", 0.61],
+        ["9", "Chase Elliott", "Hendrick Motorsports", "Chevrolet Camaro", 3.9, "Qualified 9th of 37. averaged top 40% of the field over his last 6 Cup races", 0.597],
+        ["19", "Chase Briscoe", "Joe Gibbs Racing", "Toyota Camry", 3.3, "Qualified 11th of 37. averaged top 35% of the field over his last 6 Cup races", 0.647],
+        ["21", "Josh Berry", "Wood Brothers Racing", "Ford Mustang", 3.0, "Qualified 10th of 37. averaged top 43% of the field over his last 6 Cup races", 0.567],
+        ["48", "Alex Bowman", "Hendrick Motorsports", "Chevrolet Camaro", 3.0, "Qualified 7th of 37. averaged top 58% of the field over his last 6 Cup races", 0.416],
+        ["45", "Tyler Reddick", "23XI Racing", "Toyota Camry", 2.8, "Qualified 12th of 37. averaged top 37% of the field over his last 6 Cup races", 0.635],
+        ["12", "Ryan Blaney", "Team Penske", "Ford Mustang", 2.2, "Qualified 13th of 37. averaged top 39% of the field over his last 6 Cup races", 0.607],
+        ["20", "Christopher Bell", "Joe Gibbs Racing", "Toyota Camry", 2.1, "Qualified 14th of 37. averaged top 35% of the field over his last 6 Cup races", 0.645],
+        ["23", "Bubba Wallace", "23XI Racing", "Toyota Camry", 1.4, "Qualified 15th of 37. averaged top 44% of the field over his last 6 Cup races", 0.559],
+        ["1", "Ross Chastain", "Trackhouse Racing", "Chevrolet Camaro", 1.3, "Qualified 16th of 37. averaged top 40% of the field over his last 6 Cup races", 0.596],
+        ["17", "Chris Buescher", "RFK Racing", "Ford Mustang", 0.8, "Qualified 18th of 37. averaged top 49% of the field over his last 6 Cup races", 0.51],
+        ["33", "Austin Hill", "Richard Childress Racing", "Chevrolet Camaro", 0.6, "Qualified 17th of 37. averaged top 61% of the field over his last 6 Cup races", 0.39],
+        ["3", "Austin Dillon", "Richard Childress Racing", "Chevrolet Camaro", 0.5, "Qualified 20th of 37. averaged top 56% of the field over his last 6 Cup races", 0.444],
+        ["34", "Todd Gilliland", "Front Row Motorsports", "Ford Mustang", 0.5, "Qualified 22nd of 37. averaged top 50% of the field over his last 6 Cup races", 0.5],
+        ["7", "Daniel Suárez", "Spire Motorsports", "Chevrolet Camaro", 0.5, "Qualified 24th of 37. averaged top 38% of the field over his last 6 Cup races", 0.622],
+        ["38", "Zane Smith", "Front Row Motorsports", "Ford Mustang", 0.5, "Qualified 33rd of 37. averaged top 62% of the field over his last 6 Cup races", 0.38],
+        ["41", "Cole Custer", "Haas Factory Team", "Chevrolet Camaro", 0.5, "Qualified 21st of 37. averaged top 60% of the field over his last 6 Cup races", 0.403],
+        ["43", "Erik Jones", "Legacy Motor Club", "Toyota Camry", 0.5, "Qualified 30th of 37. averaged top 62% of the field over his last 6 Cup races", 0.383],
+        ["47", "Ricky Stenhouse Jr", "HYAK Motorsports", "Chevrolet Camaro", 0.5, "Qualified 34th of 37. averaged top 63% of the field over his last 6 Cup races", 0.373],
+        ["42", "John H. Nemechek", "Legacy Motor Club", "Toyota Camry", 0.5, "Qualified 35th of 37. averaged top 70% of the field over his last 6 Cup races", 0.304],
+        ["6", "Brad Keselowski", "RFK Racing", "Ford Mustang", 0.5, "Qualified 23rd of 37. averaged top 51% of the field over his last 6 Cup races", 0.487],
+        ["16", "AJ Allmendinger", "Kaulig Racing", "Chevrolet Camaro", 0.5, "Qualified 32nd of 37. averaged top 58% of the field over his last 6 Cup races", 0.416],
+        ["77", "Carson Hocevar", "Spire Motorsports", "Chevrolet Camaro", 0.5, "Qualified 25th of 37. averaged top 38% of the field over his last 6 Cup races", 0.618],
+        ["10", "Ty Dillon", "Kaulig Racing", "Chevrolet Camaro", 0.5, "Qualified 28th of 37. averaged top 69% of the field over his last 6 Cup races", 0.305],
+        ["51", "Cody Ware", "Rick Ware Racing", "Chevrolet Camaro", 0.5, "Qualified 37th of 37. averaged top 73% of the field over his last 6 Cup races", 0.27],
+        ["97", "Shane Van Gisbergen", "Trackhouse Racing", "Chevrolet Camaro", 0.5, "Qualified 29th of 37. averaged top 50% of the field over his last 6 Cup races", 0.499],
+        ["4", "Noah Gragson", "Front Row Motorsports", "Ford Mustang", 0.5, "Qualified 31st of 37. averaged top 55% of the field over his last 6 Cup races", 0.449],
+        ["71", "Michael McDowell", "Spire Motorsports", "Chevrolet Camaro", 0.5, "Qualified 26th of 37. averaged top 57% of the field over his last 6 Cup races", 0.432],
+        ["35", "Riley Herbst", "23XI Racing", "Toyota Camry", 0.5, "Qualified 27th of 37. averaged top 63% of the field over his last 6 Cup races", 0.37],
+        ["88", "Connor Zilisch", "Trackhouse Racing", "Chevrolet Camaro", 0.5, "Qualified 19th of 37. averaged top 65% of the field over his last 6 Cup races", 0.352],
+        ["66", "Josh Bilicki", "Garage 66", "Ford Mustang", 0.5, "Qualified 36th of 37. averaged top 81% of the field over his last 6 Cup races", 0.186]
       ] }
     ],
-    note:"Source: NASCAR race data (cf.nascar.com, the files nascar.com's race pages use), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: NASCAR race data (cf.nascar.com, the files nascar.com's race pages use), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"lusail", d:"2026-11-06", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the the field of the latest Sunday race, the Grand Prix of Indonesia (2026-10-09), until this weekend's practice is published, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
@@ -244,7 +244,7 @@ const ENTRIES = [
         ["63", "Francesco Bagnaia", "Ducati Lenovo Team", "", 0.5, "averaged top 70% of the field over his last 6 Sunday races", 0.298]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"sepang", d:"2026-10-30", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"After qualifying (grid from Q2, then Q1): grid position now drives the chances, tilted by recent form. Penalties are not applied.", asOf:"Riders from the practice sessions of this weekend, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
@@ -272,5 +272,5 @@ const ENTRIES = [
         ["27", "Iker Lecuona", "BK8 Gresini Racing MotoGP", "", 0.5, "Qualified 19th of 22. averaged top 57% of the field over his last 2 Sunday races", 0.429]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-10-31. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

@@ -15,6 +15,22 @@
    "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
    (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
+  { t:"martinsville", d:"2026-10-30", s:"nascar", event:"Xfinity 500",
+    groups:[
+      { h:"Race", order:[
+        "1. #24 William Byron (Hendrick Motorsports)",
+        "2. #9 Chase Elliott (Hendrick Motorsports)",
+        "3. #54 Ty Gibbs (Joe Gibbs Racing)",
+        "4. #21 Josh Berry (Wood Brothers Racing)",
+        "5. #97 Shane Van Gisbergen (Trackhouse Racing)",
+        "6. #11 Denny Hamlin (Joe Gibbs Racing)",
+        "7. #3 Austin Dillon (Richard Childress Racing)",
+        "8. #23 Bubba Wallace (23XI Racing)",
+        "9. #5 Kyle Larson (Hendrick Motorsports)",
+        "10. #20 Christopher Bell (Joe Gibbs Racing)"
+      ] }
+    ],
+    note:"(automatic update) Source: NASCAR race data (cf.nascar.com, the files nascar.com race pages use), top ten of the race, race day 2026-11-01." },
   { t:"sepang", d:"2026-10-30", s:"motogp", event:"Grand Prix of Malaysia",
     groups:[
       { h:"Race", order:[

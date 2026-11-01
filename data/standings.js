@@ -10,24 +10,24 @@
    the driver, not the car), so naming a fixed car number for someone who's since switched would be wrong --
    name the team/manufacturer instead and say so in `gap` if it's known (e.g. Laurin Heinrich below). */
 const STANDINGS = [
-  { s:"motogp", asOf:"Current after the Red Bull Grand Prix of Australia (2026-10-25).",
+  { s:"motogp", asOf:"Current after the Petronas Grand Prix of Malaysia (2026-11-01).",
     classes:[
       { h:"Riders", rows:[
-        { pos:1, who:"Marc Marquez (Ducati Lenovo Team)", pts:374 },
+        { pos:1, who:"Marc Marquez (Ducati Lenovo Team)", pts:399 },
         { pos:2, who:"Jorge Martin (Aprilia Racing)", pts:355 },
-        { pos:3, who:"Marco Bezzecchi (Aprilia Racing)", pts:322 },
-        { pos:4, who:"Pedro Acosta (Red Bull KTM Factory Racing)", pts:275 },
-        { pos:5, who:"Ai Ogura (SuperFile Trackhouse MotoGP Team)", pts:265 },
-        { pos:6, who:"Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", pts:257 },
+        { pos:3, who:"Marco Bezzecchi (Aprilia Racing)", pts:332 },
+        { pos:4, who:"Pedro Acosta (Red Bull KTM Factory Racing)", pts:295 },
+        { pos:5, who:"Ai Ogura (SuperFile Trackhouse MotoGP Team)", pts:278 },
+        { pos:6, who:"Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", pts:265 },
         { pos:7, who:"Raul Fernandez (SuperFile Trackhouse MotoGP Team)", pts:236 },
-        { pos:8, who:"Alex Marquez (BK8 Gresini Racing MotoGP)", pts:181 },
-        { pos:9, who:"Francesco Bagnaia (Ducati Lenovo Team)", pts:170 },
-        { pos:10, who:"Fermin Aldeguer (BK8 Gresini Racing MotoGP)", pts:125 },
-        { pos:11, who:"Enea Bastianini (Red Bull KTM Tech3)", pts:123 },
-        { pos:12, who:"Brad Binder (Red Bull KTM Factory Racing)", pts:111 },
-        { pos:13, who:"Luca Marini (Honda HRC Castrol)", pts:108 },
-        { pos:14, who:"Diogo Moreira (Pro Honda LCR)", pts:78 },
-        { pos:15, who:"Fabio Quartararo (Monster Energy Yamaha MotoGP Team)", pts:74 }
+        { pos:8, who:"Alex Marquez (BK8 Gresini Racing MotoGP)", pts:197 },
+        { pos:9, who:"Francesco Bagnaia (Ducati Lenovo Team)", pts:173 },
+        { pos:10, who:"Enea Bastianini (Red Bull KTM Tech3)", pts:134 },
+        { pos:11, who:"Fermin Aldeguer (BK8 Gresini Racing MotoGP)", pts:125 },
+        { pos:12, who:"Brad Binder (Red Bull KTM Factory Racing)", pts:118 },
+        { pos:13, who:"Luca Marini (Honda HRC Castrol)", pts:117 },
+        { pos:14, who:"Fabio Quartararo (Monster Energy Yamaha MotoGP Team)", pts:79 },
+        { pos:15, who:"Diogo Moreira (Pro Honda LCR)", pts:78 }
       ] }
     ],
     note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com), the riders' championship, top 15; Sprint and Grand Prix points both count. A cancelled race scores nothing." },

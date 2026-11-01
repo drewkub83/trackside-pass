@@ -15,6 +15,22 @@
    "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
    (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
+  { t:"sepang", d:"2026-10-30", s:"motogp", event:"Grand Prix of Malaysia",
+    groups:[
+      { h:"Race", order:[
+        "1. #93 Marc Marquez (Ducati Lenovo Team)",
+        "2. #37 Pedro Acosta (Red Bull KTM Factory Racing)",
+        "3. #73 Alex Marquez (BK8 Gresini Racing MotoGP)",
+        "4. #79 Ai Ogura (SuperFile Trackhouse MotoGP Team)",
+        "5. #23 Enea Bastianini (Red Bull KTM Tech3)",
+        "6. #72 Marco Bezzecchi (Aprilia Racing)",
+        "7. #10 Luca Marini (Honda HRC Castrol)",
+        "8. #49 Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)",
+        "9. #33 Brad Binder (Red Bull KTM Factory Racing)",
+        "10. #21 Franco Morbidelli (Pertamina Enduro VR46 Racing Team)"
+      ] }
+    ],
+    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), top ten of the Sunday Grand Prix, race day 2026-11-01." },
   { t:"cota", d:"2026-10-23", s:"f1", event:"United States Grand Prix",
     groups:[
       { h:"Race", order:[

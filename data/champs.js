@@ -78,19 +78,19 @@ const CHAMPS = [
     note:"SRO America touring-car series at GT World Challenge America weekends. Which 2027 rounds it joins has not been published round by round yet." },
   { id:"grcup", cat:"onemake", region:"na", name:"Toyota GR Cup", tile:"GR", full:"Toyota GR Cup North America", match:/GR Cup/i, viaSupport:true, optIn:true, parent:"gtwca", guide:"grcup",
     note:"One-make Toyota GR86 series, mostly at GT World Challenge America weekends. 2027 (Toyota Gazoo Racing, June 26, 2026): seven weekends: Arlington (with IndyCar), Sonoma, COTA, Watkins Glen (its first visit), Road Atlanta, Road America and Indianapolis, the finale." },
-  { id:"gt2europe", cat:"gt", region:"eu", name:"GT2 European Series", tile:"GT2", full:"GT2 European Series powered by Pirelli", match:/GT2 European/i, viaSupport:true, optIn:true, parent:"gtwce",
+  { id:"gt2europe", guide:"gt2europe", cat:"gt", region:"eu", name:"GT2 European Series", tile:"GT2", full:"GT2 European Series powered by Pirelli", match:/GT2 European/i, viaSupport:true, optIn:true, parent:"gtwce",
     note:"2027 (gt2europeanseries.com): five weekends with GT World Challenge Europe: Paul Ricard, Imola, Misano, Nürburgring and the Hungaroring finale." },
-  { id:"gt4europe", cat:"gt", region:"eu", name:"GT4 European Series", tile:"GT4E", full:"GT4 European Series", match:/GT4 European/i, viaSupport:true, optIn:true, parent:"gtwce",
+  { id:"gt4europe", guide:"gt4europe", cat:"gt", region:"eu", name:"GT4 European Series", tile:"GT4E", full:"GT4 European Series", match:/GT4 European/i, viaSupport:true, optIn:true, parent:"gtwce",
     note:"Races at GT World Challenge Europe weekends. Only the 2027 Paul Ricard opener and the 24 Hours of Spa are confirmed so far." },
-  { id:"mclarentrophy", cat:"gt", region:"eu", name:"McLaren Trophy Europe", tile:"MCL", full:"McLaren Trophy Europe", match:/McLaren Trophy Europe/i, viaSupport:true, optIn:true, parent:"gtwce",
+  { id:"mclarentrophy", guide:"mclarentrophy", cat:"gt", region:"eu", name:"McLaren Trophy Europe", tile:"MCL", full:"McLaren Trophy Europe", match:/McLaren Trophy Europe/i, viaSupport:true, optIn:true, parent:"gtwce",
     note:"One-make McLaren Artura series at SRO Europe weekends. Its full 2027 calendar has not been published (two rounds will support the 24 Hours of Le Mans, which is not in the app)." },
-  { id:"gt3revival", cat:"historic", region:"eu", name:"GT3 Revival Series", tile:"REV", full:"GT3 Revival Series", match:/GT3 Revival/i, viaSupport:true, optIn:true, parent:"gtwce",
-    note:"GT3 cars from the 2006-2014 era, at the 24 Hours of Spa weekend." },
+  { id:"gt3revival", guide:"gt3revival", cat:"historic", region:"eu", name:"GT3 Revival Series", tile:"REV", full:"GT3 Revival Series", match:/GT3 Revival/i, viaSupport:true, optIn:true, parent:"gtwce",
+    note:"GT3 cars from the 2006-2013 era, at the 24 Hours of Spa weekend." },
   { id:"f2", cat:"openwheel", region:"world", name:"Formula 2", tile:"F2", full:"FIA Formula 2 Championship", match:/Formula 2/i, viaSupport:true, optIn:true, parent:"f1", guide:"f2",
     note:"The last step before Formula 1, at 14 Grand Prix weekends. 2026 ends at Qatar and Abu Dhabi. 2027 (FIA, Oct 2026): Bahrain, Jeddah, Melbourne, Montreal (subject to contract), Monaco, Silverstone, Spielberg, Monza, Madrid, Baku, Istanbul, Mexico City, Qatar and Abu Dhabi." },
   { id:"f3", cat:"openwheel", region:"world", name:"Formula 3", tile:"F3", full:"FIA Formula 3 Championship", match:/Formula 3/i, viaSupport:true, optIn:true, parent:"f1", guide:"f3",
     note:"2027 (FIA, Oct 2026): 10 Grand Prix weekends, Bahrain to an Istanbul finale (Istanbul subject to circuit homologation). The 2026 season is over." },
-  { id:"supercup", cat:"onemake", region:"world", name:"Porsche Supercup", tile:"SUPR", full:"Porsche Mobil 1 Supercup", match:/Supercup/i, viaSupport:true, optIn:true, parent:"f1",
+  { id:"supercup", guide:"supercup", cat:"onemake", region:"world", name:"Porsche Supercup", tile:"SUPR", full:"Porsche Mobil 1 Supercup", match:/Supercup/i, viaSupport:true, optIn:true, parent:"f1",
     note:"Porsche 911 GT3 Cup cars at European Grand Prix weekends. The 2027 calendar is preliminary: Monaco, Portimão, Spielberg, Spa, Budapest, Monza, Istanbul and a Madrid finale. The 2026 season is over." },
   { id:"f1academy", cat:"openwheel", region:"world", name:"F1 Academy", tile:"F1A", full:"F1 Academy", match:/F1 Academy/i, viaSupport:true, optIn:true, parent:"f1", guide:"f1academy",
     note:"Formula 1's all-women series. 2026 ends at Austin and Las Vegas; the 2027 calendar has not been published yet." },
@@ -142,8 +142,8 @@ const CHAMPS = [
       { id:"buenos-aires", short:"Buenos Aires", place:"Buenos Aires, Argentina", kind:"Road course", e:"Grand Prix of Argentina", d:"2027-04-09", t:3 },
       { id:"adelaide", short:"Adelaide", place:"Adelaide, Australia", kind:"Street circuit", e:"Grand Prix of Australia", d:"2027-11-12", t:3 }
     ] }
-  ,{ id:"moto2", cat:"moto", region:"world", name:"Moto2", tile:"MOTO2", full:"FIM Moto2 World Championship", match:/Moto2/i, viaSupport:true, optIn:true, parent:"motogp",
+  ,{ id:"moto2", guide:"moto2", cat:"moto", region:"world", name:"Moto2", tile:"MOTO2", full:"FIM Moto2 World Championship", match:/Moto2/i, viaSupport:true, optIn:true, parent:"motogp",
     note:"MotoGP's middle class, racing at every MotoGP weekend. Session times come from the series' own results service." }
-  ,{ id:"moto3", cat:"moto", region:"world", name:"Moto3", tile:"MOTO3", full:"FIM Moto3 World Championship", match:/Moto3/i, viaSupport:true, optIn:true, parent:"motogp",
+  ,{ id:"moto3", guide:"moto3", cat:"moto", region:"world", name:"Moto3", tile:"MOTO3", full:"FIM Moto3 World Championship", match:/Moto3/i, viaSupport:true, optIn:true, parent:"motogp",
     note:"MotoGP's entry class, racing at every MotoGP weekend. Session times come from the series' own results service." }
 ];

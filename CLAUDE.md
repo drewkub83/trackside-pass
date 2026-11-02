@@ -52,6 +52,9 @@ The big Home tile (`renderHero`, `heroPick()`) is the weekend you marked "I'm go
 ## Race Day hub is the landing page
 Opening any track lands on the Hub tab (`enterHub()` in `openTrackNow`); Map is the second tab, then Events and Info. The back arrow and swipe-back step Map/Events/Info -> Hub -> track list (`goHome`). Off-season the hub's top card shows the next event and its date.
 
+## Series guides without What to watch
+Guide-only series (HSR, Supercup, Moto2, Moto3, GT2/GT4 Europe, McLaren Trophy Europe, GT3 Revival) carry `noWatch:true` in `data/series.js`: `tools/due_updates.js` ignores them, so the routines never write previews or results for them (saves usage). Porsche Carrera Cup Brazil is deliberately NOT matched by the `carrera` (North America) guide.
+
 ## Event schedules (`sessions` in `data/<track>.js`)
 **Full schedule rule (Nov 2 2026): this is an at-track app, so every weekend lists the on-track sessions of EVERY series that races there, including series the app does not track (e.g. F4 Brazilian Championship, Porsche Carrera Cup Brazil at the São Paulo GP); name them "<Session> - <Series>" and add the series to the event's `support` list. Use the organiser's official timetable (e.g. formula1.com's full-timetable article).** Fans only need **practice, qualifying and races** (plus the odd headline on-track event like a pole shootout or
 parade). Leave out team-only test/shakedown days, paddock logistics, briefings, registration, tech inspection,

@@ -13,6 +13,7 @@
    autoResults (optional): this series' race results are imported by the automatic GitHub job (tools/auto_update.py and the
    F1/IndyCar/GTWCA readers) within the hour; every other series' results are written from published race reports by the hourly
    cloud routine (tools/due_updates.js lists them as "results" items), so the hub says so and links to the live timing meanwhile.
+   noWatch (optional): a guide-only series (support or vintage): tools/due_updates.js ignores it, so no What to watch preview or results item is ever requested for it.
    timing (optional): the official live timing & scoring page for the sanctioning body that runs this series'
    races, so the Race Day hub's "Live timing" card can link straight out to it while this series is on track.
    It's a link-out, not an embed -- these sites run their own scripts and most refuse to load inside an iframe,
@@ -102,7 +103,7 @@ const SERIES = [
     watch:{ race:"Every car is identical, so watch the draft. Packs of cars swap places on the straights, and the finish is often decided in the last corner." }
   },
   {
-    id:"carrera", sess:"carrera", match:/Carrera Cup/i, yt:"UCch613iK0dXuGLlvFSePzwA", timing:"https://racing.porsche.com/en-US/live-timing/carrera-cup-north-america",
+    id:"carrera", sess:"carrera", match:/Carrera Cup(?! Brazil)/i, yt:"UCch613iK0dXuGLlvFSePzwA", timing:"https://racing.porsche.com/en-US/live-timing/carrera-cup-north-america",
     name:"Porsche Carrera Cup North America", tag:"One car, driver classes",
     blurb:"Every car is a Porsche 911 GT3 Cup, so it is the driver that makes the difference. The classes are for drivers, not cars, so Pro, Pro-Am and Masters drivers race in the same pack.",
     cars:[
@@ -411,7 +412,7 @@ const SERIES = [
     fine:"A spectator summary based on Masters Historic Racing's 2026 event and series pages and its 2024 Austin race report (mastershistoricracing.com), and Formula 1's timetable. For official details, see mastershistoricracing.com."
   },
   {
-    "id": "hsr",
+    "id": "hsr", "noWatch": true,
     "match": /\bHSR\b/,
     "name": "HSR, Historic Sportscar Racing",
     "tag": "Vintage and historic race cars, by era",
@@ -557,6 +558,226 @@ const SERIES = [
       "race": "Short sprint races for each run group, and at Daytona the Classic 24 Hour: each group runs four races, one after another around the clock, with the overall result based on laps completed and total time."
     },
     "fine": "A spectator summary based on HSR's official schedule and supplemental regulations for the 2026 Daytona Classic 24 Hour (10/27/2026) and its group overview. The run-group descriptions match HSR's one-page group guide (3/9/2026). The Classic endurance groups are set per event and change from year to year: the 2025 Classic 6 Hour at Watkins Glen used three groups (A early era, B historic era, C modern era), while the 2026 Daytona Classic 24 uses A to G and P as listed here. For official details, see hsrrace.com."
+  },
+  {
+    "id": "supercup", "noWatch": true,
+    "match": /Supercup/i,
+    "name": "Porsche Mobil 1 Supercup",
+    "tag": "One-make Porsche 911 Cup cars at Formula 1 weekends",
+    "blurb": "A one-make series: every driver races the same Porsche 911 Cup car, so the result comes down to the driver and the team. It has run since 1993, is organised by Porsche, and every race supports a Formula 1 weekend. 2026 is the first season with the completely newly developed 911 Cup, whose brakes now have racing ABS.",
+    "cars": [
+      {
+        "n": "911",
+        "full": "Porsche 911 Cup",
+        "type": "One-make race car",
+        "c": "#C8102E",
+        "fg": "#FFFFFF",
+        "text": "The same car for the whole grid. In 2026 there are 28 permanent entries shared between ten teams, and guest drivers can join most races (not Monaco, where the street circuit limits the field to 28). The series runs on fuel with a high eFuel content.",
+        "spot": "All identical Porsche 911 shapes, so follow the team liveries and car numbers."
+      }
+    ],
+    "rule": "Every car is the same, so there are no classes to tell apart. Watch the battles between teams and between the series' young drivers.",
+    "watch": {
+      "practice": "All cars are identical, so this is about drivers finding the limit on a track they will share with Formula 1.",
+      "qualifying": "Qualifying sets the grid for the weekend's race.",
+      "race": "One-make racing: every car is the same, so the field runs close together."
+    },
+    "fine": "A spectator summary based on Porsche's 2026 Supercup season preview (newsroom.porsche.com, May 28 2026). For official details, see racing.porsche.com."
+  },
+  {
+    "id": "moto2", "noWatch": true,
+    "match": /Moto2/i,
+    "name": "Moto2",
+    "tag": "The middle class of Grand Prix motorcycle racing",
+    "blurb": "Moto2 is the intermediate class of the MotoGP world championship, between Moto3 and MotoGP. It was formed in 2010 to replace the 250cc class. Every bike uses the same Triumph 765cc three-cylinder engine, with each team's own chassis around it, so the riders and the chassis make the difference.",
+    "cars": [
+      {
+        "n": "M2",
+        "full": "Moto2 bike",
+        "type": "Triumph 765cc triple",
+        "c": "#1F8A5B",
+        "fg": "#FFFFFF",
+        "text": "765cc three-cylinder engine, the same for every team and supplied by Triumph, with about 138 hp and 6 gears. Minimum weight is 217 kg for bike and rider together. Top speed is over 300 km/h.",
+        "spot": "Every bike has the same engine sound. The chassis and team colors are what differ."
+      }
+    ],
+    "rule": "Moto2 sits between the other two classes: bigger than Moto3's 250cc single and smaller than MotoGP's 1000cc four-cylinder prototypes. Moto2 and Moto3 both use standard throttle electronics.",
+    "watch": {
+      "practice": "Riders and teams set up the bikes for the weekend.",
+      "qualifying": "Qualifying sets the grid. With one engine for everyone, the difference is the riders and the chassis.",
+      "race": "Every bike has the same engine, so the riders and the chassis decide the race."
+    },
+    "fine": "A spectator summary based on MotoGP.com's class guide (What is the difference between MotoGP, Moto2 and Moto3, April 2025). Figures are from that guide. For official details, see motogp.com."
+  },
+  {
+    "id": "moto3", "noWatch": true,
+    "match": /Moto3/i,
+    "name": "Moto3",
+    "tag": "The entry class of Grand Prix motorcycle racing",
+    "blurb": "Moto3 is the lightweight entry class of the MotoGP world championship, started in 2012 to replace the 125cc class. The focus is on developing young talent: the bikes are small and light, so the racing is tight, with big groups slipstreaming each other lap after lap.",
+    "cars": [
+      {
+        "n": "M3",
+        "full": "Moto3 bike",
+        "type": "250cc single-cylinder prototype",
+        "c": "#6B4FBB",
+        "fg": "#FFFFFF",
+        "text": "250cc single-cylinder engine with about 60 hp and 6 gears. Minimum weight is 152 kg for bike and rider together. Top speed is about 245 km/h. The engines and chassis are prototypes, with narrow tyres.",
+        "spot": "The smallest bikes on the MotoGP weekend, with narrow tyres."
+      }
+    ],
+    "rule": "The normal path to MotoGP is Moto3, then Moto2, then MotoGP. Moto3 bikes are the smallest and lightest of the three classes.",
+    "watch": {
+      "practice": "Riders learn the track and set up their bikes.",
+      "qualifying": "Qualifying sets the grid for the race.",
+      "race": "Small, light bikes racing close together, where slipstreaming matters a lot."
+    },
+    "fine": "A spectator summary based on MotoGP.com's class guide (What is the difference between MotoGP, Moto2 and Moto3, April 2025). Figures are from that guide. For official details, see motogp.com."
+  },
+  {
+    "id": "gt2europe", "noWatch": true,
+    "match": /GT2 European/i,
+    "name": "GT2 European Series powered by Pirelli",
+    "tag": "Powerful, simpler GT cars built for amateur drivers",
+    "blurb": "Run by SRO, the GT2 European Series is built to bring amateur drivers back to the centre of GT racing, with world-class cars run by professional teams. A GT2 car makes more outright power than a GT3 but depends less on aerodynamics for its lap time, which makes it friendlier for an amateur to drive. It sits between GT4 and GT3 and races at GT World Challenge Europe weekends.",
+    "cars": [
+      {
+        "n": "S",
+        "full": "Silver",
+        "type": "Class (new in 2026)",
+        "c": "#8C96A3",
+        "fg": "#1A1A1A",
+        "text": "The class created for 2026 for drivers one step up from the amateur classes."
+      },
+      {
+        "n": "PA",
+        "full": "Pro-Am",
+        "type": "Class",
+        "c": "#C27A1E",
+        "fg": "#FFFFFF",
+        "text": "An amateur driver (FIA Bronze or SRO Bronze Plus) shares the car with a professional, which lets the amateur learn from the pro."
+      },
+      {
+        "n": "M",
+        "full": "Masters",
+        "type": "Class (formerly Am)",
+        "c": "#2F6DB5",
+        "fg": "#FFFFFF",
+        "text": "The amateur class. A scale of handicap weight is applied to Bronze Plus drivers or pairings."
+      }
+    ],
+    "rule": "The classes are about the drivers, not the cars: several makes race together, including Audi, Brabham, Ginetta, KTM, Lamborghini, Maserati, Mercedes-AMG and Porsche for 2026. Cars are of different shapes and brands, so use the class letter on the timing screens.",
+    "watch": {
+      "practice": "Teams and amateur drivers get track time, and pro drivers coach in Pro-Am cars.",
+      "qualifying": "Sets the grid for the two races of the weekend.",
+      "race": "Powerful cars with a mix of professional and amateur drivers, and a mandatory pit stop. Each class has its own winner."
+    },
+    "fine": "A spectator summary based on SRO's series page and the series' 2026 announcement (sro-motorsports.com, gt2europeanseries.com). Classes and rules are set each season. For official details, see gt2europeanseries.com."
+  },
+  {
+    "id": "gt4europe", "noWatch": true,
+    "match": /GT4 European/i,
+    "name": "GT4 European Series",
+    "tag": "Production-based GT cars, a stepping stone to GT3",
+    "blurb": "Run by SRO, the GT4 European Series offers value for money to professional and amateur drivers alike. It is a stepping stone towards GT3 for young drivers, while amateurs can race on some of Europe's best tracks. SRO sets the Balance of Performance so cars from many brands race fairly, and the races use rolling starts. It runs on GT World Challenge Europe weekends.",
+    "cars": [
+      {
+        "n": "S",
+        "full": "Silver Cup",
+        "type": "Class",
+        "c": "#8C96A3",
+        "fg": "#1A1A1A",
+        "text": "The Silver driver-grade class, listed first on the 2026 entry list."
+      },
+      {
+        "n": "PA",
+        "full": "Pro-Am Cup",
+        "type": "Class",
+        "c": "#C27A1E",
+        "fg": "#FFFFFF",
+        "text": "A mixed pairing of professional and amateur drivers."
+      },
+      {
+        "n": "A",
+        "full": "Am Cup",
+        "type": "Class",
+        "c": "#2F6DB5",
+        "fg": "#FFFFFF",
+        "text": "The amateur class."
+      }
+    ],
+    "rule": "All cars are GT4 cars from many manufacturers, balanced by SRO, and they race together. The classes are set by driver rating (Silver, Pro-Am, Am), not by car.",
+    "watch": {
+      "practice": "GT4 cars from many manufacturers on track together.",
+      "qualifying": "Sets the grid for the weekend's races.",
+      "race": "Cars from many brands racing together, with the result also counted by class."
+    },
+    "fine": "A spectator summary based on SRO's series page (sro-motorsports.com) and the series' 2026 entry list as reported by Daily Sportscar. Race lengths and pairing rules are not stated here: see gt4europeanseries.com."
+  },
+  {
+    "id": "mclarentrophy", "noWatch": true,
+    "match": /McLaren Trophy Europe/i,
+    "name": "McLaren Trophy Europe",
+    "tag": "One-make McLaren Artura race cars",
+    "blurb": "A one-make championship organised by SRO in which every driver races an identical McLaren Artura Trophy Evo, designed to put driving talent first. The 2026 championship is ten races over five weekends, each race lasting 50 minutes. It runs at SRO Europe weekends.",
+    "cars": [
+      {
+        "n": "PRO",
+        "full": "Pro",
+        "type": "Class",
+        "c": "#E85D04",
+        "fg": "#FFFFFF",
+        "text": "Professional drivers racing for the overall result."
+      },
+      {
+        "n": "PA",
+        "full": "Pro-Am",
+        "type": "Class",
+        "c": "#C27A1E",
+        "fg": "#FFFFFF",
+        "text": "A professional paired with an amateur."
+      },
+      {
+        "n": "AM",
+        "full": "Am",
+        "type": "Class",
+        "c": "#2F6DB5",
+        "fg": "#FFFFFF",
+        "text": "Amateur drivers only."
+      }
+    ],
+    "rule": "Every car is an identical McLaren Artura Trophy Evo, so classes are about the drivers, not the cars. The Evo has more aero and wider tyres than before, and a push-to-pass system that lifts power from 585 PS to 620 PS when used.",
+    "watch": {
+      "practice": "Identical cars, so teams and drivers focus on setup and finding the limit.",
+      "qualifying": "Sets the grid for the weekend's two races.",
+      "race": "Fifty minutes with identical cars, so overtaking and push-to-pass timing decide the result."
+    },
+    "fine": "A spectator summary based on McLaren's 2026 Trophy Europe championship brochure and SRO. For official details, see the McLaren Trophy Europe website."
+  },
+  {
+    "id": "gt3revival", "noWatch": true,
+    "match": /GT3 Revival/i,
+    "name": "GT3 Revival Series",
+    "tag": "The first generation of GT3 cars, 2006 to 2013",
+    "blurb": "A series run by Peter Auto and SRO, reserved for the first wave of FIA GT3 cars homologated from 2006 through 2013. 2026 marks the 20th anniversary of GT3, which now underpins every major GT and endurance championship. At the 2026 24 Hours of Spa weekend it was announced as part of the 2027 support programme.",
+    "cars": [
+      {
+        "n": "GT3",
+        "full": "First-generation GT3",
+        "type": "FIA GT3 cars, 2006 to 2013",
+        "c": "#1F8A5B",
+        "fg": "#FFFFFF",
+        "text": "The earliest GT3 cars, now historic. Cars from many manufacturers, from the first generation of the GT3 rules.",
+        "spot": "GT3 race cars of the early generation."
+      }
+    ],
+    "rule": "Only the first wave of GT3 cars is allowed (homologated 2006 to 2013), so expect a mixed field of earlier-generation cars from many brands.",
+    "watch": {
+      "practice": "A chance to see the cars that started the GT3 era.",
+      "qualifying": "Sets the grid for the races.",
+      "race": "Early GT3 cars from many manufacturers racing together."
+    },
+    "fine": "A spectator summary based on SRO's announcement of the GT3 Revival Series (sro-motorsports.com). For official details, see the series' pages on SRO."
   }
 ];
 

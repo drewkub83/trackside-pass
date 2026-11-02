@@ -31,7 +31,7 @@ const SERIES = load("data/series.js", "SERIES"), WATCH = load("data/watch.js", "
 const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js"];
 const tracks = fs.readdirSync(path.join(ROOT, "data")).filter(f => f.endsWith(".js") && !NON.includes(f)).map(f => { const T = []; new Function("TRACKS", fs.readFileSync(path.join(ROOT, "data", f), "utf8"))(T); return T[0]; });
 const kindOf = n => /qualifying/i.test(n) ? "qualifying" : /practice/i.test(n) ? "practice" : "race";
-const seriesFor = n => SERIES.find(s => s.match.test(n)) || null;
+const seriesFor = n => { const s = SERIES.find(x => x.match.test(n)); return s && !s.noWatch ? s : null; };   // noWatch = guide-only series (data/series.js): never due
 const addDays = (d, n) => { const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
 /* a wall-clock time in a time zone -> the UTC instant */
 function at(d, hm, tz) {

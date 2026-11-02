@@ -132,7 +132,7 @@ const ENTRIES = [
       ] }
     ],
     note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-11-01. Late changes are possible.",
+  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-11-02. Late changes are possible.",
     classes:[
       { h:"Hypercar", cars:[
         ["8", "Toyota Racing", "Sébastien Buemi / Brendon Hartley / Ryō Hirakawa", "Toyota TR010 Hybrid", 9.1, "averaged top 33% of Hypercar over 7 earlier races this season", 0.667],
@@ -174,7 +174,7 @@ const ENTRIES = [
         ["78", "Akkodis ASP Team", "Tom van Rompuy / Hadrien David / Esteban Masson", "Lexus RC F LMGT3", 3.4, "averaged top 65% of LMGT3 over 7 earlier races this season", 0.355]
       ] }
     ],
-    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-11-01. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" },
+    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-11-02. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" },
   { t:"martinsville", d:"2026-10-30", s:"nascar", oddsAsOf:"After qualifying (starting grid from NASCAR's race data): grid position now drives the chances, tilted by recent form.", asOf:"Entry list from NASCAR's race data (nascar.com), with the official car numbers. Late changes are possible.",
     classes:[
       { h:"Race", cars:[
@@ -243,7 +243,7 @@ const ENTRIES = [
         ["47", "Augusto Fernandez", "Prima Pramac Yamaha MotoGP", "", 0.5, "averaged top 71% of the field over his last 6 Sunday races", 0.291]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-02. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"sepang", d:"2026-10-30", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"After qualifying (grid from Q2, then Q1): grid position now drives the chances, tilted by recent form. Penalties are not applied.", asOf:"Riders from the practice sessions of this weekend, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
@@ -271,5 +271,33 @@ const ENTRIES = [
         ["27", "Iker Lecuona", "BK8 Gresini Racing MotoGP", "", 0.5, "Qualified 19th of 22. averaged top 57% of the field over his last 2 Sunday races", 0.429]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" },
+  { t:"interlagos", d:"2026-11-06", s:"f1", oddsAsOf:"Before qualifying: recent form only (average points over each driver's last 6 races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Drivers who started the Mexico City Grand Prix, with their official race numbers (Jolpica F1 API, a mirror of the FIA classification). Late changes are possible.",
+    classes:[
+      { h:"Race", cars:[
+        ["3", "Max Verstappen", "Red Bull Racing", "", 45.5, "averaged 21.0 points a race over the last 6 Grands Prix", 0.84],
+        ["12", "Kimi Antonelli", "Mercedes", "", 23.5, "averaged 18.0 points a race over the last 6 Grands Prix", 0.72],
+        ["16", "Charles Leclerc", "Ferrari", "", 9.8, "averaged 14.0 points a race over the last 6 Grands Prix", 0.56],
+        ["44", "Lewis Hamilton", "Ferrari", "", 4.2, "averaged 10.2 points a race over the last 6 Grands Prix", 0.407],
+        ["1", "Lando Norris", "McLaren", "", 2.7, "averaged 8.2 points a race over the last 6 Grands Prix", 0.327],
+        ["63", "George Russell", "Mercedes", "", 2.7, "averaged 8.2 points a race over the last 6 Grands Prix", 0.327],
+        ["6", "Isack Hadjar", "Red Bull Racing", "", 2.1, "averaged 7.0 points a race over the last 6 Grands Prix", 0.28],
+        ["81", "Oscar Piastri", "McLaren", "", 1.6, "averaged 5.7 points a race over the last 6 Grands Prix", 0.227],
+        ["30", "Liam Lawson", "Racing Bulls", "", 1.1, "averaged 4.0 points a race over the last 6 Grands Prix", 0.16],
+        ["43", "Franco Colapinto", "Alpine", "", 0.6, "averaged 1.7 points a race over the last 6 Grands Prix", 0.067],
+        ["41", "Arvid Lindblad", "Racing Bulls", "", 0.6, "averaged 1.5 points a race over the last 6 Grands Prix", 0.06],
+        ["27", "Nico Hülkenberg", "Audi", "", 0.5, "averaged 0.8 points a race over the last 6 Grands Prix", 0.033],
+        ["14", "Fernando Alonso", "Aston Martin", "", 0.5, "averaged 0.7 points a race over the last 6 Grands Prix", 0.027],
+        ["10", "Pierre Gasly", "Alpine", "", 0.5, "averaged 0.3 points a race over the last 6 Grands Prix", 0.013],
+        ["5", "Gabriel Bortoleto", "Audi", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["50", "Ryo Hirakawa", "Haas", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["23", "Alexander Albon", "Williams", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["55", "Carlos Sainz", "Williams", "", 0.5, "averaged 0.2 points a race over the last 6 Grands Prix", 0.007],
+        ["11", "Sergio Pérez", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["87", "Oliver Bearman", "Haas", "", 0.5, "averaged 0.3 points a race over the last 6 Grands Prix", 0.013],
+        ["77", "Valtteri Bottas", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0],
+        ["18", "Lance Stroll", "Aston Martin", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
+      ] }
+    ],
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-02. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

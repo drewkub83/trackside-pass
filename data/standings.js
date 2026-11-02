@@ -265,21 +265,21 @@ const STANDINGS = [
       ] }
     ],
     note:"Driver standings by class, top 6 positions of each table; drivers who share a position share the same points (listed together). A team is named only where the series' team table or a race report confirms it. Source: gt-world-challenge-america.com standings (Drivers and Teams 2026, Pro / Pro-Am / Am), read Oct 16, 2026." },
-  { s:"f1", asOf:"Current after the United States Grand Prix (Oct 25, 2026): 18 races are done and 5 remain.",
+  { s:"f1", asOf:"Current after the Mexico City Grand Prix (Nov 1, 2026): 19 races are done and 4 remain.",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Kimi Antonelli (Mercedes)", pts:365 },
-        { pos:2, who:"George Russell (Mercedes)", pts:242 },
-        { pos:3, who:"Lewis Hamilton (Ferrari)", pts:241 },
-        { pos:4, who:"Max Verstappen (Red Bull Racing)", pts:236 },
-        { pos:5, who:"Charles Leclerc (Ferrari)", pts:233 },
-        { pos:6, who:"Lando Norris (McLaren)", pts:211 },
-        { pos:7, who:"Oscar Piastri (McLaren)", pts:144 },
+        { pos:1, who:"Kimi Antonelli (Mercedes)", pts:380 },
+        { pos:2, who:"Max Verstappen (Red Bull Racing)", pts:261 },
+        { pos:3, who:"Lewis Hamilton (Ferrari)", pts:259 },
+        { pos:4, who:"George Russell (Mercedes)", pts:250 },
+        { pos:5, who:"Charles Leclerc (Ferrari)", pts:245 },
+        { pos:6, who:"Lando Norris (McLaren)", pts:221 },
+        { pos:7, who:"Oscar Piastri (McLaren)", pts:150 },
         { pos:8, who:"Isack Hadjar (Red Bull Racing)", pts:105 },
-        { pos:9, who:"Liam Lawson (Racing Bulls)", pts:77 },
-        { pos:10, who:"Pierre Gasly (Alpine)", pts:42 },
+        { pos:9, who:"Liam Lawson (Racing Bulls)", pts:79 },
+        { pos:10, who:"Pierre Gasly (Alpine)", pts:43 },
         { pos:11, who:"Arvid Lindblad (Racing Bulls)", pts:38 },
-        { pos:12, who:"Franco Colapinto (Alpine)", pts:27 },
+        { pos:12, who:"Franco Colapinto (Alpine)", pts:31 },
         { pos:13, who:"Oliver Bearman (Haas)", pts:23 },
         { pos:14, who:"Nico Hülkenberg (Audi)", pts:13 },
         { pos:15, who:"Gabriel Bortoleto (Audi)", pts:10 },
@@ -290,15 +290,16 @@ const STANDINGS = [
         { pos:20, who:"Yuki Tsunoda (Racing Bulls)", pts:1 },
         { pos:21, who:"Lance Stroll (Aston Martin)", pts:0 },
         { pos:22, who:"Valtteri Bottas (Cadillac)", pts:0 },
-        { pos:23, who:"Sergio Pérez (Cadillac)", pts:0 }
+        { pos:23, who:"Ryo Hirakawa (Haas)", pts:0 },
+        { pos:24, who:"Sergio Pérez (Cadillac)", pts:0 }
       ] },
       { h:"Constructors", rows:[
-        { pos:1, who:"Mercedes", pts:607 },
-        { pos:2, who:"Ferrari", pts:474 },
-        { pos:3, who:"Red Bull Racing", pts:355 },
-        { pos:4, who:"McLaren", pts:355 },
-        { pos:5, who:"Racing Bulls", pts:102 },
-        { pos:6, who:"Alpine", pts:69 },
+        { pos:1, who:"Mercedes", pts:630 },
+        { pos:2, who:"Ferrari", pts:504 },
+        { pos:3, who:"Red Bull Racing", pts:380 },
+        { pos:4, who:"McLaren", pts:371 },
+        { pos:5, who:"Racing Bulls", pts:104 },
+        { pos:6, who:"Alpine", pts:74 },
         { pos:7, who:"Haas", pts:30 },
         { pos:8, who:"Audi", pts:23 },
         { pos:9, who:"Williams", pts:12 },
@@ -306,7 +307,7 @@ const STANDINGS = [
         { pos:11, who:"Cadillac", pts:0 }
       ] }
     ],
-    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA championship tables), read 2026-10-26. Drivers on the same points share a position only if the table shows it." },
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA championship tables), read 2026-11-02. Drivers on the same points share a position only if the table shows it." },
   { s:"f1academy", asOf:"Current after Round 4 of 6 at Zandvoort (Aug 21-23, 2026); Austin (Oct 23-25) and Las Vegas remain.",
     classes:[
       { h:"Drivers", rows:[

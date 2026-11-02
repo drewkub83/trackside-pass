@@ -15,6 +15,22 @@
    "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
    (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
+  { t:"mexico-city", d:"2026-10-30", s:"f1", event:"Mexico City Grand Prix",
+    groups:[
+      { h:"Race", order:[
+        "1. #3 Max Verstappen (Red Bull Racing)",
+        "2. #44 Lewis Hamilton (Ferrari)",
+        "3. #12 Kimi Antonelli (Mercedes)",
+        "4. #16 Charles Leclerc (Ferrari)",
+        "5. #1 Lando Norris (McLaren)",
+        "6. #63 George Russell (Mercedes)",
+        "7. #81 Oscar Piastri (McLaren)",
+        "8. #43 Franco Colapinto (Alpine)",
+        "9. #30 Liam Lawson (Racing Bulls)",
+        "10. #10 Pierre Gasly (Alpine)"
+      ] }
+    ],
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), top ten of the Grand Prix on 2026-11-01. Sprint results are not included." },
   { t:"martinsville", d:"2026-10-30", s:"nascar", event:"Xfinity 500",
     groups:[
       { h:"Race", order:[

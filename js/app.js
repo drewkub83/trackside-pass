@@ -429,7 +429,7 @@ function openTrackNow(id,from){
   window.scrollTo(0,0);
   wx=null; wxToast=null; renderWx(); loadWeather();
   limits=null; view=fitted=fitView(); applyView(); { const w=document.getElementById("mapWrap"); lastSize=w.clientWidth+"x"+w.clientHeight; }
-  hubEditing=false; { const eb=document.getElementById("hubEditBtn"); if(eb){ eb.classList.remove("on"); eb.setAttribute("aria-pressed","false"); } } hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); if(isWide()) setWideRight("events"); checkRaceWeek();
+  hubEditing=false; { const eb=document.getElementById("hubEditBtn"); if(eb){ eb.classList.remove("on"); eb.setAttribute("aria-pressed","false"); } } hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); { const hv=document.getElementById("hubView"); if(hv) hv.scrollTop=0; } if(isWide()) setWideRight("events"); checkRaceWeek();
   /* resume live GPS automatically if it's already been allowed before, same consent-respecting check the
      hub and race-week banner use -- never asks cold, only picks back up for someone who already said yes.
      A web page can't keep watchPosition running once the OS fully closes the tab/PWA (no background

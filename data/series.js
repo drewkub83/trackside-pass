@@ -556,7 +556,7 @@ const SERIES = [
       "qualifying": "Short sessions that set each group's grid. Some enduros use the times from the earlier qualifying sessions.",
       "race": "Short sprint races for each run group, and at Daytona the Classic 24 Hour: each group runs four races, one after another around the clock, with the overall result based on laps completed and total time."
     },
-    "fine": "A spectator summary based on HSR's official schedule and supplemental regulations for the 2026 Daytona Classic 24 Hour (10/27/2026) and its group overview. Groups and rules can change for each event. For official details, see hsrrace.com."
+    "fine": "A spectator summary based on HSR's official schedule and supplemental regulations for the 2026 Daytona Classic 24 Hour (10/27/2026) and its group overview. The run-group descriptions match HSR's one-page group guide (3/9/2026). The Classic endurance groups are set per event and change from year to year: the 2025 Classic 6 Hour at Watkins Glen used three groups (A early era, B historic era, C modern era), while the 2026 Daytona Classic 24 uses A to G and P as listed here. For official details, see hsrrace.com."
   }
 ];
 

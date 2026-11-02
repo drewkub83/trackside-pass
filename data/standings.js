@@ -362,12 +362,12 @@ const STANDINGS = [
       ] }
     ],
     note:"Champions only, from GAZOO Racing's own release \"GAZOO Racing Crowns 2026 GR Cup Series Champions\" (grcupseries.com, Oct 11, 2026). Points totals were not published there, so none are shown." },
-  { s:"nascar", asOf:"Current after the Xfinity 500 at Martinsville (Nov 1, 2026); one race (Homestead-Miami, Nov 8) decides the title.",
+  { s:"nascar", asOf:"Current after the Xfinity 500 at Martinsville (Nov 1, 2026); Homestead-Miami (Nov 8) is the finale.",
     classes:[
       { h:"Drivers", rows:[
         { pos:1, who:"Kyle Larson", pts:2469, gap:"Leads with one race left; could not clinch at Martinsville (finished 9th) but has a big cushion into Homestead." },
         { pos:2, who:"Christopher Bell", pts:2402, gap:"-67" },
-        { pos:3, who:"Denny Hamlin", pts:2399, gap:"-70; sources differ on whether he is already mathematically eliminated." },
+        { pos:3, who:"Denny Hamlin", pts:2399, gap:"-70." },
         { pos:4, who:"Chase Briscoe", pts:2385, gap:"-84" },
         { pos:5, who:"Joey Logano", pts:2366, gap:"-103" },
         { pos:6, who:"Tyler Reddick", pts:2344, gap:"-125" },
@@ -378,7 +378,7 @@ const STANDINGS = [
       ] }
     ],
     note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table (Nov 1, 2026), cross-checked against the pre-race baseline reported by NASCAR.com and other outlets, via web search (direct fetch was blocked in this environment). The 2026 championship is decided by points, not a four-driver Championship finale -- Larson needs only to out-score his rivals at Homestead-Miami (Nov 8)." },
-  { s:"oreilly", asOf:"Current after the National Debt Relief 250 at Martinsville (Oct 31, 2026); Homestead-Miami (Nov 7) decides the title among five drivers still eligible.",
+  { s:"oreilly", asOf:"Current after the National Debt Relief 250 at Martinsville (Oct 31, 2026); Homestead-Miami (Nov 7) is the finale.",
     classes:[
       { h:"Drivers", rows:[
         { pos:1, who:"Justin Allgaier", pts:2436, gap:"Runner-up to Kvapil at Martinsville, his JR Motorsports teammate." },
@@ -389,14 +389,14 @@ const STANDINGS = [
       ] }
     ],
     note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table, cross-checked against On3's reporting of the same figures (both Oct 31-Nov 1, 2026, via web search; direct fetch was blocked in this environment). Allgaier, Love, Day, Kvapil and Creed all have a mathematical shot at the title at Homestead-Miami." },
-  { s:"trucks", asOf:"Current after the Black's Tire 200 at Martinsville (Oct 30, 2026); Homestead-Miami (Nov 6) decides the title, a two-driver fight.",
+  { s:"trucks", asOf:"Current after the Black's Tire 200 at Martinsville (Oct 30, 2026); Homestead-Miami (Nov 6) is the finale.",
     classes:[
       { h:"Drivers", rows:[
         { pos:1, who:"Kaden Honeycutt", pts:2403, gap:"Finished 14th at Martinsville after a messy final restart but still leads." },
         { pos:2, who:"Layne Riggs", pts:2383, gap:"-20; finished 3rd at Martinsville." },
-        { pos:3, who:"Chandler Smith", pts:2300, gap:"-103; won at Martinsville but is eliminated from the title fight." },
-        { pos:4, who:"Ty Majeski", pts:2275, gap:"-128; eliminated." },
-        { pos:5, who:"Christian Eckes", pts:2263, gap:"-140; eliminated." }
+        { pos:3, who:"Chandler Smith", pts:2300, gap:"-103; won at Martinsville." },
+        { pos:4, who:"Ty Majeski", pts:2275, gap:"-128." },
+        { pos:5, who:"Christian Eckes", pts:2263, gap:"-140." }
       ] }
     ],
     note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table, cross-checked against Jayski's reporting of the same figures (both Oct 30-31, 2026, via web search; direct fetch was blocked in this environment). Only Honeycutt and Riggs can still win the title at Homestead-Miami." }

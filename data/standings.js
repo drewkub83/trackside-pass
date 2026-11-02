@@ -147,26 +147,25 @@ const STANDINGS = [
       ] }
     ],
     note:"Sources: IMSA.com (\"DeLong Scores Win, Gossett Takes Mazda MX-5 Cup Championship at Michelin Raceway Road Atlanta\"), RACER (\"Gossett builds MX-5 Cup point lead with Road Atlanta win\") and SPEED SPORT, Oct 1-2, 2026 (via web search; direct site fetches were blocked in this environment). Final championship point totals weren't published in sources found, so positions 2-3 reflect who entered the finale in the title fight rather than a confirmed final order." },
-  { s:"carrera", asOf:"Current after Race 2 of 2 at Road Atlanta (Oct 2), a weekend sweep for Maxson; the Circuit of the Americas round closes the season.",
+  { s:"carrera", asOf:"Final 2026 standings after the Circuit of the Americas finale (Oct 23); the season is complete.",
     classes:[
       { h:"Pro", rows:[
-        { pos:1, who:"Tyler Maxson (TOPP Racing)", gap:"Entered Race 2 leading by 19 points, then swept the weekend with his eighth win of the season, beating Jeansonne by 5.020 seconds (new points gap not published in sources found)." },
-        { pos:2, who:"Aaron Jeansonne (Kellymoss)", gap:"Finished 2nd again in Race 2 at Road Atlanta; new points gap not published in sources found." },
-        { pos:3, who:"Callum Hedge (JDX Racing)", gap:"Finished 3rd in Race 2 at Road Atlanta." },
-        { pos:4, who:"Janne Stiak (ACI Motorsports)", gap:"Finished 4th in Race 2 at Road Atlanta." },
-        { pos:5, who:"Jared Thomas (JTR Motorsports Engineering)", gap:"Finished 5th in Race 2 at Road Atlanta, after 4th in Race 1." }
+        { pos:1, who:"Tyler Maxson (TOPP Racing)", gap:"2026 Mobil Pro class champion, clinched in Race 1 at COTA; won the finale (Race 2) by more than six seconds." },
+        { pos:2, who:"Janne Stiak (ACI Motorsports)", gap:"Won Race 1 at COTA; promoted to 2nd in Race 2 after Hedge's post-race track-limits penalty." },
+        { pos:3, who:"Jared Thomas (JTR Motorsports Engineering)", gap:"Promoted to 3rd in Race 2 at COTA after Hedge's penalty." },
+        { pos:4, who:"Aaron Jeansonne (Kellymoss)", gap:"Maxson's closest title rival entering COTA, trailing by 19 points." },
+        { pos:5, who:"Callum Hedge (JDX Racing)", gap:"3rd on track in Race 2 at COTA, demoted by a 10-second track-limits penalty." }
       ] },
       { h:"Pro-Am", rows:[
-        { pos:1, who:"Patrick Mulcahy (ACI Motorsports)", gap:"Clinched the Pro-Am title at Indianapolis, then raced unopposed in both races at Road Atlanta." }
+        { pos:1, who:"Patrick Mulcahy (ACI Motorsports)", gap:"2026 Pro-Am champion, clinched at Indianapolis; won Race 2 at COTA." }
       ] },
       { h:"Masters", rows:[
-        { pos:1, who:"Marco Cirone (ACI Motorsports)", gap:"Extended his lead further by winning Race 2 at Road Atlanta, beating Rob Walker by 1.452 seconds (new points gap not published in sources found)." },
-        { pos:2, who:"Rob Walker (JTR Motorsports Engineering)", gap:"Finished 2nd in Race 2 at Road Atlanta." },
-        { pos:3, who:"Scott Blind (Ruckus Racing)", gap:"The defending champion; won Masters in Race 1 at Road Atlanta but finished 3rd in Race 2 after an off-course excursion, still trailing Cirone in points." },
-        { pos:4, who:"Richard Edge (ACI Motorsports)", gap:"Finished 2nd in the Masters class in Race 1 at Road Atlanta." }
+        { pos:1, who:"Marco Cirone (ACI Motorsports)", gap:"2026 Masters champion." },
+        { pos:2, who:"Rob Walker (JTR Motorsports Engineering)", gap:"Runner-up entering the COTA finale." },
+        { pos:3, who:"Scott Blind (Ruckus Racing)", gap:"The defending champion; third in points entering COTA." }
       ] }
     ],
-    note:"Pro and Masters positions below the top of each class are named from recent race reports, not an official points table -- their order isn't confirmed, and no points figures are shown for them since none were published. Sources: IMSA's \"Tale of the Tape\" championship preview (Sep 24), Porsche Motorsport North America, Sportscar365 and GT REPORT race reports from Indianapolis and both Road Atlanta races (Oct 1-2, 2026, via web search; direct site fetches were blocked in this environment). Alan Metni (Kellymoss) won the Pro-Am race at Road Atlanta Race 1, his second win of the season, but Mulcahy's title was already clinched." },
+    note:"(no automatic reader) Entrant champion: TOPP Racing (back-to-back). Pro and Masters positions below the champion are named from recent race reports, not an official season points table -- their final order wasn't published in sources found, so these reflect standing entering or finishing at COTA, not confirmed final points. Sources: Porsche Newsroom (\"Maxson secures Porsche Carrera Cup North America title...\"), racing.porsche.com's COTA race report, Sportscar365 and Stuttcars (Oct 24-25, 2026, via web search; direct site fetches were blocked in this environment)." },
   { s:"gtwce", asOf:"Current after the final round of the 2026 season (Portimao): the season is complete.",
     classes:[
       { h:"Drivers", rows:[
@@ -308,16 +307,15 @@ const STANDINGS = [
       ] }
     ],
     note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA championship tables), read 2026-11-02. Drivers on the same points share a position only if the table shows it." },
-  { s:"f1academy", asOf:"Current after Round 4 of 6 at Zandvoort (Aug 21-23, 2026); Austin (Oct 23-25) and Las Vegas remain.",
+  { s:"f1academy", asOf:"Current after Austin (Oct 23-25, 2026); Palmowski clinched the title there with the Las Vegas round (Nov 19-21) still to run.",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Alisha Palmowski (Campos Racing)", pts:136 },
-        { pos:2, who:"Emma Felbermayr", pts:88 },
-        { pos:3, who:"Nina Gademan", pts:71 },
-        { pos:4, who:"Alba Larsen (MP Motorsport)", pts:50 }
+        { pos:1, who:"Alisha Palmowski (Campos Racing)", pts:172, gap:"2026 champion, clinched at Austin with three races still to run." },
+        { pos:2, who:"Nina Gademan (MP Motorsport)", pts:119, gap:"Passed Felbermayr for 2nd by winning Austin's Feature Race." },
+        { pos:3, who:"Emma Felbermayr", pts:113 }
       ] }
     ],
-    note:"Points from F1 Academy's own driver standings (f1academy.com), read Oct 21, 2026. The official table shows drivers only by initial and surname, so only the top four (whose full names and teams were confirmed in F1 Academy's Zandvoort race report) are listed; 5th to 7th are P. Westcott 49, M. Bruce 49 and E. Lloyd 47 points on that table." },
+    note:"(no automatic reader) Source: motorsport.com's F1 Academy standings page, cross-checked against OneRacing's reporting of Palmowski's point total (both read Oct 26-Nov 1, 2026, via web search; direct fetch was blocked in this environment). Places below 3rd were not confirmed in the sources found after Austin, so they are left out." },
   { s:"gt4a", asOf:"Final 2026 standings after the Indianapolis finale (Oct 10-11); the season is complete.",
     classes:[
       { h:"Silver", rows:[
@@ -363,5 +361,43 @@ const STANDINGS = [
         { pos:1, who:"Patrick Brunson (Eagles Canyon with Fast Track)", gap:"2026 WWEX Group Legends Cup champion (drivers 40 and over): six class wins in 10 races." }
       ] }
     ],
-    note:"Champions only, from GAZOO Racing's own release \"GAZOO Racing Crowns 2026 GR Cup Series Champions\" (grcupseries.com, Oct 11, 2026). Points totals were not published there, so none are shown." }
+    note:"Champions only, from GAZOO Racing's own release \"GAZOO Racing Crowns 2026 GR Cup Series Champions\" (grcupseries.com, Oct 11, 2026). Points totals were not published there, so none are shown." },
+  { s:"nascar", asOf:"Current after the Xfinity 500 at Martinsville (Nov 1, 2026); one race (Homestead-Miami, Nov 8) decides the title.",
+    classes:[
+      { h:"Drivers", rows:[
+        { pos:1, who:"Kyle Larson", pts:2469, gap:"Leads with one race left; could not clinch at Martinsville (finished 9th) but has a big cushion into Homestead." },
+        { pos:2, who:"Christopher Bell", pts:2402, gap:"-67" },
+        { pos:3, who:"Denny Hamlin", pts:2399, gap:"-70; sources differ on whether he is already mathematically eliminated." },
+        { pos:4, who:"Chase Briscoe", pts:2385, gap:"-84" },
+        { pos:5, who:"Joey Logano", pts:2366, gap:"-103" },
+        { pos:6, who:"Tyler Reddick", pts:2344, gap:"-125" },
+        { pos:7, who:"Ryan Blaney", pts:2336, gap:"-133" },
+        { pos:8, who:"Ty Gibbs", pts:2309, gap:"-160" },
+        { pos:9, who:"William Byron", pts:2303, gap:"-166; won the Martinsville race, his first win of 2026." },
+        { pos:10, who:"Chase Elliott", pts:2268, gap:"-201; finished 2nd at Martinsville." }
+      ] }
+    ],
+    note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table (Nov 1, 2026), cross-checked against the pre-race baseline reported by NASCAR.com and other outlets, via web search (direct fetch was blocked in this environment). The 2026 championship is decided by points, not a four-driver Championship finale -- Larson needs only to out-score his rivals at Homestead-Miami (Nov 8)." },
+  { s:"oreilly", asOf:"Current after the National Debt Relief 250 at Martinsville (Oct 31, 2026); Homestead-Miami (Nov 7) decides the title among five drivers still eligible.",
+    classes:[
+      { h:"Drivers", rows:[
+        { pos:1, who:"Justin Allgaier", pts:2436, gap:"Runner-up to Kvapil at Martinsville, his JR Motorsports teammate." },
+        { pos:2, who:"Jesse Love", pts:2414, gap:"-22" },
+        { pos:3, who:"Corey Day", pts:2413, gap:"-23" },
+        { pos:4, who:"Carson Kvapil", pts:2405, gap:"-31; won at Martinsville, his third win of 2026." },
+        { pos:5, who:"Sheldon Creed", pts:2394, gap:"-42" }
+      ] }
+    ],
+    note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table, cross-checked against On3's reporting of the same figures (both Oct 31-Nov 1, 2026, via web search; direct fetch was blocked in this environment). Allgaier, Love, Day, Kvapil and Creed all have a mathematical shot at the title at Homestead-Miami." },
+  { s:"trucks", asOf:"Current after the Black's Tire 200 at Martinsville (Oct 30, 2026); Homestead-Miami (Nov 6) decides the title, a two-driver fight.",
+    classes:[
+      { h:"Drivers", rows:[
+        { pos:1, who:"Kaden Honeycutt", pts:2403, gap:"Finished 14th at Martinsville after a messy final restart but still leads." },
+        { pos:2, who:"Layne Riggs", pts:2383, gap:"-20; finished 3rd at Martinsville." },
+        { pos:3, who:"Chandler Smith", pts:2300, gap:"-103; won at Martinsville but is eliminated from the title fight." },
+        { pos:4, who:"Ty Majeski", pts:2275, gap:"-128; eliminated." },
+        { pos:5, who:"Christian Eckes", pts:2263, gap:"-140; eliminated." }
+      ] }
+    ],
+    note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table, cross-checked against Jayski's reporting of the same figures (both Oct 30-31, 2026, via web search; direct fetch was blocked in this environment). Only Honeycutt and Riggs can still win the title at Homestead-Miami." }
 ];

@@ -13,7 +13,7 @@
    Sources: INDYCAR.com (2027 schedule: Phase One Aug 12, Phase Two Oct 23, 2026), IMSA.com, SRO America (provisional 2027 calendar, June 26, 2026),
    GT World Challenge Europe (gt-world-challenge-europe.com calendar, checked Oct 7, 2026). */
 /* the day schedules, lists of cars and drivers to watch and support races were last checked (shown in Settings). Update it whenever they are refreshed. */
-const DATA_UPDATED = "2026-10-24";
+const DATA_UPDATED = "2026-11-02";
 /* categories of the Series tab (tile = the short text on its tile, like a series' tile). Every series carries cat:"<id>". Once you follow 5 or more series
    across 2 or more categories the tab lists categories and opens a category's series inside it; with fewer it stays one plain list. */
 const CATS = [

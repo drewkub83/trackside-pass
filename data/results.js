@@ -24,10 +24,10 @@ const RESULTS = [
         "4. #16 Charles Leclerc (Ferrari)",
         "5. #1 Lando Norris (McLaren)",
         "6. #63 George Russell (Mercedes)",
-        "7. #81 Oscar Piastri (McLaren)",
-        "8. #43 Franco Colapinto (Alpine)",
-        "9. #30 Liam Lawson (Racing Bulls)",
-        "10. #10 Pierre Gasly (Alpine)"
+        "7. #30 Liam Lawson (Racing Bulls)",
+        "8. #5 Gabriel Bortoleto (Audi)",
+        "9. #6 Isack Hadjar (Red Bull Racing)",
+        "10. #50 Ryo Hirakawa (Haas)"
       ] }
     ],
     note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), top ten of the Grand Prix on 2026-11-01. Sprint results are not included." },

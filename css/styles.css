@@ -53,7 +53,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 /* ---------- home ---------- */
 .mast{padding:0 24px 4px}
 /* title + Settings stay pinned to the top while the rest of the home screen scrolls under them */
-.mastbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top) + 12px) 18px 10px 24px;background:color-mix(in srgb,var(--paper) 82%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.mastbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top) + 12px) 18px 10px 24px}
+/* glass behind the title: tiles that scroll under it are blurred and the blur fades out at the bottom edge, so there is no hard block */
+.mastbar::before{content:"";position:absolute;left:0;right:0;top:0;bottom:-16px;z-index:-1;pointer-events:none;background:color-mix(in srgb,var(--paper) 50%,transparent);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);-webkit-mask-image:linear-gradient(#000 calc(100% - 20px),transparent);mask-image:linear-gradient(#000 calc(100% - 20px),transparent)}
 .mastbar h1{font-size:34px;font-weight:300;letter-spacing:-.5px}
 .mast p{color:var(--ink-2);margin-top:4px;max-width:34ch;font-size:15px}
 .hero{display:block;width:calc(100% - 28px);margin:16px 14px 8px;padding:22px 22px 20px;text-align:left;position:relative;overflow:hidden;border-radius:34px;background:linear-gradient(135deg,var(--hero-a),var(--hero-b) 55%,var(--hero-c));box-shadow:var(--shadow);border:1px solid var(--glass-edge)}
@@ -712,6 +714,7 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 /* home header: black bar, white title, checkered strip */
 :root[data-style="race"] .mastbar{background:#0B0D12;color:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;padding-bottom:12px;overflow:visible}
 :root[data-style="race"] .mastbar h1{font-size:30px;font-weight:800;letter-spacing:.5px;color:#fff}
+:root[data-style="race"] .mastbar::before{display:none}
 :root[data-style="race"] .mastbar::after{content:"";position:absolute;left:0;right:0;bottom:-12px;height:12px;background:repeating-conic-gradient(#fff 0 25%,#0B0D12 0 50%) 0 0/12px 12px}
 :root[data-style="race"] .mastbar .fab{background:#fff;color:#0B0D12;border-color:#fff}
 :root[data-style="race"] .mast{padding-top:22px}

@@ -2304,7 +2304,8 @@ async function schedulePickReminders(ask){
 }
 (function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.play) homeTab("play"); else if(x&&x.track) openTrack(x.track,"home"); }); })();
 scheduleGoingReminders(false); scheduleStarAlerts(false); schedulePickReminders(false);
-function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open"); g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
+function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open");
+  if(on) document.querySelectorAll(".sgrp.open").forEach(o=>{ if(o!==g){ o.classList.remove("open"); const h=o.querySelector(".sgh"); if(h) h.setAttribute("aria-expanded","false"); } });   /* one open at a time */ g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
 function openSettings(){
  renderAutoSw(); renderRemSw(); renderPickSw(); renderRainSw(); renderCheckinSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }

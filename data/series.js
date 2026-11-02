@@ -409,6 +409,154 @@ const SERIES = [
       race:"Two 25-minute races, one on Saturday and one on Sunday at Austin. Old Grand Prix cars from different eras race wheel to wheel, so expect a mixed field and close battles."
     },
     fine:"A spectator summary based on Masters Historic Racing's 2026 event and series pages and its 2024 Austin race report (mastershistoricracing.com), and Formula 1's timetable. For official details, see mastershistoricracing.com."
+  },
+  {
+    "id": "hsr",
+    "match": /\bHSR\b/,
+    "name": "HSR, Historic Sportscar Racing",
+    "tag": "Vintage and historic race cars, by era",
+    "blurb": "Historic Sportscar Racing runs vintage, historic and early modern race cars at tracks such as Daytona, Sebring, Road Atlanta and Watkins Glen. A weekend is split into run groups, each a family of cars from similar eras or types, and each gets its own practice, qualifying and races. At the Classic 24 Hour at Daytona the cars are also sorted into groups A to G and P by era, and those groups race around the clock.",
+    "cars": [
+      {
+        "n": "VC",
+        "full": "Vintage Cup presented by SascoSports",
+        "type": "Run group: Groups 2 and 3",
+        "c": "#8A6B3F",
+        "fg": "#FFFFFF",
+        "text": "Vintage and historic production cars and sports racers, up to about 1985."
+      },
+      {
+        "n": "GP",
+        "full": "Grand Prix Classics",
+        "type": "Run group: Group 4",
+        "c": "#B5443B",
+        "fg": "#FFFFFF",
+        "text": "Vintage and historic open-wheel Formula cars.",
+        "spot": "Single-seaters with open wheels."
+      },
+      {
+        "n": "LR",
+        "full": "Legacy Racers",
+        "type": "Run group: Groups 5, 8 and 11",
+        "c": "#C27A1E",
+        "fg": "#FFFFFF",
+        "text": "Historic production cars and classic big-bore cars, plus early modern GT3 and TCR cars. A big mix of muscle, touring and early modern GT machinery."
+      },
+      {
+        "n": "HT",
+        "full": "Historic Trophy presented by WeatherTech",
+        "type": "Run group: Groups 6 and 7",
+        "c": "#2F6DB5",
+        "fg": "#FFFFFF",
+        "text": "Historic prototypes and sports racers, up to modern sports racers.",
+        "spot": "Low, sleek sports prototypes."
+      },
+      {
+        "n": "GT",
+        "full": "Mission GT Challenge presented by Pirelli",
+        "type": "Run group: Groups 9 and 10",
+        "c": "#1F8A5B",
+        "fg": "#FFFFFF",
+        "text": "The early modern era of GT cars: GT1, GT2, GT3 and GT4, from the 2000s through the 2020s. Has sprint races and a one-hour enduro with a required pit stop."
+      },
+      {
+        "n": "PC",
+        "full": "Prototype Challenge presented by Michelin",
+        "type": "Run group",
+        "c": "#6B4FBB",
+        "fg": "#FFFFFF",
+        "text": "Early modern prototypes, from the 2000s to the 2020s. Has sprint races and a longer enduro with two required pit stops.",
+        "spot": "Closed-cockpit and open prototypes, the type you see at the top of IMSA and Le Mans."
+      },
+      {
+        "n": "NC",
+        "full": "NASCAR Classic presented by Goodyear",
+        "type": "Run group",
+        "c": "#D6A100",
+        "fg": "#1A1A1A",
+        "text": "Historic and early modern NASCAR and oval stock cars and trucks.",
+        "spot": "Stock cars with big stock-car body shapes."
+      },
+      {
+        "n": "CE",
+        "full": "Classic Endurance Championship presented by Mission Foods",
+        "type": "The 24-hour-style race, run in groups A to G and P",
+        "c": "#C8102E",
+        "fg": "#FFFFFF",
+        "text": "Four iconic IMSA endurance races recreated with vintage, historic and early modern prototypes, sports racers and GT and production cars. At Daytona it is the Classic 24 Hour: each group races four times over the weekend, with the groups running in turn around the clock. The result is based on the greatest number of laps completed in the least total time over the four races combined."
+      },
+      {
+        "n": "A",
+        "full": "Group A: Early FIA / SCCA era",
+        "type": "Classic 24 group, before 1972",
+        "c": "#7A5C3A",
+        "fg": "#FFFFFF",
+        "text": "Pre-1972 FIA prototype sports cars, World Sportscar Championship cars through 1968, FIA Grand Touring, Trans-Am and SCCA cars and touring cars under 2.0 liters."
+      },
+      {
+        "n": "B",
+        "full": "Group B: Early IMSA era",
+        "type": "Classic 24 group, 1973 to 1982",
+        "c": "#9C6B2E",
+        "fg": "#FFFFFF",
+        "text": "FIA sports racing cars, Can-Am and similar, IMSA and SCCA Trans-Am, IMSA GTO and GTU cars, FIA GT3 and World Challenge cars, and IMSA RS cars."
+      },
+      {
+        "n": "C",
+        "full": "Group C: Late IMSA GT / GTP era",
+        "type": "Classic 24 group, 1983 to 1993",
+        "c": "#B03A2E",
+        "fg": "#FFFFFF",
+        "text": "IMSA GTP and FIA Group C prototypes, GTP Lights and Group C2, plus IMSA GTX, GTO and GTU cars."
+      },
+      {
+        "n": "D",
+        "full": "Group D: Early Grand-Am / GT era",
+        "type": "Classic 24 group, 1994 to 2003",
+        "c": "#2F6DB5",
+        "fg": "#FFFFFF",
+        "text": "Grand-Am sports racers, first-generation Daytona Prototypes, IMSA and FIA World Sportscar cars, and Grand Touring Supreme cars including GT1, GT2 and GT3."
+      },
+      {
+        "n": "E",
+        "full": "Group E: Modern era GT",
+        "type": "Classic 24 group, 2004 to 2021 homologations",
+        "c": "#1F8A5B",
+        "fg": "#FFFFFF",
+        "text": "FIA and IMSA GT1, GTLM, DTM and GTE cars, GT2 and GTD cars, and current-era FIA, IMSA and SRO GT3 cars. Cars are placed in the group by HSR."
+      },
+      {
+        "n": "F",
+        "full": "Group F: Modern era prototypes",
+        "type": "Classic 24 group, through 2021 homologations",
+        "c": "#6B4FBB",
+        "fg": "#FFFFFF",
+        "text": "LMP1 and Daytona Prototype International (DPi) cars, LMP2 and LMPC, LMP3 and P3, and Gen 2 and Gen 3 Daytona Prototypes."
+      },
+      {
+        "n": "G",
+        "full": "Group G: Modern GT3 / GT4 and Cup cars",
+        "type": "Classic 24 group",
+        "c": "#0E8E9E",
+        "fg": "#FFFFFF",
+        "text": "FIA, IMSA and SRO GT4, early Cup and Challenge-style cars, and IMSA and SRO TCR cars."
+      },
+      {
+        "n": "P",
+        "full": "Group P: Peter Auto Sixties Endurance",
+        "type": "Classic 24 group, Peter Auto",
+        "c": "#5E6A77",
+        "fg": "#FFFFFF",
+        "text": "The Peter Auto group, called Sixties Endurance by Peter Auto in the schedule. It races four times alongside the other groups."
+      }
+    ],
+    "rule": "Look for the group in the session name. Run groups (Vintage Cup, Grand Prix Classics, Legacy Racers, Historic Trophy, Mission GT Challenge, Prototype Challenge, NASCAR Classic) are the daytime sprint-race families. The Classic 24 groups (A to G and P) are sorted by the era the car raced in, so A to E run roughly from the oldest cars to the newest GT cars, and F (prototypes) and G (modern GT3/GT4) are the modern groups. The time listed for a group is when it leaves the grid, not when to arrive.",
+    "watch": {
+      "practice": "Groups take short turns on track, so the schedule moves quickly. Walk the paddock and see the cars up close.",
+      "qualifying": "Short sessions that set each group's grid. Some enduros use the times from the earlier qualifying sessions.",
+      "race": "Short sprint races for each run group, and at Daytona the Classic 24 Hour: each group runs four races, one after another around the clock, with the overall result based on laps completed and total time."
+    },
+    "fine": "A spectator summary based on HSR's official schedule and supplemental regulations for the 2026 Daytona Classic 24 Hour (10/27/2026) and its group overview. Groups and rules can change for each event. For official details, see hsrrace.com."
   }
 ];
 

@@ -96,7 +96,7 @@ const CHAMPS = [
     note:"Formula 1's all-women series. 2026 ends at Austin and Las Vegas; the 2027 calendar has not been published yet." },
   { id:"masters", cat:"historic", region:"world", name:"Masters Historic", tile:"HIST", full:"Masters Historic Racing", match:/Masters Historic/i, viaSupport:true, optIn:true, parent:"f1", guide:"masters",
     note:"Historic Formula 1 cars at selected Grand Prix weekends." },
-  { id:"hsr", cat:"historic", region:"na", name:"HSR", tile:"HSR", full:"Historic Sportscar Racing", match:/HSR/i, optIn:true,
+  { id:"hsr", cat:"historic", region:"na", name:"HSR", tile:"HSR", full:"Historic Sportscar Racing", match:/HSR/i, optIn:true, guide:"hsr",
     note:"Vintage and historic sports and race cars, with its own race weekends at Daytona, Sebring, Road Atlanta and Watkins Glen. Dates come from HSR's published schedule; several are still provisional and can change." }
   ,{ id:"wec", cat:"endurance", region:"world", name:"WEC", tile:"WEC", full:"FIA World Endurance Championship", match:/FIA WEC|World Endurance/i, guide:"wec",
     note:"The 2026 season ends at Monza (Nov 6-8). The 2027 calendar has nine rounds, from the Qatar 1812km (Mar 25-27) to the 8 Hours of Bahrain (Nov 4-6), with the 24 Hours of Le Mans in June. Dates and venues come from fiawec.com (checked Oct 26, 2026); the 2027 session times are not published yet. Le Mans and Fuji show Map coming soon until their maps are added.",

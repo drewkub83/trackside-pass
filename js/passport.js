@@ -587,13 +587,3 @@ function ppRestore(){
 renderPassportCard(); renderPpSw();
 if(typeof renderChampList==="function") renderChampList();     /* app.js drew the home list before the series marks existed */
 
-/* ---------------- sticker sheet: every stamp at a glance, for review, not tied to what you have actually earned ---------------- */
-function openStampSheet(){
-  const el=document.createElement("div"); el.className="stampsheet"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); el.setAttribute("aria-label","All stamps");
-  const trackTiers=PP_TIERS.map((tdef,i)=>({id:`t:${TRACKS[0].id}:${i+1}`,name:`${TRACKS[0].short} · ${tdef[0]}`,tier:tdef[1],track:TRACKS[0]}));
-  const all=[...PP_GLOBAL,...trackTiers];
-  el.innerHTML=`<div class="ssbar"><b>Sticker sheet</b><button class="fab" aria-label="Close" onclick="this.closest('.stampsheet').remove()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <p class="fine" style="margin:0 14px 14px">Every stamp, shown as it looks when earned. This does not change your passport.</p>
-    <div class="bgrid" style="padding:0 14px 40px;margin:0">${all.map(d=>`<div class="pb${d.tier==="z"?" legend":""}"><span class="sbox big" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:Date.now()})}</span><b>${esc(d.name)}</b><small>${esc(d.desc||"")}</small></div>`).join("")}</div>`;
-  document.body.appendChild(el);
-}

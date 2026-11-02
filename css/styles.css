@@ -215,7 +215,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .map-wrap.editing .poi{cursor:grab}
 .map-wrap.editing .poi .sc>circle:nth-child(2),.map-wrap.editing .poi .sc>.pillbg{stroke:var(--yellow);stroke-width:2.5}
 .map-wrap.placing,.map-wrap.adding{cursor:crosshair}
-.bar{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;padding:max(14px,env(safe-area-inset-top)) 14px 8px;background:color-mix(in srgb,var(--paper) 82%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.bar{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;padding:max(14px,env(safe-area-inset-top)) 14px 8px}
+.bar::before{content:"";position:absolute;left:0;right:0;top:0;bottom:-16px;z-index:-1;pointer-events:none;background:color-mix(in srgb,var(--paper) 50%,transparent);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);-webkit-mask-image:linear-gradient(#000 calc(100% - 20px),transparent);mask-image:linear-gradient(#000 calc(100% - 20px),transparent)}
 .bar .ptitle2{font-size:24px;font-weight:400}
 .map-note{padding:10px 24px 0;color:var(--ink-2);font-size:13px}
 .map-wrap svg .b-farm,.map-wrap svg .b-farmland,.map-wrap svg .b-residential,.map-wrap svg .b-cemetery{fill:var(--field)}
@@ -587,10 +588,6 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .track-row .meta.support{white-space:normal;overflow:visible;font-size:12px;margin-top:3px}
 .track-row .meta.support b{font-weight:600;color:var(--ink)}
 
-/* sticker sheet */
-.stampsheet{position:fixed;inset:0;z-index:9000;background:var(--bg,#F0EEE8);overflow:auto;-webkit-overflow-scrolling:touch}
-.stampsheet .ssbar{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 20px) 14px 4px}
-.stampsheet .ssbar b{font-size:22px;font-weight:500}
 
 .hideSect{display:none !important}
 /* Info tab: standardized venue facts */

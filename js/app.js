@@ -201,7 +201,7 @@ function allOrderOf(c){ return TRACKS.flatMap(t=>t.events.filter(e=>inChamp(c,e)
 function stopsOf(c){ return (c.stops||[]).filter(s=>!TRACKS.some(t=>t.id===s.id)&&localToday()<=eventEnd(s)).sort((a,b)=>a.d.localeCompare(b.d)); }   /* venues without a map yet */
 const imsaOrder=()=>orderOf(champ("imsa")), imsaCurrent=()=>imsaOrder()[0]||null;   /* IMSA: the race on now, or the next one */
 /* the soonest race at each venue across every championship (home hero, passport order, weather, sun times) */
-function anyOrder(){ const rank=c=>{ const i=orderedChamps().findIndex(x=>x.id===c.id); return i<0?99:i; };   /* weekends that start the same day: the series you arranged first leads */
+function anyOrder(){ const rk={}; orderedChamps().forEach((x,i)=>{ rk[x.id]=i; }); const rank=c=>c.id in rk?rk[c.id]:99;   /* weekends that start the same day: the series you arranged first leads */
   return TRACKS.map(t=>{ const x=CHAMPS.filter(followed).map(c=>({c,e:nextIn(c,t)})).filter(z=>z.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)||rank(a.c)-rank(b.c))[0]; return x?{t,e:x.e,c:x.c}:null; }).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d)||rank(a.c)-rank(b.c)); }
 const nextAny=()=>anyOrder()[0]||null;
 function nextAt(t){ return CHAMPS.map(c=>nextIn(c,t)).filter(Boolean).sort((a,b)=>a.d.localeCompare(b.d))[0]||null; }

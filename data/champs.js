@@ -135,7 +135,7 @@ const CHAMPS = [
   ,{ id:"nascar", cat:"stock", region:"na", name:"NASCAR", tile:"NASCAR", full:"NASCAR Cup Series", match:/NASCAR/i, guide:"nascar",
     note:"NASCAR's 2027 Cup Series schedule (36 points races plus the Clash and the All-Star Race) was released on Aug 26, 2026; the 2026 season ends at Martinsville (Nov 1) and the Championship at Homestead-Miami (Nov 8). Venues without a map show Map coming soon; session times come once NASCAR publishes them.",
     stops:[
-      { id:"naval-base-coronado", short:"San Diego", place:"Coronado, California", kind:"Street circuit", e:"NASCAR San Diego", d:"2027-07-30", t:3 }    ] }
+    ] }
   ,{ id:"motogp", cat:"moto", region:"world", name:"MotoGP", tile:"MOTOGP", full:"FIM MotoGP World Championship", match:/MotoGP/i, guide:"motogp",
     note:"The 2026 season ends with Malaysia (Oct 30-Nov 1), Qatar (Nov 6-8), Portugal and Valencia. The 2027 calendar has 22 Grands Prix, from Thailand (Mar 5-7) to Valencia (Nov 26-28). Dates, venues and session times come from the series' own results service (api.pulselive.motogp.com, read by tools/motogp_update.py); venues without a map show Map coming soon.",
     stops:[

@@ -1634,7 +1634,7 @@ function renderSchedule(){
   document.getElementById("schedDays").innerHTML=days.map(d=>{ const [y,m,dd]=d.split("-").map(Number), wd=new Date(Date.UTC(y,m-1,dd,12)).toLocaleDateString("en-US",{timeZone:"UTC",weekday:"short"});
     const live=ss.some(s=>s.d===d&&s.start<=now&&now<s.end); return `<button class="day${d===schedDay?" on":""}${live?" live":""}" onclick="pickDay('${d}')"><small>${wd}</small><b>${dd}</b></button>`; }).join("");
   document.getElementById("schedList").innerHTML=ss.map((s,i)=>({s,i})).filter(x=>x.s.d===schedDay).map(({s,i})=>{ const live=s.start<=now&&now<s.end, past=s.end<=now, sr=seriesFor(s.n);
-    const chips=sr&&sr.cars.length>1?`<span class="chips">${sr.cars.map(chipHtml).join("")}</span>`:"";
+    const cl=sr?carsFor(sr,s.n):[], chips=cl.length>1?`<span class="chips">${cl.map(chipHtml).join("")}</span>`:"";
     const inner=`<div class="st">${fmtTime(s.start,cur.tz)}${s.est?"":`<small>to ${fmtTime(s.end,cur.tz)}</small>`}</div><div class="sn">${s.n}${live?"<em>On track now</em>":(!past&&s.start-now<36e5?`<em>${relTime(s.start-now)}</em>`:"")}${chips}</div>${sr?`<span class="ib" aria-hidden="true">i</span>`:""}`;
     const on=isStarred(cur,s), star=past||live?"":`<button class="sstar${on?" on":""}" aria-pressed="${on}" aria-label="${on?"Remove from my sessions":"Alert me before this session"}" onclick="event.stopPropagation();toggleStar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></button>`;
     return sr?`<div class="sess tap ${live?"live":past?"past":""}" role="button" tabindex="0" onclick="showInfo(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showInfo(${i})}" aria-label="About ${esc(s.n)}">${inner}${star}</div>`:`<div class="sess ${live?"live":past?"past":""}">${inner}${star}</div>`; }).join("");
@@ -1649,17 +1649,19 @@ const DEFAULT_WATCH={
   qualifying:"Drivers go for one fast lap to decide the starting order. It is short and intense, and the front row is settled here.",
   race:"Position on track is what counts. Watch for passes, pit stops and restarts after yellow flags."
 };
+/* a guide whose cars carry `m` (a regex on the session name, e.g. HSR run groups) shows only the groups racing in that session; others show every car */
+function carsFor(sr,n){ return sr.cars.some(c=>c.m)?sr.cars.filter(c=>c.m&&new RegExp(c.m,"i").test(n)):sr.cars; }
 function chipHtml(c){ return `<i class="cc" style="--c:${c.c};--f:${c.fg||"#fff"}">${c.n}</i>`; }
 function showInfo(i){
   const s=sessionsResolved()[i], sr=s&&seriesFor(s.n); if(!sr) return;
   const kind=kindOf(s.n), label={practice:"Practice",qualifying:"Qualifying",race:"Race"}[kind];
-  const watch=(sr.watch&&sr.watch[kind])||DEFAULT_WATCH[kind], specials=(sr.specials||[]).filter(x=>x.match.test(s.n));
+  const watch=(sr.watch&&sr.watch[kind])||DEFAULT_WATCH[kind], specials=(sr.specials||[]).filter(x=>x.match.test(s.n)), hit=carsFor(sr,s.n), cl=hit.length?hit:sr.cars, ch=CHAMPS.find(x=>x.guide===sr.id), allBtn=sr.cars.some(c=>c.m)&&hit.length&&ch?`<p class="mfine"><button class="btn quiet" onclick="showSeriesInfo('${ch.id}')">All ${esc(ch.name)} groups</button></p>`:"";
   document.getElementById("infoBody").innerHTML=`
     <div class="mhead">${seriesMark(sr.id,84)}<div><div class="mkick">${sr.tag}</div><h3 id="infoTitle">${sr.name}</h3></div></div><p class="mblurb">${sr.blurb}</p>
     <div class="mnow"><b>${label}: what to watch</b><p>${watch}</p>${specials.map(x=>`<p><b>${x.title}.</b> ${x.text}</p>`).join("")}</div>
-    <h4 class="mh">${sr.cars.length>1?"The classes":"The car"}</h4>
-    ${sr.cars.map(c=>`<div class="ccard"><div class="chead">${chipHtml(c)}<div><strong>${c.full}</strong><small>${c.type}</small></div>${c.pace?`<span class="pace">${c.pace}</span>`:""}</div><p>${c.text}</p>${c.spot?`<p class="spot"><b>How to spot it:</b> ${c.spot}</p>`:""}</div>`).join("")}
-    ${sr.rule?`<div class="mrule"><b>Telling them apart</b><p>${sr.rule}</p></div>`:""}
+    <h4 class="mh">${cl.length>1?"The classes":"The car"}</h4>
+    ${cl.map(c=>`<div class="ccard"><div class="chead">${chipHtml(c)}<div><strong>${c.full}</strong><small>${c.type}</small></div>${c.pace?`<span class="pace">${c.pace}</span>`:""}</div><p>${c.text}</p>${c.spot?`<p class="spot"><b>How to spot it:</b> ${c.spot}</p>`:""}</div>`).join("")}
+    ${allBtn}${sr.rule?`<div class="mrule"><b>Telling them apart</b><p>${sr.rule}</p></div>`:""}
     <p class="mfine">${sr.fine||"A spectator summary based on IMSA's 2026 class lineup. For official details, see IMSA.com."}</p>`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0; m.querySelector(".sclose").focus();
 }

@@ -18,3 +18,6 @@ ruby tools/street-circuits/build_track.rb ~/Downloads/<id>.spec.json
 `build_track.rb` writes `data/<id>.js`, adds the script tag to `index.html`, adds the id to `sw.js` and bumps its version.
 Use `--replace` to rebuild an existing track (a backup goes to `tools/street-circuits/backup/`), `--no-register` to skip the app registration.
 Then drag `dist` onto Netlify.
+
+## Editing a track that was built another way (Naval Base Coronado)
+`naval-base-coronado.spec.json` is the San Diego lap, turns, start/finish and pit stand-in as a builder file. In the builder choose Import (the file picker next to "Download track file"), edit the circuit (drag, insert or delete points; load NASCAR's course map as the overlay to trace over it), then "Download track file" and give the file to Claude: its `circuit.path` replaces `tools/street-circuits/naval-base-coronado-lap.json` and the track is rebuilt with `ruby tools/street-circuits/build_permanent.rb tools/street-circuits/permanent/naval-base-coronado.rb` (not `build_track.rb`: this track's base map and badges are placed with the permanent-circuit builder). Turn markers and the pit line in the downloaded file are used as well.

@@ -1,6 +1,6 @@
 /* Trackside Pass service worker: makes the app work with no signal.
    - First visit: downloads the app and every track's info first (small), then each track's map one at a time
-     (about 4.6 MB in all). A dropped signal only skips the maps it missed; the app tops them up on later launches.
+     (about 15 MB in all for the 93 tracks, so the first visit is best done on Wi-Fi). A dropped signal only skips the maps it missed; the app tops them up on later launches.
    - After that: opens instantly from the phone, then quietly refreshes files in the background
      when there is a connection, so edits show up on the next launch.
    Bump VERSION to force a clean re-download of everything. */

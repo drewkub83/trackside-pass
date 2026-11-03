@@ -8,7 +8,8 @@
   },
   "ios": {
     "contentInset": "never",
-    "backgroundColor": "#1a1d22"
+    "backgroundColor": "#1a1d22",
+    "limitsNavigationsToAppBoundDomains": true
   },
   "android": {
     "backgroundColor": "#1a1d22",

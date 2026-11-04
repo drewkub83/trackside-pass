@@ -1246,3 +1246,10 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="program"] .lbTabs button,:root[data-style="program"] .acScreen .seg button{font-size:16px}
 :root[data-style="program"] .acScreen p,:root[data-style="program"] .acScreen small{font-size:16px;line-height:1.4}
 :root[data-style="program"] .acScreen h4.ptH{font-size:16px}
+/* Race Program: larger small print on Settings, Passport and the Events tab */
+:root[data-style="program"] :is(.screen,#detail,#passport) small{font-size:14.5px;line-height:1.3}
+:root[data-style="program"] :is(.ppSub,.map-note,.ev .date,.series,.scrinfo,.soon){font-size:14px}
+:root[data-style="program"] :is(.pb,.bgrid) b{font-size:12.5px;line-height:1.15}
+:root[data-style="program"] .tag{font-size:12.5px}
+:root[data-style="program"] :is(.ppSecT,.ppSecN,.ppNone){font-size:15px}
+:root[data-style="program"] .sess .sn{font-size:16.5px}

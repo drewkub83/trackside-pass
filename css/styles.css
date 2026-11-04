@@ -1232,3 +1232,17 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="program"] .plTotal>div small{font-family:var(--font);color:var(--ink-2)}
 :root[data-style="program"] .ptH{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--accent)}
 :root[data-style="program"] .appear{background:var(--card);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--shadow)}
+/* Race Program: the active tab is a pill like the bar itself; the Leaderboard and Account text is larger and easier to read */
+:root[data-style="program"] .tabs button.on{border-radius:999px;font-size:15px;letter-spacing:1.2px;padding:0 20px 0 18px;box-shadow:none}
+:root[data-style="program"] .lbRow{padding:14px 14px;border-radius:6px;gap:14px;background:var(--card);border:2px solid var(--ink);box-shadow:var(--shadow)}
+:root[data-style="program"] .lbRow+.lbRow{margin-top:10px}
+:root[data-style="program"] .lbRow.me{background:var(--sun);color:var(--ink)}
+:root[data-style="program"] .lbRank{width:34px;font-family:var(--font-s);font-weight:400;font-size:22px;color:var(--accent)}
+:root[data-style="program"] .lbRow.me .lbRank{color:var(--ink)}
+:root[data-style="program"] .lbName{font-size:19px;font-weight:600;line-height:1.2}
+:root[data-style="program"] .lbName small{font-size:14.5px;line-height:1.25;margin-top:3px;color:var(--ink-2)}
+:root[data-style="program"] .lbRow.me .lbName small{color:rgba(27,35,71,.75)}
+:root[data-style="program"] .lbRow b{font-family:var(--font-s);font-weight:400;font-size:22px}
+:root[data-style="program"] .lbTabs button,:root[data-style="program"] .acScreen .seg button{font-size:16px}
+:root[data-style="program"] .acScreen p,:root[data-style="program"] .acScreen small{font-size:16px;line-height:1.4}
+:root[data-style="program"] .acScreen h4.ptH{font-size:16px}

@@ -48,6 +48,7 @@ const K={
   pushAsked:"paddock:pushAsked",   /* the one-time offer to turn notifications on was shown */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
   followSub:"paddock:followSub",     /* support series you chose to follow */
+  onboarded:"paddock:onboarded",   /* the first-run walkthrough has been shown (js/onboard.js) */
   unfollow:"paddock:unfollow",      /* series you switched off */
   seriesOrder:"paddock:seriesOrder",   /* your arrangement of series on Home */
   raceWeekShown:"paddock:raceWeekShown", /* race weeks whose banner was already shown */

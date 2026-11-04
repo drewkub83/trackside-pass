@@ -1347,3 +1347,32 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="editorial"] :is(.ppSecT,.ppSecN,.ppNone){font-size:15px}
 :root[data-style="editorial"] .sess .sn{font-size:16.5px}
 :root[data-style="editorial"] .sect{margin-left:0;padding-left:14px;padding-right:14px}
+
+/* First-run walkthrough (js/onboard.js): full screen, built from the app's tokens so it follows every style and theme */
+#obv{position:fixed;inset:0;z-index:9800;background:var(--paper);color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#obv .obTop,#obv .obBody,#obv .obBar{width:100%;max-width:520px;box-sizing:border-box}
+#obv .obTop{display:flex;justify-content:flex-end;padding:14px 18px 0;min-height:44px}
+#obv .obSkip{background:none;border:0;color:var(--ink-2);font:inherit;font-size:16px;padding:8px 6px;cursor:pointer}
+#obv .obBody{flex:1;overflow:auto;padding:12px 24px 24px;-webkit-overflow-scrolling:touch}
+#obv h2{font-size:30px;line-height:1.1;margin:8px 0 12px}
+#obv .obLogo{display:block;margin:26px 0 22px}
+#obv .obLead{font-size:18px;line-height:1.45;color:var(--ink);margin:0 0 14px}
+#obv .obNote{font-size:15px;line-height:1.4;color:var(--ink-2);margin:12px 0 0}
+#obv .obFeat{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--line)}
+#obv .obFeat:first-of-type{border-top:0}
+#obv .obFeat svg{flex:none;color:var(--accent);margin-top:2px}
+#obv .obFeat b,#obv .obRow b,#obv .obLook b{display:block;font-size:18px;font-weight:600;margin-bottom:2px}
+#obv .obFeat small,#obv .obRow small,#obv .obLook small{display:block;font-size:15px;line-height:1.35;color:var(--ink-2)}
+#obv .obList{margin-top:6px}
+#obv .obRow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+#obv .obRow:first-child{border-top:0}
+#obv .obLook{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;margin:0 0 10px;cursor:pointer}
+#obv .obLook.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+#obv .obWide{width:100%;margin-top:6px}
+#obv .obBar{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"dots dots" "back next";gap:10px 12px;padding:14px 18px 18px;border-top:1px solid var(--line)}
+#obv .obDots{grid-area:dots;display:flex;gap:8px;justify-content:center}
+#obv .obBack{grid-area:back}
+#obv .obNext{grid-area:next}
+#obv .obDots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+#obv .obDots i.on{background:var(--accent)}
+#obv .obBar .btn{min-height:48px;font-size:17px}

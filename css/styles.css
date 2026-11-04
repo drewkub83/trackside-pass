@@ -1238,3 +1238,112 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="ticket"] .scard .scRow{white-space:normal;overflow:visible;text-overflow:clip;font-size:14.5px;line-height:1.3}
 :root[data-style="ticket"] .scard .scNext{font-size:16px}
 .scStub{display:none}
+
+/* ==============================================================================================   STYLE: EDITORIAL  (Settings > Look and units > Style). Everything below only applies when
+   <html data-style="editorial">. A quiet magazine look: off-white paper, black type, hairline rules instead of boxes, one red
+   accent, a huge countdown numeral. No cards, shadows or colour blocks. Fonts: Outfit and Barlow Condensed (already loaded).
+   ===================================================================================================== */
+:root[data-style="editorial"]{
+  --font:"Outfit","Avenir Next","Segoe UI",system-ui,sans-serif; --font-d:"Barlow Condensed","Arial Narrow",sans-serif;
+  --paper:#FAFAF7; --card:#FAFAF7; --ink:#111111; --ink-2:#626262; --line:rgba(17,17,17,.20);
+  --bg-a:#FAFAF7; --bg-b:#FAFAF7; --hero-a:#FAFAF7; --hero-b:#FAFAF7; --hero-c:#FAFAF7;
+  --tint:rgba(17,17,17,.06); --tint-2:rgba(17,17,17,.04);
+  --accent:#D62828; --accent-2:#E5484D; --nav:#111111; --live-dot:#D62828;
+  --track:#D62828; --track-edge:#FAFAF7; --pit:#626262;
+  --glass:#FAFAF7; --glass-strong:#FAFAF7; --glass-edge:rgba(17,17,17,.30); --shadow:none; --glow:none;
+  --s-gtwca:#1F4FB8; --s-gtwce:#D62828; --s-imsa:#B7791F; --s-indycar:#1E8E5A; --s-other:#626262; --s-l:42%;
+  --food:#C2410C; --screen:#8C6F1F; --info:#626262; --cross:#444444; --gate:#1F4FB8; --stand:#6B3FA0; --park:#111111; --rest:#0E7C86; --camp:#1E8E5A; --med:#D62828; --merch:#B0245F; --view:#1A7FA8;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-style="editorial"]:not([data-theme="light"]){
+    --paper:#121212; --card:#121212; --ink:#F4F4F0; --ink-2:#A8A8A2; --line:rgba(244,244,240,.22);
+    --bg-a:#121212; --bg-b:#121212; --hero-a:#121212; --hero-b:#121212; --hero-c:#121212;
+    --tint:rgba(244,244,240,.08); --tint-2:rgba(244,244,240,.06);
+    --accent:#FF5A4F; --accent-2:#FF8077; --nav:#F4F4F0; --track:#FF5A4F; --track-edge:#121212; --pit:#A8A8A2;
+    --glass:#121212; --glass-strong:#121212; --glass-edge:rgba(244,244,240,.35);
+    --s-gtwca:#7C9BE0; --s-gtwce:#FF5A4F; --s-imsa:#E3AE45; --s-indycar:#4CC38A; --s-other:#A8A8A2; --s-l:62%;
+    --food:#FB923C; --screen:#D9B84A; --info:#A8A8A2; --cross:#A8A8A2; --gate:#7C9BE0; --stand:#C39BE0; --park:#8F8F88; --rest:#4FD1BC; --camp:#6FD18A; --med:#FF5A4F; --merch:#F58AB8; --view:#5FC9EA;
+  }
+}
+:root[data-style="editorial"][data-theme="dark"]{
+  --paper:#121212; --card:#121212; --ink:#F4F4F0; --ink-2:#A8A8A2; --line:rgba(244,244,240,.22);
+  --bg-a:#121212; --bg-b:#121212; --hero-a:#121212; --hero-b:#121212; --hero-c:#121212;
+  --tint:rgba(244,244,240,.08); --tint-2:rgba(244,244,240,.06);
+  --accent:#FF5A4F; --accent-2:#FF8077; --nav:#F4F4F0; --track:#FF5A4F; --track-edge:#121212; --pit:#A8A8A2;
+  --glass:#121212; --glass-strong:#121212; --glass-edge:rgba(244,244,240,.35);
+  --s-gtwca:#7C9BE0; --s-gtwce:#FF5A4F; --s-imsa:#E3AE45; --s-indycar:#4CC38A; --s-other:#A8A8A2; --s-l:62%;
+  --food:#FB923C; --screen:#D9B84A; --info:#A8A8A2; --cross:#A8A8A2; --gate:#7C9BE0; --stand:#C39BE0; --park:#8F8F88; --rest:#4FD1BC; --camp:#6FD18A; --med:#FF5A4F; --merch:#F58AB8; --view:#5FC9EA;
+}
+/* type and header: a plain masthead over a hairline */
+:root[data-style="editorial"] body{font-family:var(--font);background:var(--paper)}
+:root[data-style="editorial"] :is(h1,h2,h3,.ptitle2,.item h4,.scTop b,#pcName){font-family:var(--font);font-weight:500;letter-spacing:-.2px;text-transform:none}
+:root[data-style="editorial"] :is(.mastbar,.bar){background:var(--paper);color:var(--ink);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:1px solid var(--ink)}
+:root[data-style="editorial"] :is(.mastbar,.bar)::before{display:none}
+:root[data-style="editorial"] .mastbar h1{font-size:22px;letter-spacing:.2px}
+:root[data-style="editorial"] .ptitle2{font-size:22px}
+:root[data-style="editorial"] .fab{background:transparent;border:0;box-shadow:none;color:var(--ink)}
+:root[data-style="editorial"] .sect{font-family:var(--font-d);font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-top:26px}
+:root[data-style="editorial"] .mast p{color:var(--ink-2);font-size:16px}
+/* no boxes: everything is a row between hairlines */
+:root[data-style="editorial"] :is(.track-row,.hubCard,.ppsum,.item,.sess,.scard,.ccard,.ivenue,.mnow,.mrule,.appear,.plTotal>div,.lbRow){background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+:root[data-style="editorial"] .list{gap:0}
+:root[data-style="editorial"] .hubCard h4{font-family:var(--font-d);font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:14px;color:var(--accent)}
+/* Next-up: the big numeral */
+:root[data-style="editorial"] .hero{background:none;border:0;border-bottom:1px solid var(--ink);border-radius:0;box-shadow:none;padding:6px 0 18px}
+:root[data-style="editorial"] .hero .art{opacity:.07}
+:root[data-style="editorial"] .hero .kick{background:none;color:var(--accent);padding:0;border-radius:0;font-family:var(--font-d);font-weight:700;letter-spacing:2px;font-size:14px;text-transform:uppercase}
+:root[data-style="editorial"] .hero .num{font-family:var(--font);font-weight:500;font-size:112px;line-height:.9;letter-spacing:-5px;color:var(--ink);margin-top:8px}
+:root[data-style="editorial"] .hero .num small{font-family:var(--font);font-weight:500;font-size:20px;letter-spacing:0;line-height:1.1;text-transform:none;color:var(--ink);white-space:normal;max-width:120px;vertical-align:bottom;margin-left:10px}
+:root[data-style="editorial"] .hero .name{font-family:var(--font);font-weight:500;font-size:24px;line-height:1.1;margin-top:10px}
+:root[data-style="editorial"] .hero .sub{font-size:16px;color:var(--ink-2)}
+/* series cards: name and date on one line, details underneath */
+:root[data-style="editorial"] .scard{padding:14px 0}
+:root[data-style="editorial"] .scTop b{font-size:19px}
+:root[data-style="editorial"] .scTop span{color:var(--accent);font-weight:500}
+:root[data-style="editorial"] .scard .scRow{white-space:normal;overflow:visible;text-overflow:clip;font-size:14.5px;line-height:1.3}
+:root[data-style="editorial"] .scard .scNext{font-size:16px}
+:root[data-style="editorial"] .scard .scRow i{color:var(--accent)}
+:root[data-style="editorial"] .track-row.series{border-left:0}
+:root[data-style="editorial"] .track-row .tile.txt,:root[data-style="editorial"] .track-row .tile.imsa{background:transparent;color:var(--accent);font-family:var(--font-d);font-weight:700}
+/* tabs: a plain bar, the current page underlined in red */
+:root[data-style="editorial"] .tabs{background:var(--paper);border:1px solid var(--ink);border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+:root[data-style="editorial"] .tabs button{color:var(--ink);border-radius:0}
+:root[data-style="editorial"] .tabs button.on{background:none;color:var(--ink);font-family:var(--font-d);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:15px;box-shadow:inset 0 -3px 0 var(--accent);border-radius:0}
+:root[data-style="editorial"] .btn.primary{background:var(--ink);color:var(--paper);border:1px solid var(--ink);border-radius:2px;font-weight:500;box-shadow:none}
+:root[data-style="editorial"] .btn.quiet{border:1px solid var(--ink);border-radius:2px;background:none;color:var(--ink)}
+/* hub and sessions */
+:root[data-style="editorial"] .hubSessionName{font-family:var(--font);font-weight:500;font-size:34px;line-height:1.05;letter-spacing:-.8px}
+:root[data-style="editorial"] .hubCard.liveNow,:root[data-style="editorial"] .sess.live{background:var(--ink);color:var(--paper);border:0}
+:root[data-style="editorial"] .hubCard.liveNow h4{color:var(--paper)}
+:root[data-style="editorial"] .sess.live .st{color:var(--paper)}
+:root[data-style="editorial"] .hubCard.liveNow .hubSessionSub,:root[data-style="editorial"] .sess.live .st small{color:rgba(250,250,247,.78)}
+:root[data-style="editorial"] .hubCard.liveNow .chev{stroke:var(--paper)}
+:root[data-style="editorial"] .hubChip{border-radius:2px;border:1px solid var(--ink)}
+:root[data-style="editorial"] .hubChip.live{background:var(--ink);color:var(--paper)}
+:root[data-style="editorial"] .sess .st{font-family:var(--font);font-weight:500;font-size:22px}
+:root[data-style="editorial"] .ev .date{border:0;border-radius:0}
+:root[data-style="editorial"] .ev .date b{font-family:var(--font);font-weight:500}
+:root[data-style="editorial"] .ev.nextup .date,:root[data-style="editorial"] .day.on{background:var(--accent);color:#fff;border-radius:2px}
+:root[data-style="editorial"] .ppsum .ppn,:root[data-style="editorial"] .plTotal>div{font-family:var(--font);font-weight:500;color:var(--ink)}
+:root[data-style="editorial"] .plTotal>div small{color:var(--ink-2)}
+:root[data-style="editorial"] .ptH{font-family:var(--font-d);font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+:root[data-style="editorial"] .ppSec[data-s]>summary .ppSecT::before{display:none}
+:root[data-style="editorial"] .info dt{font-family:var(--font-d);font-weight:700;font-size:15px;letter-spacing:2px}
+/* leaderboard: big plain numerals, your row marked by a red rule */
+:root[data-style="editorial"] .lbRow{padding:14px 0;gap:14px}
+:root[data-style="editorial"] .lbRow.me{border-left:3px solid var(--accent);padding-left:12px;background:none}
+:root[data-style="editorial"] .lbRank{width:34px;font-family:var(--font);font-weight:500;font-size:26px;color:var(--ink)}
+:root[data-style="editorial"] .lbName{font-size:19px;font-weight:500;line-height:1.2}
+:root[data-style="editorial"] .lbName small{font-size:14.5px;line-height:1.25;margin-top:3px;color:var(--ink-2)}
+:root[data-style="editorial"] .lbRow b{font-family:var(--font);font-weight:500;font-size:26px}
+:root[data-style="editorial"] :is(.lbTabs button,.acScreen .seg button){font-size:16px}
+:root[data-style="editorial"] :is(.acScreen p,.acScreen small){font-size:16px;line-height:1.4}
+/* spacing and small print */
+:root[data-style="editorial"] .screen>.bar+*,:root[data-style="editorial"] .screen>.mastbar+*{margin-top:18px}
+:root[data-style="editorial"] :is(.screen,#detail,#passport) small{font-size:14.5px;line-height:1.3}
+:root[data-style="editorial"] :is(.ppSub,.map-note,.ev .date,.series,.scrinfo,.soon){font-size:14px}
+:root[data-style="editorial"] :is(.pb,.bgrid) b{font-size:12.5px;line-height:1.15}
+:root[data-style="editorial"] .tag{font-size:12.5px}
+:root[data-style="editorial"] :is(.ppSecT,.ppSecN,.ppNone){font-size:15px}
+:root[data-style="editorial"] .sess .sn{font-size:16.5px}
+:root[data-style="editorial"] .sect{margin-left:0;padding-left:14px;padding-right:14px}

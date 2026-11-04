@@ -125,7 +125,7 @@ def build(tid,rle=False):
         for k in range(1,n): G.disc(qx+(px-qx)*k/n,qy+(py-qy)*k/n,6/mpu,"2",["1","0"])
         for sgn in (1,-1):
             seen_block=False; free_run=0; step=cell/2; s_=0.0
-            while s_*mpu<=110:
+            while s_*mpu<=q.get("span",110):   # a badge may carry "span" (m): how far the corridor may reach each way when the grandstands, circuit and pit are wider than 110 m (Homestead's front stretch)
                 x=px+sgn*nxv*s_; y=py+sgn*nyv*s_; G.disc(x,y,6/mpu,"2",["1","0"])
                 if ocell(x,y)=="1": seen_block=True; free_run=0
                 elif big_open(x,y):

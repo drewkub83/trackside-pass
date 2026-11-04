@@ -1211,3 +1211,24 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="program"] .ppSec[data-s="gtwca"]{--sc:var(--s-gtwca)}:root[data-style="program"] .ppSec[data-s="gtwce"]{--sc:var(--s-gtwce)}
 :root[data-style="program"] .ppSec[data-s="imsa"]{--sc:var(--s-imsa)}:root[data-style="program"] .ppSec[data-s="indycar"]{--sc:var(--s-indycar)}
 :root[data-style="program"] .info dt{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:2px}
+/* Race Program, cleanup and poster scenery: bunting under the header, a grandstand crowd along the Next-up tile, calmer numeral shadow, even spacing under the bars */
+:root[data-style="program"]{
+  --bunting:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='20'><path d='M0 0H32L16 18Z' fill='%23E03A2E'/><path d='M32 0H64L48 18Z' fill='%23FFF8E6'/><path d='M64 0H96L80 18Z' fill='%23F2B632'/></svg>");
+}
+:root[data-style="program"] :is(.mastbar,.bar){border-bottom:4px solid var(--sun);overflow:visible}
+:root[data-style="program"] :is(.mastbar,.bar)::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;background:var(--bunting) 0 0/96px 18px repeat-x;pointer-events:none;z-index:2;opacity:.95}
+:root[data-style="program"] .hubView .bar::after{display:block}
+:root[data-style="program"] .screen>.bar+*,:root[data-style="program"] .screen>.mastbar+*{margin-top:24px}
+:root[data-style="program"] .hero{position:relative;overflow:hidden;padding-bottom:70px;background:linear-gradient(180deg,#1F55D6 0%,#2F6BE6 62%,#4D86EE 100%)}
+:root[data-style="program"] .hero>*:not(.art){position:relative;z-index:1}
+:root[data-style="program"] .hero::before{content:"";position:absolute;left:0;right:0;top:0;height:20px;background:var(--bunting) 0 0/96px 18px repeat-x;z-index:0;opacity:.95}
+:root[data-style="program"] .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:54px;z-index:0;clip-path:polygon(0 34%,100% 0,100% 100%,0 100%);background:radial-gradient(circle at 5px 8px,#E03A2E 0 3.4px,transparent 3.8px),radial-gradient(circle at 17px 7px,#FFF8E6 0 3.1px,transparent 3.5px),radial-gradient(circle at 11px 16px,#F08A2B 0 3.6px,transparent 4px),radial-gradient(circle at 22px 17px,#E03A2E 0 3.1px,transparent 3.5px),#F2B632;background-size:26px 22px;border-top:3px solid var(--ink)}
+:root[data-style="program"] .hero .kick{margin-top:14px}
+:root[data-style="program"] .hero .num{font-size:96px;text-shadow:3px 3px 0 #1637A6}
+:root[data-style="program"] .hero .sub{font-size:23px;margin-top:0}
+:root[data-style="program"] .hero .art{opacity:.2}
+:root[data-style="program"] .sect{margin-top:26px}
+:root[data-style="program"] .plTotal>div{background:var(--card);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--shadow);font-family:var(--font-s);color:var(--accent)}
+:root[data-style="program"] .plTotal>div small{font-family:var(--font);color:var(--ink-2)}
+:root[data-style="program"] .ptH{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--accent)}
+:root[data-style="program"] .appear{background:var(--card);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--shadow)}

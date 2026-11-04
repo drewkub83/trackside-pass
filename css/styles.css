@@ -1111,92 +1111,103 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="race"] [data-s]{--sc:hsl(var(--h) 78% var(--s-l))}
 
 /* ==============================================================================================   STYLE: RACE PROGRAM  (Settings > Look and units > Style). Everything below only applies when
-   <html data-style="program">. A vintage race programme: cream paper, ink-black type, serif headlines (Playfair Display),
-   double rules, hard print-style shadows, stamped labels and square map badges. Fine-tune colours in the token blocks.
+   <html data-style="program">. Inspired by the old 24 Heures du Mans posters: aged cream paper, a cobalt-blue "sky" header with
+   heavy white lettering, poppy red, sun yellow and teal, brush-script dates, ribbon section labels, halftone dots and a little
+   print grain. Fonts: Archivo Black (headlines), Yellowtail (script), Barlow Condensed (labels). Tune the token blocks.
    ===================================================================================================== */
 :root[data-style="program"]{
-  --font:"Barlow","Segoe UI",system-ui,sans-serif; --font-d:"Barlow Condensed","Arial Narrow",sans-serif; --font-s:"Playfair Display",Georgia,"Times New Roman",serif;
-  --paper:#F1E7CF; --card:#FAF3E1; --ink:#1E1B16; --ink-2:#6B5F4B; --line:rgba(30,27,22,.30);
-  --bg-a:#F1E7CF; --bg-b:#F1E7CF; --hero-a:#FAF3E1; --hero-b:#FAF3E1; --hero-c:#FAF3E1;
-  --tint:rgba(30,27,22,.07); --tint-2:rgba(30,27,22,.05);
-  --accent:#A4262C; --accent-2:#C4423F; --nav:#1E1B16; --red:#B3261E; --live-dot:#2E7D4F;
-  --track:#A4262C; --track-edge:#FAF3E1; --pit:#6B5F4B;
-  --glass:#FAF3E1; --glass-strong:#FAF3E1; --glass-edge:rgba(30,27,22,.40);
-  --shadow:3px 3px 0 rgba(30,27,22,.16); --glow:none;
-  --s-gtwca:#2F4F8F; --s-gtwce:#A4262C; --s-imsa:#C58A1A; --s-indycar:#2E7D4F; --s-other:#6B5F4B; --s-l:40%;
-  --food:#B8731A; --screen:#7A6420; --info:#6B5F4B; --cross:#5A5040; --gate:#2F4F8F; --stand:#6B3F7A; --park:#1E1B16; --rest:#1F7A6D; --camp:#2E7D4F; --med:#A4262C; --merch:#A8326B; --view:#1F6F8B;
+  --font:"Barlow","Segoe UI",system-ui,sans-serif; --font-d:"Barlow Condensed","Arial Narrow",sans-serif; --font-s:"Archivo Black","Arial Black",Impact,sans-serif; --font-sc:"Yellowtail","Brush Script MT",cursive;
+  --paper:#F4E8CF; --card:#FBF3DF; --ink:#1B2347; --ink-2:#5B5F7A; --line:rgba(27,35,71,.30);
+  --bg-a:#F4E8CF; --bg-b:#F4E8CF; --hero-a:#1F55D6; --hero-b:#1F55D6; --hero-c:#1F55D6;
+  --tint:rgba(27,35,71,.07); --tint-2:rgba(27,35,71,.05);
+  --accent:#E03A2E; --accent-2:#F08A2B; --blue:#1F55D6; --sun:#F2B632; --teal:#2BA394; --cream:#FFF8E6;
+  --nav:#16307F; --live-dot:#F2B632; --track:#E03A2E; --track-edge:#FBF3DF; --pit:#5B5F7A;
+  --glass:#FBF3DF; --glass-strong:#FBF3DF; --glass-edge:rgba(27,35,71,.40);
+  --shadow:3px 3px 0 rgba(27,35,71,.20); --glow:none;
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .30  0 0 0 0 .22  0 0 0 0 .12  0 0 0 .55 -.18'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  --s-gtwca:#1F55D6; --s-gtwce:#E03A2E; --s-imsa:#F2B632; --s-indycar:#2BA394; --s-other:#5B5F7A; --s-l:42%;
+  --food:#F08A2B; --screen:#8C6F1F; --info:#5B5F7A; --cross:#4A4F6A; --gate:#1F55D6; --stand:#7A3E9D; --park:#1B2347; --rest:#2BA394; --camp:#3E9B4F; --med:#E03A2E; --merch:#D9387F; --view:#1AA0C8;
 }
 @media (prefers-color-scheme: dark){
   :root[data-style="program"]:not([data-theme="light"]){
-    --paper:#17130E; --card:#211B14; --ink:#F1E7CF; --ink-2:#A89A80; --line:rgba(241,231,207,.28);
-    --bg-a:#17130E; --bg-b:#17130E; --hero-a:#211B14; --hero-b:#211B14; --hero-c:#211B14;
-    --tint:rgba(241,231,207,.08); --tint-2:rgba(241,231,207,.06);
-    --accent:#E0614F; --accent-2:#F0806E; --nav:#2A231A; --red:#E0614F; --live-dot:#59C78A;
-    --track:#E0614F; --track-edge:#17130E; --pit:#A89A80;
-    --glass:#211B14; --glass-strong:#211B14; --glass-edge:rgba(241,231,207,.35); --shadow:3px 3px 0 rgba(0,0,0,.45);
-    --s-gtwca:#7C9BE0; --s-gtwce:#E0614F; --s-imsa:#E3AE45; --s-indycar:#59C78A; --s-other:#A89A80; --s-l:62%;
-    --food:#E3AE45; --screen:#C9A33A; --info:#A89A80; --cross:#A89A80; --gate:#7C9BE0; --stand:#B58AC8; --park:#8F8570; --rest:#52C0B0; --camp:#59C78A; --med:#E0614F; --merch:#E27FB0; --view:#5FB8D6;
+    --paper:#0F1E2B; --card:#16293A; --ink:#F6EBD3; --ink-2:#9FB0BE; --line:rgba(246,235,211,.28);
+    --bg-a:#0F1E2B; --bg-b:#0F1E2B; --hero-a:#16293A; --hero-b:#16293A; --hero-c:#16293A;
+    --tint:rgba(246,235,211,.08); --tint-2:rgba(246,235,211,.06);
+    --accent:#F08A2B; --accent-2:#F5A455; --blue:#2F6FED; --sun:#F2B632; --cream:#F6EBD3;
+    --nav:#0A1520; --track:#F08A2B; --track-edge:#0F1E2B; --pit:#9FB0BE;
+    --glass:#16293A; --glass-strong:#16293A; --glass-edge:rgba(246,235,211,.35); --shadow:3px 3px 0 rgba(0,0,0,.45);
+    --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .95  0 0 0 0 .90  0 0 0 0 .80  0 0 0 .40 -.14'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    --s-gtwca:#6F9BFF; --s-gtwce:#FF6B5B; --s-imsa:#F2B632; --s-indycar:#4FD1BC; --s-other:#9FB0BE; --s-l:62%;
+    --food:#F5A455; --screen:#D9B84A; --info:#9FB0BE; --cross:#9FB0BE; --gate:#6F9BFF; --stand:#C39BE0; --park:#8FA3B5; --rest:#4FD1BC; --camp:#6FD18A; --med:#FF6B5B; --merch:#F58AB8; --view:#5FC9EA;
   }
 }
 :root[data-style="program"][data-theme="dark"]{
-  --paper:#17130E; --card:#211B14; --ink:#F1E7CF; --ink-2:#A89A80; --line:rgba(241,231,207,.28);
-  --bg-a:#17130E; --bg-b:#17130E; --hero-a:#211B14; --hero-b:#211B14; --hero-c:#211B14;
-  --tint:rgba(241,231,207,.08); --tint-2:rgba(241,231,207,.06);
-  --accent:#E0614F; --accent-2:#F0806E; --nav:#2A231A; --red:#E0614F; --live-dot:#59C78A;
-  --track:#E0614F; --track-edge:#17130E; --pit:#A89A80;
-  --glass:#211B14; --glass-strong:#211B14; --glass-edge:rgba(241,231,207,.35); --shadow:3px 3px 0 rgba(0,0,0,.45);
-  --s-gtwca:#7C9BE0; --s-gtwce:#E0614F; --s-imsa:#E3AE45; --s-indycar:#59C78A; --s-other:#A89A80; --s-l:62%;
-  --food:#E3AE45; --screen:#C9A33A; --info:#A89A80; --cross:#A89A80; --gate:#7C9BE0; --stand:#B58AC8; --park:#8F8570; --rest:#52C0B0; --camp:#59C78A; --med:#E0614F; --merch:#E27FB0; --view:#5FB8D6;
+  --paper:#0F1E2B; --card:#16293A; --ink:#F6EBD3; --ink-2:#9FB0BE; --line:rgba(246,235,211,.28);
+  --bg-a:#0F1E2B; --bg-b:#0F1E2B; --hero-a:#16293A; --hero-b:#16293A; --hero-c:#16293A;
+  --tint:rgba(246,235,211,.08); --tint-2:rgba(246,235,211,.06);
+  --accent:#F08A2B; --accent-2:#F5A455; --blue:#2F6FED; --sun:#F2B632; --cream:#F6EBD3;
+  --nav:#0A1520; --track:#F08A2B; --track-edge:#0F1E2B; --pit:#9FB0BE;
+  --glass:#16293A; --glass-strong:#16293A; --glass-edge:rgba(246,235,211,.35); --shadow:3px 3px 0 rgba(0,0,0,.45);
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .95  0 0 0 0 .90  0 0 0 0 .80  0 0 0 .40 -.14'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  --s-gtwca:#6F9BFF; --s-gtwce:#FF6B5B; --s-imsa:#F2B632; --s-indycar:#4FD1BC; --s-other:#9FB0BE; --s-l:62%;
+  --food:#F5A455; --screen:#D9B84A; --info:#9FB0BE; --cross:#9FB0BE; --gate:#6F9BFF; --stand:#C39BE0; --park:#8FA3B5; --rest:#4FD1BC; --camp:#6FD18A; --med:#FF6B5B; --merch:#F58AB8; --view:#5FC9EA;
 }
-/* type: serif headlines, condensed stamped labels */
-:root[data-style="program"] body{font-family:var(--font)}
-:root[data-style="program"] :is(h1,h2,h3,.ptitle2,.hubCard h4,.item h4,.scTop b,#pcName){font-family:var(--font-s);font-weight:900;letter-spacing:-.2px;text-transform:none}
-:root[data-style="program"] .sect{font-family:var(--font-d);font-weight:700;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);border-bottom:3px double var(--ink);padding-bottom:5px;margin-bottom:10px}
-:root[data-style="program"] .hubCard h4{font-family:var(--font-d);font-weight:700;letter-spacing:2.5px;text-transform:uppercase;font-size:14px}
-/* header bars: cream with a double rule */
-:root[data-style="program"] :is(.mastbar,.bar){background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:4px double var(--ink)}
+/* paper with a little print grain */
+:root[data-style="program"] body{font-family:var(--font);background:var(--paper) var(--grain) 0 0/140px 140px}
+/* type: heavy poster headlines, condensed ribbon labels, brush script for dates and asides */
+:root[data-style="program"] :is(h1,h2,h3,.ptitle2,.item h4,.scTop b,#pcName){font-family:var(--font-s);font-weight:400;letter-spacing:-.2px;text-transform:none}
+:root[data-style="program"] .hubCard h4{font-family:var(--font-d);font-weight:800;letter-spacing:2.5px;text-transform:uppercase;font-size:14px;color:var(--accent)}
+:root[data-style="program"] .sect{display:table;font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--cream);background:var(--accent);padding:3px 22px 3px 14px;margin-left:16px;margin-bottom:12px;clip-path:polygon(0 0,100% 0,calc(100% - 10px) 50%,100% 100%,0 100%)}
+:root[data-style="program"] .mast p{font-family:var(--font-sc);font-size:21px;line-height:1.15;color:var(--ink-2)}
+/* header bars: a cobalt "sky" with heavy cream lettering and a sun-yellow rule */
+:root[data-style="program"] :is(.mastbar,.bar){background:var(--blue);color:var(--cream);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:5px solid var(--sun)}
 :root[data-style="program"] :is(.mastbar,.bar)::before{display:none}
-:root[data-style="program"] .mastbar h1{font-size:30px;font-weight:900;letter-spacing:-.5px;color:var(--ink)}
-:root[data-style="program"] .ptitle2{font-size:23px}
-:root[data-style="program"] .fab{background:var(--card);border:1.5px solid var(--ink);box-shadow:none;color:var(--ink)}
-/* cards: ink border, square-ish corners, a hard print shadow */
-:root[data-style="program"] :is(.track-row,.hubCard,.ppsum,.item,.sess,.scard,.hero,.ccard,.ivenue,.alertCard,.mnow,.mrule){background:var(--card);border:1.5px solid var(--ink);border-radius:4px;box-shadow:var(--shadow);-webkit-backdrop-filter:none;backdrop-filter:none}
-:root[data-style="program"] .hero{border-width:2px}
-:root[data-style="program"] .hero .art{opacity:.12}
-:root[data-style="program"] .hero .kick{background:var(--ink);color:var(--paper);border-radius:2px;font-family:var(--font-d);font-weight:700;letter-spacing:2.5px;font-size:14px}
-:root[data-style="program"] .hero .num{font-family:var(--font-s);font-weight:900;font-size:112px;line-height:.85;letter-spacing:-4px;color:var(--red);margin-top:12px}
-:root[data-style="program"] .hero .num small{font-family:var(--font-d);font-weight:700;font-size:28px;letter-spacing:2px;line-height:1;text-transform:uppercase;color:var(--ink);white-space:normal;max-width:120px;vertical-align:bottom;margin-left:12px}
-:root[data-style="program"] .hero .name{font-family:var(--font-s);font-weight:900;font-size:26px;line-height:1.05;margin-top:14px}
-/* series rows: a coloured spine, like a programme index */
-:root[data-style="program"] .track-row.series{border-left:9px solid var(--sc,var(--s-other))}
-:root[data-style="program"] .track-row.series[data-s="gtwca"]{--sc:var(--s-gtwca)}
-:root[data-style="program"] .track-row.series[data-s="gtwce"]{--sc:var(--s-gtwce)}
-:root[data-style="program"] .track-row.series[data-s="imsa"]{--sc:var(--s-imsa)}
-:root[data-style="program"] .track-row.series[data-s="indycar"]{--sc:var(--s-indycar)}
-:root[data-style="program"] .track-row .tile.txt,:root[data-style="program"] .track-row .tile.imsa{background:transparent;color:var(--sc,var(--accent));font-family:var(--font-s);font-weight:900;letter-spacing:-.5px}
-:root[data-style="program"] .scard{border-left:9px solid var(--sc,var(--s-other))}
+:root[data-style="program"] :is(.mastbar h1,.ptitle2,.bar h2){color:var(--cream)}
+:root[data-style="program"] .mastbar h1{font-size:25px;text-transform:uppercase;letter-spacing:.4px}
+:root[data-style="program"] .ptitle2{font-size:22px}
+:root[data-style="program"] .fab{background:var(--card);border:2px solid var(--ink);box-shadow:none;color:var(--ink)}
+/* cards: cream stock with an ink border and a soft printed offset */
+:root[data-style="program"] :is(.track-row,.hubCard,.ppsum,.item,.sess,.scard,.ccard,.ivenue,.mnow,.mrule){background:var(--card);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--shadow);-webkit-backdrop-filter:none;backdrop-filter:none}
+/* the Next-up tile is the poster: blue sky, halftone dots, big white numeral */
+:root[data-style="program"] .hero{background:var(--blue) radial-gradient(rgba(255,248,230,.16) 1.2px,transparent 1.5px) 0 0/9px 9px;color:var(--cream);border:2px solid var(--ink);border-radius:6px;box-shadow:5px 5px 0 var(--accent);-webkit-backdrop-filter:none;backdrop-filter:none}
+:root[data-style="program"] .hero .art{opacity:.28}
+:root[data-style="program"] .hero .art path{stroke:var(--cream)}
+:root[data-style="program"] .hero .kick{background:var(--sun);color:var(--ink);border-radius:3px;font-family:var(--font-d);font-weight:800;letter-spacing:2.5px;font-size:14px}
+:root[data-style="program"] .hero .num{font-family:var(--font-s);font-weight:400;font-size:104px;line-height:.9;letter-spacing:-3px;color:var(--cream);text-shadow:4px 4px 0 var(--ink);margin-top:12px}
+:root[data-style="program"] .hero .num small{font-family:var(--font-d);font-weight:800;font-size:26px;letter-spacing:2px;line-height:1;text-transform:uppercase;color:var(--sun);text-shadow:none;white-space:normal;max-width:120px;vertical-align:bottom;margin-left:12px}
+:root[data-style="program"] .hero .name{font-family:var(--font-s);font-weight:400;font-size:25px;line-height:1.08;margin-top:14px;color:var(--cream)}
+:root[data-style="program"] .hero .sub{font-family:var(--font-sc);font-size:24px;line-height:1.1;color:var(--sun);margin-top:2px}
+/* series rows: a coloured spine like a programme index */
+:root[data-style="program"] .track-row.series,:root[data-style="program"] .scard{border-left:11px solid var(--sc,var(--s-other))}
+:root[data-style="program"] .track-row.series[data-s="gtwca"],:root[data-style="program"] .scard[data-s="gtwca"]{--sc:var(--s-gtwca)}
+:root[data-style="program"] .track-row.series[data-s="gtwce"],:root[data-style="program"] .scard[data-s="gtwce"]{--sc:var(--s-gtwce)}
+:root[data-style="program"] .track-row.series[data-s="imsa"],:root[data-style="program"] .scard[data-s="imsa"]{--sc:var(--s-imsa)}
+:root[data-style="program"] .track-row.series[data-s="indycar"],:root[data-style="program"] .scard[data-s="indycar"]{--sc:var(--s-indycar)}
+:root[data-style="program"] .track-row .tile.txt,:root[data-style="program"] .track-row .tile.imsa{background:transparent;color:var(--sc,var(--accent));font-family:var(--font-s);font-weight:400}
+:root[data-style="program"] .scTop span{color:var(--accent);font-weight:700}
 /* tabs and buttons */
-:root[data-style="program"] .tabs button.on{background:var(--paper);color:var(--ink);font-family:var(--font-d);font-weight:700;text-transform:uppercase;letter-spacing:1px;border-radius:3px}
-:root[data-style="program"] .btn.primary{background:var(--red);color:var(--paper);border:1.5px solid var(--ink);border-radius:3px;font-family:var(--font-d);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:17px;box-shadow:var(--shadow)}
-:root[data-style="program"] .btn.quiet{border:1.5px solid var(--ink);border-radius:3px;background:var(--card);color:var(--ink)}
+:root[data-style="program"] .tabs button.on{background:var(--cream);color:#1B2347;font-family:var(--font-d);font-weight:800;text-transform:uppercase;letter-spacing:1px;border-radius:4px}
+:root[data-style="program"] .btn.primary{background:var(--accent);color:var(--cream);border:2px solid var(--ink);border-radius:4px;font-family:var(--font-d);font-weight:800;text-transform:uppercase;letter-spacing:1.5px;font-size:17px;box-shadow:var(--shadow)}
+:root[data-style="program"] .btn.quiet{border:2px solid var(--ink);border-radius:4px;background:var(--card);color:var(--ink)}
 /* hub and sessions */
-:root[data-style="program"] .hubSessionName{font-family:var(--font-s);font-weight:900;font-size:36px;line-height:1}
-:root[data-style="program"] .hubCard.liveNow,:root[data-style="program"] .sess.live{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-:root[data-style="program"] .hubCard.liveNow h4,:root[data-style="program"] .sess.live .st{color:var(--paper)}
-:root[data-style="program"] .hubCard.liveNow .hubSessionSub,:root[data-style="program"] .sess.live .st small{color:rgba(241,231,207,.78)}
-:root[data-style="program"] .hubCard.liveNow .chev{stroke:var(--paper)}
-:root[data-style="program"] .hubChip{border-radius:2px;border:1.5px solid var(--ink)}
-:root[data-style="program"] .hubChip.live{background:var(--ink)}
-:root[data-style="program"] .hubChip b{font-family:var(--font-s);font-weight:900}
-:root[data-style="program"] .sess .st{font-family:var(--font-d);font-weight:700;font-size:23px}
-:root[data-style="program"] .ev .date{border:1.5px solid var(--ink);border-radius:2px}
-:root[data-style="program"] .ev .date b{font-family:var(--font-s);font-weight:900}
-:root[data-style="program"] .ev.nextup .date,:root[data-style="program"] .day.on{background:var(--red);color:var(--paper)}
-:root[data-style="program"] .ppsum .ppn{font-family:var(--font-s);font-weight:900;color:var(--red);letter-spacing:-3px}
-/* map: oxblood circuit, square badges (see data-style check in the badge builder in app.js) */
+:root[data-style="program"] .hubSessionName{font-family:var(--font-s);font-weight:400;font-size:32px;line-height:1.02}
+:root[data-style="program"] .hubCard.liveNow,:root[data-style="program"] .sess.live{background:var(--ink);color:var(--cream);border-color:var(--ink);box-shadow:4px 4px 0 var(--accent)}
+:root[data-style="program"] .hubCard.liveNow h4{color:var(--sun)}
+:root[data-style="program"] .sess.live .st{color:var(--cream)}
+:root[data-style="program"] .hubCard.liveNow .hubSessionSub,:root[data-style="program"] .sess.live .st small{color:rgba(255,248,230,.8)}
+:root[data-style="program"] .hubCard.liveNow .chev{stroke:var(--cream)}
+:root[data-style="program"] .hubChip{border-radius:4px;border:2px solid var(--ink)}
+:root[data-style="program"] .hubChip.live{background:var(--ink);color:var(--cream)}
+:root[data-style="program"] .hubChip b{font-family:var(--font-s);font-weight:400}
+:root[data-style="program"] .sess .st{font-family:var(--font-d);font-weight:800;font-size:23px}
+:root[data-style="program"] .ev .date{border:2px solid var(--ink);border-radius:4px}
+:root[data-style="program"] .ev .date b{font-family:var(--font-s);font-weight:400}
+:root[data-style="program"] .ev.nextup .date,:root[data-style="program"] .day.on{background:var(--accent);color:var(--cream)}
+:root[data-style="program"] .ppsum .ppn{font-family:var(--font-s);font-weight:400;color:var(--accent);letter-spacing:-2px}
+/* map: red circuit, square badges (the badge builder in app.js treats race and program alike) */
 :root[data-style="program"] .map-wrap svg .poi.near .sqbg{stroke:var(--accent);stroke-width:3}
 :root[data-style="program"] .map-wrap.editing .poi .sc>.sqbg{stroke:var(--yellow);stroke-width:2.5}
-:root[data-style="program"] .ppSec[data-s]>summary .ppSecT::before{content:"";display:inline-block;width:4px;height:14px;margin-right:8px;vertical-align:-2px;background:var(--sc,var(--s-other))}
+:root[data-style="program"] .ppSec[data-s]>summary .ppSecT::before{content:"";display:inline-block;width:5px;height:14px;margin-right:8px;vertical-align:-2px;background:var(--sc,var(--s-other))}
 :root[data-style="program"] .ppSec[data-s="gtwca"]{--sc:var(--s-gtwca)}:root[data-style="program"] .ppSec[data-s="gtwce"]{--sc:var(--s-gtwce)}
 :root[data-style="program"] .ppSec[data-s="imsa"]{--sc:var(--s-imsa)}:root[data-style="program"] .ppSec[data-s="indycar"]{--sc:var(--s-indycar)}
-:root[data-style="program"] .info dt{font-family:var(--font-d);font-weight:700;font-size:15px;letter-spacing:2px}
+:root[data-style="program"] .info dt{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:2px}

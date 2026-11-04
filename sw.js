@@ -32,7 +32,7 @@ async function saveMaps(cache) {
 async function tellClients(type) { (await self.clients.matchAll({ includeUncontrolled: true })).forEach(c => c.postMessage({ type })); }
 
 /* Must match the <link> in index.html exactly. Saved up front so the fonts also work offline. */
-const FONT_CSS = "https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap";
+const FONT_CSS = "https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=Playfair+Display:wght@700;900&display=swap";
 
 async function saveFonts() {
   try {

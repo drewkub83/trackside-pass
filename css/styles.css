@@ -1109,3 +1109,94 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="race"] [data-s="moto3"]{--h:55}
 :root[data-style="race"] [data-s="cat-moto"]{--h:85}
 :root[data-style="race"] [data-s]{--sc:hsl(var(--h) 78% var(--s-l))}
+
+/* ==============================================================================================   STYLE: RACE PROGRAM  (Settings > Look and units > Style). Everything below only applies when
+   <html data-style="program">. A vintage race programme: cream paper, ink-black type, serif headlines (Playfair Display),
+   double rules, hard print-style shadows, stamped labels and square map badges. Fine-tune colours in the token blocks.
+   ===================================================================================================== */
+:root[data-style="program"]{
+  --font:"Barlow","Segoe UI",system-ui,sans-serif; --font-d:"Barlow Condensed","Arial Narrow",sans-serif; --font-s:"Playfair Display",Georgia,"Times New Roman",serif;
+  --paper:#F1E7CF; --card:#FAF3E1; --ink:#1E1B16; --ink-2:#6B5F4B; --line:rgba(30,27,22,.30);
+  --bg-a:#F1E7CF; --bg-b:#F1E7CF; --hero-a:#FAF3E1; --hero-b:#FAF3E1; --hero-c:#FAF3E1;
+  --tint:rgba(30,27,22,.07); --tint-2:rgba(30,27,22,.05);
+  --accent:#A4262C; --accent-2:#C4423F; --nav:#1E1B16; --red:#B3261E; --live-dot:#2E7D4F;
+  --track:#A4262C; --track-edge:#FAF3E1; --pit:#6B5F4B;
+  --glass:#FAF3E1; --glass-strong:#FAF3E1; --glass-edge:rgba(30,27,22,.40);
+  --shadow:3px 3px 0 rgba(30,27,22,.16); --glow:none;
+  --s-gtwca:#2F4F8F; --s-gtwce:#A4262C; --s-imsa:#C58A1A; --s-indycar:#2E7D4F; --s-other:#6B5F4B; --s-l:40%;
+  --food:#B8731A; --screen:#7A6420; --info:#6B5F4B; --cross:#5A5040; --gate:#2F4F8F; --stand:#6B3F7A; --park:#1E1B16; --rest:#1F7A6D; --camp:#2E7D4F; --med:#A4262C; --merch:#A8326B; --view:#1F6F8B;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-style="program"]:not([data-theme="light"]){
+    --paper:#17130E; --card:#211B14; --ink:#F1E7CF; --ink-2:#A89A80; --line:rgba(241,231,207,.28);
+    --bg-a:#17130E; --bg-b:#17130E; --hero-a:#211B14; --hero-b:#211B14; --hero-c:#211B14;
+    --tint:rgba(241,231,207,.08); --tint-2:rgba(241,231,207,.06);
+    --accent:#E0614F; --accent-2:#F0806E; --nav:#2A231A; --red:#E0614F; --live-dot:#59C78A;
+    --track:#E0614F; --track-edge:#17130E; --pit:#A89A80;
+    --glass:#211B14; --glass-strong:#211B14; --glass-edge:rgba(241,231,207,.35); --shadow:3px 3px 0 rgba(0,0,0,.45);
+    --s-gtwca:#7C9BE0; --s-gtwce:#E0614F; --s-imsa:#E3AE45; --s-indycar:#59C78A; --s-other:#A89A80; --s-l:62%;
+    --food:#E3AE45; --screen:#C9A33A; --info:#A89A80; --cross:#A89A80; --gate:#7C9BE0; --stand:#B58AC8; --park:#8F8570; --rest:#52C0B0; --camp:#59C78A; --med:#E0614F; --merch:#E27FB0; --view:#5FB8D6;
+  }
+}
+:root[data-style="program"][data-theme="dark"]{
+  --paper:#17130E; --card:#211B14; --ink:#F1E7CF; --ink-2:#A89A80; --line:rgba(241,231,207,.28);
+  --bg-a:#17130E; --bg-b:#17130E; --hero-a:#211B14; --hero-b:#211B14; --hero-c:#211B14;
+  --tint:rgba(241,231,207,.08); --tint-2:rgba(241,231,207,.06);
+  --accent:#E0614F; --accent-2:#F0806E; --nav:#2A231A; --red:#E0614F; --live-dot:#59C78A;
+  --track:#E0614F; --track-edge:#17130E; --pit:#A89A80;
+  --glass:#211B14; --glass-strong:#211B14; --glass-edge:rgba(241,231,207,.35); --shadow:3px 3px 0 rgba(0,0,0,.45);
+  --s-gtwca:#7C9BE0; --s-gtwce:#E0614F; --s-imsa:#E3AE45; --s-indycar:#59C78A; --s-other:#A89A80; --s-l:62%;
+  --food:#E3AE45; --screen:#C9A33A; --info:#A89A80; --cross:#A89A80; --gate:#7C9BE0; --stand:#B58AC8; --park:#8F8570; --rest:#52C0B0; --camp:#59C78A; --med:#E0614F; --merch:#E27FB0; --view:#5FB8D6;
+}
+/* type: serif headlines, condensed stamped labels */
+:root[data-style="program"] body{font-family:var(--font)}
+:root[data-style="program"] :is(h1,h2,h3,.ptitle2,.hubCard h4,.item h4,.scTop b,#pcName){font-family:var(--font-s);font-weight:900;letter-spacing:-.2px;text-transform:none}
+:root[data-style="program"] .sect{font-family:var(--font-d);font-weight:700;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);border-bottom:3px double var(--ink);padding-bottom:5px;margin-bottom:10px}
+:root[data-style="program"] .hubCard h4{font-family:var(--font-d);font-weight:700;letter-spacing:2.5px;text-transform:uppercase;font-size:14px}
+/* header bars: cream with a double rule */
+:root[data-style="program"] :is(.mastbar,.bar){background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:4px double var(--ink)}
+:root[data-style="program"] :is(.mastbar,.bar)::before{display:none}
+:root[data-style="program"] .mastbar h1{font-size:30px;font-weight:900;letter-spacing:-.5px;color:var(--ink)}
+:root[data-style="program"] .ptitle2{font-size:23px}
+:root[data-style="program"] .fab{background:var(--card);border:1.5px solid var(--ink);box-shadow:none;color:var(--ink)}
+/* cards: ink border, square-ish corners, a hard print shadow */
+:root[data-style="program"] :is(.track-row,.hubCard,.ppsum,.item,.sess,.scard,.hero,.ccard,.ivenue,.alertCard,.mnow,.mrule){background:var(--card);border:1.5px solid var(--ink);border-radius:4px;box-shadow:var(--shadow);-webkit-backdrop-filter:none;backdrop-filter:none}
+:root[data-style="program"] .hero{border-width:2px}
+:root[data-style="program"] .hero .art{opacity:.12}
+:root[data-style="program"] .hero .kick{background:var(--ink);color:var(--paper);border-radius:2px;font-family:var(--font-d);font-weight:700;letter-spacing:2.5px;font-size:14px}
+:root[data-style="program"] .hero .num{font-family:var(--font-s);font-weight:900;font-size:112px;line-height:.85;letter-spacing:-4px;color:var(--red);margin-top:12px}
+:root[data-style="program"] .hero .num small{font-family:var(--font-d);font-weight:700;font-size:28px;letter-spacing:2px;line-height:1;text-transform:uppercase;color:var(--ink);white-space:normal;max-width:120px;vertical-align:bottom;margin-left:12px}
+:root[data-style="program"] .hero .name{font-family:var(--font-s);font-weight:900;font-size:26px;line-height:1.05;margin-top:14px}
+/* series rows: a coloured spine, like a programme index */
+:root[data-style="program"] .track-row.series{border-left:9px solid var(--sc,var(--s-other))}
+:root[data-style="program"] .track-row.series[data-s="gtwca"]{--sc:var(--s-gtwca)}
+:root[data-style="program"] .track-row.series[data-s="gtwce"]{--sc:var(--s-gtwce)}
+:root[data-style="program"] .track-row.series[data-s="imsa"]{--sc:var(--s-imsa)}
+:root[data-style="program"] .track-row.series[data-s="indycar"]{--sc:var(--s-indycar)}
+:root[data-style="program"] .track-row .tile.txt,:root[data-style="program"] .track-row .tile.imsa{background:transparent;color:var(--sc,var(--accent));font-family:var(--font-s);font-weight:900;letter-spacing:-.5px}
+:root[data-style="program"] .scard{border-left:9px solid var(--sc,var(--s-other))}
+/* tabs and buttons */
+:root[data-style="program"] .tabs button.on{background:var(--paper);color:var(--ink);font-family:var(--font-d);font-weight:700;text-transform:uppercase;letter-spacing:1px;border-radius:3px}
+:root[data-style="program"] .btn.primary{background:var(--red);color:var(--paper);border:1.5px solid var(--ink);border-radius:3px;font-family:var(--font-d);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;font-size:17px;box-shadow:var(--shadow)}
+:root[data-style="program"] .btn.quiet{border:1.5px solid var(--ink);border-radius:3px;background:var(--card);color:var(--ink)}
+/* hub and sessions */
+:root[data-style="program"] .hubSessionName{font-family:var(--font-s);font-weight:900;font-size:36px;line-height:1}
+:root[data-style="program"] .hubCard.liveNow,:root[data-style="program"] .sess.live{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+:root[data-style="program"] .hubCard.liveNow h4,:root[data-style="program"] .sess.live .st{color:var(--paper)}
+:root[data-style="program"] .hubCard.liveNow .hubSessionSub,:root[data-style="program"] .sess.live .st small{color:rgba(241,231,207,.78)}
+:root[data-style="program"] .hubCard.liveNow .chev{stroke:var(--paper)}
+:root[data-style="program"] .hubChip{border-radius:2px;border:1.5px solid var(--ink)}
+:root[data-style="program"] .hubChip.live{background:var(--ink)}
+:root[data-style="program"] .hubChip b{font-family:var(--font-s);font-weight:900}
+:root[data-style="program"] .sess .st{font-family:var(--font-d);font-weight:700;font-size:23px}
+:root[data-style="program"] .ev .date{border:1.5px solid var(--ink);border-radius:2px}
+:root[data-style="program"] .ev .date b{font-family:var(--font-s);font-weight:900}
+:root[data-style="program"] .ev.nextup .date,:root[data-style="program"] .day.on{background:var(--red);color:var(--paper)}
+:root[data-style="program"] .ppsum .ppn{font-family:var(--font-s);font-weight:900;color:var(--red);letter-spacing:-3px}
+/* map: oxblood circuit, square badges (see data-style check in the badge builder in app.js) */
+:root[data-style="program"] .map-wrap svg .poi.near .sqbg{stroke:var(--accent);stroke-width:3}
+:root[data-style="program"] .map-wrap.editing .poi .sc>.sqbg{stroke:var(--yellow);stroke-width:2.5}
+:root[data-style="program"] .ppSec[data-s]>summary .ppSecT::before{content:"";display:inline-block;width:4px;height:14px;margin-right:8px;vertical-align:-2px;background:var(--sc,var(--s-other))}
+:root[data-style="program"] .ppSec[data-s="gtwca"]{--sc:var(--s-gtwca)}:root[data-style="program"] .ppSec[data-s="gtwce"]{--sc:var(--s-gtwce)}
+:root[data-style="program"] .ppSec[data-s="imsa"]{--sc:var(--s-imsa)}:root[data-style="program"] .ppSec[data-s="indycar"]{--sc:var(--s-indycar)}
+:root[data-style="program"] .info dt{font-family:var(--font-d);font-weight:700;font-size:15px;letter-spacing:2px}

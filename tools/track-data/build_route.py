@@ -130,8 +130,8 @@ def build(tid,rle=False):
                 if ocell(x,y)=="1": seen_block=True; free_run=0
                 elif big_open(x,y):
                     free_run+=1
-                    if seen_block and free_run>=3: break
-                    if not seen_block and s_*mpu>=25: break
+                    if seen_block and free_run>=3 and not q.get("through"): break   # "through": carve the whole span (a wide band whose far wall is more than one open stretch away: Atlanta)
+                    if not seen_block and s_*mpu>=25 and not q.get("through"): break
                 else: free_run=0
                 s_+=step
     rows=G.rows()

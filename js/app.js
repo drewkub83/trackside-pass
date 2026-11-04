@@ -212,7 +212,7 @@ function heroPick(){ const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.
 function renderHero(){
   const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(), el=document.getElementById("hero"); if(!c){ el.innerHTML=""; return; }
   const {t,e}=c, today=localToday(), on=e.d<=today, n=daysBetween(today,e.d), day=Math.min(e.t||1,daysBetween(e.d,today)+1), who=champsAt(t,e).map(x=>x.name).join(" + ")||e.s;
-  el.innerHTML=`<button class="hero" onclick="openTrack('${t.id}','home')">
+  el.innerHTML=`<button class="hero" data-s="${(champsAt(t,e)[0]||{}).id||""}" onclick="openTrack('${t.id}','home')">
     <svg class="art" viewBox="${trackBox(t).join(" ")}" aria-hidden="true"><path d="${t.path}" fill="none" stroke="var(--ink)" stroke-width="${(trackBox(t)[2]*0.024).toFixed(1)}" stroke-linejoin="round" stroke-linecap="round"/></svg>
     <span class="kick">${on?"Happening now":(gnear?"You're going":"Next up")} · ${who}</span>
     <div class="num">${on?"Day "+day:n}<small>${on?`of ${e.t||1} day${(e.t||1)>1?"s":""}`:(n===1?"day to go":"days to go")}</small></div>
@@ -243,7 +243,7 @@ function renderSeason(){
     const g0=lastOk&&last.groups[0], win0=g0?(g0.order?g0.order[0].replace(/^\d+\.\s*/,""):g0.winner):"", win=win0.includes(" \u2014 ")?win0.split(" \u2014 ").pop():win0;   /* drivers, not the car */
     const std=standingsFor(c.guide), stYr=std&&((std.asOf||"").match(/20\d\d/)||[])[0], lead=std&&(stYr?stYr===yr:lastOk)&&std.classes[0]&&std.classes[0].rows[0];
     const role=seasonRole(c,pick);
-    return {d:pick.e.d,h:`<button class="scard" data-s="${c.id}" onclick="${pick.id?`openTrack('${pick.id}','home')`:`openSeries('${c.id}')`}"><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`}; }).filter(Boolean).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,6);   /* by race date, whatever order the series are arranged in */
+    return {d:pick.e.d,h:`<button class="scard" data-s="${c.id}" onclick="${pick.id?`openTrack('${pick.id}','home')`:`openSeries('${c.id}')`}"><span class="scStub" aria-hidden="true"><i>${["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"][+pick.e.d.slice(5,7)-1]}</i><b>${+pick.e.d.slice(8,10)}</b></span><div class="scTop"><b>${esc(c.name)}</b><span>${when}</span></div><div class="scNext">${esc(pick.t)} \u00b7 ${esc(fmtRange(pick.e))}</div>${role?`<div class="scRow"><i>${role==="Season finale"?"Finale":"Opener"}</i>${role==="Season finale"?"Last race of":"First race of"} ${yr}</div>`:""}${win?`<div class="scRow"><i>Last</i>${esc(g0.h)}: ${esc(win)}</div>`:""}${lead?`<div class="scRow"><i>Leads</i>${esc(std.classes[0].h)}: ${esc(lead.who.replace(/\s*\(.*$/,""))}${lead.pts?" \u00b7 "+lead.pts+" pts":""}</div>`:""}</button>`}; }).filter(Boolean).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,6);   /* by race date, whatever order the series are arranged in */
   /* "This week" = weekends starting by this Sunday (weeks run Monday to Sunday); everything later in the window is "Coming up" */
   const dt=new Date(today+"T12:00:00Z"), weekEnd=new Date(dt.getTime()+((7-dt.getUTCDay())%7)*864e5).toISOString().slice(0,10);
   const grp=(t,l)=>l.length?`<div class="sect">${t}</div><div class="scards">${l.map(x=>x.h).join("")}</div>`:"";
@@ -486,7 +486,7 @@ function poiEl(p,i){
   const pill = p.k==='rest'&&hasShower(p);
   const body = pill
     ? `<circle r="17" fill="transparent"/><rect class="pillbg" x="-17" y="-9" width="34" height="18" rx="9" fill="${c}" stroke="#fff" stroke-width="1.8"/><g transform="translate(-8,0) scale(.62)">${ICON.rest}</g><g transform="translate(8.5,0) scale(.95)">${SHOWER_ICON}</g>`
-    : `<circle r="17" fill="transparent"/>${/^(race|program)$/.test(document.documentElement.getAttribute("data-style")||"")?`<rect class="sqbg" x="-9.5" y="-9.5" width="19" height="19" rx="5.5" fill="${c}" stroke="#fff" stroke-width="1.8"/>`:`<circle r="9" fill="${c}" stroke="#fff" stroke-width="1.8"/>`}<g transform="scale(.7)">${p.k==='cross'&&/tunnel/i.test(p.n)?ICON.tunnel:ICON[p.k]}</g>`;
+    : `<circle r="17" fill="transparent"/>${document.documentElement.getAttribute("data-style")==="race"?`<rect class="sqbg" x="-9.5" y="-9.5" width="19" height="19" rx="5.5" fill="${c}" stroke="#fff" stroke-width="1.8"/>`:`<circle r="9" fill="${c}" stroke="#fff" stroke-width="1.8"/>`}<g transform="scale(.7)">${p.k==='cross'&&/tunnel/i.test(p.n)?ICON.tunnel:ICON[p.k]}</g>`;
   return `<g class="poi" data-k="${p.k}" data-i="${i}" data-tier="${TIER[p.k]||3}" data-x="${p.x}" data-y="${p.y}" data-sh="${pill?1:0}" transform="translate(${p.x},${p.y})" style="display:${poiShown(p)?'':'none'}">
     <g class="sc">${body}
     <text class="plabel" y="20" text-anchor="middle" font-size="10" font-weight="500" fill="var(--ink)" stroke="var(--paper)" stroke-width="2.5" paint-order="stroke">${p.n}</text><circle class="halo" r="14" fill="none" stroke="var(--accent)" stroke-width="3"/><g class="cnt" transform="translate(11,-11)"><circle r="6.2" fill="var(--ink)" stroke="#fff" stroke-width="1.3"/><text y="3" text-anchor="middle" font-size="8.2" font-weight="700" fill="#fff"></text></g></g></g>`;
@@ -2353,14 +2353,14 @@ function renderThemeUI(p){
   document.querySelectorAll(".themeSeg").forEach(el=>{ el.innerHTML=THEMES.map(([k,l])=>`<button class="${k===p?"on":""}" onclick="setTheme('${k}')">${l}</button>`).join(""); });
   document.querySelectorAll(".themeNote").forEach(el=>el.textContent=note);
 }
-/* Style: "classic" (the original soft look), "race" (Race Control: bold type, black header, orange accent) or "program" (Race Program: a vintage programme, cream paper and serif headlines). Saved on the phone;
+/* Style: "classic" (the original soft look), "race" (Race Control: bold type, black header, orange accent) or "ticket" (Ticket Stubs: weekends as paper tickets with a coloured date stub). Saved on the phone;
    index.html applies it before first paint so there is no flash. */
-const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"],["program","Race Program"]];
-function stylePref(){ try{ const v=localStorage.getItem(STYLE_KEY); return v==="race"||v==="program"?v:"classic"; }catch(e){ return "classic"; } }
+const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"],["ticket","Ticket Stubs"]];
+function stylePref(){ try{ const v=localStorage.getItem(STYLE_KEY); return v==="race"?"race":(v==="ticket"||v==="program")?"ticket":"classic"; }catch(e){ return "classic"; } }   /* "program" was a short-lived style that became Ticket Stubs */
 function applyStyle(){ const r=document.documentElement; if(stylePref()!=="classic") r.setAttribute("data-style",stylePref()); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
 function renderStyleUI(){ const p=stylePref();
   document.querySelectorAll(".styleSeg").forEach(el=>{ el.innerHTML=STYLES.map(([k,l])=>`<button class="${k===p?"on":""}" onclick="setStyle('${k}')">${l}</button>`).join(""); });
-  document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":p==="program"?"A vintage race programme: cream paper, serif headlines, double rules and stamped labels.":"The original soft look."); }
+  document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":p==="ticket"?"Race weekends as tickets: a coloured date stub, a dashed tear line and warm paper.":"The original soft look."); }
 function setStyle(k){ try{ localStorage.setItem(STYLE_KEY,k); }catch(e){} applyStyle(); }
 function setTheme(k){ try{ localStorage.setItem(THEME_KEY,k); }catch(e){} applyTheme(); }
 applyTheme(); setInterval(applyTheme,60000);

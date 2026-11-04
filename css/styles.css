@@ -1110,146 +1110,131 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="race"] [data-s="cat-moto"]{--h:85}
 :root[data-style="race"] [data-s]{--sc:hsl(var(--h) 78% var(--s-l))}
 
-/* ==============================================================================================   STYLE: RACE PROGRAM  (Settings > Look and units > Style). Everything below only applies when
-   <html data-style="program">. Inspired by the old 24 Heures du Mans posters: aged cream paper, a cobalt-blue "sky" header with
-   heavy white lettering, poppy red, sun yellow and teal, brush-script dates, ribbon section labels, halftone dots and a little
-   print grain. Fonts: Archivo Black (headlines), Yellowtail (script), Barlow Condensed (labels). Tune the token blocks.
+/* ==============================================================================================   STYLE: TICKET STUBS  (Settings > Look and units > Style). Everything below only applies when
+   <html data-style="ticket">. Race weekends are tickets: warm paper, an ink outline, a coloured date stub (one colour per series)
+   cut off by a dashed tear line with two notches. Fonts: Barlow and Barlow Condensed (already loaded, nothing new to download).
    ===================================================================================================== */
-:root[data-style="program"]{
-  --font:"Barlow","Segoe UI",system-ui,sans-serif; --font-d:"Barlow Condensed","Arial Narrow",sans-serif; --font-s:"Archivo Black","Arial Black",Impact,sans-serif; --font-sc:"Yellowtail","Brush Script MT",cursive;
-  --paper:#F4E8CF; --card:#FBF3DF; --ink:#1B2347; --ink-2:#5B5F7A; --line:rgba(27,35,71,.30);
-  --bg-a:#F4E8CF; --bg-b:#F4E8CF; --hero-a:#1F55D6; --hero-b:#1F55D6; --hero-c:#1F55D6;
-  --tint:rgba(27,35,71,.07); --tint-2:rgba(27,35,71,.05);
-  --accent:#E03A2E; --accent-2:#F08A2B; --blue:#1F55D6; --sun:#F2B632; --teal:#2BA394; --cream:#FFF8E6;
-  --nav:#16307F; --live-dot:#F2B632; --track:#E03A2E; --track-edge:#FBF3DF; --pit:#5B5F7A;
-  --glass:#FBF3DF; --glass-strong:#FBF3DF; --glass-edge:rgba(27,35,71,.40);
-  --shadow:3px 3px 0 rgba(27,35,71,.20); --glow:none;
-  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .30  0 0 0 0 .22  0 0 0 0 .12  0 0 0 .55 -.18'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  --s-gtwca:#1F55D6; --s-gtwce:#E03A2E; --s-imsa:#F2B632; --s-indycar:#2BA394; --s-other:#5B5F7A; --s-l:42%;
-  --food:#F08A2B; --screen:#8C6F1F; --info:#5B5F7A; --cross:#4A4F6A; --gate:#1F55D6; --stand:#7A3E9D; --park:#1B2347; --rest:#2BA394; --camp:#3E9B4F; --med:#E03A2E; --merch:#D9387F; --view:#1AA0C8;
+:root[data-style="ticket"]{
+  --font:"Barlow","Segoe UI",system-ui,sans-serif; --font-d:"Barlow Condensed","Arial Narrow",sans-serif;
+  --paper:#F3EDE3; --card:#FFFDF8; --ink:#2A2118; --ink-2:#6B5D4D; --line:rgba(42,33,24,.28);
+  --bg-a:#F3EDE3; --bg-b:#F3EDE3; --hero-a:#FFFDF8; --hero-b:#FFFDF8; --hero-c:#FFFDF8;
+  --tint:rgba(42,33,24,.07); --tint-2:rgba(42,33,24,.05);
+  --accent:#C2410C; --accent-2:#EA580C; --nav:#2A2118; --sun:#F5B700; --live-dot:#F5B700;
+  --track:#E53935; --track-edge:#FFFDF8; --pit:#6B5D4D;
+  --glass:#FFFDF8; --glass-strong:#FFFDF8; --glass-edge:rgba(42,33,24,.35);
+  --shadow:0 2px 0 rgba(42,33,24,.14); --glow:none;
+  --s-gtwca:#7B3FA0; --s-gtwce:#C2185B; --s-imsa:#0E7C86; --s-indycar:#1E8E5A; --s-other:#5C534A; --s-l:42%;
+  --tkc:#5C534A; --tkt:#FFFFFF;
+  --food:#EA580C; --screen:#8C6F1F; --info:#6B5D4D; --cross:#4A4036; --gate:#2B6CB0; --stand:#7B3FA0; --park:#2A2118; --rest:#0E7C86; --camp:#1E8E5A; --med:#E53935; --merch:#C2185B; --view:#1A8FB5;
 }
 @media (prefers-color-scheme: dark){
-  :root[data-style="program"]:not([data-theme="light"]){
-    --paper:#0F1E2B; --card:#16293A; --ink:#F6EBD3; --ink-2:#9FB0BE; --line:rgba(246,235,211,.28);
-    --bg-a:#0F1E2B; --bg-b:#0F1E2B; --hero-a:#16293A; --hero-b:#16293A; --hero-c:#16293A;
-    --tint:rgba(246,235,211,.08); --tint-2:rgba(246,235,211,.06);
-    --accent:#F08A2B; --accent-2:#F5A455; --blue:#2F6FED; --sun:#F2B632; --cream:#F6EBD3;
-    --nav:#0A1520; --track:#F08A2B; --track-edge:#0F1E2B; --pit:#9FB0BE;
-    --glass:#16293A; --glass-strong:#16293A; --glass-edge:rgba(246,235,211,.35); --shadow:3px 3px 0 rgba(0,0,0,.45);
-    --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .95  0 0 0 0 .90  0 0 0 0 .80  0 0 0 .40 -.14'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    --s-gtwca:#6F9BFF; --s-gtwce:#FF6B5B; --s-imsa:#F2B632; --s-indycar:#4FD1BC; --s-other:#9FB0BE; --s-l:62%;
-    --food:#F5A455; --screen:#D9B84A; --info:#9FB0BE; --cross:#9FB0BE; --gate:#6F9BFF; --stand:#C39BE0; --park:#8FA3B5; --rest:#4FD1BC; --camp:#6FD18A; --med:#FF6B5B; --merch:#F58AB8; --view:#5FC9EA;
+  :root[data-style="ticket"]:not([data-theme="light"]){
+    --paper:#1A1612; --card:#262019; --ink:#F3EDE3; --ink-2:#B3A692; --line:rgba(243,237,227,.30);
+    --bg-a:#1A1612; --bg-b:#1A1612; --hero-a:#262019; --hero-b:#262019; --hero-c:#262019;
+    --tint:rgba(243,237,227,.08); --tint-2:rgba(243,237,227,.06);
+    --accent:#F59E0B; --accent-2:#FBBF24; --nav:#0F0C09; --track:#FF6B5B; --track-edge:#1A1612; --pit:#B3A692;
+    --glass:#262019; --glass-strong:#262019; --glass-edge:rgba(243,237,227,.35); --shadow:0 2px 0 rgba(0,0,0,.4);
+    --s-gtwca:#B77BDB; --s-gtwce:#F06292; --s-imsa:#3FB8C3; --s-indycar:#4CC38A; --s-other:#B3A692; --s-l:62%;
+    --food:#FB923C; --screen:#D9B84A; --info:#B3A692; --cross:#B3A692; --gate:#6FA8E0; --stand:#C39BE0; --park:#8F8570; --rest:#4FD1BC; --camp:#6FD18A; --med:#FF6B5B; --merch:#F58AB8; --view:#5FC9EA;
   }
 }
-:root[data-style="program"][data-theme="dark"]{
-  --paper:#0F1E2B; --card:#16293A; --ink:#F6EBD3; --ink-2:#9FB0BE; --line:rgba(246,235,211,.28);
-  --bg-a:#0F1E2B; --bg-b:#0F1E2B; --hero-a:#16293A; --hero-b:#16293A; --hero-c:#16293A;
-  --tint:rgba(246,235,211,.08); --tint-2:rgba(246,235,211,.06);
-  --accent:#F08A2B; --accent-2:#F5A455; --blue:#2F6FED; --sun:#F2B632; --cream:#F6EBD3;
-  --nav:#0A1520; --track:#F08A2B; --track-edge:#0F1E2B; --pit:#9FB0BE;
-  --glass:#16293A; --glass-strong:#16293A; --glass-edge:rgba(246,235,211,.35); --shadow:3px 3px 0 rgba(0,0,0,.45);
-  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .95  0 0 0 0 .90  0 0 0 0 .80  0 0 0 .40 -.14'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  --s-gtwca:#6F9BFF; --s-gtwce:#FF6B5B; --s-imsa:#F2B632; --s-indycar:#4FD1BC; --s-other:#9FB0BE; --s-l:62%;
-  --food:#F5A455; --screen:#D9B84A; --info:#9FB0BE; --cross:#9FB0BE; --gate:#6F9BFF; --stand:#C39BE0; --park:#8FA3B5; --rest:#4FD1BC; --camp:#6FD18A; --med:#FF6B5B; --merch:#F58AB8; --view:#5FC9EA;
+:root[data-style="ticket"][data-theme="dark"]{
+  --paper:#1A1612; --card:#262019; --ink:#F3EDE3; --ink-2:#B3A692; --line:rgba(243,237,227,.30);
+  --bg-a:#1A1612; --bg-b:#1A1612; --hero-a:#262019; --hero-b:#262019; --hero-c:#262019;
+  --tint:rgba(243,237,227,.08); --tint-2:rgba(243,237,227,.06);
+  --accent:#F59E0B; --accent-2:#FBBF24; --nav:#0F0C09; --track:#FF6B5B; --track-edge:#1A1612; --pit:#B3A692;
+  --glass:#262019; --glass-strong:#262019; --glass-edge:rgba(243,237,227,.35); --shadow:0 2px 0 rgba(0,0,0,.4);
+  --s-gtwca:#B77BDB; --s-gtwce:#F06292; --s-imsa:#3FB8C3; --s-indycar:#4CC38A; --s-other:#B3A692; --s-l:62%;
+  --food:#FB923C; --screen:#D9B84A; --info:#B3A692; --cross:#B3A692; --gate:#6FA8E0; --stand:#C39BE0; --park:#8F8570; --rest:#4FD1BC; --camp:#6FD18A; --med:#FF6B5B; --merch:#F58AB8; --view:#5FC9EA;
 }
-/* paper with a little print grain */
-:root[data-style="program"] body{font-family:var(--font);background:var(--paper) var(--grain) 0 0/140px 140px}
-/* type: heavy poster headlines, condensed ribbon labels, brush script for dates and asides */
-:root[data-style="program"] :is(h1,h2,h3,.ptitle2,.item h4,.scTop b,#pcName){font-family:var(--font-s);font-weight:400;letter-spacing:-.2px;text-transform:none}
-:root[data-style="program"] .hubCard h4{font-family:var(--font-d);font-weight:800;letter-spacing:2.5px;text-transform:uppercase;font-size:14px;color:var(--accent)}
-:root[data-style="program"] .sect{display:table;font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--cream);background:var(--accent);padding:3px 22px 3px 14px;margin-left:16px;margin-bottom:12px;clip-path:polygon(0 0,100% 0,calc(100% - 10px) 50%,100% 100%,0 100%)}
-:root[data-style="program"] .mast p{font-family:var(--font-sc);font-size:21px;line-height:1.15;color:var(--ink-2)}
-/* header bars: a cobalt "sky" with heavy cream lettering and a sun-yellow rule */
-:root[data-style="program"] :is(.mastbar,.bar){background:var(--blue);color:var(--cream);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:5px solid var(--sun)}
-:root[data-style="program"] :is(.mastbar,.bar)::before{display:none}
-:root[data-style="program"] :is(.mastbar h1,.ptitle2,.bar h2){color:var(--cream)}
-:root[data-style="program"] .mastbar h1{font-size:25px;text-transform:uppercase;letter-spacing:.4px}
-:root[data-style="program"] .ptitle2{font-size:22px}
-:root[data-style="program"] .fab{background:var(--card);border:2px solid var(--ink);box-shadow:none;color:var(--ink)}
-/* cards: cream stock with an ink border and a soft printed offset */
-:root[data-style="program"] :is(.track-row,.hubCard,.ppsum,.item,.sess,.scard,.ccard,.ivenue,.mnow,.mrule){background:var(--card);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--shadow);-webkit-backdrop-filter:none;backdrop-filter:none}
-/* the Next-up tile is the poster: blue sky, halftone dots, big white numeral */
-:root[data-style="program"] .hero{background:var(--blue) radial-gradient(rgba(255,248,230,.16) 1.2px,transparent 1.5px) 0 0/9px 9px;color:var(--cream);border:2px solid var(--ink);border-radius:6px;box-shadow:5px 5px 0 var(--accent);-webkit-backdrop-filter:none;backdrop-filter:none}
-:root[data-style="program"] .hero .art{opacity:.28}
-:root[data-style="program"] .hero .art path{stroke:var(--cream)}
-:root[data-style="program"] .hero .kick{background:var(--sun);color:var(--ink);border-radius:3px;font-family:var(--font-d);font-weight:800;letter-spacing:2.5px;font-size:14px}
-:root[data-style="program"] .hero .num{font-family:var(--font-s);font-weight:400;font-size:104px;line-height:.9;letter-spacing:-3px;color:var(--cream);text-shadow:4px 4px 0 var(--ink);margin-top:12px}
-:root[data-style="program"] .hero .num small{font-family:var(--font-d);font-weight:800;font-size:26px;letter-spacing:2px;line-height:1;text-transform:uppercase;color:var(--sun);text-shadow:none;white-space:normal;max-width:120px;vertical-align:bottom;margin-left:12px}
-:root[data-style="program"] .hero .name{font-family:var(--font-s);font-weight:400;font-size:25px;line-height:1.08;margin-top:14px;color:var(--cream)}
-:root[data-style="program"] .hero .sub{font-family:var(--font-sc);font-size:24px;line-height:1.1;color:var(--sun);margin-top:2px}
-/* series rows: a coloured spine like a programme index */
-:root[data-style="program"] .track-row.series,:root[data-style="program"] .scard{border-left:11px solid var(--sc,var(--s-other))}
-:root[data-style="program"] .track-row.series[data-s="gtwca"],:root[data-style="program"] .scard[data-s="gtwca"]{--sc:var(--s-gtwca)}
-:root[data-style="program"] .track-row.series[data-s="gtwce"],:root[data-style="program"] .scard[data-s="gtwce"]{--sc:var(--s-gtwce)}
-:root[data-style="program"] .track-row.series[data-s="imsa"],:root[data-style="program"] .scard[data-s="imsa"]{--sc:var(--s-imsa)}
-:root[data-style="program"] .track-row.series[data-s="indycar"],:root[data-style="program"] .scard[data-s="indycar"]{--sc:var(--s-indycar)}
-:root[data-style="program"] .track-row .tile.txt,:root[data-style="program"] .track-row .tile.imsa{background:transparent;color:var(--sc,var(--accent));font-family:var(--font-s);font-weight:400}
-:root[data-style="program"] .scTop span{color:var(--accent);font-weight:700}
-/* tabs and buttons */
-:root[data-style="program"] .tabs button.on{background:var(--cream);color:#1B2347;font-family:var(--font-d);font-weight:800;text-transform:uppercase;letter-spacing:1px;border-radius:4px}
-:root[data-style="program"] .btn.primary{background:var(--accent);color:var(--cream);border:2px solid var(--ink);border-radius:4px;font-family:var(--font-d);font-weight:800;text-transform:uppercase;letter-spacing:1.5px;font-size:17px;box-shadow:var(--shadow)}
-:root[data-style="program"] .btn.quiet{border:2px solid var(--ink);border-radius:4px;background:var(--card);color:var(--ink)}
-/* hub and sessions */
-:root[data-style="program"] .hubSessionName{font-family:var(--font-s);font-weight:400;font-size:32px;line-height:1.02}
-:root[data-style="program"] .hubCard.liveNow,:root[data-style="program"] .sess.live{background:var(--ink);color:var(--cream);border-color:var(--ink);box-shadow:4px 4px 0 var(--accent)}
-:root[data-style="program"] .hubCard.liveNow h4{color:var(--sun)}
-:root[data-style="program"] .sess.live .st{color:var(--cream)}
-:root[data-style="program"] .hubCard.liveNow .hubSessionSub,:root[data-style="program"] .sess.live .st small{color:rgba(255,248,230,.8)}
-:root[data-style="program"] .hubCard.liveNow .chev{stroke:var(--cream)}
-:root[data-style="program"] .hubChip{border-radius:4px;border:2px solid var(--ink)}
-:root[data-style="program"] .hubChip.live{background:var(--ink);color:var(--cream)}
-:root[data-style="program"] .hubChip b{font-family:var(--font-s);font-weight:400}
-:root[data-style="program"] .sess .st{font-family:var(--font-d);font-weight:800;font-size:23px}
-:root[data-style="program"] .ev .date{border:2px solid var(--ink);border-radius:4px}
-:root[data-style="program"] .ev .date b{font-family:var(--font-s);font-weight:400}
-:root[data-style="program"] .ev.nextup .date,:root[data-style="program"] .day.on{background:var(--accent);color:var(--cream)}
-:root[data-style="program"] .ppsum .ppn{font-family:var(--font-s);font-weight:400;color:var(--accent);letter-spacing:-2px}
-/* map: red circuit, square badges (the badge builder in app.js treats race and program alike) */
-:root[data-style="program"] .map-wrap svg .poi.near .sqbg{stroke:var(--accent);stroke-width:3}
-:root[data-style="program"] .map-wrap.editing .poi .sc>.sqbg{stroke:var(--yellow);stroke-width:2.5}
-:root[data-style="program"] .ppSec[data-s]>summary .ppSecT::before{content:"";display:inline-block;width:5px;height:14px;margin-right:8px;vertical-align:-2px;background:var(--sc,var(--s-other))}
-:root[data-style="program"] .ppSec[data-s="gtwca"]{--sc:var(--s-gtwca)}:root[data-style="program"] .ppSec[data-s="gtwce"]{--sc:var(--s-gtwce)}
-:root[data-style="program"] .ppSec[data-s="imsa"]{--sc:var(--s-imsa)}:root[data-style="program"] .ppSec[data-s="indycar"]{--sc:var(--s-indycar)}
-:root[data-style="program"] .info dt{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:2px}
-/* Race Program, cleanup and poster scenery: bunting under the header, a grandstand crowd along the Next-up tile, calmer numeral shadow, even spacing under the bars */
-:root[data-style="program"]{
-  --bunting:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='20'><path d='M0 0H32L16 18Z' fill='%23E03A2E'/><path d='M32 0H64L48 18Z' fill='%23FFF8E6'/><path d='M64 0H96L80 18Z' fill='%23F2B632'/></svg>");
-}
-:root[data-style="program"] :is(.mastbar,.bar){border-bottom:4px solid var(--sun);overflow:visible}
-:root[data-style="program"] :is(.mastbar,.bar)::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;background:var(--bunting) 0 0/96px 18px repeat-x;pointer-events:none;z-index:2;opacity:.95}
-:root[data-style="program"] .hubView .bar::after{display:block}
-:root[data-style="program"] .screen>.bar+*,:root[data-style="program"] .screen>.mastbar+*{margin-top:24px}
-:root[data-style="program"] .hero{position:relative;overflow:hidden;padding-bottom:70px;background:linear-gradient(180deg,#1F55D6 0%,#2F6BE6 62%,#4D86EE 100%)}
-:root[data-style="program"] .hero>*:not(.art){position:relative;z-index:1}
-:root[data-style="program"] .hero::before{content:"";position:absolute;left:0;right:0;top:0;height:20px;background:var(--bunting) 0 0/96px 18px repeat-x;z-index:0;opacity:.95}
-:root[data-style="program"] .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:54px;z-index:0;clip-path:polygon(0 34%,100% 0,100% 100%,0 100%);background:radial-gradient(circle at 5px 8px,#E03A2E 0 3.4px,transparent 3.8px),radial-gradient(circle at 17px 7px,#FFF8E6 0 3.1px,transparent 3.5px),radial-gradient(circle at 11px 16px,#F08A2B 0 3.6px,transparent 4px),radial-gradient(circle at 22px 17px,#E03A2E 0 3.1px,transparent 3.5px),#F2B632;background-size:26px 22px;border-top:3px solid var(--ink)}
-:root[data-style="program"] .hero .kick{margin-top:14px}
-:root[data-style="program"] .hero .num{font-size:96px;text-shadow:3px 3px 0 #1637A6}
-:root[data-style="program"] .hero .sub{font-size:23px;margin-top:0}
-:root[data-style="program"] .hero .art{opacity:.2}
-:root[data-style="program"] .sect{margin-top:26px}
-:root[data-style="program"] .plTotal>div{background:var(--card);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--shadow);font-family:var(--font-s);color:var(--accent)}
-:root[data-style="program"] .plTotal>div small{font-family:var(--font);color:var(--ink-2)}
-:root[data-style="program"] .ptH{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--accent)}
-:root[data-style="program"] .appear{background:var(--card);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--shadow)}
-/* Race Program: the active tab is a pill like the bar itself; the Leaderboard and Account text is larger and easier to read */
-:root[data-style="program"] .tabs button.on{border-radius:999px;font-size:15px;letter-spacing:1.2px;padding:0 20px 0 18px;box-shadow:none}
-:root[data-style="program"] .lbRow{padding:14px 14px;border-radius:6px;gap:14px;background:var(--card);border:2px solid var(--ink);box-shadow:var(--shadow)}
-:root[data-style="program"] .lbRow+.lbRow{margin-top:10px}
-:root[data-style="program"] .lbRow.me{background:var(--sun);color:var(--ink)}
-:root[data-style="program"] .lbRank{width:34px;font-family:var(--font-s);font-weight:400;font-size:22px;color:var(--accent)}
-:root[data-style="program"] .lbRow.me .lbRank{color:var(--ink)}
-:root[data-style="program"] .lbName{font-size:19px;font-weight:600;line-height:1.2}
-:root[data-style="program"] .lbName small{font-size:14.5px;line-height:1.25;margin-top:3px;color:var(--ink-2)}
-:root[data-style="program"] .lbRow.me .lbName small{color:rgba(27,35,71,.75)}
-:root[data-style="program"] .lbRow b{font-family:var(--font-s);font-weight:400;font-size:22px}
-:root[data-style="program"] .lbTabs button,:root[data-style="program"] .acScreen .seg button{font-size:16px}
-:root[data-style="program"] .acScreen p,:root[data-style="program"] .acScreen small{font-size:16px;line-height:1.4}
-:root[data-style="program"] .acScreen h4.ptH{font-size:16px}
-/* Race Program: larger small print on Settings, Passport and the Events tab */
-:root[data-style="program"] :is(.screen,#detail,#passport) small{font-size:14.5px;line-height:1.3}
-:root[data-style="program"] :is(.ppSub,.map-note,.ev .date,.series,.scrinfo,.soon){font-size:14px}
-:root[data-style="program"] :is(.pb,.bgrid) b{font-size:12.5px;line-height:1.15}
-:root[data-style="program"] .tag{font-size:12.5px}
-:root[data-style="program"] :is(.ppSecT,.ppSecN,.ppNone){font-size:15px}
-:root[data-style="program"] .sess .sn{font-size:16.5px}
+/* stub colour per series (the series id is on the card as data-s) */
+:root[data-style="ticket"] [data-s]{--tkc:#5C534A;--tkt:#FFFFFF}
+:root[data-style="ticket"] [data-s="f1"]{--tkc:#E53935}
+:root[data-style="ticket"] [data-s="nascar"]{--tkc:#F5B700;--tkt:#2A2118}
+:root[data-style="ticket"] [data-s="wec"]{--tkc:#2B6CB0}
+:root[data-style="ticket"] [data-s="motogp"]{--tkc:#F26B1D}
+:root[data-style="ticket"] [data-s="indycar"]{--tkc:#1E8E5A}
+:root[data-style="ticket"] [data-s="imsa"]{--tkc:#0E7C86}
+:root[data-style="ticket"] [data-s="gtwca"]{--tkc:#7B3FA0}
+:root[data-style="ticket"] [data-s="gtwce"]{--tkc:#C2185B}
+:root[data-style="ticket"] [data-s="hsr"]{--tkc:#8A6D3B}
+/* type and header */
+:root[data-style="ticket"] body{font-family:var(--font);background:var(--paper)}
+:root[data-style="ticket"] :is(h1,h2,h3,.ptitle2,.item h4,.scTop b,#pcName){font-family:var(--font-d);font-weight:800;letter-spacing:.3px;text-transform:uppercase}
+:root[data-style="ticket"] :is(.mastbar,.bar){background:var(--paper);color:var(--ink);-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:2px solid var(--ink)}
+:root[data-style="ticket"] :is(.mastbar,.bar)::before{display:none}
+:root[data-style="ticket"] .mastbar h1{font-size:30px;letter-spacing:1px}
+:root[data-style="ticket"] .ptitle2{font-size:24px}
+:root[data-style="ticket"] .fab{background:var(--card);border:1.5px solid var(--ink);box-shadow:none;color:var(--ink)}
+:root[data-style="ticket"] .sect{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--ink-2);margin-top:22px}
+:root[data-style="ticket"] .mast p{color:var(--ink-2);font-size:16px}
+/* cards are paper tickets: ink outline, flat, a small drop line */
+:root[data-style="ticket"] :is(.track-row,.hubCard,.ppsum,.item,.sess,.ccard,.ivenue,.mnow,.mrule,.appear,.plTotal>div){background:var(--card);border:1.5px solid var(--ink);border-radius:10px;box-shadow:var(--shadow);-webkit-backdrop-filter:none;backdrop-filter:none}
+:root[data-style="ticket"] .hubCard h4{font-family:var(--font-d);font-weight:800;letter-spacing:2.5px;text-transform:uppercase;font-size:14px;color:var(--accent)}
+/* the real tickets: the Next-up tile and the "this week" cards have a coloured stub, a tear line and notches */
+:root[data-style="ticket"] :is(.hero,.scard){position:relative;display:grid;grid-template-columns:var(--stubw,84px) 1fr;padding:0;text-align:left;background:var(--card);border:1.5px solid var(--ink);border-radius:12px;box-shadow:var(--shadow);overflow:visible;-webkit-backdrop-filter:none;backdrop-filter:none}
+:root[data-style="ticket"] .hero{--stubw:108px}
+:root[data-style="ticket"] :is(.hero,.scard)::before,:root[data-style="ticket"] :is(.hero,.scard)::after{content:"";position:absolute;left:calc(var(--stubw,84px) - 11px);width:20px;height:20px;border-radius:50%;background:var(--paper);border:1.5px solid var(--ink);z-index:2}
+:root[data-style="ticket"] :is(.hero,.scard)::before{top:-11.5px;clip-path:inset(50% 0 0 0)}
+:root[data-style="ticket"] :is(.hero,.scard)::after{bottom:-11.5px;clip-path:inset(0 0 50% 0)}
+:root[data-style="ticket"] .scStub{display:flex;flex-direction:column;align-items:center;justify-content:center;grid-column:1;grid-row:1/span 8;background:var(--tkc);color:var(--tkt);border-right:2px dashed var(--ink);border-radius:10px 0 0 10px;padding:12px 4px}
+:root[data-style="ticket"] .scStub i{font-style:normal;font-family:var(--font-d);font-weight:700;font-size:14px;letter-spacing:2px}
+:root[data-style="ticket"] .scStub b{font-family:var(--font-d);font-weight:800;font-size:38px;line-height:1}
+:root[data-style="ticket"] .scard>:not(.scStub){grid-column:2;padding-left:16px;padding-right:14px}
+:root[data-style="ticket"] .scard .scTop{padding-top:13px}
+:root[data-style="ticket"] .scard>:last-child{padding-bottom:13px}
+:root[data-style="ticket"] .scTop b{font-size:22px}
+:root[data-style="ticket"] .scTop span{color:var(--accent);font-weight:700}
+:root[data-style="ticket"] .hero .art{opacity:.08}
+:root[data-style="ticket"] .hero .num{grid-column:1;grid-row:1/span 4;display:flex;flex-direction:column;justify-content:center;align-items:center;margin:0;padding:16px 6px;background:var(--tkc);color:var(--tkt);border-right:2px dashed var(--ink);border-radius:10px 0 0 10px;font-family:var(--font-d);font-weight:800;font-size:76px;line-height:.9;letter-spacing:-1px}
+:root[data-style="ticket"] .hero .num small{margin:6px 0 0;font-family:var(--font-d);font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;line-height:1.1;white-space:normal;text-align:center;color:inherit;max-width:none;vertical-align:baseline}
+:root[data-style="ticket"] .hero .kick{grid-column:2;justify-self:start;margin:16px 16px 0;background:var(--ink);color:var(--paper);border-radius:4px;font-family:var(--font-d);font-weight:700;letter-spacing:2px;font-size:13px}
+:root[data-style="ticket"] .hero .name{grid-column:2;margin:10px 16px 0;font-family:var(--font-d);font-weight:800;font-size:30px;line-height:1.02;text-transform:uppercase;color:var(--ink)}
+:root[data-style="ticket"] .hero .sub{grid-column:2;margin:6px 16px 16px;color:var(--ink-2);font-size:16px}
+/* series rows and the rest */
+:root[data-style="ticket"] .track-row.series{border-left:10px solid var(--tkc,var(--s-other))}
+:root[data-style="ticket"] .track-row .tile.txt,:root[data-style="ticket"] .track-row .tile.imsa{background:transparent;color:var(--tkc,var(--accent));font-family:var(--font-d);font-weight:800}
+:root[data-style="ticket"] .tabs button.on{background:var(--sun);color:#2A2118;font-family:var(--font-d);font-weight:800;text-transform:uppercase;letter-spacing:1.2px;font-size:15px;border-radius:999px;padding:0 20px 0 18px}
+:root[data-style="ticket"] .btn.primary{background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);border-radius:10px;font-family:var(--font-d);font-weight:800;text-transform:uppercase;letter-spacing:1.5px;font-size:17px;box-shadow:none}
+:root[data-style="ticket"] .btn.quiet{border:1.5px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink)}
+:root[data-style="ticket"] .hubSessionName{font-family:var(--font-d);font-weight:800;font-size:38px;line-height:.98;text-transform:uppercase}
+:root[data-style="ticket"] .hubCard.liveNow,:root[data-style="ticket"] .sess.live{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+:root[data-style="ticket"] .hubCard.liveNow h4{color:var(--sun)}
+:root[data-style="ticket"] .sess.live .st{color:var(--paper)}
+:root[data-style="ticket"] .hubCard.liveNow .hubSessionSub,:root[data-style="ticket"] .sess.live .st small{color:rgba(243,237,227,.8)}
+:root[data-style="ticket"] .hubCard.liveNow .chev{stroke:var(--paper)}
+:root[data-style="ticket"] .hubChip{border-radius:8px;border:1.5px solid var(--ink)}
+:root[data-style="ticket"] .hubChip.live{background:var(--ink);color:var(--paper)}
+:root[data-style="ticket"] .sess .st{font-family:var(--font-d);font-weight:800;font-size:24px}
+:root[data-style="ticket"] .ev .date{border:1.5px solid var(--ink);border-radius:8px}
+:root[data-style="ticket"] .ev .date b{font-family:var(--font-d);font-weight:800}
+:root[data-style="ticket"] .ev.nextup .date,:root[data-style="ticket"] .day.on{background:var(--sun);color:#2A2118}
+:root[data-style="ticket"] .ppsum .ppn,:root[data-style="ticket"] .plTotal>div{font-family:var(--font-d);font-weight:800;color:var(--accent)}
+:root[data-style="ticket"] .plTotal>div small{font-family:var(--font);color:var(--ink-2)}
+:root[data-style="ticket"] .ptH{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--ink-2)}
+:root[data-style="ticket"] .ppSec[data-s]>summary .ppSecT::before{content:"";display:inline-block;width:5px;height:14px;margin-right:8px;vertical-align:-2px;background:var(--tkc,var(--s-other))}
+:root[data-style="ticket"] .info dt{font-family:var(--font-d);font-weight:800;font-size:15px;letter-spacing:2px}
+/* leaderboard: bigger text, one ticket per player, your row in sun yellow */
+:root[data-style="ticket"] .lbRow{padding:14px;border-radius:10px;gap:14px;background:var(--card);border:1.5px solid var(--ink);box-shadow:var(--shadow)}
+:root[data-style="ticket"] .lbRow+.lbRow{margin-top:10px}
+:root[data-style="ticket"] .lbRow.me{background:var(--sun);color:#2A2118}
+:root[data-style="ticket"] .lbRank{width:34px;font-family:var(--font-d);font-weight:800;font-size:26px;color:var(--accent)}
+:root[data-style="ticket"] .lbRow.me .lbRank{color:#2A2118}
+:root[data-style="ticket"] .lbName{font-size:19px;font-weight:600;line-height:1.2}
+:root[data-style="ticket"] .lbName small{font-size:14.5px;line-height:1.25;margin-top:3px;color:var(--ink-2)}
+:root[data-style="ticket"] .lbRow.me .lbName small{color:rgba(42,33,24,.75)}
+:root[data-style="ticket"] .lbRow b{font-family:var(--font-d);font-weight:800;font-size:26px}
+:root[data-style="ticket"] :is(.lbTabs button,.acScreen .seg button){font-size:16px}
+:root[data-style="ticket"] :is(.acScreen p,.acScreen small){font-size:16px;line-height:1.4}
+/* spacing under the bars and larger small print */
+:root[data-style="ticket"] .screen>.bar+*,:root[data-style="ticket"] .screen>.mastbar+*{margin-top:20px}
+:root[data-style="ticket"] :is(.screen,#detail,#passport) small{font-size:14.5px;line-height:1.3}
+:root[data-style="ticket"] :is(.ppSub,.map-note,.ev .date,.series,.scrinfo,.soon){font-size:14px}
+:root[data-style="ticket"] :is(.pb,.bgrid) b{font-size:12.5px;line-height:1.15}
+:root[data-style="ticket"] .tag{font-size:12.5px}
+:root[data-style="ticket"] :is(.ppSecT,.ppSecN,.ppNone){font-size:15px}
+:root[data-style="ticket"] .sess .sn{font-size:16.5px}
+
+:root[data-style="ticket"] .scard .scRow{white-space:normal;overflow:visible;text-overflow:clip;font-size:14.5px;line-height:1.3}
+:root[data-style="ticket"] .scard .scNext{font-size:16px}
+.scStub{display:none}

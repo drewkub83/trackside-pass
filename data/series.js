@@ -55,7 +55,7 @@ const SERIES = [
     ]
   },
   {
-    id:"pilot", match:/Pilot Challenge|FOX Factory 120/i, timing:"https://www.imsa.com/scoring/",
+    id:"pilot", yt:"UC58em84jwiyM20qR-iqBDZw", match:/Pilot Challenge|FOX Factory 120/i, timing:"https://www.imsa.com/scoring/",
     name:"Michelin Pilot Challenge", tag:"2 classes: GS and TCR",
     blurb:"IMSA's second-tier series: production-based race cars in two classes, driven by two-driver crews who swap during pit stops. Expect tight, door-to-door racing. Most races run two hours, with four-hour races at Daytona and Mid-Ohio.",
     cars:[
@@ -115,7 +115,7 @@ const SERIES = [
     watch:{ race:"The same car for everyone means close packs. Pro, Pro-Am and Masters drivers are mixed in one pack, each racing for their own class result." }
   },
   {
-    id:"lambo", match:/Super Trofeo/i, timing:"https://www.imsa.com/scoring/",
+    id:"lambo", yt:"UC58em84jwiyM20qR-iqBDZw", match:/Super Trofeo/i, timing:"https://www.imsa.com/scoring/",
     name:"Lamborghini Super Trofeo North America", tag:"One car, driver classes",
     blurb:"Single-make racing in the Lamborghini Huracan Super Trofeo Evo2, with Pro, ProAm, Am and Lamborghini Cup (LB Cup) driver classes racing together. Races run about 50 minutes.",
     cars:[

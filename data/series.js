@@ -707,7 +707,7 @@ const SERIES = [
     "fine": "A spectator summary based on Porsche's 2026 Supercup season preview (newsroom.porsche.com, May 28 2026). For official details, see racing.porsche.com."
   },
   {
-    "id": "moto2", "noWatch": true,
+    "id": "moto2", "noWatch": true, "timing": "https://www.motogp.com/en/live",
     "match": /Moto2/i,
     "name": "Moto2",
     "tag": "The middle class of Grand Prix motorcycle racing",
@@ -732,7 +732,7 @@ const SERIES = [
     "fine": "A spectator summary based on MotoGP.com's class guide (What is the difference between MotoGP, Moto2 and Moto3, April 2025). Figures are from that guide. For official details, see motogp.com."
   },
   {
-    "id": "moto3", "noWatch": true,
+    "id": "moto3", "noWatch": true, "timing": "https://www.motogp.com/en/live",
     "match": /Moto3/i,
     "name": "Moto3",
     "tag": "The entry class of Grand Prix motorcycle racing",

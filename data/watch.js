@@ -1184,5 +1184,30 @@ const WATCH = [
         ["Sunday's race (11:00-17:00 local, 6 hours)", "The season finale, deciding both the Hypercar drivers' title between the two Toyota crews and the LMGT3 teams' title between TF Sport and Manthey."]
       ] }
     ],
-    note:"Sources: web search summary of racer.com ('Kubica pushes Ferrari to the top in second Monza WEC practice,' Nov 6, 2026) for the FP2 times/gaps and LMGT3 order (the site could not be reached directly from this environment). data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gaps, carried over unchanged from the prior entry for this event. Hypercar and LMGT3 title-fight background and Manthey's FP1 drivetrain issue carried over, re-confirmed as still relevant, from the prior entry for this event." }
+    note:"Sources: web search summary of racer.com ('Kubica pushes Ferrari to the top in second Monza WEC practice,' Nov 6, 2026) for the FP2 times/gaps and LMGT3 order (the site could not be reached directly from this environment). data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gaps, carried over unchanged from the prior entry for this event. Hypercar and LMGT3 title-fight background and Manthey's FP1 drivetrain issue carried over, re-confirmed as still relevant, from the prior entry for this event." },
+  { t:"interlagos", d:"2026-11-06", s:"f1", from:"2026-11-06", at:"2026-11-06T20:23:06Z",
+    asOf:"Current after FP2 at the São Paulo Grand Prix (Interlagos, Nov 6): Kimi Antonelli fastest, Lando Norris close behind, and the fight for second overall in the standings still to be settled this weekend.",
+    groups:[
+      { h:"What FP2 showed", items:[
+        ["Kimi Antonelli (Mercedes)", "Topped FP2 with a 1:10.763, after finishing second in the morning's FP1 behind Norris."],
+        ["Lando Norris (McLaren)", "Second, 0.253s back on 1:11.016, having been fastest in FP1 himself."],
+        ["Max Verstappen (Red Bull Racing)", "Third, 1:11.022, a thousandth of a second off Norris."],
+        ["George Russell (Mercedes)", "Fourth, 1:11.036."],
+        ["Long runs tell a different story", "Norris posted the quicker average lap time on a long run, though his was a shorter nine-lap stint; Antonelli ran 20 laps on the same set of soft tyres -- one-lap pace and race-pace reading don't fully agree."],
+        ["The rest of the order", "This app could not confirm where Lewis Hamilton, Charles Leclerc or Isack Hadjar classified in FP2 -- check race-weekend coverage for the full order."]
+      ] },
+      { h:"The real fight here: second place", items:[
+        ["Max Verstappen (Red Bull Racing)", "Leads the fight for runner-up on 261 points, 2 clear of Lewis Hamilton -- Friday practice doesn't change the standings."],
+        ["Lewis Hamilton (Ferrari)", "Third on 259, one place and 2 points off Verstappen."],
+        ["George Russell (Mercedes)", "Fourth on 250, 9 points off the podium spot in the standings, and fourth-fastest in FP2 too."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 245, 5 further back -- and sat out FP1 entirely for Dino Beganovic."],
+        ["Lando Norris (McLaren)", "Sixth on 221, but the pace-setter or close to it in both of Friday's sessions."]
+      ] },
+      { h:"Up next", items:[
+        ["Friday evening: F4 Brazilian Championship qualifying (17:30 local)", "The last on-track action of the day."],
+        ["Saturday: FP3 (11:30 local) and qualifying (15:00 local)", "The final practice and the session that sets Sunday's grid -- a normal weekend, no sprint."],
+        ["Sunday's race (14:00 local, 71 laps)", "The Grand Prix itself, at a circuit with a history of deciding championships in the rain, though the title itself is already settled this year."]
+      ] }
+    ],
+    note:"Sources: web search summaries of autosport.com's and motorsport.com's live FP2 text for the São Paulo Grand Prix (session classification, gaps and the long-run comparison between Antonelli and Norris; the sites could not be reached directly from this environment). data/standings.js (automatic update from api.jolpi.ca) for the post-Mexico City points, unchanged since the prior entry for this event. Session times from data/interlagos.js. Some search results also described an FP2 incident involving Leclerc and an FIA investigation, and a full FP2 classification beyond fourth place, but this app could not independently confirm those details (search results for this weekend were mixed with reports from past São Paulo/Brazilian GP sessions), so they are left out; where Hamilton, Leclerc and Hadjar finished in FP2 is likewise unconfirmed." }
 ];

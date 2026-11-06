@@ -984,7 +984,8 @@ let hubLive={ch:null,name:"",want:false,playing:false,vid:null,embed:true,lookin
    which in the iPhone app opens in the in-app browser sheet. */
 async function resolveHubLive(){
   const ch=hubLive.ch; if(!ch||hubLive.looking) return; hubLive.looking=true; hubLive.vid=null;
-  try{ const r=await fetch(fnUrl("ytlive")+"?ch="+encodeURIComponent(ch)); const j=r.ok?await r.json():{}; if(hubLive.ch===ch){ hubLive.vid=j.id||""; hubLive.embed=j.embeddable!==false; } }
+  try{ let j={}; for(const c of ch.split("|")){ const r=await fetch(fnUrl("ytlive")+"?ch="+encodeURIComponent(c)); j=r.ok?await r.json():{}; if(j.id) break; }   /* "idA|idB": a series that streams on two channels (McLaren Trophy Europe); the first one that is live wins */
+    if(hubLive.ch===ch){ hubLive.vid=j.id||""; hubLive.embed=j.embeddable!==false; } }
   catch(e){ if(hubLive.ch===ch) hubLive.vid=""; }
   hubLive.looking=false;
   const box=document.getElementById("hubLive"); if(box&&hubLive.playing&&hubLive.ch===ch) box.innerHTML=hubLiveHtml();
@@ -997,7 +998,7 @@ function updateHubLive(sr){
   else if(!hubLive.playing) box.innerHTML=hubLiveHtml();   /* not playing: cheap to refresh; playing: leave the iframe alone */
   box.hidden=false;
 }
-function hubLiveUrl(){ return hubLive.vid?`https://www.youtube.com/watch?v=${hubLive.vid}`:`https://www.youtube.com/channel/${hubLive.ch}/live`; }
+function hubLiveUrl(){ return hubLive.vid?`https://www.youtube.com/watch?v=${hubLive.vid}`:`https://www.youtube.com/channel/${hubLive.ch.split("|")[0]}/live`; }
 function openHubLiveYouTube(){ openLiveTiming(hubLiveUrl()); }
 function hubLiveHtml(){
   const head=`<div class="hubLiveRow"><span class="hubLiveDot"></span><h4 style="margin:0">Live now: ${esc(hubLive.name)} race</h4></div>`;

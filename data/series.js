@@ -837,7 +837,7 @@ const SERIES = [
     "fine": "A spectator summary based on SRO's series page (sro-motorsports.com) and the series' 2026 entry list as reported by Daily Sportscar. Race lengths and pairing rules are not stated here: see gt4europeanseries.com."
   },
   {
-    "id": "mclarentrophy", "noWatch": true, "yt": "UC-yHapH6mW1ceZ_5PDUf1_g",
+    "id": "mclarentrophy", "noWatch": true, "yt": "UC-yHapH6mW1ceZ_5PDUf1_g|UCiWQ5eQPkw2BX2L4jeHKEVQ",
     "match": /McLaren Trophy Europe/i,
     "name": "McLaren Trophy Europe",
     "tag": "One-make McLaren Artura race cars",

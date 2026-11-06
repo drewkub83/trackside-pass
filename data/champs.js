@@ -40,7 +40,7 @@ const CHAMPS = [
       { id:"milwaukee-mile", short:"Milwaukee Mile", place:"West Allis, Wisconsin",   kind:"Oval",           e:"NTT INDYCAR SERIES at the Milwaukee Mile (races on Saturday and Sunday)", d:"2027-08-27", t:3 }
     ] },
   { id:"gtwca", cat:"gt", region:"na", name:"GT World America", group:"GT World America", tile:"GTWA", full:"GT World Challenge America Powered by AWS", match:/GT World Challenge America|Texas 8 Hour/i, guide:"gtwca",
-    note:"Barber (Sep 25-27) and the Indianapolis 8 Hour (Oct 9-11) finish the 2026 season. Then the provisional 2027 calendar: seven rounds, including the first Texas 8 Hour at Circuit of the Americas and the return of Watkins Glen. Dates can still change.",
+    note:"Barber (Sep 25-27) and the Indianapolis 8 Hour (Oct 9-11) finish the 2026 season. Then the provisional 2027 calendar: seven rounds, including the first Texas 8 Hour at Circuit of the Americas and the return of Watkins Glen. The seven 2027 dates match gt-world-challenge-america.com (checked Nov 6, 2026); SRO America still calls them provisional. The Texas 8 Hour (COTA) is listed May 7-8 there and May 7-9 on SRO America's calendar, which includes Toyota GR Cup's Sunday. Sebring is gone. Which support series join each round has not been published round by round (Toyota GR Cup's weekends are known).",
     stops:[
       { id:"sonoma", short:"Sonoma", place:"Sonoma, California", kind:"Road course", e:"GT World Challenge America", d:"2027-04-02", t:3 },
       { id:"cota",   short:"COTA", place:"Austin, Texas", kind:"Road course", e:"Texas 8 Hour", d:"2027-05-07", t:3 }

@@ -919,6 +919,7 @@ const TIMING_LINKS = [
   { match:/NASCAR/i, name:"NASCAR", url:"https://www.nascar.com/followlive/" },
   { match:/Carrera Cup/i, name:"Porsche Carrera Cup North America", url:"https://racing.porsche.com/en-US/live-timing/carrera-cup-north-america" },
   { match:/IMSA|WeatherTech|Pilot Challenge|VP Racing|MX-5|Super Trofeo/i, name:"IMSA", url:"https://www.imsa.com/scoring/" },
+  { match:/FIA WEC|World Endurance|Hypercar|LMGT3/i, name:"FIA WEC (FIAWEC+, subscription)", url:"https://plus.fiawec.com/" },
   { match:/GT World Challenge Europe|24 Hours of Spa/i, name:"GT World Challenge Europe", url:"https://www.gt-world-challenge-europe.com/watch-live#live-timing" },
   { match:/GT World Challenge America|GT America|GT4 America|TC America|Toyota GR Cup|Intercontinental GT/i, name:"GT World Challenge America", url:"https://www.gt-world-challenge-america.com/watch-live#live-timing" },
   { match:/INDYCAR|IndyCar/i, name:"INDYCAR", url:"https://racecontrol.indycar.com/" }

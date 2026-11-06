@@ -1113,5 +1113,76 @@ const WATCH = [
         ["Saturday: FP2, qualifying and the Sprint", "FP2 and two qualifying segments set the grid for Saturday evening's Sprint (19:00 local), the last data point before Sunday's Grand Prix (19:00 local, also after dark)."]
       ] }
     ],
-    note:"Sources: web search summaries of crash.net's and roadracingworld.com's 2026 Qatar MotoGP Friday-practice coverage and grandepremio.com's FP1 report for the lap times/gaps, Martin's return and the 18-rider grid (the sites could not be reached directly from this environment, so these are as summarized by search results rather than read first-hand); web search summaries of thestar.com.my ('Yamaha pull out of Qatar Grand Prix amid regional unrest,' Nov 2, 2026), crash.net ('Yamaha won't race in Qatar MotoGP in serious escalation of standoff with organisers' and 'MotoGP responds to Yamaha's Qatar GP boycott, warns of implications') and the-race.com ('Yamaha pulls out of Qatar GP, MotoGP threatens penalties') for the boycott's reasoning, the riders' letter and MotoGP's response (same access limitation; which four Yamaha riders are out and which riders did or didn't sign the letter were reported with less certainty across sources and are left out or hedged above). data/standings.js (automatic update from the MotoGP results service) for the championship points, unchanged since the last entry for this event. data/lusail.js for the rest of the weekend's published session times. FP1 ended only a short time before this was written; check back after Friday evening's Practice and Saturday's qualifying and Sprint." }
+    note:"Sources: web search summaries of crash.net's and roadracingworld.com's 2026 Qatar MotoGP Friday-practice coverage and grandepremio.com's FP1 report for the lap times/gaps, Martin's return and the 18-rider grid (the sites could not be reached directly from this environment, so these are as summarized by search results rather than read first-hand); web search summaries of thestar.com.my ('Yamaha pull out of Qatar Grand Prix amid regional unrest,' Nov 2, 2026), crash.net ('Yamaha won't race in Qatar MotoGP in serious escalation of standoff with organisers' and 'MotoGP responds to Yamaha's Qatar GP boycott, warns of implications') and the-race.com ('Yamaha pulls out of Qatar GP, MotoGP threatens penalties') for the boycott's reasoning, the riders' letter and MotoGP's response (same access limitation; which four Yamaha riders are out and which riders did or didn't sign the letter were reported with less certainty across sources and are left out or hedged above). data/standings.js (automatic update from the MotoGP results service) for the championship points, unchanged since the last entry for this event. data/lusail.js for the rest of the weekend's published session times. FP1 ended only a short time before this was written; check back after Friday evening's Practice and Saturday's qualifying and Sprint." },
+  { t:"interlagos", d:"2026-11-06", s:"f1", from:"2026-11-06", at:"2026-11-06T17:24:02Z",
+    asOf:"Current after FP1 at the São Paulo Grand Prix (Interlagos, Nov 6): Lando Norris fastest in an upgraded McLaren, new champion Kimi Antonelli second, and the fight for second overall in the standings still to be settled this weekend.",
+    groups:[
+      { h:"What FP1 showed", items:[
+        ["Lando Norris (McLaren)", "Topped the session on 1:11.717 with a freshly upgraded MCL40, 0.082s clear of Kimi Antonelli."],
+        ["Kimi Antonelli (Mercedes)", "Second, 0.082s back, in his first session since being crowned the sport's youngest-ever world champion at Mexico City."],
+        ["Max Verstappen (Red Bull Racing)", "Third, 0.236s off Norris's pace, while reporting gearshift and steering-wheel issues during the session."],
+        ["Lewis Hamilton (Ferrari), George Russell (Mercedes), Isack Hadjar (Red Bull Racing)", "Fourth, fifth and sixth."],
+        ["A session with stand-ins and a red flag", "Charles Leclerc sat the session out, with Dino Beganovic filling in for Ferrari; Gabriele Mini stood in for Pierre Gasly at Alpine. Audi's Freddie Slater, out in a regular FP1 outing, brought out the session's only red flag. Haas rookie Rafael Camara, racing at his home event, was 18th on his FP1 debut."]
+      ] },
+      { h:"The real fight here: second place", items:[
+        ["Max Verstappen (Red Bull Racing)", "Leads the fight for runner-up on 261 points, 2 clear of Lewis Hamilton -- FP1 pace doesn't change the standings."],
+        ["Lewis Hamilton (Ferrari)", "Third on 259, one place and 2 points off Verstappen."],
+        ["George Russell (Mercedes)", "Fourth on 250, 9 points off the podium spot in the standings."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 245, 5 further back -- and missed FP1 entirely."],
+        ["Lando Norris (McLaren)", "Sixth on 221. Won last year's São Paulo GP from pole and was fastest in FP1 this time too."]
+      ] },
+      { h:"Up next", items:[
+        ["Friday afternoon: Porsche Carrera Cup Brazil qualifying, Porsche Sprint Challenge Brazil Race 1, and FP2 (16:00 local)", "A packed support-series afternoon around FP2, the last practice before Saturday's qualifying."],
+        ["Saturday's qualifying (15:00 local) and Sunday's race (14:00 local, 71 laps)", "A normal weekend -- three practice sessions, no sprint -- at a circuit with a history of deciding championships in the rain, though the title itself is already settled."]
+      ] }
+    ],
+    note:"Sources: web search summaries of Planet F1 ('F1 results: Brazilian Grand Prix 2026 - FP1 (Interlagos)'), Motorsport Week ('F1 2026 Sao Paulo Grand Prix - FP1 Results') and Motorsport.com's live FP1 text, which the search results described as agreeing on the final classification (the sites could not be reached directly from this environment). data/standings.js (automatic update from api.jolpi.ca) for the post-Mexico City points, unchanged since the prior entry for this event. Session times from data/interlagos.js." },
+  { t:"lusail", d:"2026-11-06", s:"motogp", from:"2026-11-06", at:"2026-11-06T17:24:02Z",
+    asOf:"Current after Friday evening's Practice at the Qatar Grand Prix (Lusail, Nov 6): Fabio Di Giannantonio set a new outright lap record to top the combined Friday times, championship leader Marc Marquez second, and Jorge Martin a strong seventh on his first full day back from a fractured wrist.",
+    groups:[
+      { h:"What Friday's Practice showed", items:[
+        ["Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", "Set a new Losail circuit lap record, 1:50.406, to top the session and the combined Friday times."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Second, 0.142s back, after also topping the morning's FP1."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Third, 0.260s off the pace."],
+        ["Francesco Bagnaia (Ducati Lenovo Team)", "Fourth, 0.386s back."],
+        ["Jorge Martin (Aprilia Racing)", "Seventh, roughly six tenths off the pace -- a clear step up from the 20th he managed in his comeback attempt at Sepang, in his first full day of track time since fracturing his right wrist at Phillip Island on Oct 25."]
+      ] },
+      { h:"The story of the weekend: Yamaha's boycott", items:[
+        ["Still out", "Yamaha's four riders remain withdrawn from this Grand Prix over the team's own Middle East travel restrictions and Japanese government travel advice; this app found no report of the situation changing after Friday's sessions."],
+        ["MotoGP vs. the riders", "MotoGP has said the race goes ahead as scheduled and has reportedly threatened sanctions against Yamaha; no further developments were confirmed as of Friday evening."]
+      ] },
+      { h:"The title fight, unchanged on points", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Still leads on 399, with Jorge Martin on 355 (a 44-point gap) and Marco Bezzecchi third on 332 -- Friday's sessions don't change the standings, and he can't clinch the title at this round outright."],
+        ["Jorge Martin (Aprilia Racing)", "Needs a big result after missing Sepang entirely; Friday's pace, on an injured wrist, was a promising sign with only two rounds left after this one."]
+      ] },
+      { h:"Up next", items:[
+        ["Saturday: FP2, two qualifying segments and the Sprint (19:00 local, under the lights)", "Sets the grid order for both the Sprint and Sunday's Grand Prix -- worth watching whether Di Giannantonio's pace or Marquez's and Martin's holds up under qualifying pressure."],
+        ["Sunday's Grand Prix (19:00 local, after dark)", "The weekend's main event, run as always at Lusail under floodlights."]
+      ] }
+    ],
+    note:"Sources: web search summaries of roadracingworld.com's and the-race.com's ('Surprise Ducati pace-setter on Qatar MotoGP Friday') coverage of Friday's practice sessions, and gpblog.com's report on Martin's return, for the evening Practice times/gaps and Martin's position (the sites could not be reached directly from this environment, so these are as summarized by search results; some sources gave slightly different gaps for the top positions, and the exact session that produced each FP1 time carried over from the prior entry for this event). data/standings.js (automatic update from the MotoGP results service) for the championship points, unchanged since the prior entry. Yamaha boycott background carried over, re-confirmed as still true, from the prior entry for this event; no new developments were found." },
+  { t:"monza", d:"2026-11-06", s:"wec", from:"2026-11-06", at:"2026-11-06T17:24:02Z",
+    asOf:"Current after Free Practice 2 at Monza (Nov 6): Robert Kubica fastest for Ferrari in wet conditions, Proton Competition's Fords 1-2 in LMGT3, and both the Hypercar drivers' and LMGT3 teams' titles still to be settled on Sunday.",
+    groups:[
+      { h:"What FP2 showed", items:[
+        ["Robert Kubica, #83 AF Corse (Ferrari 499P)", "Fastest overall in the wet, 1:38.143."],
+        ["Harry Tincknell, #007 Heart of Racing (Aston Martin Valkyrie)", "Second, 0.796s back -- the same car that was third-fastest in FP1."],
+        ["Where the title-contending Toyotas finished", "This app could not confirm where the #7 and #8 Toyotas, the two crews fighting for the Hypercar drivers' title, classified in FP2 -- check race-weekend coverage for the full order."],
+        ["Proton Competition, #10/#22 (Ford Mustang GT3 EVO)", "Locked out the top two spots in LMGT3, Sebastian Priaulx's car just 0.087s ahead of team-mate Logan Sargeant, who is making his WEC debut this season."],
+        ["Where the title-contending LMGT3 cars finished", "This app could not confirm where TF Sport's #33 Corvette or Manthey's #92 Porsche, the two cars fighting for the LMGT3 teams' title, classified in FP2."]
+      ] },
+      { h:"The drivers' title: Toyota vs Toyota", items:[
+        ["#8 Sebastien Buemi, Brendon Hartley, Ryo Hirakawa (Toyota)", "Lead the Hypercar drivers' standings by 17 points (114 to 97) over their own team-mates in the #7, with Toyota's manufacturers' title already wrapped up and no team orders planned between the two cars."],
+        ["#7 Kamui Kobayashi, Mike Conway, Nyck de Vries (Toyota)", "17 points back with a maximum 26 on offer -- their last realistic shot at catching their team-mates."]
+      ] },
+      { h:"LMGT3: TF Sport's Corvette vs Manthey's Porsche", items:[
+        ["#33 TF Sport (Chevrolet Corvette Z06 GT3.R)", "Leads the LMGT3 teams' standings by 18 points, 92 to 74, heading into the season finale."],
+        ["#92 The Bend/Manthey (Porsche 911 GT3 R)", "18 points back, with Monza's maximum 26 still enough to take the title -- the car was hit by a drivetrain issue in FP1; this app could not confirm whether that carried into FP2."]
+      ] },
+      { h:"Up next", items:[
+        ["Saturday: FP3, then LMGT3 and Hypercar qualifying including Hyperpole (afternoon)", "Sets the grid for Sunday's race -- the last data point before the championships are decided."],
+        ["Sunday's race (11:00-17:00 local, 6 hours)", "The season finale, deciding both the Hypercar drivers' title between the two Toyota crews and the LMGT3 teams' title between TF Sport and Manthey."]
+      ] }
+    ],
+    note:"Sources: web search summary of racer.com ('Kubica pushes Ferrari to the top in second Monza WEC practice,' Nov 6, 2026) for the FP2 times/gaps and LMGT3 order (the site could not be reached directly from this environment). data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gaps, carried over unchanged from the prior entry for this event. Hypercar and LMGT3 title-fight background and Manthey's FP1 drivetrain issue carried over, re-confirmed as still relevant, from the prior entry for this event." }
 ];

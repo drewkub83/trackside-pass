@@ -28,7 +28,7 @@ const CATS = [
 const REGIONS = { na:"North America", eu:"Europe", world:"Worldwide" };   /* add a key here (and region:"…" on its series) when a new part of the world is added */
 const CHAMPS = [
   { id:"imsa", cat:"endurance", region:"na", name:"IMSA", tile:"IMSA", full:"WeatherTech SportsCar Championship", match:/IMSA/i, skip:/test/i, guide:"weathertech",
-    note:"Every venue on the 2027 IMSA WeatherTech schedule, including the Long Beach and Detroit street circuits and Canadian Tire Motorsport Park, plus Mid-Ohio." },
+    note:"Every venue on the 2027 IMSA WeatherTech schedule, including the Long Beach and Detroit street circuits and Canadian Tire Motorsport Park (Mid-Ohio and Lime Rock are Pilot Challenge weekends only)." },
   { id:"indycar", cat:"openwheel", region:"na", name:"IndyCar", tile:"INDY", full:"NTT INDYCAR SERIES", match:/INDYCAR/i, guide:"indycar",
     note:"The full 2027 season: 17 races, announced in two phases (Aug 12 and Oct 23, 2026). Race weekends run Friday to Sunday (Milwaukee has a race on both Saturday and Sunday). Session times come once INDYCAR publishes them; venues without a map show Map coming soon.",
     stops:[
@@ -65,7 +65,7 @@ const CHAMPS = [
   { id:"pilotchallenge", cat:"onemake", region:"na", name:"Pilot Challenge", tile:"PILOT", full:"Michelin Pilot Challenge", match:/Michelin Pilot Challenge/i, viaSupport:true, optIn:true, parent:"imsa", guide:"pilot",
     note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },
   { id:"vpracing", cat:"endurance", region:"na", name:"VP Racing SportsCar Challenge", tile:"VP", full:"IMSA VP Racing SportsCar Challenge", match:/VP Racing/i, viaSupport:true, optIn:true, parent:"imsa", guide:"vp",
-    note:"IMSA's LMP3 and GT4 series. 2027 (sportscar365.com, new format): Mid-Ohio Jun 11-13 and Lime Rock Sep 23-25 with Pilot Challenge, plus Watkins Glen Jul 2-4 and Road Atlanta Sep 10-12, which have no event in the app yet; a Road America date is still to be confirmed." },
+    note:"IMSA's LMP3 and GT4 series, all endurance races in 2027 (IMSA/Speed Sport, Jul-Sep 2026): Sebring Feb 26-28, Barber Apr 2-4 (with IndyCar, 2 hours), Mid-Ohio Jun 11-13, Watkins Glen Jul 2-4 (3 hours), Road America Aug 13-15 (2 hours), Road Atlanta Sep 10-12 (3 hours) and Lime Rock Sep 23-25 (90 minutes). Sebring, Watkins Glen, Road America and Road Atlanta weekends have no event in the app yet."" },
   { id:"mx5", cat:"onemake", region:"na", name:"Mazda MX-5 Cup", tile:"MX-5", full:"Whelen Mazda MX-5 Cup", match:/MX-5/i, viaSupport:true, optIn:true, parent:"imsa", guide:"mx5",
     note:"Races at IMSA weekends. The 2027 schedule has not been published yet." },
   { id:"lambo", cat:"onemake", region:"na", name:"Lamborghini Super Trofeo", tile:"LAMBO", full:"Lamborghini Super Trofeo North America", match:/Super Trofeo/i, viaSupport:true, optIn:true, parent:"imsa", guide:"lambo",

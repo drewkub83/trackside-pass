@@ -25,6 +25,9 @@ VENUES = {
  "indianapolis": (r"^GMR Grand Prix$|^Sonsio Grand Prix$|Angie.s List Grand Prix|^INDYCAR Grand Prix$|^Grand Prix Of Indianapolis$|^Gallagher Grand Prix$", 2014),
  "indianapolis-oval": (r"Indianapolis 500|Indy 500", 1996), "detroit": (r"Detroit", 2023), "laguna-seca": (r"Laguna Seca|Monterey", 1996),
  "phoenix": (r"Phoenix|Desert Diamond|Good Ranchers", 2018), "arlington": (r"Arlington", 2026), "mid-ohio": (r"Mid-Ohio", 2010), "road-america": (r"Road America", 2016),
+ # added Nov 6 2026: these venues were missing, so their results, standings and lap records were never imported automatically
+ "wwt-raceway": (r"Bommarito|World Wide Technology|Gateway", 2010), "portland": (r"Portland", 2018), "milwaukee-mile": (r"Milwaukee|Makers and Fixers", 2010),
+ "markham": (r"Markham", 2026), "barcelona-catalunya": (r"Barcelona", 2027),
 }
 def get(path):
     for k in range(4):
@@ -56,7 +59,12 @@ def main():
             if not track: print(f'{ev["EventName"]}: no venue in the app'); continue
             appev = D.app_event(events_app, track, day.isoformat())
             print(f'{ev["EventName"]} ({day}) -> {track}; app event {appev["d"] if appev else "none"}')
-            if appev and import_result(track, appev["d"], ev["EventName"], race, day): changed_results = True; touched.append(ev["EventName"])
+            # a doubleheader weekend (Milwaukee 2026, 2027): INDYCAR lists each race as its own event (and its dates can repeat: in 2026 both showed Aug 30). The first race keeps
+            # the weekend's start day as its key, the second uses the weekend's last day, so each race has its own result and its own Pick your podium game (keys are track|day|series).
+            rkey = appev["d"] if appev else None
+            if appev and any(venue_of(o["EventName"])[0] == track and mdy(((api("EventsSessionDetails", id={x["SessionName"]: x["EventsSessionID"] for x in o["Sessions"]}["Race"]) or {}).get("SessionDate")) or "1/1/1900") >= datetime.date.fromisoformat(appev["d"]) - datetime.timedelta(days=1) for o in evs[n + 1:n + 3] if "Race" in {x["SessionName"] for x in o["Sessions"]}):
+                rkey = (datetime.date.fromisoformat(appev["d"]) + datetime.timedelta(days=appev["t"] - 1)).isoformat()
+            if appev and import_result(track, rkey, ev["EventName"], race, day): changed_results = True; touched.append(ev["EventName"])
             if day.year >= since: weekend_records(track, ev, sess, day.year)
             if changed_results and n == 0 and not DRY: pass
         if changed_results: refresh_standings(touched[-1], evs[0], yr["Year"])

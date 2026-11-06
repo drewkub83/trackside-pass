@@ -43,7 +43,7 @@ VENUES = {
  "road-america": (r"Road America", 2016),
  "wwt-raceway": (r"Bommarito|World Wide Technology|Gateway", 2010),
  "portland": (r"Portland", 2018),
- "milwaukee-mile": (r"Milwaukee", 2010),
+ "milwaukee-mile": (r"Milwaukee|Makers and Fixers", 2010),
  "markham": (r"Markham", 2026),
 }
 def best(tracks, top=5):

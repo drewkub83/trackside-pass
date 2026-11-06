@@ -28,7 +28,7 @@ ROAD = dict(c0=10.0, c1=8.0, a=0.20); OVAL = dict(c0=8.0, c1=6.0, a=0.15)
 VENUES = {
  "st-petersburg": r"St\.? ?Pete", "long-beach": r"Long Beach", "barber": r"Barber|Alabama", "indianapolis": r"^GMR Grand Prix$|^Sonsio Grand Prix$|Angie.s List Grand Prix|^INDYCAR Grand Prix$|^Grand Prix Of Indianapolis$|^Gallagher Grand Prix$",
  "indianapolis-oval": r"Indianapolis 500|Indy 500", "detroit": r"Detroit", "laguna-seca": r"Laguna Seca|Monterey", "phoenix": r"Phoenix|Desert Diamond|Good Ranchers", "arlington": r"Arlington",
- "mid-ohio": r"Mid-Ohio", "road-america": r"Road America", "portland": r"Portland", "milwaukee-mile": r"Milwaukee", "wwt-raceway": r"Bommarito|World Wide Technology|Gateway", "barcelona-catalunya": r"Barcelona",
+ "mid-ohio": r"Mid-Ohio", "road-america": r"Road America", "portland": r"Portland", "milwaukee-mile": r"Milwaukee|Makers and Fixers", "wwt-raceway": r"Bommarito|World Wide Technology|Gateway", "barcelona-catalunya": r"Barcelona",
 }
 def get(path):
     for _ in range(3):
@@ -128,8 +128,9 @@ def build(race, history, track):
             else "Before qualifying: recent form only (each driver's average finishing position over his last 6 INDYCAR races). The chances are rebuilt from the grid once qualifying is published.")
     as_of = f"Cars from the {src}, with their official car numbers (INDYCAR results service). Late changes are possible."
     note = f"Source: indycar.com results service, read {now.date().isoformat()}. Win chances are our own estimate, not betting odds. {MARK}"
+    lab = (" label:" + js(race["_label"]) + ",") if race.get("_label") else ""
     cars_txt = ",\n".join("        [" + ", ".join(js(v) for v in r) + "]" for r in out)
-    return qual, len(out), (f'  {{ t:{js(track)}, d:{js(race["_appday"])}, s:"indycar", oddsAsOf:{js(odds)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars_txt}\n      ] }}\n    ],\n    note:{js(note)} }}')
+    return qual, len(out), (f'  {{ t:{js(track)}, d:{js(race["_appday"])}, s:"indycar",{lab} oddsAsOf:{js(odds)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars_txt}\n      ] }}\n    ],\n    note:{js(note)} }}')
 
 OVAL_TRACKS = {"indianapolis-oval", "phoenix", "wwt-raceway", "milwaukee-mile"}
 def app_events(today):
@@ -154,11 +155,18 @@ def main():
         todo = []
         for e in cands:
             d0 = datetime.date.fromisoformat(e["d"]); race_day = d0 + datetime.timedelta(days=e["n"] - 1)
-            race = next((r for r in history if venue_of(r["name"]) == e["t"] and d0 <= r["date"] <= race_day), None)
-            if race and any(x["fin"] for x in race["rows"]): continue            # the race has been run: nothing left to pick
-            if not race:                                                          # the service has not loaded this weekend yet: build from the app's calendar and the latest field
-                race = {"date": race_day, "name": e["e"], "oval": e["t"] in OVAL_TRACKS, "rows": [], "ev": None, "sess": {}}
-            race["_appday"] = e["d"]; todo.append((e["t"], race))
+            races = [r for r in history if venue_of(r["name"]) == e["t"] and d0 <= r["date"] <= race_day]
+            # a doubleheader weekend (Milwaukee): one game per race. The first keeps the weekend's start day as its key, later ones use their own race day
+            # (tools/indycar_update.py writes the results with the same keys). Before INDYCAR's service lists the weekend, the app's event name says it is a doubleheader.
+            if not races:
+                two = re.search(r"saturday and sunday|doubleheader|two races", e["e"], re.I)
+                mk = lambda dd: {"date": dd, "name": e["e"], "oval": e["t"] in OVAL_TRACKS, "rows": [], "ev": None, "sess": {}}
+                races = [mk(d0 + datetime.timedelta(days=e["n"] - 2)), mk(race_day)] if two and e["n"] >= 2 else [mk(race_day)]
+            for i, race in enumerate(sorted(races, key=lambda r: r["date"])):
+                if any(x["fin"] for x in race["rows"]): continue                  # the race has been run: nothing left to pick
+                race["_appday"] = e["d"] if i == 0 else race_day.isoformat()
+                if len(races) > 1: race["_label"] = "Race %d" % (i + 1)           # shown after the series name in the app (a doubleheader)
+                todo.append((e["t"], race))
     for track, race in todo:
         res = build(race, history, track)
         if not res: print(f'{race["name"]}: no field to build from yet'); continue

@@ -1138,7 +1138,8 @@ function gameScore(g){
 /* the entry list for the weekend in focus (null when we have none, or it is not time yet) */
 function gameNow(){
   const fo=focusAt(cur); if(!fo||typeof ENTRIES==="undefined"||daysBetween(localToday(),fo.d)>goDays()) return null;
-  return ENTRIES.find(x=>x.t===cur.id&&x.d>=fo.d&&x.d<=fo.end)||null;
+  const gs=ENTRIES.filter(x=>x.t===cur.id&&x.d>=fo.d&&x.d<=fo.end);   /* a doubleheader has two games: show the first one still open, then the first without a result */
+  return gs.find(x=>!gameResult(x)&&!gameLocked(x))||gs.find(x=>!gameResult(x))||gs[0]||null;
 }
 function gameLock(g){   /* when the race starts: picks freeze then (or as soon as a result exists) */
   const race=sessionsOf(TRACKS.find(x=>x.id===g.t)||cur).filter(s=>{ const sr=seriesFor(s.n); return sr&&sr.id===g.s&&kindOf(s.n)==="race"&&s.d>=g.d&&(!g.lockRace||new RegExp(g.lockRace,"i").test(s.n)); })[0];   /* lockRace: an entry that locks at a later race than the weekend's first (MotoGP: the Sunday Grand Prix, not the Sprint) */
@@ -1271,7 +1272,7 @@ function renderPlay(){
       :done?`${done} of ${n} classes picked${when?` · locks ${esc(when)}`:""}`
       :`Call the podium${when?` · locks at the start of the race, ${esc(when)}`:""}`;
     const tap=open&&!locked?` onclick="playNow('${g.t}')"`:` disabled style="opacity:.7"`;
-    return `<button class="plCard"${tap}><span class="plGo">${locked?"Locked":!open?"Soon":done===n?"Edit":"Pick"}</span><b>${esc(t.short)} · ${esc(watchSeriesName({s:g.s}))}</b><small>${esc(fmtSpan({d:g.d,t:3}))}</small><small>${line}</small></button>`;
+    return `<button class="plCard"${tap}><span class="plGo">${locked?"Locked":!open?"Soon":done===n?"Edit":"Pick"}</span><b>${esc(t.short)} · ${esc(watchSeriesName({s:g.s}))}${g.label?" · "+esc(g.label):""}</b><small>${esc(fmtSpan({d:g.d,t:3}))}</small><small>${line}</small></button>`;
   };
   box.innerHTML=`<h3 class="acH">Pick your podium · ${y}</h3>
     <p class="plRules">Before each race, call the top three drivers or cars from the official entry list. Right place scores 5, a podium finisher in the wrong place 2, more for long shots and for picking early.</p>

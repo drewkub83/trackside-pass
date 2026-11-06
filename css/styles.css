@@ -1323,7 +1323,8 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 :root[data-style="editorial"] .sess .st{font-family:var(--font);font-weight:500;font-size:22px}
 :root[data-style="editorial"] .ev .date{border:0;border-radius:0}
 :root[data-style="editorial"] .ev .date b{font-family:var(--font);font-weight:500}
-:root[data-style="editorial"] .ev.nextup .date,:root[data-style="editorial"] .day.on{background:var(--accent);color:#fff;border-radius:2px}
+:root[data-style="editorial"] .ev.nextup .date{background:var(--accent);color:#fff;border-radius:2px}
+:root[data-style="editorial"] .day.on{background:var(--accent);color:#fff;box-shadow:none;border-color:var(--accent)}
 :root[data-style="editorial"] .ppsum .ppn,:root[data-style="editorial"] .plTotal>div{font-family:var(--font);font-weight:500;color:var(--ink)}
 :root[data-style="editorial"] .plTotal>div small{color:var(--ink-2)}
 :root[data-style="editorial"] .ptH{font-family:var(--font-d);font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}

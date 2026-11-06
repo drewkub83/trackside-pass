@@ -23,5 +23,5 @@ TRACKS.push({
   "nturns":18,
   "turns":[],
   "rev":1,
-  "lapRecord":[{"series":"Formula 1","time":"1:24.303","who":"Lewis Hamilton","car":"Mercedes W11","year":2020,"note":"fastest lap ever (Q3 pole lap, 2020 British GP); race lap record 1:27.097, Max Verstappen, Red Bull RB16, 2020"},{"series":"MotoGP","time":"1:56.160","who":"Jorge Martín","car":"Aprilia","year":2026,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"}]
+  "lapRecord":[{"series":"Formula 1","time":"1:24.303","who":"Lewis Hamilton","car":"Mercedes W11","year":2020,"note":"fastest lap ever (Q3 pole lap, 2020 British GP); race lap record 1:27.097, Max Verstappen, Red Bull RB16, 2020"},{"series":"MotoGP","time":"1:56.160","who":"Jorge Martín","car":"Aprilia","year":2026,"note":"fastest lap ever in the MotoGP class (any session), from MotoGP's own circuit information sheet for the 2026 Grand Prix"},{"series":"WEC Hypercar","time":"1:35.992","who":"Mike Conway, Kamui Kobayashi, Jose Maria Lopez","car":"Toyota TS050 Hybrid (LMP1)","year":2019,"note":"Qualifying lap, 6 Hours of Silverstone, set in the LMP1 class that Hypercar replaced; WEC has not raced at Silverstone since 2019. Race lap record 1:37.289 by the same car (oversteer48.com, result on fiawec.com)"}]
 });

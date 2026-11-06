@@ -33,3 +33,8 @@ When OpenStreetMap has the whole lap as `highway=raceway` pieces (most permanent
 Venues of a series that have no map yet go in that series' `stops` in `data/champs.js` as "Map coming soon" (with real dates);
 a stop disappears by itself once a track with the same id exists.
 
+## Fan-map placement helpers (Nov 2026)
+- `tools/track-data/fit_silhouette.py <id> <image> <x0,y0,x1,y1> <B,G,R,tol> <out.json> [rot_lo rot_hi]`: fits the track lap to a drawn map by overlapping filled silhouettes. Use it when `fit_map.py` fails (an oval drawn as a pale band). An oval fits two ways (180 degrees apart): check an existing badge, such as the front-stretch grandstand or a tunnel, to pick the right one. Angled illustrations (Pocono, Las Vegas, Darlington) were matched by hand: three track corners, or the grandstands and tunnels already on the map.
+- `tools/track-data/place_items.py`: `run(id, fit, items, source)` adds the badges (same-kind badges close to an existing one are skipped) and grows the track's frame (`vb` and `geo` together, so no existing coordinate moves) up to 520 units beyond the old frame. The walking grid does not grow: badges outside it show as reachable only at the grid edge, so Directions to them is rough.
+- Only draw `cross` badges where a tunnel or bridge really crosses the circuit; a bridge over a road or creek is an `info` badge.
+

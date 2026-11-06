@@ -81,7 +81,7 @@ const CHAMPS = [
   { id:"gt2europe", guide:"gt2europe", cat:"gt", region:"eu", name:"GT2 European Series", tile:"GT2", full:"GT2 European Series powered by Pirelli", match:/GT2 European/i, viaSupport:true, optIn:true, parent:"gtwce",
     note:"2027 (gt2europeanseries.com): five weekends with GT World Challenge Europe: Paul Ricard, Imola, Misano, Nürburgring and the Hungaroring finale." },
   { id:"gt4europe", guide:"gt4europe", cat:"gt", region:"eu", name:"GT4 European Series", tile:"GT4E", full:"GT4 European Series", match:/GT4 European/i, viaSupport:true, optIn:true, parent:"gtwce",
-    note:"Races at GT World Challenge Europe weekends. Only the 2027 Paul Ricard opener and the 24 Hours of Spa are confirmed so far." },
+    note:"2027 (gt4europeanseries.com, Jun 26 2026): six weekends with GT World Challenge Europe, 12 races: Paul Ricard Apr 17-18, Imola May 22-23, the 24 Hours of Spa Jun 25-26, Misano Jul 17-18, Zandvoort Sep 18-19 and Barcelona Oct 23-24." },
   { id:"mclarentrophy", guide:"mclarentrophy", cat:"gt", region:"eu", name:"McLaren Trophy Europe", tile:"MCL", full:"McLaren Trophy Europe", match:/McLaren Trophy Europe/i, viaSupport:true, optIn:true, parent:"gtwce",
     note:"One-make McLaren Artura series at SRO Europe weekends. Its full 2027 calendar has not been published (two rounds will support the 24 Hours of Le Mans, which is not in the app)." },
   { id:"gt3revival", guide:"gt3revival", cat:"historic", region:"eu", name:"GT3 Revival Series", tile:"REV", full:"GT3 Revival Series", match:/GT3 Revival/i, viaSupport:true, optIn:true, parent:"gtwce",

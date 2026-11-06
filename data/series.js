@@ -341,7 +341,7 @@ const SERIES = [
     fine:"A spectator summary from NASCAR's own race data (nascar.com, read Oct 29, 2026: 2026 calendar, field sizes and truck makes), the 2026 Chase format announcement and NASCAR's November 2025 rule release. For official details, see nascar.com."
   },
   {
-    id:"f1academy", sess:"f1academy", match:/F1 Academy/i, timing:"https://www.f1academy.com/About/Live-Timing",
+    id:"f1academy", sess:"f1academy", yt:"UCNtiHO5dvgowvZScesaKUqA", match:/F1 Academy/i, timing:"https://www.f1academy.com/About/Live-Timing",
     name:"F1 Academy", tag:"All-female, one car for everyone",
     blurb:"A single-seater series for young women, run by Formula 1 as a step up from karting. Every driver has the same car, so results come down to the driver and the team. It races on Formula 1 weekends, and many of its cars carry the colours of Formula 1 teams.",
     cars:[

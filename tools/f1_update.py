@@ -75,7 +75,7 @@ def replace_entry(rel, test, text, anchor):
 
 def entry_text(t, d, rows, as_of, odds_as_of, note):
     cars = ",\n".join("        [" + ", ".join(js(x) for x in r) + "]" for r in rows)
-    return (f'  {{ t:{js(t)}, d:{js(d)}, s:"f1", oddsAsOf:{js(odds_as_of)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars}\n      ] }}\n    ],\n    note:{js(note)} }}')
+    return (f'  {{ t:{js(t)}, d:{js(d)}, s:"f1", lockRace:"^Race - Formula 1", oddsAsOf:{js(odds_as_of)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars}\n      ] }}\n    ],\n    note:{js(note)} }}')
 
 def main():
     sched = get(f"{now.year}.json?limit=40")

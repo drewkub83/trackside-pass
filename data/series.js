@@ -757,7 +757,7 @@ const SERIES = [
     "fine": "A spectator summary based on MotoGP.com's class guide (What is the difference between MotoGP, Moto2 and Moto3, April 2025). Figures are from that guide. For official details, see motogp.com."
   },
   {
-    "id": "gt2europe", "noWatch": true,
+    "id": "gt2europe", "noWatch": true, "yt": "UC-yHapH6mW1ceZ_5PDUf1_g",
     "match": /GT2 European/i,
     "name": "GT2 European Series powered by Pirelli",
     "tag": "Powerful, simpler GT cars built for amateur drivers",
@@ -797,7 +797,7 @@ const SERIES = [
     "fine": "A spectator summary based on SRO's series page and the series' 2026 announcement (sro-motorsports.com, gt2europeanseries.com). Classes and rules are set each season. For official details, see gt2europeanseries.com."
   },
   {
-    "id": "gt4europe", "noWatch": true,
+    "id": "gt4europe", "noWatch": true, "yt": "UCLKDc9r7EjOtfOpytVbpDyg",
     "match": /GT4 European/i,
     "name": "GT4 European Series",
     "tag": "Production-based GT cars, a stepping stone to GT3",
@@ -837,7 +837,7 @@ const SERIES = [
     "fine": "A spectator summary based on SRO's series page (sro-motorsports.com) and the series' 2026 entry list as reported by Daily Sportscar. Race lengths and pairing rules are not stated here: see gt4europeanseries.com."
   },
   {
-    "id": "mclarentrophy", "noWatch": true,
+    "id": "mclarentrophy", "noWatch": true, "yt": "UC-yHapH6mW1ceZ_5PDUf1_g",
     "match": /McLaren Trophy Europe/i,
     "name": "McLaren Trophy Europe",
     "tag": "One-make McLaren Artura race cars",

@@ -270,7 +270,7 @@ const ENTRIES = [
       ] }
     ],
     note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"interlagos", d:"2026-11-06", s:"f1", oddsAsOf:"Before qualifying: recent form only (average points over each driver's last 6 races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Drivers who started the Mexico City Grand Prix, with their official race numbers (Jolpica F1 API, a mirror of the FIA classification). Late changes are possible.",
+  { t:"interlagos", d:"2026-11-06", s:"f1", lockRace:"^Race - Formula 1", oddsAsOf:"Before qualifying: recent form only (average points over each driver's last 6 races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Drivers who started the Mexico City Grand Prix, with their official race numbers (Jolpica F1 API, a mirror of the FIA classification). Late changes are possible.",
     classes:[
       { h:"Race", cars:[
         ["3", "Max Verstappen", "Red Bull Racing", "", 45.5, "averaged 21.0 points a race over the last 6 Grands Prix", 0.84],

@@ -21,6 +21,12 @@ async function f1(date) {
   const year = date.slice(0, 4), sched = await get(`${year}.json`), races = (sched && sched.MRData.RaceTable.Races) || [];
   const race = races.find((r) => Math.abs(day(r.date) - day(date)) <= 1);
   if (!race) return reply({ error: why || "no race on that day" }, why ? 502 : 404);
+  /* a sprint weekend: asking for the Sprint's own day returns the Sprint classification as the "result" (the Sprint game and the hub's results card use that key) */
+  if (race.Sprint && race.Sprint.date === date) {
+    const sp = await get(`${year}/${race.round}/sprint.json`), sr = sp && sp.MRData.RaceTable.Races[0] && sp.MRData.RaceTable.Races[0].SprintResults;
+    return reply({ s: "f1", season: year, round: +race.round, race: race.raceName + " (Sprint)", date, fetchedAt: new Date().toISOString(), qualifying: null,
+      result: sr && sr.length ? sr.map((x) => ({ pos: x.positionText, num: x.number, name: who(x.Driver), team: team(x.Constructor.name), grid: x.grid, time: (x.Time && x.Time.time) || "", status: x.status, laps: x.laps })) : null });
+  }
   const [q, r] = await Promise.all([get(`${year}/${race.round}/qualifying.json`), get(`${year}/${race.round}/results.json`)]);
   const qr = q && q.MRData.RaceTable.Races[0] && q.MRData.RaceTable.Races[0].QualifyingResults, rr = r && r.MRData.RaceTable.Races[0] && r.MRData.RaceTable.Races[0].Results;
   return reply({

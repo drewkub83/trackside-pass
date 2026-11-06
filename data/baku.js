@@ -25,5 +25,6 @@ TRACKS.push({
   "sfArrow":[400.8,386.6,157],
   "lots":[],
   "turns":[],
-  "rev":2
+  "rev":2,
+  "lapRecord":[{"series":"Formula 1","time":"1:40.203","who":"Charles Leclerc","car":"Ferrari SF-23","year":2023,"note":"fastest lap ever (pole lap, 2023 Azerbaijan GP, per the Wikipedia race page); race lap record 1:43.009, Charles Leclerc, Ferrari SF90, 2019"}]
 });

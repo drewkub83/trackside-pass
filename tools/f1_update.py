@@ -23,7 +23,11 @@ API = "https://api.jolpi.ca/ergast/f1/"
 MARK = "(automatic update) "
 # Jolpica circuitId -> the app's track id
 TRACKS = {"americas": "cota", "rodriguez": "mexico-city", "interlagos": "interlagos", "vegas": "las-vegas", "losail": "lusail", "yas_marina": "yas-marina",
-          "spa": "spa-francorchamps", "hungaroring": "hungaroring", "portimao": "portimao"}
+          "spa": "spa-francorchamps", "hungaroring": "hungaroring", "portimao": "portimao",
+          # added Nov 6 2026: the rest of the 2027 calendar (Jolpica's ids; the three marked ? are not in its 2026 table, so they follow its historical ids)
+          "bahrain": "bahrain", "jeddah": "jeddah", "albert_park": "melbourne", "suzuka": "suzuka", "shanghai": "shanghai", "miami": "miami", "villeneuve": "montreal",
+          "monaco": "monaco", "silverstone": "silverstone", "red_bull_ring": "red-bull-ring", "monza": "monza", "madring": "madrid", "baku": "baku", "istanbul": "istanbul",   # istanbul ?
+          "marina_bay": "marina-bay"}
 A_FORM, B_FORM_Q, A_GRID, B_FORM_G = 5.5, 5.5, 1.8, 2.5
 
 def get(path):
@@ -73,9 +77,10 @@ def replace_entry(rel, test, text, anchor):
     if not DRY: D.write(rel, head + "\n" + text + "\n" + s[end:] if anchor else head + "\n" + text + "\n" + s[end:])
     return True
 
-def entry_text(t, d, rows, as_of, odds_as_of, note):
+def entry_text(t, d, rows, as_of, odds_as_of, note, lock="^Race - Formula 1", label=None):
     cars = ",\n".join("        [" + ", ".join(js(x) for x in r) + "]" for r in rows)
-    return (f'  {{ t:{js(t)}, d:{js(d)}, s:"f1", lockRace:"^Race - Formula 1", oddsAsOf:{js(odds_as_of)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars}\n      ] }}\n    ],\n    note:{js(note)} }}')
+    lab = f" label:{js(label)}," if label else ""
+    return (f'  {{ t:{js(t)}, d:{js(d)}, s:"f1",{lab} lockRace:{js(lock)}, oddsAsOf:{js(odds_as_of)}, asOf:{js(as_of)},\n    classes:[\n      {{ h:"Race", cars:[\n{cars}\n      ] }}\n    ],\n    note:{js(note)} }}')
 
 def main():
     sched = get(f"{now.year}.json?limit=40")
@@ -90,10 +95,16 @@ def main():
         evs = datetime.date.fromisoformat(ev["d"])
         if not (evs - datetime.timedelta(days=8) <= today <= rd + datetime.timedelta(days=2)): continue
         print(f'round {rnd} {race["raceName"]} -> {track}, app event {ev["d"]}')
-        if now < rstart: entries_for(race, rnd, track, ev["d"])
-        if now >= rstart + datetime.timedelta(minutes=150): result_for(race, rnd, track, ev["d"])
+        if now < rstart: entries_for(race, rnd, track, ev)
+        sp = race.get("Sprint")                                   # a sprint weekend: its own result, written as soon as the Sprint is classified
+        if sp and now >= datetime.datetime.fromisoformat(f'{sp["date"]}T{sp.get("time","12:00:00Z")}'.replace("Z", "+00:00")) + datetime.timedelta(minutes=45): sprint_result_for(race, rnd, track, ev)
+        if now >= rstart + datetime.timedelta(minutes=150): result_for(race, rnd, track, ev)
 
-def entries_for(race, rnd, track, d):
+def last_day(ev): return (datetime.date.fromisoformat(ev["d"]) + datetime.timedelta(days=(ev.get("t") or 1) - 1)).isoformat()
+def entries_for(race, rnd, track, ev):
+    """One game per weekend; two on a sprint weekend (like IndyCar's Milwaukee doubleheader): the Sprint game (key = the weekend's first day, locks at the Sprint, form only because
+    the sprint-qualifying grid is not in the Jolpica API) and the Grand Prix game (key = the weekend's last day, locks at the Sunday race, grid from qualifying once published)."""
+    d = ev["d"]; sprint = "Sprint" in race
     last = get(f"{now.year}/{rnd - 1}/results.json") if rnd > 1 else None
     prev = get(f"{now.year - 1}/last/results.json") if not last or not last["RaceTable"]["Races"] else None
     src = (last or prev)["RaceTable"]["Races"][0]
@@ -116,11 +127,49 @@ def entries_for(race, rnd, track, d):
             else "Before qualifying: recent form only (average points over each driver's last 6 races). The chances are rebuilt from the grid once qualifying is published.")
     as_of = (f'Drivers who started the {src["raceName"]}, with their official race numbers (Jolpica F1 API, a mirror of the FIA classification). Late changes are possible.')
     note = f'Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read {now.date().isoformat()}. Win chances are our own estimate, not betting odds. {MARK.strip()}'
-    text = entry_text(track, d, rows, as_of, odds, note)
+    if sprint:
+        sp_rows = [[r[0], r[1], r[2], r[3], r[4], r[5].split(". ", 1)[-1] if r[5].startswith("Qualified") else r[5], r[6]] for r in rows]
+        # the Sprint game: chances from form only (recompute without the grid)
+        ws0 = [math.exp(A_FORM * c["f"]) for c in cars]; z0 = sum(ws0); p0 = [max(0.005, w / z0) for w in ws0]; z1 = sum(p0); p0 = [p / z1 for p in p0]
+        sp_rows = [[c["num"], c["name"], c["team"], "", round(p * 100, 1), f'averaged {round(c["f"] * 25, 1)} points a race over the last 6 Grands Prix', round(c["f"], 3)] for c, p in sorted(zip(cars, p0), key=lambda t: -t[1])]
+        sp_odds = "Sprint: recent form only (average points over each driver's last 6 races). The sprint grid is not read, so these chances are not rebuilt after sprint qualifying."
+        stext = entry_text(track, d, sp_rows, as_of, sp_odds, note, lock="^Sprint - Formula 1", label="Sprint")
+        skey = f'  {{ t:{js(track)}, d:{js(d)}, s:"f1"'
+        if replace_entry("data/entries.js", lambda t: t.startswith(skey), stext, True): print("  entries: Sprint game written", f"({len(sp_rows)} drivers)")
+        d = last_day(ev); text = entry_text(track, d, rows, as_of, odds, note, label="Race")
+    else:
+        text = entry_text(track, d, rows, as_of, odds, note)
     key = f'  {{ t:{js(track)}, d:{js(d)}, s:"f1"'
-    if replace_entry("data/entries.js", lambda t: t.startswith(key), text, True): print("  entries:", "after qualifying" if qual else "before qualifying", f"({len(rows)} drivers)")
+    if replace_entry("data/entries.js", lambda t: t.startswith(key), text, True): print("  entries:", "after qualifying" if qual else "before qualifying", f"({len(rows)} drivers)", "(Grand Prix game)" if sprint else "")
 
-def result_for(race, rnd, track, d):
+def sprint_result_for(race, rnd, track, ev):
+    """The Sprint classification (top ten), keyed by the weekend's first day: the Sprint game scores against it."""
+    r = get(f"{now.year}/{rnd}/sprint.json")
+    if not r or not r["RaceTable"]["Races"]: print("  no sprint classification yet"); return
+    rows = r["RaceTable"]["Races"][0]["SprintResults"]
+    if len(rows) < 10: print("  sprint classification incomplete"); return
+    lines = ",\n".join("        " + js(f'{x["position"]}. #{x["Driver"].get("permanentNumber") or x["number"]} {who(x["Driver"]["givenName"], x["Driver"]["familyName"])} ({team(x["Constructor"]["name"])})') for x in rows[:10])
+    entry = (f'  {{ t:{js(track)}, d:{js(ev["d"])}, s:"f1", event:{js(race["raceName"] + " (Sprint)")},\n    groups:[\n      {{ h:"Race", order:[\n{lines}\n      ] }}\n    ],\n'
+             f'    note:{js(MARK + "Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA classification), top ten of the Sprint on " + race["Sprint"]["date"] + ".")} }}')
+    write_result(track, ev["d"], entry)
+
+def write_result(track, d, entry):
+    key = f'  {{ t:{js(track)}, d:{js(d)}, s:"f1"'
+    s = D.read("data/results.js"); m = re.search(r"^" + re.escape(key) + r".*?\n    note:.*? \},?\n", s, flags=re.S | re.M)
+    if m and MARK not in m.group(0): print("  results: a hand-written entry exists, kept"); return False
+    k = s.index("const RESULTS = [") + len("const RESULTS = [\n")
+    if m:
+        old = m.group(0); body = entry + ("," if old.rstrip().endswith(",") else "") + "\n"
+        if old == body: print("  results: already"); return False
+        print("  results: refreshed")
+        if not DRY: D.write("data/results.js", s[:m.start()] + body + s[m.end():])
+    else:
+        print("  results: added")
+        if not DRY: D.write("data/results.js", s[:k] + entry + ",\n" + s[k:])
+    return True
+
+def result_for(race, rnd, track, ev):
+    d = last_day(ev) if "Sprint" in race else ev["d"]            # a sprint weekend's Grand Prix result is keyed by the weekend's last day (its own game)
     r = get(f"{now.year}/{rnd}/results.json")
     if not r or not r["RaceTable"]["Races"]: print("  no classification yet"); return
     rows = r["RaceTable"]["Races"][0]["Results"]

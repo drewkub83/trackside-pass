@@ -23,5 +23,5 @@ TRACKS.push({
   "nturns":14,
   "turns":[],
   "rev":1,
-  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:42.359","who":"Dries Vanthoor","car":"Audi R8 LMS","year":2017,"note":"fastest lap of any session (Blancpain GT Series Sprint Cup qualifying, #5 Belgian Audi Club Team WRT)"}]
+  "lapRecord":[{"series":"GT World Challenge Europe","time":"1:42.359","who":"Dries Vanthoor","car":"Audi R8 LMS","year":2017,"note":"fastest lap of any session (Blancpain GT Series Sprint Cup qualifying, #5 Belgian Audi Club Team WRT)"},{"series":"Formula 1","time":"1:13.447","who":"Lewis Hamilton","car":"Mercedes W11","year":2020,"note":"fastest lap ever (qualifying lap, 2020 Hungarian GP, as stated by the owner from F1's records). Practice laps were not checked"}]
 });

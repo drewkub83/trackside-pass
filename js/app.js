@@ -1423,7 +1423,13 @@ function hubResultsCard(c){
     const sr=seriesFor(jr.n);
     const evt=(cur.events||[]).find(e=>jr.d>=e.d&&jr.d<=eventEnd(e));
     /* a series with two races in a weekend: the entry for this race (`race` = the session's name), else the newest one */
-    const all=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===evt.d&&r.s===sr.id):[];
+    /* two games in a weekend (an F1 sprint weekend, IndyCar's Milwaukee doubleheader): the first race's result is keyed by the weekend's first day, the second's by its last day */
+    let rkey=evt&&evt.d;
+    if(evt&&typeof ENTRIES!=="undefined"&&ENTRIES.some(g=>g.t===cur.id&&g.s===sr.id&&g.d===eventEnd(evt)&&g.d!==evt.d)){
+      const rs=sessionsOf(cur).filter(x=>kindOf(x.n)==="race"&&(seriesFor(x.n)||{}).id===sr.id&&x.d>=evt.d&&x.d<=eventEnd(evt)).sort((a,b)=>a.start-b.start);
+      if(rs.length>1&&rs[0].n!==jr.n) rkey=eventEnd(evt);
+    }
+    const all=evt&&typeof RESULTS!=="undefined"?RESULTS.filter(r=>r.t===cur.id&&r.d===rkey&&r.s===sr.id):[];
     const res=all.some(r=>r.race)?all.find(r=>r.race===jr.n)||null:all.pop()||null;
     if(!res) waitingRes=true;
     if(!res&&sr.sess){ sessWant[sr.sess+"|"+jr.d]={sr,date:jr.d,name:jr.n,track:cur.id}; const f=sessGet(sr,jr.d); if(f&&f.result) return sessUnofficialCard(sr,jr.d,f,c.chev); }
@@ -1464,6 +1470,9 @@ const sessAt=d=>{ try{ return new Date(d.fetchedAt).toLocaleTimeString([], {hour
 function hubGridCard(c){
   const sr=c.sid&&SERIES.find(x=>x.id===c.sid); if(!sr||!sr.sess) return "";
   const mine=c.ss.filter(x=>(seriesFor(x.n)||{}).id===sr.id), q=mine.filter(x=>kindOf(x.n)==="qualifying"), r=mine.filter(x=>kindOf(x.n)==="race");
+  /* a sprint weekend: once Sprint Qualifying is over and the Sprint has not started, say so (the results feed does not carry the sprint grid; the Sprint classification arrives after the Sprint, and the Qualifying order after Saturday's qualifying) */
+  const sq=q.filter(x=>/sprint/i.test(x.n)), spr=r.filter(x=>/^sprint\b/i.test(x.n));
+  if(sq.length&&spr.length&&sq.every(x=>x.end<=c.now)&&spr[0].start>c.now){ const tl=sr.timing; return `<div class="hubCard"><h4>Sprint qualifying</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="hubSessionSub">Sprint Qualifying is over. The sprint grid is not in our results feed: the Sprint result appears here after the Sprint, and the qualifying order for the Grand Prix after Saturday's qualifying.</div>${tl?`<button class="btn quiet" style="margin-top:10px" onclick="openLiveTiming('${tl}')">Sprint grid on the live timing &rsaquo;</button>`:""}</div>`; }
   if(!q.length||!r.length||q.some(x=>x.end>c.now)) return "";   /* every qualifying session of the series is over ... */
   const gp=r[r.length-1]; if(gp.end<=c.now) return "";         /* ... and its last race (the one the grid is for) is not */
   sessWant[sr.sess+"|"+gp.d]={sr,date:gp.d,name:gp.n,track:cur.id};

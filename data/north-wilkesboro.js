@@ -14,7 +14,7 @@ TRACKS.push({
   "sf":[360,454],
   "pit":"M356.6,290.9 L340.2,276.5 L330.0,236.8 L313.9,203.7 L305.2,190.6 L295.0,180.1 L282.9,171.7 L270.8,166.5 L253.6,163.2 L242.3,163.2 L225.6,165.8 L207.1,172.9 L190.6,184.6 L180.1,196.8 L171.6,211.2 L163.8,242.7 L175.3,476.0 L183.9,502.7 L207.8,538.8 L234.6,558.8 L268.7,569.0",
   "pois":[{"k":"stand","n":"Benny Parsons Grandstand","x":266,"y":576,"d":"Seating","id":"benny-parsons-grandstand"},{"k":"park","n":"Parking 1","x":453,"y":806,"d":"Parking","c":"#EC407A","id":"parking-1"},{"k":"park","n":"Parking 2","x":285,"y":881,"d":"Parking","c":"#F28C28","id":"parking-2"},{"k":"stand","n":"Grandstand","x":116,"y":377,"d":"Grandstand from OpenStreetMap. OpenStreetMap does not say which ticket opens it, whether it is covered or how many seats it has: check your ticket.","id":"stand-grandstand"}],
-  "events":[{"d":"2027-05-21","e":"NASCAR All-Star Race","s":"NASCAR Cup Series, exhibition race","t":3}],
+  "events":[{"d":"2027-05-21","e":"NASCAR All-Star Race","s":"NASCAR Cup Series, exhibition race","t":3,"support":["NASCAR Craftsman Truck Series","NASCAR O'Reilly Auto Parts Series"]}],
   "osm":true,
   "sfArrow":[359.8,453.6,-85],
   "lots":[{"n":"Parking 1","c":"#EC407A","d":"M293.6,748.8 L392.3,709.0 L526.5,689.0 L605.6,792.8 L638.8,840.9 L658.2,895.4 L447.8,964.5 L358.1,861.4 L315.7,808.4 L293.6,748.8 Z","x":453,"y":806,"r":25},{"n":"Parking 2","c":"#F28C28","d":"M437.1,963.4 L288.9,1014.2 L246.5,973.8 L180.5,963.9 L181.0,887.3 L196.9,868.4 L222.5,865.0 L252.4,831.9 L276.1,794.8 L293.0,756.1 L299.5,779.7 L315.7,808.4 L359.1,864.6 L437.1,963.4 Z","x":285,"y":881,"r":25}],

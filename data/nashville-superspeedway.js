@@ -14,7 +14,7 @@ TRACKS.push({
   "sf":[158,43],
   "pit":"M180.0,130.2 L178.9,105.7 L178.1,98.0 L175.4,82.3 L173.2,73.3 L171.1,68.2 L166.6,61.1 L164.4,58.6 L159.5,53.8 L156.4,51.2 L153.3,49.2 L145.8,45.9 L142.4,44.8 L138.9,43.9 L133.1,43.0 L126.6,42.9 L122.9,43.1 L115.2,44.3 L110.5,45.5 L105.1,47.6 L101.8,49.6 L96.7,53.3 L92.4,57.8 L90.4,60.5 L87.9,65.2 L85.0,74.0",
   "pois":[{"k":"park","n":"Parking 1","x":111,"y":114,"d":"Parking","c":"#EC407A","id":"parking-1"},{"k":"park","n":"Parking 2","x":116,"y":129,"d":"Parking","c":"#F28C28","id":"parking-2"},{"k":"park","n":"Parking 3","x":728,"y":353,"d":"Parking","c":"#29B6F6","id":"parking-3"},{"k":"cross","n":"Tunnel under the track","x":139,"y":36,"d":"Tunnel under the track. Position from OpenStreetMap.","id":"tunnel-under-the-track"}],
-  "events":[{"d":"2027-06-04","e":"NASCAR at Nashville","s":"NASCAR Cup Series","t":3}],
+  "events":[{"d":"2027-06-04","e":"NASCAR at Nashville","s":"NASCAR Cup Series","t":3,"support":["NASCAR Craftsman Truck Series","NASCAR O'Reilly Auto Parts Series"]}],
   "osm":true,
   "sfArrow":[158.1,43.3,-151],
   "lots":[{"n":"Parking 1","c":"#EC407A","d":"M102.2,154.6 L113.9,156.8 L115.5,147.6 L110.5,146.7 L118.0,103.6 L122.4,102.7 L125.2,85.0 L114.1,83.0 L113.9,84.3 L95.3,81.2 L94.1,88.2 L112.7,91.2 L102.2,154.6 Z","x":111,"y":114,"r":25},{"n":"Parking 2","c":"#F28C28","d":"M110.5,146.7 L117.2,147.9 L125.0,102.2 L118.0,103.6 L110.5,146.7 Z","x":116,"y":129,"r":25},{"n":"Parking 3","c":"#29B6F6","d":"M703.2,346.5 L703.2,364.0 L765.0,363.8 L764.6,346.2 L703.2,346.5 Z","x":728,"y":353,"r":25}],

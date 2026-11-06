@@ -14,7 +14,7 @@ TRACKS.push({
   "sf":[337,457],
   "pit":"M267.3,210.4 L279.7,254.3 L314.9,304.9 L476.1,525.5 L512.6,563.6 L553.2,591.8",
   "pois":[{"k":"park","n":"Chicagoland Speedway Handicapped Parking","x":195,"y":659,"d":"Parking","c":"#EC407A","id":"chicagoland-speedway-handicapped-parking"},{"k":"park","n":"Chicagoland Speedway Handicapped Parking","x":103,"y":493,"d":"Parking","c":"#F28C28","id":"chicagoland-speedway-handicapped-parking"},{"k":"stand","n":"Grandstand","x":335,"y":460,"d":"Grandstand from OpenStreetMap. OpenStreetMap does not say which ticket opens it, whether it is covered or how many seats it has: check your ticket.","id":"stand-grandstand"}],
-  "events":[{"d":"2027-06-25","e":"NASCAR at Chicagoland","s":"NASCAR Cup Series","t":3}],
+  "events":[{"d":"2027-06-25","e":"NASCAR at Chicagoland","s":"NASCAR Cup Series","t":3,"support":["NASCAR O'Reilly Auto Parts Series"]}],
   "osm":true,
   "sfArrow":[336.8,456.5,55],
   "lots":[{"n":"Chicagoland Speedway Handicapped Parking","c":"#EC407A","d":"M243.3,719.6 L269.6,682.1 L233.0,657.2 L176.2,603.1 L173.3,606.3 L169.8,602.9 L141.2,633.2 L144.8,636.3 L142.1,639.6 L195.4,690.3 L198.2,687.4 L203.5,692.0 L243.3,719.6 Z","x":195,"y":659,"r":25},{"n":"Chicagoland Speedway Handicapped Parking","c":"#F28C28","d":"M105.1,418.2 L68.4,420.0 L73.4,461.1 L79.7,491.9 L86.3,514.7 L93.9,535.1 L103.2,556.8 L115.5,581.2 L147.3,564.6 L129.3,525.1 L119.0,496.0 L112.4,471.1 L108.5,447.4 L105.1,418.2 Z","x":103,"y":493,"r":25}],

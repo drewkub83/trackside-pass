@@ -73,7 +73,7 @@ const SERIES = [
     ]
   },
   {
-    id:"vp", match:/VP Racing/i, timing:"https://www.imsa.com/scoring/",
+    id:"vp", yt:"UC58em84jwiyM20qR-iqBDZw", match:/VP Racing/i, timing:"https://www.imsa.com/scoring/",
     name:"IMSA VP Racing SportsCar Challenge", tag:"Sprint races: LMP3, GTDX and GSX",
     blurb:"IMSA's sprint series: prototypes and GT cars in short, flat-out races. Each weekend has two 45-minute races, and every car has a single driver, so there are no driver changes.",
     cars:[

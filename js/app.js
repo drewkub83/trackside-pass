@@ -2474,17 +2474,22 @@ let atTrackNow=null, liveActAt=0;
 function liveSessionPlugin(){ const c=window.Capacitor; return (c&&c.isNativePlatform&&c.isNativePlatform()&&c.Plugins&&c.Plugins.LiveSession)||null; }
 function liveActOn(){ return LSget(K.liveAct,"1")!=="0"; }
 function toggleLiveAct(){ const on=!liveActOn(); LSset(K.liveAct,on?"1":"0"); renderSettingsMore(); if(!on){ const P=liveSessionPlugin(); if(P) P.end().catch(()=>{}); } else { liveActivitySync(atTrackNow); } toast(on?"Live Activity on: it shows on the lock screen when you are at a track.":"Live Activity off."); }
-async function liveActivitySync(t){      /* t: the track the phone is at, null when it is not at one, undefined when the location is unknown (then nothing changes) */
-  const P=liveSessionPlugin(); if(!P||t===undefined) return;
-  if(!t||!liveActOn()){ try{ await P.end(); }catch(e){} return; }
+let liveDbg="Not run yet since the app opened.";
+function liveSay(m){ liveDbg=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"})+" "+m; const el=document.getElementById("abLive"); if(el) el.textContent=liveDbg; }
+async function liveActivitySync(t){   /* t: the track the phone is at, null when it is not at one, undefined when the location is unknown (then nothing changes) */
+  const P=liveSessionPlugin(); if(!P){ liveSay("not the iPhone app (no Live Activity plugin)."); return; } if(t===undefined){ liveSay("no location yet."); return; }
+  if(!t){ liveSay("not at a track, so no Live Activity."); try{ await P.end(); }catch(e){} return; }
+  if(!liveActOn()){ liveSay("switched off in Settings."); try{ await P.end(); }catch(e){} return; }
+  let sup=null; try{ sup=await P.supported(); }catch(e){} if(sup&&sup.ok===false){ liveSay("iOS has Live Activities turned off for this app (Settings > Trackside Pass > Live Activities)."); return; }
   const now=new Date(), rank=orderedChamps().map(c=>c.id), ss=sessionsOf(t).map(s=>{ const sr=seriesFor(s.n), c=sr?CHAMPS.find(x=>(x.guide||x.id)===sr.id):null; return {s,c}; })
     .filter(x=>x.s.end>now&&((x.c&&followed(x.c))||isStarred(t,x.s))).sort((a,b)=>a.s.start-b.s.start);
   const live=ss.filter(x=>x.s.start<=now), soon=ss.filter(x=>x.s.start>now&&x.s.start-now<=(fakeTrack()?8*3600000:45*60000));
-  const pool=live.length?live:soon; if(!pool.length){ try{ await P.end(); }catch(e){} return; }
+  const pool=live.length?live:soon; if(!pool.length){ liveSay(`at ${t.short}, but no session of a series you follow is on track or within ${fakeTrack()?"8 hours":"45 minutes"} (${ss.length} later ones).`); try{ await P.end(); }catch(e){} return; }
   const pick=pool.slice().sort((a,b)=>((a.c?rank.indexOf(a.c.id):99)-(b.c?rank.indexOf(b.c.id):99))||(a.s.start-b.s.start))[0], nx=ss.find(x=>x.s!==pick.s&&x.s.start>pick.s.start);
   const k=sessTint(pick.s.n).trim();
-  try{ await P.sync({trackId:t.id,track:t.short,sessionName:shortName(pick.s.n),series:pick.c?pick.c.name:"",kind:k==="k-q"?"qualifying":k==="k-r"?"race":/practice/i.test(pick.s.n)?"practice":"other",
-    startMs:+pick.s.start,endMs:+pick.s.end,live:pick.s.start<=now,nextName:nx?shortName(nx.s.n):"",nextStartMs:nx?+nx.s.start:null}); }catch(e){}
+  try{ const r=await P.sync({trackId:t.id,track:t.short,sessionName:shortName(pick.s.n),series:pick.c?pick.c.name:"",kind:k==="k-q"?"qualifying":k==="k-r"?"race":/practice/i.test(pick.s.n)?"practice":"other",
+    startMs:+pick.s.start,endMs:+pick.s.end,live:pick.s.start<=now,nextName:nx?shortName(nx.s.n):"",nextStartMs:nx?+nx.s.start:null});
+    liveSay(`${r&&r.state||"?"}: ${t.short}, ${shortName(pick.s.n)}${r&&r.message?" ("+String(r.message).slice(0,120)+")":""}.`); }catch(e){ liveSay("error: "+String(e).slice(0,120)); }
 }
 /* ---- Main race alerts and the Monday recap (Nov 2026). Session alerts for the track you are AT stay as they were (scheduleSessionAlerts: at the track only);
    starred sessions alert wherever you are; and now every series you follow also alerts you for its main race, wherever you are. ---- */
@@ -2949,6 +2954,7 @@ async function updateWake(){
 document.addEventListener("visibilitychange",updateWake);
 /* about, and a way to fetch the newest version without deleting the app */
 function renderAbout(){
+  { const el=document.getElementById("abLive"); if(el) el.textContent=liveDbg; }
   { const sel=document.getElementById("fakeAtSel"); if(sel){ sel.innerHTML='<option value="">Off: use my real location</option>'+TRACKS.slice().sort((a,b)=>a.short.localeCompare(b.short)).map(t=>`<option value="${t.id}">${esc(t.short)}</option>`).join(""); sel.value=LSget(K.fakeAt,""); } }
   { const o=document.getElementById("abOff"); if(o){ o.textContent="Checking…"; offlineCheck(true).then(s=>{ o.textContent=offlineLine(s); }); } }
   const v=document.getElementById("abVer"), d=document.getElementById("abData");

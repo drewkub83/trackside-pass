@@ -383,5 +383,16 @@ const RESULTS = [
         "4. #20 Brandon Jones (Joe Gibbs Racing)"
       ] }
     ],
-    note:"Sources: Motorsport.com, 'Carson Kvapil wins Martinsville as Justin Allgaier takes NASCAR O'Reilly points lead'; Yahoo Sports, 'Who won NASCAR O'Reilly Series Martinsville race? Winner is Carson Kvapil plus full results'; Jayski, 'Carson Kvapil delivers clutch performance at Martinsville to keep championship hopes alive' (Oct 31, 2026; via web search, direct fetch blocked here). Results were unofficial when reported. Kvapil led a race-high 121 laps and beat teammate Allgaier by 0.434s; Allgaier took the points lead from Jesse Love, who finished 30th. Places below 4th were not confirmed in the reports seen, so they are left out." }
+    note:"Sources: Motorsport.com, 'Carson Kvapil wins Martinsville as Justin Allgaier takes NASCAR O'Reilly points lead'; Yahoo Sports, 'Who won NASCAR O'Reilly Series Martinsville race? Winner is Carson Kvapil plus full results'; Jayski, 'Carson Kvapil delivers clutch performance at Martinsville to keep championship hopes alive' (Oct 31, 2026; via web search, direct fetch blocked here). Results were unofficial when reported. Kvapil led a race-high 121 laps and beat teammate Allgaier by 0.434s; Allgaier took the points lead from Jesse Love, who finished 30th. Places below 4th were not confirmed in the reports seen, so they are left out." },
+  { t:"homestead-miami", d:"2026-11-06", s:"trucks", race:"Race - Craftsman Truck Series", event:"NASCAR Craftsman Truck Series Championship Race, Homestead-Miami",
+    groups:[
+      { h:"Race", order:[
+        "1. #11 Kaden Honeycutt (Tricon Garage)",
+        "2. #91 Christian Eckes (McAnally-Hilgemann Racing)",
+        "3. #19 Daniel Hemric (McAnally-Hilgemann Racing)",
+        "4. #88 Ty Majeski (ThorSport Racing)",
+        "5. Stewart Friesen"
+      ] }
+    ],
+    note:"Sources: Racing News, 'Homestead Race Results: NASCAR Trucks (November 6, 2026)'; Yahoo Sports, 'NASCAR Truck Series results, finishing order of championship race at Homestead'; Yardbarker, 'Kaden Honeycutt wins NASCAR Truck Series race at Homestead and 2026 championship' (Nov 6-7, 2026; via web search, direct fetch blocked here). Honeycutt won his first Truck Series championship, beating points leader Layne Riggs by 83 points; Riggs was collected in contact with Nick Sanchez on lap 2, took a flat tire, and finished 32nd, six laps down. Stewart Friesen's truck number and team were not confirmed in the sources seen." }
 ];

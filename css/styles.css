@@ -1406,3 +1406,13 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 #obv .obDots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
 #obv .obDots i.on{background:var(--accent)}
 #obv .obBar .btn{min-height:48px;font-size:17px}
+
+/* weekend recap (Home card, hub card, sheet) and the offline check */
+#wkRecap:not(:empty){padding:0 22px;margin-bottom:6px}
+.wkRecapCard{position:relative}
+.wkRecapBtn{display:block;width:100%;text-align:left;padding:14px 44px 14px 18px;border-radius:22px;background:var(--glass);border:1px solid var(--glass-edge);box-shadow:var(--shadow);color:var(--ink)}
+.wkRecapBtn .kick{display:block;font-size:11.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-2)}
+.wkRecapBtn b{display:block;font-size:17px;font-weight:500;margin:3px 0 2px}.wkRecapBtn small{display:block;color:var(--ink-2);font-size:13px}
+.wkRecapX{position:absolute;right:10px;top:8px;width:30px;height:30px;border-radius:50%;font-size:20px;line-height:1;color:var(--ink-2)}
+.rcpWin{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:3px 0}.rcpWin i{font-style:normal;color:var(--ink-2);flex:none}.rcpWin span{text-align:right}
+.hubCard.offBad{box-shadow:inset 3px 0 0 #E3A72F}.hubCard.offOk{box-shadow:inset 3px 0 0 #4FA37A}

@@ -35,3 +35,7 @@ Settings > Look and units > Style also has **Editorial** (`data-style="editorial
 - Qualifying (amber) and races (indigo) are tinted with a bar in the event schedule and the hub Today strip (sessTint(name) gives the class k-q or k-r; practice, parades, autograph sessions and tests stay plain; green still means on track now).
 - A long label on a Series tab tile (MOTOGP, NASCAR) shrinks to fit: tlen() adds lg (6-8 letters) or xl (9+).
 - Settings now has six folding groups: Look and units, My races and series, Notifications (all reminders and alerts), At the track, Passport and your data, About. Descriptions are shorter.
+
+- Weekend recap (Nov 7 2026): hubRecapCard (Race Day hub, 14 days after a weekend with results), renderRecapHome (Home, 7 days, only weekends you were at, marked going or played; the x dismisses, K.recapHome), openWkRecap sheet with Share (Web Share, else copies). The old points-only pop-up (maybeWeekendRecap) and account.js openRecap (yearly recap) are separate.
+- Offline readiness: offlineCheck() reads the service worker cache (app shell plus every track map); hub card "Ready for no signal" (the week before a weekend, or whenever something is missing, with a Save the rest now button), a line in Settings > About.
+- Alerts: alertCopy() words every session alert (title first, thread per track), alertLead() lets you pick 5, 10, 15 or 30 minutes (Settings > Notifications). Live Activities and widgets need native Swift work and are not done.

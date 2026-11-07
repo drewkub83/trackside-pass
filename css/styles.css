@@ -1421,3 +1421,5 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 .rcpRow{font-size:13.5px;padding:2px 0;line-height:1.3}
 .rcpPicks{margin:10px 0 2px;padding:9px 12px;border-radius:14px;background:var(--tint-2);font-size:13.5px}
 .rcpStory{margin:10px 0 2px}.rcpStory h5{margin:0 0 3px;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-2);font-weight:600}.rcpStory p{margin:3px 0;font-size:13.5px;line-height:1.35;color:var(--ink-2)}.rcpStory b{color:var(--ink);font-weight:600}
+
+.fakeSel{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:inherit}

@@ -184,6 +184,7 @@
     <button class="sgh" aria-expanded="false" aria-controls="sgb4" onclick="toggleSettingsGroup(4)"><span><b>About</b><small>Version and data freshness</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
     <div class="sgb" id="sgb4">
   <div class="appear"><b>Trackside Pass</b><small style="margin:0 0 4px">Version: <span id="abVer">…</span></small><small style="margin:0 0 4px">Saved for no signal: <span id="abOff">…</span></small><small style="margin:0 0 12px">Schedules and watch lists checked: <span id="abData">…</span></small><button class="btn quiet" onclick="refreshApp()">Refresh the app</button> <button class="btn quiet" onclick="obOpen()">Replay the walkthrough</button><small>Downloads the newest version. Your stamps and races stay.</small></div>
+    <div class="appear"><b>Pretend I'm at a track</b><small style="margin:0 0 8px">For testing alerts and the Live Activity from home. Opens that track's hub on launch and shows its next session on the lock screen. The Passport still uses your real location.</small><select id="fakeAtSel" class="fakeSel" onchange="setFakeAt(this.value)"></select></div>
     <div class="appear"><b>Screen</b><small class="scrinfo" id="scrInfo" style="margin:0 0 12px;white-space:pre-line;font-variant-numeric:tabular-nums"></small></div>
     </div>
   </section>

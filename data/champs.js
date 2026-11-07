@@ -84,6 +84,8 @@ const CHAMPS = [
     note:"2027 (gt4europeanseries.com, Jun 26 2026): six weekends with GT World Challenge Europe, 12 races: Paul Ricard Apr 17-18, Imola May 22-23, the 24 Hours of Spa Jun 25-26, Misano Jul 17-18, Zandvoort Sep 18-19 and Barcelona Oct 23-24." },
   { id:"mclarentrophy", guide:"mclarentrophy", cat:"gt", region:"eu", name:"McLaren Trophy Europe", tile:"MCL", full:"McLaren Trophy Europe", match:/McLaren Trophy Europe/i, viaSupport:true, optIn:true, parent:"gtwce",
     note:"One-make McLaren Artura series at SRO Europe weekends. Its full 2027 calendar has not been published (two rounds will support the 24 Hours of Le Mans, which is not in the app)." },
+  { id:"legendsle", guide:"legendsle", cat:"endurance", region:"world", name:"Legends of Le Mans", tile:"LEGEND", full:"Legends of Le Mans (Peter Auto)", match:/Legends of Le Mans/i, viaSupport:true, optIn:true, parent:"wec",
+    note:"Support series at FIA WEC weekends for LMP1, LMP2 and LMGTE cars from 2006 to 2020. It races at Monza in 2026. Its 2027 weekends have not been published round by round yet." },
   { id:"gt3revival", guide:"gt3revival", cat:"historic", region:"eu", name:"GT3 Revival Series", tile:"REV", full:"GT3 Revival Series", match:/GT3 Revival/i, viaSupport:true, optIn:true, parent:"gtwce",
     note:"GT3 cars from the 2006-2013 era, at the 24 Hours of Spa weekend." },
   { id:"f2", cat:"openwheel", region:"world", name:"Formula 2", tile:"F2", full:"FIA Formula 2 Championship", match:/Formula 2/i, viaSupport:true, optIn:true, parent:"f1", guide:"f2",

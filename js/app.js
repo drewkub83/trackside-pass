@@ -1565,7 +1565,7 @@ function hubResultsCard(c){
     if(!res&&sr.sess){ sessWant[sr.sess+"|"+jr.d]={sr,date:jr.d,name:jr.n,track:cur.id}; const f=sessGet(sr,jr.d); if(f&&f.result) return sessUnofficialCard(sr,jr.d,f,c.chev); }
     /* until the result is in: the official timing page shows the final classification at once */
     const tl=sr.timing?{url:sr.timing}:TIMING_LINKS.find(x=>x.match.test(jr.n));
-    const wait=sr.autoResults?"The race just ended. The official result usually shows here within the hour.":"The race just ended. The official result is added here from the race report, usually within an hour or two.";
+    const wait=sr.noWatch&&!sr.autoResults?"The race just ended. Official results for this series are not added to the app; see the series' own pages.":sr.autoResults?"The race just ended. The official result usually shows here within the hour.":"The race just ended. The official result is added here from the race report, usually within an hour or two.";
     const waitHtml=`<div class="hubSessionSub">${wait}</div>${tl?`<button class="btn quiet" style="margin-top:10px" onclick="openLiveTiming('${tl.url}')">Final order on the live timing &rsaquo;</button>`:""}`;
     return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res?res.groups.map(g=>resultGroupHtml(g,5)).join(""):waitHtml}</div>`;
   }).join("");

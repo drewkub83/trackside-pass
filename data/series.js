@@ -877,6 +877,31 @@ const SERIES = [
     "fine": "A spectator summary based on McLaren's 2026 Trophy Europe championship brochure and SRO. For official details, see the McLaren Trophy Europe website."
   },
   {
+    "id": "legendsle", "noWatch": true, "yt": "UCKxGRN8KOBtM3DtDt0NxGDg",
+    "match": /Legends of Le Mans/i,
+    "name": "Legends of Le Mans",
+    "tag": "Recent Le Mans sports cars, 2006 to 2020",
+    "blurb": "A new support series for the FIA World Endurance Championship, run by Peter Auto with the Automobile Club de l'Ouest. It brings back the LMP1, LMP2 and LMGTE sports cars that raced between 2006 and 2020, driven by amateur drivers, in two short races on WEC weekends.",
+    "cars": [
+      {
+        "n": "Legends",
+        "full": "LMP1, LMP2 and LMGTE cars",
+        "type": "Le Mans prototypes and GT cars, 2006 to 2020",
+        "c": "#8A5A2B",
+        "fg": "#FFFFFF",
+        "text": "Sports cars from the recent past of endurance racing: prototypes and GT cars that raced at Le Mans and in the WEC.",
+        "spot": "Closed-cockpit prototypes and GT cars in a mix of makes. Expect cars you may have seen race in the WEC and at Le Mans."
+      }
+    ],
+    "rule": "Cars that raced in the LMP1, LMP2 or LMGTE classes between 2006 and 2020 (sources give slightly different cut-off years).",
+    "watch": {
+      "practice": "A chance to see recent endurance cars up close before the races.",
+      "qualifying": "Sets the grid for the races.",
+      "race": "Two short races on a WEC weekend, with prototypes and GT cars together."
+    },
+    "fine": "A spectator summary based on Peter Auto's and the ACO's announcements of the series (24h-lemans.com, peterauto.fr). The races are streamed free on Peter Auto's YouTube channel. For official details, see Peter Auto."
+  },
+  {
     "id": "gt3revival", "noWatch": true,
     "match": /GT3 Revival/i,
     "name": "GT3 Revival Series",

@@ -34,11 +34,8 @@
 	<string>Trackside Pass uses your location to show where you are on the track map and give walking directions to seats, food and restrooms.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Choose a profile photo. It is shared only with your friends.</string>
-	<key>WKAppBoundDomains</key>
-	<array>
-		<string>tracksidepass.com</string>
-		<string>www.youtube.com</string>
-	</array>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -79,5 +76,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>WKAppBoundDomains</key>
+	<array>
+		<string>tracksidepass.com</string>
+		<string>www.youtube.com</string>
+	</array>
 </dict>
 </plist>

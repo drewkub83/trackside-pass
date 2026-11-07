@@ -1289,14 +1289,14 @@ function renderPlay(){
    its HTML ("" when the card does not apply). The order on screen is the order they are joined in renderHub(). */
 function hubSessionCard(c){
   const {ss,now,live,next,chev}=c;
-  const sessCard=(tag,name,sub,isLive)=>`<div class="hubCard hubTap${isLive?" liveNow":""}" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${tag}</h4><div class="hubSessionName">${esc(name)}</div><div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
+  const sessCard=(tag,name,sub,isLive,tint)=>`<div class="hubCard hubTap${isLive?" liveNow":""}${tint||""}" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>${tag}</h4><div class="hubSessionName">${esc(name)}</div><div class="hubSessionSub">${sub}</div></div>${chev}</div></div>`;
   let sessionHtml;
   /* every session on track right now (a common-round weekend can have two or three at once) */
   const liveAll=ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000);
   if(live) sessionHtml=liveAll.length>1
     ? sessCard("On track now",liveAll.length+" sessions",liveAll.map(x=>esc(shortName(x.n))+" · "+(x.est?"in progress":"ends "+fmtTime(x.end,cur.tz))).join("<br>"),true)
     : sessCard("On track now",shortName(live.n),live.est?"In progress":"Ends "+fmtTime(live.end,cur.tz),true);
-  else if(next){ const soon=next.start-now<36e5; sessionHtml=sessCard("Next on track",shortName(next.n),soon?relTime(next.start-now):fmtWhen(next.start,cur.tz)); }
+  else if(next){ const soon=next.start-now<36e5; sessionHtml=sessCard("Next on track",shortName(next.n),soon?relTime(next.start-now):fmtWhen(next.start,cur.tz),false,sessTint(next.n)); }
   else {
     /* nothing left to show a countdown for: say when the next event is (the hub is the landing page, so this is
        what an off-season visit sees), or "no more sessions today" in the middle of an event weekend */
@@ -1542,7 +1542,7 @@ function hubBeforeWeekend(c){
     if(fq&&aw>0){ const going=isGoing(cur,fq.first);
       quickHtml=`<div class="hubQuick"><button class="${going?"on":""}" aria-pressed="${going}" onclick="hubToggleGoing()"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>${going?"I'm going":"I'm going?"}</button></div>`; }
     const mine=upcoming.filter(x=>isStarred(cur,x));
-    if(mine.length) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><h4>Your sessions</h4>${chev}</div><div class="hubStarList">${mine.slice(0,6).map(x=>`<div><b>${fmtWhen(x.start,cur.tz)}</b><span>${esc(shortName(x.n))}</span></div>`).join("")}</div><p class="asof hubAsof">${nativeNotifier()?"You'll get an alert 10 minutes before each one.":"Star more in the schedule."}</p></div>`;
+    if(mine.length) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><h4>Your sessions</h4>${chev}</div><div class="hubStarList">${mine.slice(0,6).map(x=>`<div class="${sessTint(x.n).trim()}"><b>${fmtWhen(x.start,cur.tz)}</b><span>${esc(shortName(x.n))}</span></div>`).join("")}</div><p class="asof hubAsof">${nativeNotifier()?"You'll get an alert 10 minutes before each one.":"Star more in the schedule."}</p></div>`;
     else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions you care about in the schedule and get an alert before each.</div></div>${chev}</div></div>`;
     if(!resultsHtml&&aw>0&&typeof RESULTS!=="undefined"){ const last=RESULTS.filter(r=>r.t===cur.id).sort((a,b)=>b.d.localeCompare(a.d))[0];
       if(last) lastHereHtml=`<div class="hubCard"><h4>Last time here</h4><div class="hubSeries">${esc(last.event)}</div>${last.groups.slice(0,2).map(g=>resultGroupHtml(g,3)).join("")}</div>`; } }

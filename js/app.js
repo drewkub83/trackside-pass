@@ -30,6 +30,8 @@ const K={
   remind:"paddock:remind",        /* going-race reminders on/off */
   rainAlerts:"paddock:rainAlerts",    /* "0" = rain alerts switched off (the server also keeps the choice: profiles.rain_alerts) */
   recapHome:"paddock:recapHome",      /* weekend recap cards on Home that were dismissed ("track|date") */
+  fakeAt:"paddock:fakeAt",            /* TESTING: pretend the phone is at this track (id) for opening the hub, session alerts and the Live Activity; never for the Passport */
+  liveAct:"paddock:liveAct",          /* the lock screen Live Activity for the track I am at (iPhone app, default on) */
   raceAlerts:"paddock:raceAlerts",    /* alert for the main race of every series I follow, wherever I am (default on) */
   recapNotif:"paddock:recapNotif",    /* Monday morning: the weekend recap is ready (default on) */
   alertLead:"paddock:alertLead",      /* minutes before a session that its alert goes off (5, 10, 15 or 30) */
@@ -1861,7 +1863,7 @@ function showNowSession(){
   document.querySelector(".tabs button[data-p=pEvents]").click(); renderSchedule();
   requestAnimationFrame(()=>{ const l=document.getElementById("schedList"), el=l&&(l.querySelector(".sess.live")||l.querySelector(".sess:not(.past)")); if(el) el.scrollIntoView({block:"center"}); });
 }
-setInterval(()=>{ if(document.getElementById("home").classList.contains("on")) renderHero(); if(cur){ renderNow(); if(hubMode) renderHub(); if(document.getElementById("pEvents").classList.contains("on")){ renderSchedule(); renderEvents(); } else if(document.getElementById("pInfo").classList.contains("on")) renderWatch(); } },30000);
+setInterval(()=>{ if(document.getElementById("home").classList.contains("on")) renderHero(); if(cur){ renderNow(); if(hubMode&&atTrackNow&&cur.id===atTrackNow.id&&Date.now()-liveActAt>60000){ liveActAt=Date.now(); liveActivitySync(cur); } if(hubMode) renderHub(); if(document.getElementById("pEvents").classList.contains("on")){ renderSchedule(); renderEvents(); } else if(document.getElementById("pInfo").classList.contains("on")) renderWatch(); } },30000);
 /* origin for walk times and nearest */
 function walkOrigin(){ if(userPos&&userPos.inside) return {x:userPos.x,y:userPos.y,l:"you"}; const s=getSpot(); if(s) return {x:s.x,y:s.y,l:"your spot"}; return null; }
 function distField(sx,sy){
@@ -2247,6 +2249,10 @@ function trackAt(lat,lng,acc){
   const hit=TRACKS.filter(t=>t.geo&&lat<=t.geo.n+pad&&lat>=t.geo.s-pad&&lng>=t.geo.w-pad&&lng<=t.geo.e+pad);
   return hit.length ? hit.map(t=>({t,d:haversine(lat,lng,(t.geo.n+t.geo.s)/2,(t.geo.w+t.geo.e)/2)})).sort((a,b)=>a.d-b.d)[0].t : null;
 }
+/* testing aid: Settings > About > "Pretend I'm at a track". Used only by the open-at-the-track and session-alert / Live Activity checks, never by the Passport (it would stamp a track you were not at). */
+function fakeTrack(){ const id=LSget(K.fakeAt,""); return id?TRACKS.find(t=>t.id===id)||null:null; }
+function whereAmIT(wait){ const f=fakeTrack(); return f?Promise.resolve(f):whereAmI(wait); }
+function setFakeAt(id){ LSset(K.fakeAt,id||""); toast(id?`Pretending you are at ${(TRACKS.find(t=>t.id===id)||{}).short}. Close and reopen the app.`:"Using your real location again."); }
 function whereAmI(wait){        /* resolves to a track, null (not at one) or undefined (no location) */
   return new Promise(res=>{ if(!navigator.geolocation){ res(undefined); return; }
     navigator.geolocation.getCurrentPosition(p=>res(trackAt(p.coords.latitude,p.coords.longitude,p.coords.accuracy)), ()=>res(undefined), {enableHighAccuracy:false,maximumAge:600000,timeout:wait}); });
@@ -2257,7 +2263,7 @@ async function autoOpen(){
   if(!autoOn()||autoBusy||inDetail()) return; autoBusy=true;
   try{
     try{ const p=navigator.permissions&&await navigator.permissions.query({name:"geolocation"}); if(p&&p.state==="denied") return; }catch(e){}
-    const t=await whereAmI(9000);
+    const t=await whereAmIT(9000);
     if(t&&!inDetail()){ openTrack(t.id,"home"); toast(`You're at ${t.short}. Opened its Race Day hub.`); setTimeout(()=>offlineEnsure("track",t),4000); }
   } finally { autoBusy=false; }
 }
@@ -2358,9 +2364,10 @@ async function scheduleSessionAlerts(forcedTrack){
   const LN=nativeNotifier(); if(!LN) return;
   let t=forcedTrack||null;
   if(!t){
-    try{ const p=navigator.permissions&&await navigator.permissions.query({name:"geolocation"}); if(p&&p.state==="denied") return; }catch(e){}
-    t=await whereAmI(10000);
+    try{ const p=!fakeTrack()&&navigator.permissions&&await navigator.permissions.query({name:"geolocation"}); if(p&&p.state==="denied") return; }catch(e){}
+    t=await whereAmIT(10000);
   }
+  atTrackNow=t===undefined?atTrackNow:t; liveActivitySync(t);   /* the lock screen card follows the same location check */
   if(!t) return;
   const e=nextEventAt(t);
   if(!e) return;
@@ -2459,6 +2466,26 @@ async function schedulePickReminders(ask){
   await LN.schedule({notifications:out.slice(0,20)});
 }
 (function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.play) homeTab("play"); else if(x&&x.recap) openWkRecap(x.recap); else if(x&&x.track) openTrack(x.track,"home"); }); })();
+/* ---- Live Activity (iPhone app, Nov 2026): the lock screen and Dynamic Island card for the session at the track you are AT, and only there.
+   The native side (ios/App/App/LiveSessionPlugin.swift, ios/App/TracksideLive) draws it; this decides when it exists. It is started and refreshed
+   only while the phone's location puts it at a track (whereAmI) and ended when it does not, so at home there is never one. A session is shown from 45
+   minutes before it starts until it ends; the series are the ones you follow (and sessions you starred). ---- */
+let atTrackNow=null, liveActAt=0;
+function liveSessionPlugin(){ const c=window.Capacitor; return (c&&c.isNativePlatform&&c.isNativePlatform()&&c.Plugins&&c.Plugins.LiveSession)||null; }
+function liveActOn(){ return LSget(K.liveAct,"1")!=="0"; }
+function toggleLiveAct(){ const on=!liveActOn(); LSset(K.liveAct,on?"1":"0"); renderSettingsMore(); if(!on){ const P=liveSessionPlugin(); if(P) P.end().catch(()=>{}); } else { liveActivitySync(atTrackNow); } toast(on?"Live Activity on: it shows on the lock screen when you are at a track.":"Live Activity off."); }
+async function liveActivitySync(t){      /* t: the track the phone is at, null when it is not at one, undefined when the location is unknown (then nothing changes) */
+  const P=liveSessionPlugin(); if(!P||t===undefined) return;
+  if(!t||!liveActOn()){ try{ await P.end(); }catch(e){} return; }
+  const now=new Date(), rank=orderedChamps().map(c=>c.id), ss=sessionsOf(t).map(s=>{ const sr=seriesFor(s.n), c=sr?CHAMPS.find(x=>(x.guide||x.id)===sr.id):null; return {s,c}; })
+    .filter(x=>x.s.end>now&&((x.c&&followed(x.c))||isStarred(t,x.s))).sort((a,b)=>a.s.start-b.s.start);
+  const live=ss.filter(x=>x.s.start<=now), soon=ss.filter(x=>x.s.start>now&&x.s.start-now<=(fakeTrack()?8*3600000:45*60000));
+  const pool=live.length?live:soon; if(!pool.length){ try{ await P.end(); }catch(e){} return; }
+  const pick=pool.slice().sort((a,b)=>((a.c?rank.indexOf(a.c.id):99)-(b.c?rank.indexOf(b.c.id):99))||(a.s.start-b.s.start))[0], nx=ss.find(x=>x.s!==pick.s&&x.s.start>pick.s.start);
+  const k=sessTint(pick.s.n).trim();
+  try{ await P.sync({trackId:t.id,track:t.short,sessionName:shortName(pick.s.n),series:pick.c?pick.c.name:"",kind:k==="k-q"?"qualifying":k==="k-r"?"race":/practice/i.test(pick.s.n)?"practice":"other",
+    startMs:+pick.s.start,endMs:+pick.s.end,nextName:nx?shortName(nx.s.n):"",nextStartMs:nx?+nx.s.start:null}); }catch(e){}
+}
 /* ---- Main race alerts and the Monday recap (Nov 2026). Session alerts for the track you are AT stay as they were (scheduleSessionAlerts: at the track only);
    starred sessions alert wherever you are; and now every series you follow also alerts you for its main race, wherever you are. ---- */
 function raceAlertsOn(){ return LSget(K.raceAlerts,"1")!=="0"; }
@@ -2849,7 +2876,7 @@ function renderSettingsMore(){
   q(".leadSeg").forEach(el=>{ el.innerHTML=segHtml(alertLead(),[[5,"5 min"],[10,"10 min"],[15,"15 min"],[30,"30 min"]],"setAlertLead"); });
   q(".timeSeg").forEach(el=>{ el.innerHTML=segHtml(timesPref(),[["track","Track time"],["mine","My time"]],"setTimes"); });
   const fl=document.getElementById("followList"); if(fl) fl.innerHTML=orderedChamps().filter(c=>!c.optIn).map(c=>`<div class="frow" data-id="${c.id}"><button class="fhandle" aria-label="Drag to reorder ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span>${esc(c.name)}</span><button class="sw${followed(c)?" on":""}" role="switch" aria-checked="${followed(c)}" aria-label="Show ${esc(c.name)}" onclick="toggleFollow('${c.id}')"><i></i></button></div>`).join("");
-  on("raceSw",raceAlertsOn()); on("recapSw",recapPushOn()); on("awakeSw",LSget(K.awake,"0")==="1"); on("hapSw",LSget(K.haptics,"1")==="1");
+  on("raceSw",raceAlertsOn()); on("liveSw",liveActOn()); { const lr=document.getElementById("liveRow"); if(lr) lr.hidden=!liveSessionPlugin(); } on("recapSw",recapPushOn()); on("awakeSw",LSget(K.awake,"0")==="1"); on("hapSw",LSget(K.haptics,"1")==="1");
   renderFollowSub();
 }
 /* support series (optIn), one folding group per main series they race with; HSR-style series with their own weekends go under "Other series".
@@ -2922,6 +2949,7 @@ async function updateWake(){
 document.addEventListener("visibilitychange",updateWake);
 /* about, and a way to fetch the newest version without deleting the app */
 function renderAbout(){
+  { const sel=document.getElementById("fakeAtSel"); if(sel){ sel.innerHTML='<option value="">Off: use my real location</option>'+TRACKS.slice().sort((a,b)=>a.short.localeCompare(b.short)).map(t=>`<option value="${t.id}">${esc(t.short)}</option>`).join(""); sel.value=LSget(K.fakeAt,""); } }
   { const o=document.getElementById("abOff"); if(o){ o.textContent="Checking…"; offlineCheck(true).then(s=>{ o.textContent=offlineLine(s); }); } }
   const v=document.getElementById("abVer"), d=document.getElementById("abData");
   if(d&&typeof DATA_UPDATED!=="undefined") d.textContent=new Date(DATA_UPDATED+"T12:00:00").toLocaleDateString(undefined,{month:"long",day:"numeric",year:"numeric"});

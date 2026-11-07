@@ -1365,5 +1365,36 @@ const WATCH = [
         ["Sunday's race, 11:00am-5:00pm local (6 hours), CET", "The 2026 season finale, deciding the Hypercar drivers' title between the two Toyota crews and the LMGT3 teams' title between TF Sport and Manthey."]
       ] }
     ],
-    note:"Sources: fiawec.com's official results pages for the Monza round (raceId=5066, sessionId=8290 for Hypercar Qualifying and sessionId=8291 for Hyperpole), read directly, for the full classification, lap times and gaps, including both Toyotas' 15th/16th grid slots. Web-search summaries of motorsport.com ('WEC Monza: Antonio Fuoco takes pole for Ferrari') and an Italian-language report, neither reachable directly from this environment, for Fuoco's pole context (his and the #50's season firsts) and confirmation that both Toyotas missed Hyperpole. data/standings.js (from fiawec.com, read Oct 26, 2026) for the 114-97 points gap, unchanged since the prior entry. Toyota's manufacturers'-title clinch at Barcelona from a web-search summary of Toyota's own press release and Autosport/Motorsport Week reporting from October 2026, not previously noted in this app's watch entries for this event." }
+    note:"Sources: fiawec.com's official results pages for the Monza round (raceId=5066, sessionId=8290 for Hypercar Qualifying and sessionId=8291 for Hyperpole), read directly, for the full classification, lap times and gaps, including both Toyotas' 15th/16th grid slots. Web-search summaries of motorsport.com ('WEC Monza: Antonio Fuoco takes pole for Ferrari') and an Italian-language report, neither reachable directly from this environment, for Fuoco's pole context (his and the #50's season firsts) and confirmation that both Toyotas missed Hyperpole. data/standings.js (from fiawec.com, read Oct 26, 2026) for the 114-97 points gap, unchanged since the prior entry. Toyota's manufacturers'-title clinch at Barcelona from a web-search summary of Toyota's own press release and Autosport/Motorsport Week reporting from October 2026, not previously noted in this app's watch entries for this event." },
+  { t:"interlagos", d:"2026-11-06", s:"f1", from:"2026-11-07", at:"2026-11-07T16:22:16Z",
+    asOf:"Current after FP3 at the São Paulo Grand Prix (Interlagos, Nov 7): Max Verstappen fastest from Kimi Antonelli and Lando Norris, rain arrived right at the end of the session, and a wave of grid penalties -- Verstappen and Hamilton to the back -- will scramble Sunday's grid order no matter what Saturday's qualifying decides.",
+    groups:[
+      { h:"What FP3 showed", items:[
+        ["Max Verstappen (Red Bull Racing)", "Topped the session on 1:11.622, after running off at Turn 4 during a push for a quicker lap."],
+        ["Kimi Antonelli (Mercedes)", "Second, 0.025s back, despite reporting a steering-wheel problem during the session."],
+        ["Lando Norris (McLaren)", "Third, 0.131s off the pace."],
+        ["George Russell (Mercedes)", "Fourth, 0.184s back."],
+        ["Charles Leclerc (Ferrari)", "Fifth, 0.274s off."],
+        ["Lewis Hamilton (Ferrari)", "Down in 12th after reporting strange engine vibrations and then smoke in the cockpit; his session ended 25 minutes early."],
+        ["Weather cut the session short in effect", "Heavy rain arrived as FP3 ended, after a session most drivers spent waiting out the threat of a storm; qualifying simulations only began about 15 minutes before the chequered flag."]
+      ] },
+      { h:"Grid penalties scramble Sunday regardless of qualifying", items:[
+        ["Max Verstappen (Red Bull Racing)", "Starts from the back of the grid after several power-unit changes -- Friday and Saturday practice pace won't translate into Sunday grid position."],
+        ["Lewis Hamilton (Ferrari)", "A 10-place grid drop for an ICE change, on top of Saturday's mechanical trouble; more power-unit changes are possible."],
+        ["Charles Leclerc (Ferrari)", "Also a 10-place drop for an ICE change."],
+        ["George Russell (Mercedes)", "A five-place drop for an ICE change."]
+      ] },
+      { h:"The real fight here: second place", items:[
+        ["Max Verstappen (Red Bull Racing)", "Leads the fight for runner-up on 261 points, 2 clear of Lewis Hamilton -- but starts Sunday from the back regardless of the points gap."],
+        ["Lewis Hamilton (Ferrari)", "Third on 259, one place and 2 points off Verstappen, and also starts well back after his own penalty and FP3 mechanical issue."],
+        ["George Russell (Mercedes)", "Fourth on 250, 9 points off the podium spot in the standings, and takes the smallest grid penalty of the four -- fourth-fastest in FP3 too."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 245, 5 further back, fastest Ferrari in FP3 but also facing a 10-place drop."],
+        ["Lando Norris (McLaren)", "Sixth on 221, third-fastest all weekend and the only one of the top runners racing Sunday with no penalty at all."]
+      ] },
+      { h:"Up next", items:[
+        ["Saturday's qualifying, 3:00-4:00pm local", "Sets the ON-TRACK order, but with Verstappen, Hamilton and Leclerc all dropping places for penalties, the grid that actually lines up Sunday will look very different from the qualifying result."],
+        ["Sunday's race, 2:00-4:00pm local, 71 laps", "More rain is possible after Saturday's late shower -- Interlagos has a history of mixed-weather races reshuffling the order."]
+      ] }
+    ],
+    note:"Sources: formula1.com ('FP3: Verstappen fastest from Antonelli and Norris ahead of Sao Paulo Grand Prix', read Nov 7, 2026) for the FP3 classification, gaps, grid penalties, mechanical issues and weather. data/standings.js (automatic update from api.jolpi.ca) for the post-Mexico City points, unchanged since the prior entry for this event. Session times from data/interlagos.js." }
 ];

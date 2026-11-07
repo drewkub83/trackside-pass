@@ -135,8 +135,7 @@ const CHAMPS = [
   ,{ id:"motogp", cat:"moto", region:"world", name:"MotoGP", tile:"MOTOGP", full:"FIM MotoGP World Championship", match:/MotoGP/i, guide:"motogp",
     note:"The 2026 season ends with Malaysia (Oct 30-Nov 1), Qatar (Nov 6-8), Portugal and Valencia. The 2027 calendar has 22 Grands Prix, from Thailand (Mar 5-7) to Valencia (Nov 26-28). Dates, venues and session times come from the series' own results service (api.pulselive.motogp.com, read by tools/motogp_update.py); venues without a map show Map coming soon.",
     stops:[
-      { id:"buenos-aires", short:"Buenos Aires", place:"Buenos Aires, Argentina", kind:"Road course", e:"Grand Prix of Argentina", d:"2027-04-09", t:3 },
-      { id:"adelaide", short:"Adelaide", place:"Adelaide, Australia", kind:"Street circuit", e:"Grand Prix of Australia", d:"2027-11-12", t:3 }
+
     ] }
   ,{ id:"moto2", guide:"moto2", cat:"moto", region:"world", name:"Moto2", tile:"MOTO2", full:"FIM Moto2 World Championship", match:/Moto2/i, viaSupport:true, optIn:true, parent:"motogp",
     note:"MotoGP's middle class, racing at every MotoGP weekend. Session times come from the series' own results service." }

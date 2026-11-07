@@ -7,7 +7,7 @@ TRACKS.push({
   "opened":2027,
   "blurb":"MotoGP's new Adelaide Street Circuit runs through the city's East Parklands: Victoria Park, King Rodney Park and Rymill Park, with a long straight along the edge of the city grid. It hosts the penultimate round of the 2027 season.",
   "facts":{"Venue data":"Circuit traced from the official layout map (Australian Motorcycle News), fitted to OpenStreetMap streets; about 25 m accurate. The pit lane is not drawn. Fan areas, gates and grandstands are not published yet.","Status":"The Australian round is subject to homologation of the circuit (MotoGP calendar, Sep 2026)."},
-  "events":[{"d":"2027-11-12","e":"Grand Prix of Australia","s":"MotoGP World Championship","t":3}],
+  "events":[{"d":"2027-11-12","e":"Grand Prix of Australia","s":"MotoGP World Championship","t":3,"support":["Moto2","Moto3"]}],
   "tz":"Australia/Adelaide",
   "eventName":"Grand Prix of Australia",
   "nturns":15,

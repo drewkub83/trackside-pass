@@ -132,7 +132,7 @@ const ENTRIES = [
       ] }
     ],
     note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-01. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-11-06. Late changes are possible.",
+  { t:"monza", d:"2026-11-06", s:"wec", oddsAsOf:"Before qualifying: nearly equal chances inside each class, tilted a little by each car's finishes this season. Rebuilt from the class grid once qualifying is published.", asOf:"Provisional entry list v1 as published on fiawec.com, read 2026-11-07. Late changes are possible.",
     classes:[
       { h:"Hypercar", cars:[
         ["8", "Toyota Racing", "Sébastien Buemi / Brendon Hartley / Ryō Hirakawa", "Toyota TR010 Hybrid", 9.1, "averaged top 33% of Hypercar over 7 earlier races this season", 0.667],
@@ -174,7 +174,7 @@ const ENTRIES = [
         ["78", "Akkodis ASP Team", "Tom van Rompuy / Hadrien David / Esteban Masson", "Lexus RC F LMGT3", 3.4, "averaged top 65% of LMGT3 over 7 earlier races this season", 0.355]
       ] }
     ],
-    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-11-06. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" },
+    note:"Source: fiawec.com entry list, race summary pages and session results, read 2026-11-07. Win chances are our own estimate, not betting odds; constants from a backtest on the 2026 season (small sample). (automatic update)" },
   { t:"martinsville", d:"2026-10-30", s:"nascar", oddsAsOf:"After qualifying (starting grid from NASCAR's race data): grid position now drives the chances, tilted by recent form.", asOf:"Entry list from NASCAR's race data (nascar.com), with the official car numbers. Late changes are possible.",
     classes:[
       { h:"Race", cars:[
@@ -241,7 +241,7 @@ const ENTRIES = [
         ["11", "Diogo Moreira", "Pro Honda LCR", "", 0.5, "averaged top 72% of the field over his last 6 Sunday races", 0.275]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-06. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-07. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"sepang", d:"2026-10-30", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"After qualifying (grid from Q2, then Q1): grid position now drives the chances, tilted by recent form. Penalties are not applied.", asOf:"Riders from the practice sessions of this weekend, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
@@ -297,7 +297,7 @@ const ENTRIES = [
         ["18", "Lance Stroll", "Aston Martin", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-06. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-07. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"homestead-miami", d:"2026-11-06", s:"nascar", oddsAsOf:"Before qualifying: recent form only (each driver's average finishing position over his last 6 Cup races). The chances are rebuilt from the starting grid once qualifying is published.", asOf:"Entry list from NASCAR's race data (nascar.com), with the official car numbers. Late changes are possible.",
     classes:[
       { h:"Race", cars:[
@@ -343,5 +343,5 @@ const ENTRIES = [
         ["44", "JJ Yeley", "NY Racing Team", "Chevrolet Camaro", 0.5, "averaged top 73% of the field over his last 6 Cup races", 0.272]
       ] }
     ],
-    note:"Source: NASCAR race data (cf.nascar.com, the files nascar.com's race pages use), read 2026-11-06. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: NASCAR race data (cf.nascar.com, the files nascar.com's race pages use), read 2026-11-07. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

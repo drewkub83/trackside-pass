@@ -7,7 +7,7 @@ TRACKS.push({
   "opened":1952,
   "blurb":"MotoGP's new Buenos Aires layout at the Autódromo Oscar y Juan Gálvez: 14 turns around a lake in the south of the city, with a fan zone on each side and a general-admission area inside the circuit. The Argentine round is Round 4 of 2027.",
   "facts":{"Venue data":"Circuit and zones traced from the official layout rendering and fitted to OpenStreetMap (about 40 m accurate). The pit lane is not drawn. Gates, restrooms and parking are not published yet.","Status":"The Argentine round is subject to homologation of the circuit (MotoGP calendar, Sep 2026)."},
-  "events":[{"d":"2027-04-09","e":"Grand Prix of Argentina","s":"MotoGP World Championship","t":3}],
+  "events":[{"d":"2027-04-09","e":"Grand Prix of Argentina","s":"MotoGP World Championship","t":3,"support":["Moto2","Moto3"]}],
   "tz":"America/Argentina/Buenos_Aires",
   "eventName":"Grand Prix of Argentina",
   "nturns":14,

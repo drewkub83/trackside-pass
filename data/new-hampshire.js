@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NASCAR at New Hampshire",
   "nturns":4,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "links":[[245.4,1124.1,209.1,1124.1],[451.5,754.5,439.3,736.3]]
 });

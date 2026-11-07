@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NASCAR at Nashville",
   "nturns":4,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "links":[[156.6,234.2,150.3,231.0]]
 });

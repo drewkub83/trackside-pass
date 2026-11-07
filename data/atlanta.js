@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NASCAR at Atlanta",
   "nturns":4,
   "turns":[],
-  "rev":2
+  "rev":2,
+  "links":[[515.4,566.1,508.6,562.7]]
 });

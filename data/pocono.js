@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NASCAR at Pocono",
   "nturns":3,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "links":[[358.9,245.3,362.5,252.5]]
 });

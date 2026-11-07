@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NASCAR at Chicagoland",
   "nturns":4,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "links":[[330.5,465.8,293.2,490.6]]
 });

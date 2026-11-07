@@ -38,3 +38,10 @@ a stop disappears by itself once a track with the same id exists.
 - `tools/track-data/place_items.py`: `run(id, fit, items, source)` adds the badges (same-kind badges close to an existing one are skipped) and grows the track's frame (`vb` and `geo` together, so no existing coordinate moves) up to 520 units beyond the old frame. The walking grid does not grow: badges outside it show as reachable only at the grid edge, so Directions to them is rough.
 - Only draw `cross` badges where a tunnel or bridge really crosses the circuit; a bridge over a road or creek is an `info` badge.
 
+
+## Walkability check (Nov 6 2026)
+Every badge on every track should be reachable by the walking grid (CLAUDE.md "Check"). Method: open each track in the preview, set `walkOrigin` to a gate / restroom / food / parking badge, and count the badges for which `walkMetresTo` is not null (try several origins: an infield badge as the origin gives a false low). 91 of 94 tracks were at 100% after this pass.
+- Growing a track's frame (`place_items.py`) does NOT grow its grid: rebuild it with `build_route.build(id, rle=True)` afterwards. Only rebuild grids that were generated: some carry hand edits (a rebuild changed 3-8% of St. Petersburg's and VIR's cells), so for those use `connect_islands.py <id> --patch`.
+- `tools/track-data/connect_islands.py <id> [--patch] [--max-m N]` finds badges in a part of the grid that no route can reach and either carves a short walkable `link` (an island closed off by a building or fence; saved as `links` in the track's file and re-applied by `build_route.build`) or, where the gap is the circuit itself, adds a "Crossing (position assumed)" badge on the circuit line. The app re-closes the circuit line at run time and opens it only at `cross` badges, so a link carved across the circuit does nothing.
+- A crossing badge must be within 60 m of the circuit line (the app and the builder ignore it otherwise): snap it onto the line.
+- Still unreachable (far from any walkable ground, probably across water or a fence): St. Petersburg Yacht Parking, Nurburgring D9 / D10 / one restroom, Sepang Parking 5, two Michigan infield restrooms.

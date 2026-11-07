@@ -22,5 +22,6 @@ TRACKS.push({
   "eventName":"NASCAR at Las Vegas",
   "nturns":4,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "links":[[287.3,712.9,296.2,717.4],[256.0,274.9,260.5,288.3],[345.4,216.8,354.3,216.8]]
 });

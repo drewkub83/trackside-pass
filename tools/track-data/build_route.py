@@ -134,6 +134,11 @@ def build(tid,rle=False):
                     if not seen_block and s_*mpu>=25 and not q.get("through"): break
                 else: free_run=0
                 s_+=step
+    # "links": [[x1,y1,x2,y2],...] on the track (written by connect_islands.py): a straight 5 m walkable strip between two points, for an enclosed area
+    # (an infield, a fenced paddock) whose tunnel or bridge is not marked on the map. Applied last, so it opens anything in its way.
+    for ln in T.get("links",[]):
+        x1,y1,x2,y2=ln; L=math.hypot(x2-x1,y2-y1); n=max(2,math.ceil(L/(cell/2)))
+        for k in range(n+1): G.disc(x1+(x2-x1)*k/n,y1+(y2-y1)*k/n,max(3/mpu,cell*.6),"2")
     rows=G.rows()
     T["route"]={"cell":round(cell,4),"nx":G.nx,"ny":G.ny,"x0":vb[0],"y0":vb[1],"mpu":round(mpu,4),"rows":rows}
     if rle:

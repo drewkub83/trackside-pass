@@ -23,5 +23,6 @@ TRACKS.push({
   "eventName":"NASCAR at Martinsville",
   "nturns":4,
   "turns":[],
-  "rev":1
+  "rev":1,
+  "links":[[271.4,406.0,271.4,414.7]]
 });

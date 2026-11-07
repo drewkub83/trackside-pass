@@ -2484,7 +2484,7 @@ async function liveActivitySync(t){      /* t: the track the phone is at, null w
   const pick=pool.slice().sort((a,b)=>((a.c?rank.indexOf(a.c.id):99)-(b.c?rank.indexOf(b.c.id):99))||(a.s.start-b.s.start))[0], nx=ss.find(x=>x.s!==pick.s&&x.s.start>pick.s.start);
   const k=sessTint(pick.s.n).trim();
   try{ await P.sync({trackId:t.id,track:t.short,sessionName:shortName(pick.s.n),series:pick.c?pick.c.name:"",kind:k==="k-q"?"qualifying":k==="k-r"?"race":/practice/i.test(pick.s.n)?"practice":"other",
-    startMs:+pick.s.start,endMs:+pick.s.end,nextName:nx?shortName(nx.s.n):"",nextStartMs:nx?+nx.s.start:null}); }catch(e){}
+    startMs:+pick.s.start,endMs:+pick.s.end,live:pick.s.start<=now,nextName:nx?shortName(nx.s.n):"",nextStartMs:nx?+nx.s.start:null}); }catch(e){}
 }
 /* ---- Main race alerts and the Monday recap (Nov 2026). Session alerts for the track you are AT stay as they were (scheduleSessionAlerts: at the track only);
    starred sessions alert wherever you are; and now every series you follow also alerts you for its main race, wherever you are. ---- */

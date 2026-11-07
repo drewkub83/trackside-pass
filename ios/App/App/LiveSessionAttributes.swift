@@ -13,8 +13,9 @@ public struct LiveSessionAttributes: ActivityAttributes {
         public var end: Date
         public var nextName: String       // the session after this one ("" when none)
         public var nextStart: Date?
-        public init(sessionName: String, series: String, kind: String, start: Date, end: Date, nextName: String, nextStart: Date?) {
-            self.sessionName = sessionName; self.series = series; self.kind = kind; self.start = start; self.end = end; self.nextName = nextName; self.nextStart = nextStart
+        public var live: Bool             // true once the session is on track (set by the app when it syncs)
+        public init(sessionName: String, series: String, kind: String, start: Date, end: Date, nextName: String, nextStart: Date?, live: Bool) {
+            self.sessionName = sessionName; self.series = series; self.kind = kind; self.start = start; self.end = end; self.nextName = nextName; self.nextStart = nextStart; self.live = live
         }
     }
     public var trackId: String

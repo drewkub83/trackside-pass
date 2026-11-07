@@ -26,9 +26,9 @@ public class LiveSessionPlugin: CAPPlugin, CAPBridgedPlugin {
         let start = Date(timeIntervalSince1970: startMs / 1000), end = Date(timeIntervalSince1970: endMs / 1000)
         let nextStart = call.getDouble("nextStartMs").map { Date(timeIntervalSince1970: $0 / 1000) }
         let state = LiveSessionAttributes.ContentState(sessionName: name, series: call.getString("series") ?? "", kind: call.getString("kind") ?? "other",
-                                                       start: start, end: end, nextName: call.getString("nextName") ?? "", nextStart: nextStart)
-        // Stale at the start time: the lock screen then flips from "Starts in" to "On track now" by itself, with no update from us.
-        let content = ActivityContent(state: state, staleDate: start > Date() ? start : end)
+                                                       start: start, end: end, nextName: call.getString("nextName") ?? "", nextStart: nextStart, live: call.getBool("live") ?? false)
+        // Stale at the start time (a session still to come) or at its end (one on track): iOS may then show the "on track now" / finished wording by itself.
+        let content = ActivityContent(state: state, staleDate: state.live ? end : start)
         Task {
             // an activity for any other track is ended: only the track you are at is shown
             for a in Activity<LiveSessionAttributes>.activities where a.attributes.trackId != trackId { await a.end(nil, dismissalPolicy: .immediate) }

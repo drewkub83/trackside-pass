@@ -24,8 +24,15 @@ private struct SessionTimer: View {
         VStack(alignment: .leading, spacing: 5) {
             HStack(spacing: 5) {
                 Text(state.start, style: .time); Text("to").foregroundStyle(.secondary); Text(state.end, style: .time)
-                Text("·").foregroundStyle(.secondary)
-                if stale { Text("on track now").foregroundStyle(kindColor(state.kind)) } else { Text(state.start, style: .relative).foregroundStyle(.secondary) }
+            }
+            HStack(spacing: 5) {
+                if state.live || stale {
+                    Text("On track now").foregroundStyle(kindColor(state.kind))
+                    Text("· ends in").foregroundStyle(.secondary)
+                    Text(timerInterval: state.start...max(state.end, state.start.addingTimeInterval(1)), countsDown: true).monospacedDigit()
+                } else {
+                    Text("Starts").foregroundStyle(.secondary); Text(state.start, style: .relative)
+                }
             }
             ProgressView(timerInterval: state.start...max(state.end, state.start.addingTimeInterval(1)), countsDown: false, label: { EmptyView() }, currentValueLabel: { EmptyView() })
                 .progressViewStyle(.linear).tint(kindColor(state.kind))

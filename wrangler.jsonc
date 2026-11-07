@@ -9,6 +9,9 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
   },
+  // one shared YouTube-live answer per channel for the whole world (worker/index.js, class YtLiveCache); SQLite-backed so it works on the free plan
+  "durable_objects": { "bindings": [{ "name": "YT_LIVE", "class_name": "YtLiveCache" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["YtLiveCache"] }],
   // the YT_API_KEY secret is set in the dashboard (Settings > Variables and Secrets); keep it across deploys
   "keep_vars": true
 }

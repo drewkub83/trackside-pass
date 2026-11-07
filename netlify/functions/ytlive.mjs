@@ -7,7 +7,8 @@
      YouTube's live search (100 units).
    - Without a key it reads the channel's public /live page, which YouTube often answers with a bot check when the
      request comes from a server; `why` then says so.
-   Cached 60 s so many phones cost YouTube one request. */
+   Cached 60 s so many phones cost YouTube one request: on Cloudflare worker/index.js keeps ONE shared answer per channel for the whole world
+   (a Durable Object), and lets the 100-unit search run at most once every 10 minutes per channel, so 10,000 phones cannot use the daily quota up. */
 const json = (o, status, head) => new Response(JSON.stringify(o), { status, headers: head });
 
 /* Channels like GT World run the same race in several commentary languages at once, each its own live video,
@@ -16,9 +17,9 @@ const json = (o, status, head) => new Response(JSON.stringify(o), { status, head
 const OTHER_LANG = /\b(nederlands|dutch|deutsch|german|fran[cç]ais|french|italiano|italian|espa[nñ]ol|spanish|portugu[eê]s|portuguese|polski|t[uü]rk[cç]e|magyar|[cč]e[sš]tina|dansk|svenska|norsk|suomi|русский|中文|日本語|한국어|العربية)\b/i;
 const rank = (t) => (/\benglish\b|\(en\)/i.test(t) ? 0 : OTHER_LANG.test(t) ? 2 : 1);
 
-async function viaApi(ch, key) {
+async function viaApi(ch, key, allowSearch = true) {
   const api = "https://www.googleapis.com/youtube/v3/";
-  let err = null;
+  let err = null, searched = false;
   const liveOf = async (ids) => {
     if (!ids.length) return [];
     const v = await fetch(`${api}videos?part=snippet,status,liveStreamingDetails&id=${ids.slice(0, 50).join(",")}&key=${key}`);
@@ -33,7 +34,8 @@ async function viaApi(ch, key) {
   let live = await liveOf(ids), found = "uploads";
   /* 2) nothing live there, or only other-language feeds: YouTube's "live now on this channel" search
         (100 units of the 10,000 a day, so only when needed) */
-  if (!live.some((x) => rank(x.snippet.title) < 2)) {
+  if (allowSearch && !live.some((x) => rank(x.snippet.title) < 2)) {
+    searched = true;
     const sr = await fetch(`${api}search?part=id&channelId=${ch}&eventType=live&type=video&maxResults=10&key=${key}`);
     if (sr.ok) {
       const sids = ((await sr.json()).items || []).map((i) => i.id && i.id.videoId).filter((id) => id && !live.some((x) => x.id === id));
@@ -41,10 +43,10 @@ async function viaApi(ch, key) {
       if (more.length) { live = live.concat(more); found = live.length > more.length ? "uploads+search" : "search"; }
     } else if (!live.length) err = `youtube api search answered ${sr.status}`;
   }
-  if (!live.length) return { id: null, live: false, embeddable: false, why: err || "nothing live on the channel" };
+  if (!live.length) return { id: null, live: false, embeddable: false, searched, why: err || "nothing live on the channel" };
   live.sort((a, b) => rank(a.snippet.title) - rank(b.snippet.title) || String((b.liveStreamingDetails || {}).actualStartTime).localeCompare(String((a.liveStreamingDetails || {}).actualStartTime)));
   const x = live[0], embeddable = !(x.status && x.status.embeddable === false);
-  return { id: x.id, live: true, embeddable, title: x.snippet.title, found, others: live.length - 1, why: embeddable ? "ok" : "channel blocks embedding" };
+  return { id: x.id, live: true, embeddable, searched, title: x.snippet.title, found, others: live.length - 1, why: embeddable ? "ok" : "channel blocks embedding" };
 }
 
 async function viaPage(ch) {
@@ -62,13 +64,13 @@ async function viaPage(ch) {
   return { id: live ? id : null, live, embeddable, why };
 }
 
-export default async (req, env) => {   // env: Cloudflare Pages passes its variables here; on Netlify the second argument is a context object
+export default async (req, env, opts = {}) => {   // opts.allowSearch === false: skip the 100-unit YouTube search (the Worker's shared cache throttles it)   // env: Cloudflare Pages passes its variables here; on Netlify the second argument is a context object
   const ch = new URL(req.url).searchParams.get("ch") || "";
   const head = { "content-type": "application/json; charset=utf-8", "access-control-allow-origin": "*", "netlify-cdn-cache-control": "public, max-age=60, stale-while-revalidate=60", "cache-control": "public, max-age=30" };
   if (!/^UC[\w-]{22}$/.test(ch)) return json({ error: "bad channel id" }, 400, head);
   const key = (env && env.YT_API_KEY) || (globalThis.Netlify && Netlify.env && Netlify.env.get("YT_API_KEY")) || (typeof process !== "undefined" && process.env && process.env.YT_API_KEY) || "";
   try {
-    const out = key ? await viaApi(ch, key) : await viaPage(ch);
+    const out = key ? await viaApi(ch, key, opts.allowSearch !== false) : await viaPage(ch);
     return json({ ch, source: key ? "api" : "page", ...out }, 200, head);
   } catch (e) {
     return json({ ch, id: null, live: false, embeddable: false, why: "could not reach YouTube" }, 502, head);

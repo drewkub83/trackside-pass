@@ -286,6 +286,31 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .sess.live .st{color:#3E8F68}
 .sess.tap{width:100%;text-align:left;grid-template-columns:82px 1fr 26px;cursor:pointer}
 .sess.tap:active{transform:scale(.99)}
+/* qualifying (amber) and races (indigo) stand out in the schedule, the Today strip and the hub: a soft tint and a bar on the left; green still means on track now */
+:root{--kq:#E3A72F;--kr:#6C63D8}
+.sess.k-q,.sess.k-r,.hubChip.k-q,.hubChip.k-r{position:relative}
+.sess.k-q{background:color-mix(in srgb,var(--kq) 15%,var(--glass))}
+.sess.k-r{background:color-mix(in srgb,var(--kr) 14%,var(--glass))}
+.sess.k-q::before,.sess.k-r::before{content:"";position:absolute;left:7px;top:12px;bottom:12px;width:4px;border-radius:3px;background:var(--kq)}
+.sess.k-r::before{background:var(--kr)}
+.sess.k-q,.sess.k-r{padding-left:24px}
+.hubChip.k-q{background:color-mix(in srgb,var(--kq) 24%,var(--tint-2))}
+.hubChip.k-r{background:color-mix(in srgb,var(--kr) 22%,var(--tint-2))}
+.hubChip.past.k-q,.hubChip.past.k-r{opacity:.62}
+.hubChip.k-q::after,.hubChip.k-r::after{content:"";position:absolute;left:10px;right:10px;top:0;height:3px;border-radius:0 0 3px 3px;background:var(--kq)}
+.hubChip.k-r::after{background:var(--kr)}
+.sess.live.k-q::before,.sess.live.k-r::before,.hubChip.live::after{background:#4FA37A}
+/* a long label (MOTOGP, NASCAR) shrinks to fit the tile on the Series tab */
+.track-row .tile.txt.lg{font-size:14px;letter-spacing:.4px}
+.track-row .tile.txt.xl{font-size:11.5px;letter-spacing:.2px}
+/* pull down to refresh the Race Day hub */
+#ptr{flex:none;height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ink-2);font-size:13px}
+#ptr.snap{transition:height .22s ease}
+#ptr i{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink-2);border-top-color:transparent;opacity:.8;transition:transform .15s}
+#ptr.ready i{border-color:var(--accent);border-top-color:transparent}
+#ptr.busy i{border-color:var(--accent);border-top-color:transparent;animation:ptrspin .8s linear infinite}
+@keyframes ptrspin{to{transform:rotate(360deg)}}
+#hubView{overscroll-behavior-y:contain}
 .sess .ib{width:24px;height:24px;border-radius:50%;background:var(--tint);color:var(--accent);font-weight:600;font-size:13px;font-style:italic;display:grid;place-items:center}
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
 .cc{font-style:normal;display:inline-block;padding:2px 9px;border-radius:8px;background:var(--c);color:var(--f);font-size:11.5px;font-weight:600;letter-spacing:.3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}

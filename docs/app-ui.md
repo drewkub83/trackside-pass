@@ -29,3 +29,9 @@ Settings > Look and units > Style also has **Editorial** (`data-style="editorial
 
 ## First-run walkthrough (Nov 4 2026)
 `js/onboard.js` (loaded last, listed in `sw.js` SHELL): a full-screen tour for a brand-new install. Six steps: Welcome, What it does, Which series do you follow (the real `toggleFollow` switches for the main series), Pick a look (the real `setStyle`, previews live), At the track (the real `toggleAuto` and `toggleAlerts`, which ask for location permission only when switched on) and, only when `SB` is set, An account is optional (opens `openAccount()`). It opens once: an inline script in index.html sets `window.__fresh` when localStorage has no `paddock:` key at load, and the tour is skipped if `K.onboarded` is set; Skip, the last button and the account button all set it. Replay: Settings > About > "Replay the walkthrough" (`obOpen()`). Built from the app's tokens (`#obv` rules at the end of css/styles.css), so it follows every style and theme. Existing users never see it automatically (they already have `paddock:` keys). The native apps get it too (they load the site); a reinstall counts as fresh.
+
+## Nov 6 2026 UI changes
+- Race Day hub: pull down at the top to refresh (hubRefresh in js/app.js; re-asks the live feeds and weather, redraws the cards, checks for a newer app version; a toast says when). The hub still refreshes itself every 45 s.
+- Qualifying (amber) and races (indigo) are tinted with a bar in the event schedule and the hub Today strip (sessTint(name) gives the class k-q or k-r; practice, parades, autograph sessions and tests stay plain; green still means on track now).
+- A long label on a Series tab tile (MOTOGP, NASCAR) shrinks to fit: tlen() adds lg (6-8 letters) or xl (9+).
+- Settings now has six folding groups: Look and units, My races and series, Notifications (all reminders and alerts), At the track, Passport and your data, About. Descriptions are shorter.

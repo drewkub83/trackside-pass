@@ -115,66 +115,70 @@
 <!-- SETTINGS -->
 <section class="screen" id="settings">
   <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Settings</h2></div>
-    <section class="sgrp" id="sg0">
-    <button class="sgh" aria-expanded="false" aria-controls="sgb0" onclick="toggleSettingsGroup(0)"><span><b>Look and units</b><small>Day and night, units, session times</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+  <section class="sgrp" id="sg0">
+    <button class="sgh" aria-expanded="false" aria-controls="sgb0" onclick="toggleSettingsGroup(0)"><span><b>Look and units</b><small>Style, day and night, units, times</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
     <div class="sgb" id="sgb0">
   <div class="appear"><b>Style</b><div class="seg styleSeg"></div><small class="styleNote"></small></div>
   <div class="appear"><b>Day and night</b><div class="seg themeSeg"></div><small class="themeNote"></small></div>
   <div class="appear"><b>Weather units</b><div class="seg wxUnitSeg"></div><small>Temperature and wind speed.</small></div>
-  <div class="appear"><b>Distance units</b><div class="seg distUnitSeg"></div><small>Walking distances and elevation on the map.</small></div>
-  <div class="appear"><b>Session times</b><div class="seg timeSeg"></div><small>Track time is what the clocks at the venue show. My time converts to your phone's time zone.</small></div>
-      </div>
+  <div class="appear"><b>Distance units</b><div class="seg distUnitSeg"></div><small>Walking distances and elevation.</small></div>
+  <div class="appear"><b>Session times</b><div class="seg timeSeg"></div><small>Track time is the venue's clock. My time uses your phone's time zone.</small></div>
+    </div>
   </section>
   <section class="sgrp" id="sg1">
-    <button class="sgh" aria-expanded="false" aria-controls="sgb1" onclick="toggleSettingsGroup(1)"><span><b>My races and series</b><small>Races you're going to, series you follow</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <button class="sgh" aria-expanded="false" aria-controls="sgb1" onclick="toggleSettingsGroup(1)"><span><b>My races and series</b><small>What you follow and when it shows</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
     <div class="sgb" id="sgb1">
   <div class="appear"><b>Races I'm going to</b><div id="myRaces"></div></div>
-  <div class="auto"><div><b>Reminders</b><small>A heads-up a week before, and the evening before, each race you marked "I'm going". Only races you marked; the session alerts at a track are separate. iPhone app only.</small></div>
+  <div class="appear"><b>Home tile</b><div class="seg goSeg"></div><small>How long before a race you're going to it takes over the home tile.</small></div>
+    <div class="appear"><div id="followList"></div><small>Drag &#9776; to set the order. Hidden series leave the home screen and the "next up" tile; races you mark as going always show.</small></div>
+    <div class="appear"><b>Support series</b><div id="followSubList"></div><small>Series that race on the same weekends as the main ones. All off until you turn them on.</small></div>
+    </div>
+  </section>
+  <section class="sgrp" id="sg5">
+    <button class="sgh" aria-expanded="false" aria-controls="sgb5" onclick="toggleSettingsGroup(5)"><span><b>Notifications</b><small>Reminders and alerts</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <div class="sgb" id="sgb5">
+  <div class="auto"><div><b>Reminders</b><small>A heads-up a week before, and the evening before, each race you're going to. iPhone app only.</small></div>
     <button class="sw" id="remSw" role="switch" aria-checked="true" aria-label="Reminders for races I'm going to" onclick="toggleReminders()"><i></i></button></div>
-  <div class="auto"><div><b>Pick reminders</b><small>On Thursdays, a nudge to lock in your Pick your podium picks for that weekend, until you have finished them. Phone app only; signed in with notifications on, it comes from the server so it arrives even if you have not opened the app.</small></div>
+  <div class="auto"><div><b>Pick reminders</b><small>A Thursday nudge to lock in your Pick your podium picks. Phone app only.</small></div>
     <button class="sw" id="pickSw" role="switch" aria-checked="true" aria-label="Thursday reminder to lock in picks" onclick="togglePickRemind()"><i></i></button></div>
-  <div class="auto"><div><b>Rain alerts</b><small>A notification when rain is about to start at the track where you checked in, about 20 minutes ahead. Needs an account, phone notifications on, and a check-in at the track (Passport). Phone app only.</small></div>
+  <div class="auto"><div><b>Rain alerts</b><small>A heads-up about 20 minutes before rain reaches the track where you checked in. Needs an account, notifications and a Passport check-in. Phone app only.</small></div>
     <button class="sw" id="rainSw" role="switch" aria-checked="true" aria-label="Rain alerts at the track" onclick="toggleRainAlerts()"><i></i></button></div>
-  <div class="auto"><div><b>Friend check-ins</b><small>A notification when a friend checks in at a track (Passport), so you know who is at the race. Friends only; the people who can already see it in Friends here. Needs an account and phone notifications on. Phone app only.</small></div>
+  <div class="auto"><div><b>Friend check-ins</b><small>When a friend checks in at a track. Needs an account and phone notifications. Phone app only.</small></div>
     <button class="sw" id="checkinSw" role="switch" aria-checked="true" aria-label="Notify me when a friend checks in" onclick="toggleCheckinPush()"><i></i></button></div>
   <div class="auto" id="setPush" hidden></div>
-  <div class="appear"><b>Home tile</b><div class="seg goSeg"></div><small>How long before a race you're going to that it takes over the home screen tile and the cars and drivers to watch list.</small></div>
-    <div class="appear"><div id="followList"></div><small>Drag &#9776; to set the order. Hidden series leave the home screen and the "next up" tile; races you mark as going always show.</small></div>
-    <div class="appear"><b>Support series</b><div id="followSubList"></div><small>The series that race on the same weekends as the main ones, grouped by the series they race with. All off until you turn them on.</small></div>
-      </div>
-  </section>
-  <section class="sgrp" id="sg2">
-    <button class="sgh" aria-expanded="false" aria-controls="sgb2" onclick="toggleSettingsGroup(2)"><span><b>At the track</b><small>Location, alerts, screen, directions</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
-    <div class="sgb" id="sgb2">
-  <div class="auto"><div><b>Open at the track</b><small>When you open the app at a venue, go straight to its map.</small></div>
-    <button class="sw" id="autoSw" role="switch" aria-checked="false" aria-label="Open at the track" onclick="toggleAuto()"><i></i></button></div>
-  <div class="auto"><div><b>Passport check-in</b><small>When you open the app at a track during a race weekend, stamp your passport.</small></div>
-    <button class="sw" id="ppSw" role="switch" aria-checked="false" aria-label="Passport check-in" onclick="togglePassportAuto()"><i></i></button></div>
   <div class="auto"><div><b>On-track alerts</b><small>While you're at a track with the app open, a card pops up when a session goes on track.</small></div>
     <button class="sw" id="alertSw" role="switch" aria-checked="false" aria-label="On-track alerts" onclick="toggleAlerts()"><i></i></button></div>
-    <div class="auto"><div><b>Keep the screen on</b><small>Stops the phone from dimming while the map is open. Uses more battery.</small></div>
+    </div>
+  </section>
+  <section class="sgrp" id="sg2">
+    <button class="sgh" aria-expanded="false" aria-controls="sgb2" onclick="toggleSettingsGroup(2)"><span><b>At the track</b><small>Open at the track, screen, directions</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <div class="sgb" id="sgb2">
+  <div class="auto"><div><b>Open at the track</b><small>Go straight to a venue's map when you open the app there.</small></div>
+    <button class="sw" id="autoSw" role="switch" aria-checked="false" aria-label="Open at the track" onclick="toggleAuto()"><i></i></button></div>
+  <div class="auto"><div><b>Passport check-in</b><small>Stamp your passport when you open the app at a track on a race weekend.</small></div>
+    <button class="sw" id="ppSw" role="switch" aria-checked="false" aria-label="Passport check-in" onclick="togglePassportAuto()"><i></i></button></div>
+    <div class="auto"><div><b>Keep the screen on</b><small>Stops the phone dimming while the map is open. Uses more battery.</small></div>
     <button class="sw" id="awakeSw" role="switch" aria-checked="false" aria-label="Keep the screen on" onclick="toggleAwake()"><i></i></button></div>
-  <div class="auto"><div><b>Stamp vibration</b><small>A small buzz when a stamp lands (Android phones; iPhones do not allow it).</small></div>
+    <div class="appear"><b>Accessible routes</b><div class="seg accessSeg"></div><small>Favors flatter paths over hills and steps.</small></div>
+  <div class="auto"><div><b>Stamp vibration</b><small>A small buzz when a stamp lands (Android only).</small></div>
     <button class="sw" id="hapSw" role="switch" aria-checked="true" aria-label="Stamp vibration" onclick="toggleHaptics()"><i></i></button></div>
-    <div class="appear"><b>Accessible routes</b><div class="seg accessSeg"></div><small>Favors flatter paths over hills and steps when giving directions.</small></div>
     </div>
   </section>
   <section class="sgrp" id="sg3">
-    <button class="sgh" aria-expanded="false" aria-controls="sgb3" onclick="toggleSettingsGroup(3)"><span><b>Passport and your data</b><small>Badge animation, back up and restore</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <button class="sgh" aria-expanded="false" aria-controls="sgb3" onclick="toggleSettingsGroup(3)"><span><b>Passport and your data</b><small>Back up and restore</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
     <div class="sgb" id="sgb3">
   <div class="appear"><b>Badge animation</b><small style="margin:0 0 10px">See what unlocking a badge looks like.</small><button class="btn quiet" onclick="previewUnlock()">Preview animation</button></div>
     <div class="appear"><b>Back up and restore</b><small style="margin:0 0 10px">Your stamps and the races you are going to live only on this phone. Copy a backup code before you delete the app or get a new phone, and paste it here to bring them back.</small><div style="display:flex;gap:10px"><button class="btn quiet" onclick="ppBackup()">Copy backup code</button><button class="btn quiet" onclick="ppRestore()">Restore</button></div></div>
   <div class="appear" id="setDelete" hidden></div>
-      </div>
+    </div>
   </section>
   <section class="sgrp" id="sg4">
-    <button class="sgh" aria-expanded="false" aria-controls="sgb4" onclick="toggleSettingsGroup(4)"><span><b>About</b><small>Version, data freshness, screen check</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
+    <button class="sgh" aria-expanded="false" aria-controls="sgb4" onclick="toggleSettingsGroup(4)"><span><b>About</b><small>Version and data freshness</small></span><svg viewBox="0 0 24 24"><path d="M8 10l4 4 4-4"/></svg></button>
     <div class="sgb" id="sgb4">
   <div class="appear"><b>Trackside Pass</b><small style="margin:0 0 4px">Version: <span id="abVer">…</span></small><small style="margin:0 0 12px">Schedules and watch lists checked: <span id="abData">…</span></small><button class="btn quiet" onclick="refreshApp()">Refresh the app</button> <button class="btn quiet" onclick="obOpen()">Replay the walkthrough</button><small>Downloads the newest version. Your stamps and races stay.</small></div>
     <div class="appear"><b>Screen</b><small class="scrinfo" id="scrInfo" style="margin:0 0 12px;white-space:pre-line;font-variant-numeric:tabular-nums"></small></div>
-      </div>
+    </div>
   </section>
-<div class="soon">More settings will appear here as the app grows.</div>
 </section>
 
 <!-- SERIES: tracks in order of that series' next race -->
@@ -192,6 +196,7 @@
   <div class="panel on" id="pMap">
     <div class="hubView" id="hubView" hidden>
       <div class="bar"><button class="fab" aria-label="Back to track list" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2" id="hubTrackName"></h2><button class="fab" id="hubEditBtn" aria-label="Edit cards" aria-pressed="false" onclick="hubEditToggle()"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>
+      <div id="ptr" aria-live="polite"><i></i><span></span></div>
       <div id="hubLive" class="hubCard hubLive" hidden></div>
       <div id="hubBody"></div>
     </div>

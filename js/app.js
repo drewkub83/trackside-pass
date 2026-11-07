@@ -272,8 +272,9 @@ function champCat(c){ return CATS.some(x=>x.id===c.cat)?c.cat:"other"; }
 function renderChampList(){
   const el=document.getElementById("champList"); if(!el) return;
   const ordered=orderedChamps().filter(followed);
+  const tlen=t=>{ const n=String(t).length; return n>=9?" xl":n>=6?" lg":""; };
   const row=c=>{ const mk=typeof seriesMark==="function"?seriesMark(c.id,60):"", n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length, same=!mk&&String(c.tile).toLowerCase()===String(c.name).toLowerCase();
-    return `<li><button class="track-row series${same?" same":""}" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt${mk?" mk":""}">${mk||c.tile}</span>
+    return `<li><button class="track-row series${same?" same":""}" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt${mk?" mk":tlen(c.tile)}">${mk||c.tile}</span>
       <div><h2>${c.name}</h2><div class="meta"><span class="mfull">${c.full}<span class="msep"> · </span></span>${n} venue${n===1?"":"s"}</div></div>
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; };
   const cats=[...CATS.map(x=>x.id),"other"].filter(id=>ordered.some(c=>champCat(c)===id));
@@ -286,7 +287,7 @@ function renderChampList(){
       serBar(ct.name);
       return; }
     el.innerHTML=cats.map(id=>{ const ct=CATS.find(x=>x.id===id)||{id:"other",name:"Other series",tile:"MORE"}, list=ordered.filter(c=>champCat(c)===id), nxt=list.map(c=>orderOf(c)[0]).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d))[0];
-      return `<li><button class="track-row series cat" data-s="cat-${ct.id}" onclick="openSerCat('${ct.id}')"><span class="tile txt">${ct.tile}</span>
+      return `<li><button class="track-row series cat" data-s="cat-${ct.id}" onclick="openSerCat('${ct.id}')"><span class="tile txt${tlen(ct.tile)}">${ct.tile}</span>
         <div><h2>${ct.name}</h2><div class="meta">${list.length} series${nxt?" · next "+nxt.t.short+", "+fmt(nxt.e.d):""}</div></div>
         <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; }).join("");
     return; }
@@ -1319,7 +1320,8 @@ function hubTodayStrip(c){
   if(today.length){
     const doneCount=today.filter(s=>s.end<=now).length;
     const chips=today.map(s=>{ const isLive=s.start<=now&&now<s.end, past=s.end<=now;
-      return `<div class="hubChip${isLive?" live":past?" past":""}"><b>${fmtTime(s.start,cur.tz)}</b><span>${esc(shortName(s.n))}</span></div>`; }).join("");
+      const kcls=sessTint(s.n);
+      return `<div class="hubChip${kcls}${isLive?" live":past?" past":""}"><b>${fmtTime(s.start,cur.tz)}</b><span>${esc(shortName(s.n))}</span></div>`; }).join("");
     stripHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><h4>Today</h4><div class="hubStripSub">${today.length} session${today.length>1?"s":""} today${doneCount?` · ${doneCount} done`:""}</div><div class="hubStrip">${chips}</div></div>`;
   }
   return stripHtml;
@@ -1649,12 +1651,19 @@ function renderSchedule(){
     const cl=sr?carsFor(sr,s.n):[], chips=cl.length>1?`<span class="chips">${cl.map(chipHtml).join("")}</span>`:"";
     const inner=`<div class="st">${fmtTime(s.start,cur.tz)}${s.est?"":`<small>to ${fmtTime(s.end,cur.tz)}</small>`}</div><div class="sn">${s.n}${live?"<em>On track now</em>":(!past&&s.start-now<36e5?`<em>${relTime(s.start-now)}</em>`:"")}${chips}</div>${sr?`<span class="ib" aria-hidden="true">i</span>`:""}`;
     const on=isStarred(cur,s), star=past||live?"":`<button class="sstar${on?" on":""}" aria-pressed="${on}" aria-label="${on?"Remove from my sessions":"Alert me before this session"}" onclick="event.stopPropagation();toggleStar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></button>`;
-    return sr?`<div class="sess tap ${live?"live":past?"past":""}" role="button" tabindex="0" onclick="showInfo(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showInfo(${i})}" aria-label="About ${esc(s.n)}">${inner}${star}</div>`:`<div class="sess ${live?"live":past?"past":""}">${inner}${star}</div>`; }).join("");
+    const kcls=sessTint(s.n);
+    return sr?`<div class="sess tap${kcls} ${live?"live":past?"past":""}" role="button" tabindex="0" onclick="showInfo(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showInfo(${i})}" aria-label="About ${esc(s.n)}">${inner}${star}</div>`:`<div class="sess${kcls} ${live?"live":past?"past":""}">${inner}${star}</div>`; }).join("");
   const mineN=ss.filter(x=>x.end>now&&isStarred(cur,x)).length, soonN=ss.filter(x=>x.end>now).length;
   document.getElementById("schedTools").innerHTML="";
 }
 /* ---- series guide (data/series.js) ---- */
 function seriesFor(name){ return SERIES.find(s=>s.match.test(name))||null; }
+/* qualifying and races get their own tint in every schedule list (practice, parades, autograph sessions and tests stay plain): sessTint(name) gives the class */
+function sessTint(n){
+  if(/qualif|shootout|superpole|hyperpole/i.test(n)) return " k-q";
+  if(/test|autograph|concert|walk|practice|parade|warm/i.test(n)) return "";
+  return /\brace\b|sprint|feature|enduro|hours? of|rolex|petit le mans|battle on the/i.test(n)?" k-r":"";
+}
 function kindOf(n){ return /qualifying/i.test(n)?"qualifying":/practice/i.test(n)?"practice":"race"; }
 const DEFAULT_WATCH={
   practice:"Teams tune their cars for the weekend, so lap times matter less than what the cars are trying. It is a good time to walk the paddock and see the cars up close.",
@@ -2541,6 +2550,34 @@ if("serviceWorker" in navigator){
   /* a first visit that lost signal part-way saves the maps it missed the next time the app opens online */
   navigator.serviceWorker.ready.then(r=>{ if(navigator.onLine&&r.active) r.active.postMessage({type:"topup"}); }).catch(()=>{});
 }
+
+/* Pull down to refresh the Race Day hub: re-reads the live results feeds, the weather and redraws the cards (the hub also does this by itself every 45 seconds while it is open). */
+function hubRefresh(){
+  if(!hubMode||!cur) return Promise.resolve();
+  Object.keys(sessAsked).forEach(k=>{ delete sessAsked[k]; });   /* ask every feed card again, now */
+  try{ if(typeof liveStart==="function"&&liveSrc()){ clearInterval(liveTimer); liveTimer=null; liveStart(); } }catch(e){}
+  const jobs=[]; try{ jobs.push(Promise.resolve(loadWeather(true))); }catch(e){}
+  try{ navigator.serviceWorker&&navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{}); }catch(e){}   /* look for a newer version of the app and its data */
+  renderHub();
+  return Promise.race([Promise.all(jobs).catch(()=>{}),new Promise(r=>setTimeout(r,2500))]).then(()=>new Promise(r=>setTimeout(r,700))).then(()=>{ if(hubMode) renderHub(); });
+}
+(function(){
+  const v=document.getElementById("hubView"), ind=document.getElementById("ptr"); if(!v||!ind) return;
+  const txt=ind.querySelector("span"), LIMIT=64; let sy=0,sx=0,pull=0,tracking=false,busy=false;
+  const set=(h,state,label)=>{ ind.style.height=h+"px"; ind.className=(state||"")+(h===0||state==="busy"?" snap":""); txt.textContent=label||""; };
+  const reset=()=>{ pull=0; tracking=false; if(!busy) set(0,"snap",""); };
+  v.addEventListener("touchstart",e=>{ if(busy||e.touches.length!==1||v.scrollTop>0||hubEditing||hubDragging||e.target.closest("input,textarea,select,.hubStrip,.sheet")){ tracking=false; return; } sy=e.touches[0].clientY; sx=e.touches[0].clientX; tracking=true; pull=0; },{passive:true});
+  v.addEventListener("touchmove",e=>{
+    if(!tracking) return; const dy=e.touches[0].clientY-sy, dx=e.touches[0].clientX-sx;
+    if(dy<=0||Math.abs(dx)>Math.abs(dy)){ if(pull>0) reset(); else if(dy<-8) tracking=false; return; }
+    if(v.scrollTop>0){ reset(); return; }
+    pull=Math.min(LIMIT+20,dy*0.5); set(pull,pull>=LIMIT?"ready":"",pull>=LIMIT?"Release to refresh":"Pull to refresh");
+  },{passive:true});
+  const end=()=>{ if(!tracking) return; tracking=false;
+    if(pull>=LIMIT&&!busy){ busy=true; set(44,"busy","Refreshing"); hubRefresh().finally(()=>{ busy=false; set(0,"snap",""); toast("Updated "+new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})); }); }
+    else reset(); };
+  v.addEventListener("touchend",end,{passive:true}); v.addEventListener("touchcancel",reset,{passive:true});
+})();
 
 /* swipe back: drag from the left edge of the screen (an installed web app has no browser back gesture) */
 function swipeBack(){

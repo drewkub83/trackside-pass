@@ -1397,4 +1397,27 @@ const WATCH = [
       ] }
     ],
     note:"Sources: formula1.com ('FP3: Verstappen fastest from Antonelli and Norris ahead of Sao Paulo Grand Prix', read Nov 7, 2026) for the FP3 classification, gaps, grid penalties, mechanical issues and weather. data/standings.js (automatic update from api.jolpi.ca) for the post-Mexico City points, unchanged since the prior entry for this event. Session times from data/interlagos.js." }
+  ,{ t:"lusail", d:"2026-11-06", s:"motogp", from:"2026-11-07", at:"2026-11-07T17:22:52Z",
+    asOf:"Current after Saturday evening's Sprint at the Qatar Grand Prix (Lusail, Nov 7): Marc Marquez won after pole-sitter Marco Bezzecchi crashed out of the lead battle with him, and Marquez can clinch the title in Sunday's Grand Prix.",
+    groups:[
+      { h:"The Sprint: Marquez wins as Bezzecchi crashes out of the lead", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Won the 10-lap Sprint after Bezzecchi, who started from pole, crashed out of the lead while the two were racing wheel-to-wheel; the stewards investigated the contact between them and handed down no penalty to either rider."],
+        ["Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", "Second, 0.862s behind Marquez."],
+        ["Jorge Martin (Aprilia Racing)", "Third, 1.519s back -- his first podium since fracturing his wrist at Phillip Island on Oct 25, and a big step up from missing Sepang entirely and Friday's low-15s pace here."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Crashed out of the lead fight with Marquez and did not score; this app could not confirm the rest of the Sprint's top 10 from sources checked today."]
+      ] },
+      { h:"The title fight: Marquez can clinch it Sunday", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Led the championship 399-355-332 over Martin and Bezzecchi heading into the Sprint (data/standings.js, not yet updated for tonight's points); multiple sources report he can now clinch the title in Sunday's Grand Prix if he wins it and Martin fails to score -- this app's own automatic MotoGP standings tool will carry the Sprint's points update."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Reported as now mathematically eliminated from the title race as a result of scoring nothing in the Sprint, with two further sprint-and-race weekends (Portugal, Valencia) left after this one."],
+        ["Jorge Martin (Aprilia Racing)", "Needs Marquez to stumble and a big result of his own on Sunday to keep the fight alive past this weekend."]
+      ] },
+      { h:"Yamaha's boycott: unchanged", items:[
+        ["Still out", "Yamaha's four riders (its factory bikes and Pramac's) remain withdrawn from the whole Qatar round over the team's Middle East travel restrictions; this app found no report of the situation changing since Saturday morning. Yamaha has said it expects to return at the next round, the Portuguese Grand Prix."],
+        ["Possible sanctions", "MotoGP has reportedly threatened Yamaha and its riders with race bans for Portugal and Valencia over the boycott, but the FIM had made no official ruling as of this writing."]
+      ] },
+      { h:"Up next", items:[
+        ["Sunday's Grand Prix, 7:00pm local, after dark", "The weekend's main event and Marquez's first chance to seal the title outright."]
+      ] }
+    ],
+    note:"Sources: web search summaries of crash.net's Sprint race results and its 'Qatar Sprint Race: New 2026 MotoGP World Championship standings' coverage, Yahoo Sports ('MotoGP Qatar Grand Prix: Marc Marquez wins thrilling sprint as Jorge Martin fights to third'), racesport.nl, gp-inside.com and gpblog.com, all agreeing on Marquez's win, Di Giannantonio second (+0.862s) and Martin third (+1.519s), Bezzecchi's pole-to-crash exit from the lead battle with Marquez, the stewards' no-penalty decision, and that Marquez can clinch the title Sunday with a win plus Martin failing to score (none of these sites could be reached directly from this environment, so this is as summarized by search results). Bezzecchi's mathematical elimination reported by the same Yahoo Sports summary; not independently re-derived here. data/standings.js (automatic update from the MotoGP results service) for the pre-Sprint championship points (399-355-332), which the automatic tool will update separately with tonight's result -- this entry does not compute or restate new point totals itself. Yamaha boycott status and its return-at-Portugal statement, and the reported threat of race bans for Portugal/Valencia, from web search summaries of autosport.com's and crash.net's reporting from Nov 1-2, 2026, carried over and re-confirmed as still the latest available as of this writing; no Sunday-specific update was found. The full Sprint top 10 beyond the podium was not confirmed in sources checked and is left out rather than guessed." }
 ];

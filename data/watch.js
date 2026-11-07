@@ -1339,5 +1339,31 @@ const WATCH = [
         ["Sunday's race, 11:00am-5:00pm local (6 hours)", "The 2026 season finale, deciding both the Hypercar drivers' title between the two Toyota crews and the LMGT3 teams' title between TF Sport and Manthey."]
       ] }
     ],
-    note:"Sources: fiawec.com's official session results pages for the Monza round (raceId=5066; sessionId=8288 for LMGT3 Qualifying, sessionId=8289 for LMGT3 Hyperpole), read directly, for the classifications, lap times and grid positions, including the #21 Ferrari's no-time result and 0 laps completed in Qualifying. The damp conditions and the session being briefly stopped for the #21 Ferrari's incident are as given by a web-search summary of a race report (the site itself could not be reached directly from this environment) and are not independently confirmed beyond that summary. data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gap, unchanged since the prior entry for this event. Saturday's Hypercar qualifying/Hyperpole schedule from fiawec.com's own Monza race page." }
+    note:"Sources: fiawec.com's official session results pages for the Monza round (raceId=5066; sessionId=8288 for LMGT3 Qualifying, sessionId=8289 for LMGT3 Hyperpole), read directly, for the classifications, lap times and grid positions, including the #21 Ferrari's no-time result and 0 laps completed in Qualifying. The damp conditions and the session being briefly stopped for the #21 Ferrari's incident are as given by a web-search summary of a race report (the site itself could not be reached directly from this environment) and are not independently confirmed beyond that summary. data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gap, unchanged since the prior entry for this event. Saturday's Hypercar qualifying/Hyperpole schedule from fiawec.com's own Monza race page." },
+  { t:"monza", d:"2026-11-06", s:"wec", from:"2026-11-07", at:"2026-11-07T15:25:30Z",
+    asOf:"Current after Hypercar Qualifying and Hyperpole at Monza (Nov 7): Antonio Fuoco takes a home pole for Ferrari's #50, and BOTH title-contending Toyotas miss the Hyperpole cut entirely -- they will start Sunday's season-finale race 15th and 16th of 17.",
+    groups:[
+      { h:"What Hypercar Qualifying and Hyperpole set for Sunday's grid", items:[
+        ["#50 Ferrari AF Corse (Antonio Fuoco, Miguel Molina, Nicklas Nielsen)", "Fuoco topped Hyperpole on 1:33.364 for a home pole, Ferrari's third of the season and the #50 crew's first -- this car isn't in the drivers' title fight (6th in the standings), but the pole bonus point still counts for the constructors' table."],
+        ["#19 Genesis Magma Racing (Mathieu Jaminet)", "2nd in Hyperpole, just 0.096s off pole."],
+        ["#51 Ferrari AF Corse, #38 Cadillac Hertz Team JOTA, #94 Peugeot TotalEnergies, #36 Alpine Endurance Team, #12 Cadillac Hertz Team JOTA, #83 AF Corse, #93 Peugeot TotalEnergies, #20 BMW M Team WRT", "Filled out the rest of the 10-car Hyperpole order, 3rd through 10th, all within about 0.7s of Fuoco's pole time."],
+        ["#8 Sebastien Buemi, Brendon Hartley, Ryo Hirakawa (Toyota)", "Missed the Hyperpole cut: 15th of 17 in Qualifying, 1.334s off the fastest time -- the drivers'-championship leader will start the title-deciding race from 15th on the grid."],
+        ["#7 Kamui Kobayashi, Mike Conway, Nyck de Vries (Toyota)", "Missed Hyperpole too: 16th of 17, 1.665s off the pace -- one place behind their own title-rival team-mates in the #8."],
+        ["Neither Toyota found pace all weekend", "Both cars were off the front in every session from Friday's FP1 through Saturday's Hyperpole; this is now confirmed as their worst qualifying result of the season, at the one race that decides the drivers' title."]
+      ] },
+      { h:"The drivers' title: both contenders start mid-pack", items:[
+        ["#8 Buemi/Hartley/Hirakawa", "Still lead 114 to 97, a 17-point gap, with Monza's maximum 26 on offer -- but starting 15th in a 6-hour race is a much tougher place to manage the title from than the front row."],
+        ["#7 Kobayashi/Conway/de Vries", "Needs to beat their team-mates by enough to close the 17-point gap; starting one spot further back (16th vs 15th) makes that even harder, though a 6-hour race still leaves plenty of time for the grid to shuffle."],
+        ["The manufacturers' title is already decided", "Toyota clinched the 2026 World Manufacturers' Championship -- its eighth -- with a 1-2 finish at Barcelona in October; only the drivers' title is still open, and only these two Toyota crews can win it."]
+      ] },
+      { h:"LMGT3: grid unchanged from Saturday afternoon", items:[
+        ["#78 Akkodis ASP Team (Lexus RC F LMGT3)", "LMGT3 pole, 1:47.523."],
+        ["#33 TF Sport (Chevrolet Corvette Z06 GT3.R)", "2nd, 0.014s off -- leads the LMGT3 teams' title 92 to 74 and starts from a strong spot to defend it."],
+        ["#92 The Bend/Manthey (Porsche 911 GT3 R)", "The title-contending Porsche missed Hyperpole and starts 11th, needing a big result from mid-pack to catch TF Sport."]
+      ] },
+      { h:"Up next", items:[
+        ["Sunday's race, 11:00am-5:00pm local (6 hours), CET", "The 2026 season finale, deciding the Hypercar drivers' title between the two Toyota crews and the LMGT3 teams' title between TF Sport and Manthey."]
+      ] }
+    ],
+    note:"Sources: fiawec.com's official results pages for the Monza round (raceId=5066, sessionId=8290 for Hypercar Qualifying and sessionId=8291 for Hyperpole), read directly, for the full classification, lap times and gaps, including both Toyotas' 15th/16th grid slots. Web-search summaries of motorsport.com ('WEC Monza: Antonio Fuoco takes pole for Ferrari') and an Italian-language report, neither reachable directly from this environment, for Fuoco's pole context (his and the #50's season firsts) and confirmation that both Toyotas missed Hyperpole. data/standings.js (from fiawec.com, read Oct 26, 2026) for the 114-97 points gap, unchanged since the prior entry. Toyota's manufacturers'-title clinch at Barcelona from a web-search summary of Toyota's own press release and Autosport/Motorsport Week reporting from October 2026, not previously noted in this app's watch entries for this event." }
 ];

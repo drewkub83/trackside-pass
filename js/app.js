@@ -30,6 +30,8 @@ const K={
   remind:"paddock:remind",        /* going-race reminders on/off */
   rainAlerts:"paddock:rainAlerts",    /* "0" = rain alerts switched off (the server also keeps the choice: profiles.rain_alerts) */
   recapHome:"paddock:recapHome",      /* weekend recap cards on Home that were dismissed ("track|date") */
+  raceAlerts:"paddock:raceAlerts",    /* alert for the main race of every series I follow, wherever I am (default on) */
+  recapNotif:"paddock:recapNotif",    /* Monday morning: the weekend recap is ready (default on) */
   alertLead:"paddock:alertLead",      /* minutes before a session that its alert goes off (5, 10, 15 or 30) */
   recapSeen:"paddock:recapSeen",      /* weekend points recaps already shown (game keys), so each pops up once */
   sessFeed:"paddock:sessFeed",        /* the last qualifying order / race classification read from a series' results feed (kept so the hub still shows it with no signal) */
@@ -132,7 +134,7 @@ const GO_KEY=K.going;
 function goingList(){ try{ return JSON.parse(localStorage.getItem(GO_KEY)||"[]"); }catch(e){ return []; } }
 const goKey=(t,e)=>t.id+"|"+e.d+"|"+e.e;
 function isGoing(t,e){ return goingList().includes(goKey(t,e)); }
-function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>scheduleGoingReminders(on),0); }
+function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>{ scheduleGoingReminders(on); scheduleRecapPush(false); if(on) offlineEnsure("going",t); },0); }
 /* Starred sessions: tap the star on a session to get an alert 10 minutes before it (works anywhere, not just at the track,
    because you picked that session yourself). The star list is on this phone; alerts are the iPhone app's own notifications. */
 const STAR_KEY=K.stars, STAR_ID_BASE=2000, PICK_ID_BASE=3000;   /* notification ids: sessions 1-60, going 1000+, stars 2000-2999, pick reminders 3000-3099 */
@@ -1199,69 +1201,89 @@ function gameSeason(year){
   rows.sort((a,b)=>b.g.d.localeCompare(a.g.d));
   return {rows,pts:rows.reduce((n,r)=>n+r.sc.pts,0),max:rows.reduce((n,r)=>n+r.sc.max,0),winners:rows.reduce((n,r)=>n+r.winners,0)};
 }
-/* ---- Weekend recap card (Nov 2026): after a weekend ends and its results are in, one card with who won each class, whether you were there,
-   how your picks scored and what is next for the series. On the Race Day hub (for 14 days) and on Home (7 days, only for weekends you
-   were at, marked "I'm going" or played). Opens a sheet you can share. ---- */
+/* ---- Weekend recap (Nov 2026): one sheet for a whole race weekend, every series you follow that raced anywhere: the top 5 of each class, how
+   your Pick your podium picks scored, and a few storylines from What to watch. A card on the Race Day hub (14 days after a weekend with results)
+   and on Home (7 days; the x dismisses it); a notification on Monday morning points to it (scheduleRecapPush). ---- */
 const RECAP_WINDOW=14, RECAP_HOME_DAYS=7;
+const sunOf=d=>{ const x=new Date(d+"T12:00:00Z"); x.setUTCDate(x.getUTCDate()+((7-x.getUTCDay())%7)); return x.toISOString().slice(0,10); };   /* the Sunday that ends the weekend's week */
 function recapResults(t,e){ if(typeof RESULTS==="undefined") return []; const end=eventEnd(e); return RESULTS.filter(r=>r.t===t.id&&r.d>=e.d&&r.d<=end); }
-function recapEventFor(t){
-  const today=localToday(); let best=null;
-  (t.events||[]).forEach(e=>{ if(/test/i.test(e.s||"")) return; const end=eventEnd(e); if(end>=today||daysBetween(end,today)>RECAP_WINDOW||!recapResults(t,e).length) return; if(!best||e.d>best.d) best=e; });
-  return best;
-}
+function recapChampFor(sid){ return CHAMPS.find(c=>c.guide===sid||c.id===sid)||null; }
 function recapWas(t,e){ let stamped=false; try{ stamped=typeof ppLoad==="function"&&ppLoad().stamps.some(s=>s.t===t.id&&s.ev===e.d); }catch(x){} return {stamped,going:isGoing(t,e)}; }
-function recapGames(t,e){
+function recapGames(t,e,sid){
   if(typeof ENTRIES==="undefined") return []; const end=eventEnd(e);
-  return ENTRIES.filter(g=>g.t===t.id&&g.d>=e.d&&g.d<=end).map(g=>({g,sc:gameScore(g)})).filter(x=>x.sc&&x.sc.cars>0);
+  return ENTRIES.filter(g=>g.t===t.id&&g.d>=e.d&&g.d<=end&&(!sid||g.s===sid)).map(g=>({g,sc:gameScore(g)})).filter(x=>x.sc&&x.sc.cars>0);
 }
-function recapNext(t,e){ const r=recapResults(t,e)[0], c=r&&champ(r.s); if(!c) return null; return allOrderOf(c).find(x=>x.e.d>eventEnd(e))||null; }
-const recapWinner=g=>g.order&&g.order[0]?g.order[0].replace(/^\d+\.\s*/,""):(g.winner||"");
-function recapText(t,e){
-  const lines=[`${e.e} · ${t.short} · ${fmtRange(e)}`];
-  recapResults(t,e).forEach(r=>{ const nm=watchSeriesName(r)||r.event; lines.push(`${nm}: `+r.groups.slice(0,4).map(g=>`${g.h} ${recapWinner(g)}`).join("; ")); });
-  const gm=recapGames(t,e); if(gm.length) lines.push(`My picks: ${gm.reduce((n,x)=>n+x.sc.pts,0)} of ${gm.reduce((n,x)=>n+x.sc.max,0)} points`);
-  lines.push("Trackside Pass: https://tracksidepass.com"); return lines.join("\n");
+/* every (track, event, result) of that week that matters to you: a series you follow, or a weekend you were at or marked */
+function recapItems(sun,firstTrack){
+  const out=[], order=orderedChamps().map(c=>c.id);
+  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(/test/i.test(e.s||"")||sunOf(eventEnd(e))!==sun) return; const was=recapWas(t,e);
+    recapResults(t,e).forEach(r=>{ const c=recapChampFor(r.s); if((c&&followed(c))||was.stamped||was.going||(firstTrack&&t.id===firstTrack)) out.push({t,e,r,c}); }); }));
+  out.sort((a,b)=>((firstTrack&&b.t.id===firstTrack)-(firstTrack&&a.t.id===firstTrack))||((a.c?order.indexOf(a.c.id)+(a.c.optIn?100:0):99)-(b.c?order.indexOf(b.c.id)+(b.c.optIn?100:0):99)));
+  return out;
 }
-function recapHtml(t,e){
-  const res=recapResults(t,e), was=recapWas(t,e), games=recapGames(t,e), nx=recapNext(t,e);
-  const winners=res.map(r=>`<div class="rcpGame"><div class="rcpHead"><b>${esc(watchSeriesName(r)||r.event)}</b><span>${esc(r.event&&/sprint/i.test(r.event)?"Sprint":"")}</span></div>${r.groups.slice(0,4).map(g=>`<div class="rcpWin"><i>${esc(g.h)}</i><span>${esc(recapWinner(g))}</span></div>`).join("")}</div>`).join("");
-  const pts=games.reduce((n,x)=>n+x.sc.pts,0), mx=games.reduce((n,x)=>n+x.sc.max,0);
-  return `<div class="mkick">Race weekend recap</div><h3 id="infoTitle">${esc(e.e)}</h3>
-    <p class="plRules">${esc(t.short)} · ${esc(fmtRange(e))}${was.stamped?" · <b>You were here</b>":(was.going?" · You were going":"")}</p>
-    ${winners}
-    ${games.length?`<p class="plRules rcpSeason">Your picks scored <b>${pts}</b> of ${mx}.</p>`:""}
-    ${nx?`<p class="plRules rcpSeason">Next: <b>${esc(nx.t.short)}</b>, ${esc(fmtRange(nx.e))}.</p>`:""}
-    <div class="rcpBtns"><button class="btn primary" onclick="shareRecap('${t.id}','${e.d}')">Share</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+function recapTop(g,n){ const list=(g.order&&g.order.length)?g.order.slice(0,n):[g.winner?"Winner: "+g.winner:""].concat(g.podium||[]).filter(Boolean).slice(0,n); return list; }
+function recapStory(it){   /* the newest What to watch entry for this weekend: a few of its lines */
+  if(typeof WATCH==="undefined") return []; const ws=WATCH.filter(w=>w.t===it.t.id&&w.s===it.r.s&&w.d===it.e.d); if(!ws.length) return [];
+  const w=ws.slice().sort((a,b)=>String(a.from||"").localeCompare(String(b.from||"")))[ws.length-1], out=[];
+  (w.groups||[]).forEach(g=>(g.items||[]).forEach(x=>{ if(out.length<3&&x&&x[1]) out.push({who:x[0],why:String(x[1]).length>150?String(x[1]).slice(0,147).replace(/\s+\S*$/,"")+"…":x[1]}); }));
+  return out;
 }
-function openWkRecap(tid,d){
-  const t=TRACKS.find(x=>x.id===tid), e=t&&t.events.find(x=>x.d===d); if(!e) return;
-  document.getElementById("infoBody").innerHTML=recapHtml(t,e);
+function recapPicksHtml(it){
+  const games=recapGames(it.t,it.e,it.r.s); if(!games.length) return ""; const nth=["1st","2nd","3rd"], word={hit:"right place",near:"on the podium",miss:"missed",open:"not settled"};
+  return games.map(({g,sc})=>`<div class="rcpPicks"><b>Your picks: ${sc.pts} of ${sc.max}</b>${g.classes.filter(c=>(picksOf(g)[c.h]||[]).length).map(c=>`<div class="rcpCls">${g.classes.length>1?`<i>${esc(c.h)}</i>`:""}${(sc.per[c.h]||[]).map((m,i)=>`<span class="rcp ${m}">${nth[i]}: ${word[m]||m}${m==="hit"||m==="near"?` +${(sc.per[c.h+"#"]||[])[i]||0}`:""}</span>`).join("")}</div>`).join("")}</div>`).join("");
+}
+function recapSection(it){
+  const nm=watchSeriesName(it.r)||it.r.event, story=recapStory(it), sprint=/sprint/i.test(it.r.event||"");
+  return `<div class="rcpGame"><div class="rcpHead"><b>${esc(nm)}${sprint?" · Sprint":""}</b><span>${esc(it.t.short)}</span></div>
+    ${it.r.groups.map(g=>`<div class="rcpCls2"><h5>${esc(g.h)}</h5>${recapTop(g,5).map(l=>`<div class="rcpRow">${esc(String(l))}</div>`).join("")}</div>`).join("")}
+    ${recapPicksHtml(it)}
+    ${story.length?`<div class="rcpStory"><h5>From What to watch</h5>${story.map(x=>`<p><b>${esc(x.who)}</b> ${esc(x.why)}</p>`).join("")}</div>`:""}</div>`;
+}
+function recapSpan(items){ const ds=items.map(i=>i.e.d).sort(), last=items.map(i=>eventEnd(i.e)).sort().pop(); return fmtRange({d:ds[0],t:daysBetween(ds[0],last)+1}); }
+function recapHtml(sun,firstTrack){
+  const items=recapItems(sun,firstTrack); if(!items.length) return `<div class="mkick">Weekend recap</div><h3 id="infoTitle">Nothing to show yet</h3><p class="plRules">Results for this weekend are not in yet. They appear here as they are published.</p><div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+  const seen=new Set(), games=[]; items.forEach(it=>recapGames(it.t,it.e,it.r.s).forEach(x=>{ const k=gameKey(x.g); if(!seen.has(k)){ seen.add(k); games.push(x); } }));
+  const pts=games.reduce((n,x)=>n+x.sc.pts,0), mx=games.reduce((n,x)=>n+x.sc.max,0), y=+sun.slice(0,4), st=gameSeason(y);
+  const nx=(()=>{ const c=items[0].c; return c?allOrderOf(c).find(x=>x.e.d>sun):null; })();
+  return `<div class="mkick">Weekend recap</div><h3 id="infoTitle">${esc(recapSpan(items))}</h3>
+    <p class="plRules">${items.length} result${items.length===1?"":"s"} from the series you follow.${games.length?` Your picks scored <b>${pts}</b> of ${mx} this weekend${st.rows.length>1?`, and <b>${st.pts}</b> in ${y}`:""}.`:""}</p>
+    ${items.map(recapSection).join("")}
+    ${nx?`<p class="plRules rcpSeason">Next up: <b>${esc(nx.t.short)}</b>, ${esc(fmtRange(nx.e))}.</p>`:""}
+    <div class="rcpBtns"><button class="btn primary" onclick="shareRecap('${sun}')">Share</button><button class="btn quiet" onclick="closeInfo();homeTab('play')">My picks</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+}
+function openWkRecap(sun,firstTrack){
+  document.getElementById("infoBody").innerHTML=recapHtml(sun,firstTrack||null);
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
-function shareRecap(tid,d){
-  const t=TRACKS.find(x=>x.id===tid), e=t&&t.events.find(x=>x.d===d); if(!e) return; const text=recapText(t,e);
-  if(navigator.share){ navigator.share({title:e.e,text}).catch(()=>{}); return; }
+function recapText(sun){
+  const items=recapItems(sun,null), lines=[`Race weekend recap · ${items.length?recapSpan(items):sun}`];
+  items.forEach(it=>{ lines.push(`${watchSeriesName(it.r)||it.r.event} · ${it.t.short}`); it.r.groups.slice(0,4).forEach(g=>{ const l=recapTop(g,3); if(l.length) lines.push(`${g.h}: `+l.map(x=>String(x).replace(/^Winner:\s*/,"")).join("; ")); }); });
+  lines.push("Trackside Pass: https://tracksidepass.com"); return lines.join("\n");
+}
+function shareRecap(sun){
+  const text=recapText(sun);
+  if(navigator.share){ navigator.share({title:"Weekend recap",text}).catch(()=>{}); return; }
   try{ navigator.clipboard.writeText(text).then(()=>toast("Recap copied")); }catch(x){ toast("Sharing is not available here"); }
 }
-function recapSummaryLine(t,e){
-  const res=recapResults(t,e), was=recapWas(t,e), games=recapGames(t,e), bits=[];
-  bits.push(`${res.length} result${res.length===1?"":"s"}`);
-  if(was.stamped) bits.push("you were here"); if(games.length) bits.push(`${games.reduce((n,x)=>n+x.sc.pts,0)} pts`);
-  return bits.join(" · ");
+/* the most recent weekend (within `days`) with results that matter to you, as {sun, items} */
+function recapLatest(days,firstTrack){
+  const today=localToday(), suns=new Set();
+  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(/test/i.test(e.s||"")) return; const end=eventEnd(e); if(end>=today||daysBetween(end,today)>days) return; if(recapResults(t,e).length) suns.add(sunOf(end)); }));
+  for(const s of [...suns].sort().reverse()){ const items=recapItems(s,firstTrack); if(items.length) return {sun:s,items}; }
+  return null;
 }
 function hubRecapCard(c){
-  const e=recapEventFor(cur); if(!e||c.live) return "";
-  return `<div class="hubCard hubTap" role="button" onclick="openWkRecap('${cur.id}','${e.d}')"><div class="hubCardRow"><div><h4>Weekend recap</h4><div class="hubSessionName">${esc(e.e)}</div><div class="hubSessionSub">${esc(recapSummaryLine(cur,e))}. Tap for the winners.</div></div>${c.chev}</div></div>`;
+  const e=(cur.events||[]).filter(x=>!/test/i.test(x.s||"")&&eventEnd(x)<localToday()&&daysBetween(eventEnd(x),localToday())<=RECAP_WINDOW&&recapResults(cur,x).length).sort((a,b)=>b.d.localeCompare(a.d))[0];
+  if(!e||c.live) return ""; const sun=sunOf(eventEnd(e)), n=recapItems(sun,cur.id).length;
+  return `<div class="hubCard hubTap" role="button" onclick="openWkRecap('${sun}','${cur.id}')"><div class="hubCardRow"><div><h4>Weekend recap</h4><div class="hubSessionName">${esc(e.e)}</div><div class="hubSessionSub">${n} result${n===1?"":"s"} from your series: top 5, your picks and storylines. Tap to open.</div></div>${c.chev}</div></div>`;
 }
 function recapHomeList(){ try{ return JSON.parse(LSget(K.recapHome,"[]"))||[]; }catch(x){ return []; } }
 function dismissRecapHome(k){ LSset(K.recapHome,JSON.stringify(recapHomeList().concat(k).slice(-40))); renderRecapHome(); }
 function renderRecapHome(){
-  const el=document.getElementById("wkRecap"); if(!el) return; const today=localToday(), seen=recapHomeList(); let pick=null;
-  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(/test/i.test(e.s||"")) return; const end=eventEnd(e); if(end>=today||daysBetween(end,today)>RECAP_HOME_DAYS||seen.includes(t.id+"|"+e.d)) return;
-    if(!recapResults(t,e).length) return; const was=recapWas(t,e); if(!was.stamped&&!was.going&&!recapGames(t,e).length) return; if(!pick||e.d>pick.e.d) pick={t,e}; }));
-  if(!pick){ el.innerHTML=""; return; }
-  const {t,e}=pick, k=t.id+"|"+e.d;
-  el.innerHTML=`<div class="wkRecapCard"><button class="wkRecapBtn" onclick="openWkRecap('${t.id}','${e.d}')"><span class="kick">Weekend recap</span><b>${esc(e.e)}</b><small>${esc(t.short)} · ${esc(recapSummaryLine(t,e))}</small></button><button class="wkRecapX" aria-label="Dismiss this recap" onclick="dismissRecapHome('${k}')">&times;</button></div>`;
+  const el=document.getElementById("wkRecap"); if(!el) return; const lt=recapLatest(RECAP_HOME_DAYS,null);
+  if(!lt||recapHomeList().includes(lt.sun)){ el.innerHTML=""; return; }
+  const names=[...new Set(lt.items.map(i=>i.t.short))].slice(0,3).join(", ");
+  el.innerHTML=`<div class="wkRecapCard"><button class="wkRecapBtn" onclick="openWkRecap('${lt.sun}')"><span class="kick">Weekend recap</span><b>${esc(recapSpan(lt.items))}</b><small>${esc(names)} · ${lt.items.length} result${lt.items.length===1?"":"s"}, your picks and storylines</small></button><button class="wkRecapX" aria-label="Dismiss this recap" onclick="dismissRecapHome('${lt.sun}')">&times;</button></div>`;
 }
 /* ---- Offline readiness (Nov 2026): the service worker saves the app and every track's map on the first visit (sw.js). This looks in the
    phone's cache and says whether it is all there, so you know before you drive to the track. The live results and the weather still need signal. ---- */
@@ -1280,22 +1302,25 @@ function offlineCheck(force){
   })().then(s=>{ offState=s; offAt=Date.now(); offBusy=null; return s; },()=>{ offBusy=null; return offState; });
   return offBusy;
 }
-function offlineSaveNow(){
-  toast("Saving the rest for no signal…");
-  try{ navigator.serviceWorker.ready.then(r=>{ if(r.active) r.active.postMessage({type:"topup"}); }); }catch(x){}
-  let n=0; const iv=setInterval(()=>{ n++; offlineCheck(true).then(()=>{ if(hubMode) renderHub(); if(offState&&(offState.ok||n>20)) clearInterval(iv); }); },3000);
-}
 function offlineLine(s){
   if(!s) return "Checking…";
   if(s.none||!s.sw) return "Not saved on this phone yet. Open the app once on Wi-Fi, then come back.";
   if(s.ok) return "The app and every track's map are saved on this phone.";
   return `${s.maps} of ${s.total} track maps saved so far.`;
 }
-function hubOfflineCard(c){
-  const fo=focusAt(cur), aw=fo?daysBetween(localToday(),fo.d):99, near=fo&&aw<=7&&aw>=1;   /* the reassurance shows in the week before a weekend; during it only a problem is shown */ offlineCheck();
-  const s=offState; if(!s) return ""; if(!near&&s.ok) return "";
-  const bad=!s.ok;
-  return `<div class="hubCard${bad?" offBad":" offOk"}"><div class="hubCardRow"><div><h4>${bad?"Not ready for no signal":"Ready for no signal"}</h4><div class="hubSessionSub">${esc(offlineLine(s))}${s.ok?" Live results and the weather still need signal.":""}</div>${bad&&!s.none?`<button class="btn quiet" style="margin-top:10px" onclick="offlineSaveNow()">Save the rest now</button>`:""}</div></div></div>`;
+/* No tile for this: when you mark a weekend "I'm going", or the phone shows you at a track (or you check in), the app makes sure everything is saved on the phone,
+   and says so in a one-line toast (only when it had to save something, or for "I'm going"). */
+let offEnsuring=false;
+async function offlineEnsure(reason,t){
+  if(offEnsuring||!navigator.serviceWorker) return; offEnsuring=true;
+  try{
+    let s=await offlineCheck(true);
+    if(s.ok){ if(reason==="going") toast(`Saved for no signal: ${t?t.short:"the app"} will work offline.`); return; }
+    if(s.none) { if(reason==="going") toast("Open the app once on Wi-Fi so it can save the maps for no signal."); return; }
+    toast(reason==="going"?"Saving the maps so the app works with no signal…":"Saving the maps for no signal…");
+    try{ const r=await navigator.serviceWorker.ready; if(r.active) r.active.postMessage({type:"topup"}); }catch(x){}
+    for(let i=0;i<30;i++){ await new Promise(r=>setTimeout(r,3000)); s=await offlineCheck(true); if(s.ok){ toast("Saved: the app works with no signal."); return; } }
+  } finally { offEnsuring=false; }
 }
 /* ---- Weekend points recap: a pop-up inside the app (no push) the first time you open it after a weekend you played has an official result.
    It shows once per game (K.recapSeen), for games whose race was within RECAP_DAYS, and only for weekends where you made picks. ---- */
@@ -1650,7 +1675,7 @@ function hubBeforeWeekend(c){
 }
 /* ---- the Race Day hub's cards can be moved and hidden: Edit in the hub's top bar. Saved on this phone, the same for every track.
    With no changes and not editing, the cards come out in the default order exactly as before (no wrappers). ---- */
-const HUB_CARDS=[["session","Next on track"],["recap","Weekend recap"],["offline","Ready for no signal"],["friends","Friends here"],["quick","I'm going"],["day","Plan your weekend"],["live","Live results"],["results","Results"],["grid","Qualifying order"],["game","Pick your podium"],["strip","Today's sessions"],["wx","Weather"],["timing","Live timing"],["actions","Shortcuts"],["watch","What to watch"],["standings","Standings"],["lastHere","Last time here"],["stream","Watch live"]];
+const HUB_CARDS=[["session","Next on track"],["recap","Weekend recap"],["friends","Friends here"],["quick","I'm going"],["day","Plan your weekend"],["live","Live results"],["results","Results"],["grid","Qualifying order"],["game","Pick your podium"],["strip","Today's sessions"],["wx","Weather"],["timing","Live timing"],["actions","Shortcuts"],["watch","What to watch"],["standings","Standings"],["lastHere","Last time here"],["stream","Watch live"]];
 let hubEditing=false, hubShownIds=[], hubDragging=false;
 function hubLayout(){ try{ const j=JSON.parse(LSget(K.hubLayout,"{}"))||{}; return {order:Array.isArray(j.order)?j.order:[],hidden:Array.isArray(j.hidden)?j.hidden:[]}; }catch(e){ return {order:[],hidden:[]}; } }
 function hubLayoutSave(l){ LSset(K.hubLayout,JSON.stringify(l)); renderHub(); }
@@ -1713,11 +1738,11 @@ function renderHub(){
   const sessionHtml=hubSessionCard(ctx), stripHtml=hubTodayStrip(ctx), wxHtml=hubWeatherCard(), actionsHtml=hubActionTiles();
   const fs=hubFocusSeries(ctx); ctx.sid=fs.sid; ctx.fav=fs.fav;
   const watchHtml=hubWatchCard(ctx), standingsHtml=hubStandingsCard(ctx);
-  const recapHtml2=hubRecapCard(ctx), offlineHtml=hubOfflineCard(ctx), resultsHtml=hubResultsCard(ctx); ctx.resultsHtml=resultsHtml; const gridHtml=hubGridCard(ctx);
+  const recapHtml2=hubRecapCard(ctx), resultsHtml=hubResultsCard(ctx); ctx.resultsHtml=resultsHtml; const gridHtml=hubGridCard(ctx);
   const liveStreamHtml=hubLiveStream(ctx), liveTimingHtml=hubTimingCard(ctx);
   const {quickHtml,dayHtml,lastHereHtml}=hubBeforeWeekend(ctx);
   const gm=gameNow(), gameHtml=gm?gameCardHtml(gm,chev):"", lv=liveSrc(), liveHtml=lv?liveCardHtml(lv,chev):""; if(lv) liveStart();
-  body.innerHTML=hubCompose([["session",sessionHtml],["recap",recapHtml2],["friends",hubFriendsCard()],["quick",quickHtml],["offline",offlineHtml],["day",dayHtml],["live",liveHtml],["results",resultsHtml],["grid",gridHtml],["game",gameHtml],["strip",stripHtml],["wx",wxHtml],["timing",liveTimingHtml],["actions",actionsHtml],["watch",watchHtml],["standings",standingsHtml],["lastHere",lastHereHtml],["stream",liveStreamHtml]]);
+  body.innerHTML=hubCompose([["session",sessionHtml],["recap",recapHtml2],["friends",hubFriendsCard()],["quick",quickHtml],["day",dayHtml],["live",liveHtml],["results",resultsHtml],["grid",gridHtml],["game",gameHtml],["strip",stripHtml],["wx",wxHtml],["timing",liveTimingHtml],["actions",actionsHtml],["watch",watchHtml],["standings",standingsHtml],["lastHere",lastHereHtml],["stream",liveStreamHtml]]);
   sessEnsure();
   /* keep the Today strip pinned to the live/next session instead of wherever it happens to scroll to --
      body.innerHTML just replaced it, so it's back at scrollLeft 0 (the day's first, likely-past session)
@@ -2233,7 +2258,7 @@ async function autoOpen(){
   try{
     try{ const p=navigator.permissions&&await navigator.permissions.query({name:"geolocation"}); if(p&&p.state==="denied") return; }catch(e){}
     const t=await whereAmI(9000);
-    if(t&&!inDetail()){ openTrack(t.id,"home"); toast(`You're at ${t.short}. Opened its Race Day hub.`); }
+    if(t&&!inDetail()){ openTrack(t.id,"home"); toast(`You're at ${t.short}. Opened its Race Day hub.`); setTimeout(()=>offlineEnsure("track",t),4000); }
   } finally { autoBusy=false; }
 }
 function renderAutoSw(){ const b=document.getElementById("autoSw"); if(!b) return; const on=autoOn(); b.classList.toggle("on",on); b.setAttribute("aria-checked",on); }
@@ -2316,7 +2341,7 @@ checkAlerts();
    closed -- no server needed. They're rebuilt each time the app opens (or comes back to the foreground), so a
    schedule change shows up the next time you open the app, not on its own. iOS allows about 64 pending
    notifications per app, so this is capped there. */
-const SESSION_ALERT_MAX=60;
+const SESSION_ALERT_MAX=60, RACE_ID_BASE=4000, RECAP_ID_BASE=4100;
 function alertLead(){ const v=+LSget(K.alertLead,"10"); return [5,10,15,30].includes(v)?v:10; }
 function setAlertLead(v){ LSset(K.alertLead,String(v)); renderSettingsMore(); scheduleStarAlerts(false); scheduleSessionAlerts(); toast(`Alerts now go off ${v} minutes before a session`); }
 /* what an alert says: the session first (that is what you read on the lock screen), then where and when; the group keeps one weekend together */
@@ -2343,7 +2368,7 @@ async function scheduleSessionAlerts(forcedTrack){
   if(display!=="granted") display=(await LN.requestPermissions()).display;
   if(display!=="granted") return;
   const now=Date.now(), leadMin=alertLead(), leadMs=leadMin*60000, end=eventEnd(e);
-  const sessions=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=end&&s.start.getTime()-leadMs>now&&!isStarred(t,s));   /* starred ones already have their own alert */
+  const sessions=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=end&&s.start.getTime()-leadMs>now&&!isStarred(t,s)&&!isMainRaceAlert(t,s));   /* starred ones and the main race of a series you follow already have their own alert */
   const pending=await LN.getPending(), mine=pending.notifications.filter(n=>n.id<REMINDER_ID_BASE);   /* leave the going-race reminders alone */
   if(mine.length) await LN.cancel({notifications:mine.map(n=>({id:n.id}))});
   if(!sessions.length) return;
@@ -2433,8 +2458,58 @@ async function schedulePickReminders(ask){
   let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
   await LN.schedule({notifications:out.slice(0,20)});
 }
-(function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.play) homeTab("play"); else if(x&&x.track) openTrack(x.track,"home"); }); })();
-scheduleGoingReminders(false); scheduleStarAlerts(false); schedulePickReminders(false);
+(function(){ const LN=nativeNotifier(); if(LN&&LN.addListener) LN.addListener("localNotificationActionPerformed",a=>{ const x=a&&a.notification&&a.notification.extra; if(x&&x.play) homeTab("play"); else if(x&&x.recap) openWkRecap(x.recap); else if(x&&x.track) openTrack(x.track,"home"); }); })();
+/* ---- Main race alerts and the Monday recap (Nov 2026). Session alerts for the track you are AT stay as they were (scheduleSessionAlerts: at the track only);
+   starred sessions alert wherever you are; and now every series you follow also alerts you for its main race, wherever you are. ---- */
+function raceAlertsOn(){ return LSget(K.raceAlerts,"1")!=="0"; }
+function recapPushOn(){ return LSget(K.recapNotif,"1")!=="0"; }
+/* the one race of a weekend that is "the" race: the last race session of the series (the Grand Prix after a Sprint, the second IndyCar race), or the first for an endurance
+   series (the start of the Rolex 24, not its hour-11 chunk) */
+function mainRaceOf(t,e,c){
+  const end=eventEnd(e), rs=sessionsOf(t).filter(s=>s.d>=e.d&&s.d<=end&&sessTint(s.n)===" k-r"&&(seriesFor(s.n)||{}).id===(c.guide||c.id)).sort((a,b)=>a.start-b.start);
+  return rs.length?(c.cat==="endurance"?rs[0]:rs[rs.length-1]):null;
+}
+function mainRaces(days){   /* [{t,e,c,s}] for followed main series, weekends starting within `days` */
+  const out=[], today=localToday();
+  CHAMPS.filter(c=>!c.optIn&&followed(c)).forEach(c=>{ allOrderOf(c).filter(x=>daysBetween(today,x.e.d)<=days).slice(0,4).forEach(({t,e})=>{ const s=mainRaceOf(t,e,c); if(s) out.push({t,e,c,s}); }); });
+  return out;
+}
+function isMainRaceAlert(t,s){ return raceAlertsOn()&&mainRaces(21).some(x=>x.t.id===t.id&&x.s===s); }
+async function toggleRaceAlerts(){
+  const on=!raceAlertsOn(); LSset(K.raceAlerts,on?"1":"0"); renderSettingsMore();
+  if(!nativeNotifier()){ toast(on?"Race alerts work in the phone app.":"Off."); return; }
+  await scheduleRaceAlerts(on); toast(on?"I'll alert you when the main race of a series you follow is about to start.":"Main race alerts off.");
+}
+async function scheduleRaceAlerts(ask){
+  const LN=nativeNotifier(); if(!LN) return;
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=RACE_ID_BASE&&n.id<RACE_ID_BASE+100); if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
+  if(!raceAlertsOn()) return;
+  const now=Date.now(), leadMin=alertLead(), lead=leadMin*60000, list=mainRaces(21).filter(x=>x.s.start.getTime()-lead>now&&!isStarred(x.t,x.s)).sort((a,b)=>a.s.start-b.s.start).slice(0,40);
+  if(!list.length) return;
+  let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
+  await LN.schedule({notifications:list.map(({t,c,s},i)=>({id:RACE_ID_BASE+i,title:`${c.name} race in ${leadMin} min`,body:`${t.short} · ${fmtTime(s.start,t.tz)} track time. Tap for the live card.`,sound:"racecar.caf",schedule:{at:new Date(s.start.getTime()-lead)},threadIdentifier:t.id,summaryArgument:t.short,group:t.id,extra:{track:t.id}}))});
+}
+async function toggleRecapPush(){
+  const on=!recapPushOn(); LSset(K.recapNotif,on?"1":"0"); renderSettingsMore();
+  if(!nativeNotifier()){ toast(on?"The Monday recap works in the phone app.":"Off."); return; }
+  await scheduleRecapPush(on); toast(on?"I'll tell you on Monday morning when the weekend recap is ready.":"Monday recap off.");
+}
+async function scheduleRecapPush(ask){
+  const LN=nativeNotifier(); if(!LN) return;
+  const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=RECAP_ID_BASE&&n.id<RECAP_ID_BASE+20); if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
+  if(!recapPushOn()) return;
+  const today=localToday(), weeks={};
+  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(/test/i.test(e.s||"")) return; const end=eventEnd(e), dd=daysBetween(today,end); if(dd<0||dd>28) return;
+    const c=champsAt(t,e)[0]||CHAMPS.find(x=>!x.optIn&&inChamp(x,e)); if(!((c&&followed(c))||isGoing(t,e))) return; (weeks[sunOf(end)]=weeks[sunOf(end)]||[]).push({t,e}); }));
+  const now=Date.now(), out=[]; let id=RECAP_ID_BASE;
+  Object.keys(weeks).sort().slice(0,4).forEach(sun=>{ const [y,m,d]=sun.split("-").map(Number), at=new Date(y,m-1,d+1,9,0,0); if(at.getTime()<=now) return;
+    const names=[...new Set(weeks[sun].map(x=>x.t.short))]; const list=names.length>3?names.slice(0,3).join(", ")+" and more":names.length>1?names.slice(0,-1).join(", ")+" and "+names[names.length-1]:names[0];
+    out.push({id:id++,title:"Your weekend recap is ready",body:`${list}: winners, the top 5 and how your picks did.`,schedule:{at},extra:{recap:sun}}); });
+  if(!out.length) return;
+  let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
+  await LN.schedule({notifications:out});
+}
+scheduleGoingReminders(false); scheduleStarAlerts(false); schedulePickReminders(false); scheduleRaceAlerts(false); scheduleRecapPush(false);
 function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open");
   if(on) document.querySelectorAll(".sgrp.open").forEach(o=>{ if(o!==g){ o.classList.remove("open"); const h=o.querySelector(".sgh"); if(h) h.setAttribute("aria-expanded","false"); } });   /* one open at a time */ g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
   if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
@@ -2761,10 +2836,10 @@ async function pickSeriesSync(){
 }
 function toggleFollow(id){
   const c=champ(id); if(!c) return;
-  if(c.optIn){ let s=followedSub(); s=s.includes(id)?s.filter(x=>x!==id):s.concat(id); LSset(K.followSub,JSON.stringify(s)); renderSettingsMore(); renderHome(); schedulePickReminders(false); pickSeriesSync(); return; }
+  if(c.optIn){ let s=followedSub(); s=s.includes(id)?s.filter(x=>x!==id):s.concat(id); LSset(K.followSub,JSON.stringify(s)); renderSettingsMore(); renderHome(); schedulePickReminders(false); pickSeriesSync(); scheduleRaceAlerts(false); scheduleRecapPush(false); return; }
   let h=hiddenSeries(); const mainCount=CHAMPS.filter(x=>!x.optIn).length;
   if(h.includes(id)) h=h.filter(x=>x!==id); else{ if(h.length>=mainCount-1){ toast("Keep at least one series"); return; } h.push(id); }
-  LSset(K.unfollow,JSON.stringify(h)); renderSettingsMore(); renderHome(); schedulePickReminders(false); pickSeriesSync();
+  LSset(K.unfollow,JSON.stringify(h)); renderSettingsMore(); renderHome(); schedulePickReminders(false); pickSeriesSync(); scheduleRaceAlerts(!h.includes(id)); scheduleRecapPush(false);
 }
 function toggleAwake(){ LSset(K.awake,LSget(K.awake,"0")==="1"?"0":"1"); renderSettingsMore(); updateWake(); }
 function toggleHaptics(){ LSset(K.haptics,LSget(K.haptics,"1")==="1"?"0":"1"); renderSettingsMore(); if(LSget(K.haptics,"1")==="1"){ try{ navigator.vibrate&&navigator.vibrate(30); }catch(e){} } }
@@ -2774,7 +2849,7 @@ function renderSettingsMore(){
   q(".leadSeg").forEach(el=>{ el.innerHTML=segHtml(alertLead(),[[5,"5 min"],[10,"10 min"],[15,"15 min"],[30,"30 min"]],"setAlertLead"); });
   q(".timeSeg").forEach(el=>{ el.innerHTML=segHtml(timesPref(),[["track","Track time"],["mine","My time"]],"setTimes"); });
   const fl=document.getElementById("followList"); if(fl) fl.innerHTML=orderedChamps().filter(c=>!c.optIn).map(c=>`<div class="frow" data-id="${c.id}"><button class="fhandle" aria-label="Drag to reorder ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span>${esc(c.name)}</span><button class="sw${followed(c)?" on":""}" role="switch" aria-checked="${followed(c)}" aria-label="Show ${esc(c.name)}" onclick="toggleFollow('${c.id}')"><i></i></button></div>`).join("");
-  on("awakeSw",LSget(K.awake,"0")==="1"); on("hapSw",LSget(K.haptics,"1")==="1");
+  on("raceSw",raceAlertsOn()); on("recapSw",recapPushOn()); on("awakeSw",LSget(K.awake,"0")==="1"); on("hapSw",LSget(K.haptics,"1")==="1");
   renderFollowSub();
 }
 /* support series (optIn), one folding group per main series they race with; HSR-style series with their own weekends go under "Other series".

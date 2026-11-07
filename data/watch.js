@@ -1445,4 +1445,54 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of Speedway Media ('Sheldon Creed scores final O'Reilly pole of 2026 at Homestead'), Athlon Sports, Speedway Digest and Yahoo Sports' official-starting-lineup reports for Homestead-Miami, all agreeing on Creed's pole time/speed, Hill's second-place time/speed, and the Kvapil-Love-Crews-Retzlaff-Day order from third through seventh; none of these sites could be reached directly from this environment, so this is as summarized by search results. Allgaier's starting position was not found in any source checked and is left out rather than guessed. This app's own prior data/watch.js entry (written after Friday's practice) for the unchanged points standings (Allgaier 2,436; Love 2,414; Day 2,413; Kvapil 2,405; Creed 2,394), not independently re-confirmed today since qualifying does not score points. Session time from data/homestead-miami.js." }
+  ,{ t:"interlagos", d:"2026-11-06", s:"f1", from:"2026-11-07", at:"2026-11-07T21:22:57Z",
+    asOf:"Current after qualifying for the São Paulo Grand Prix (Interlagos, Nov 7): Lando Norris took a rain-chaos pole, his third in a row at this circuit, but grid penalties drop Russell, Leclerc, Hamilton, Verstappen and Perez well back for Sunday's race.",
+    groups:[
+      { h:"Qualifying: Norris on pole in the wet", items:[
+        ["Lando Norris (McLaren)", "Pole with a 1:27.470 set late in a rain-delayed, twice red-flagged Q3 -- his third straight pole at Interlagos."],
+        ["George Russell (Mercedes)", "Second on the road, 0.204s back, but a five-place grid penalty drops him to 7th for Sunday."],
+        ["Kimi Antonelli (Mercedes)", "Third on the road and keeps that grid slot -- no penalty against his name, so he starts Sunday from 2nd."],
+        ["A session interrupted twice", "Rain arrived before Q1 and forced a red flag just under three minutes in, restarting on full wets after a long delay; Franco Colapinto and Pierre Gasly crossed the line together and were eliminated alongside Lance Stroll, Valtteri Bottas and Gabriel Bortoleto (who hit the wall). In Q2, Rafael Camara crashed into the barrier with under a minute left for a second red flag, and Arvid Lindblad was told to stop his car."]
+      ] },
+      { h:"Grid penalties rewrite Sunday's order", items:[
+        ["George Russell (Mercedes)", "Qualified 2nd, starts 7th after a five-place penalty."],
+        ["Charles Leclerc (Ferrari)", "Qualified 4th, starts 14th after a ten-place penalty."],
+        ["Lewis Hamilton (Ferrari) and Max Verstappen (Red Bull Racing)", "Both go to the back of the grid for power-unit changes -- Hamilton didn't set a time in Q2, and Verstappen didn't take part in Q2 at all."],
+        ["Sergio Pérez (Cadillac)", "Also goes to the back for a grid penalty, after being eliminated in Q1."],
+        ["Kimi Antonelli (Mercedes)", "The only front-row starter with no penalty of any kind -- lines up 2nd behind Norris."]
+      ] },
+      { h:"The fight for second in the standings", items:[
+        ["Max Verstappen (Red Bull Racing)", "Leads the fight for runner-up on 261 points, 2 clear of Hamilton, but starts Sunday from the back of the grid after a power-unit change -- the gap in the standings won't show on track at the start."],
+        ["Lewis Hamilton (Ferrari)", "Third on 259, also starts from the back after his own power-unit change and a Q2 that never produced a lap time."],
+        ["George Russell (Mercedes)", "Fourth on 250, qualified a strong 2nd but a five-place penalty leaves him 7th on the grid -- the smallest demotion of the group chasing second."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 245, qualified 4th but a ten-place penalty drops him to 14th."],
+        ["Lando Norris (McLaren)", "Sixth on 221 and the only frontrunner with no penalty at all -- starts Sunday from pole, well clear of this fight but with a clean run at everyone in it."]
+      ] },
+      { h:"Up next", items:[
+        ["Sunday's race, 2:00-4:00pm local, 71 laps", "More rain is possible after a soaked qualifying -- Interlagos has a history of mixed-weather races reshuffling the order, and with Verstappen, Hamilton, Leclerc, Russell and Pérez all starting out of position, overtaking through the field could decide who finishes best among the runner-up contenders."]
+      ] }
+    ],
+    note:"Sources: formula1.com ('Norris beats Russell to pole position in dramatic rain-affected Sao Paolo qualifying', read Nov 7, 2026) for the qualifying times and gaps, the red flags and incidents in Q1/Q2, and the grid-penalty order (Russell -5, Leclerc -10, Hamilton/Verstappen/Pérez to the back); data/standings.js for the pre-weekend drivers' points (261-259-250-245-221), unchanged since Mexico City as qualifying does not score points. Session times from data/interlagos.js." }
+  ,{ t:"homestead-miami", d:"2026-11-06", s:"nascar", from:"2026-11-07", at:"2026-11-07T21:22:57Z",
+    asOf:"Current after Saturday's qualifying for the Cup Series championship race at Homestead-Miami (Nov 7): Chase Briscoe takes the final Cup pole of 2026, with points leader Kyle Larson starting 4th and the three drivers still chasing him -- Bell, Hamlin and Briscoe himself -- all up front; the championship standings are unchanged -- only Sunday's race can move them.",
+    groups:[
+      { h:"Qualifying: Briscoe takes the season's final Cup pole", items:[
+        ["Chase Briscoe (Joe Gibbs Racing)", "Pole in single-car qualifying at 32.396 seconds (166.687 mph) -- the last Cup pole of 2026."],
+        ["Denny Hamlin (Joe Gibbs Racing)", "Briscoe's teammate, second by just 0.017s."],
+        ["Tyler Reddick", "Third."],
+        ["Kyle Larson (Hendrick Motorsports)", "Fourth -- the championship leader qualifies well up front, though a strong grid spot matters less than usual with 267 laps to come."],
+        ["Austin Cindric", "Fifth."],
+        ["Christopher Bell", "Sixth."],
+        ["Chase Elliott", "Seventh."]
+      ] },
+      { h:"The championship heading into Sunday", items:[
+        ["Kyle Larson (Hendrick Motorsports)", "Leads by 67 points over Christopher Bell and 70 over Denny Hamlin, with Chase Briscoe fourth, 84 back -- unchanged from Friday, since qualifying doesn't score points."],
+        ["Christopher Bell, Denny Hamlin and Chase Briscoe", "The only three who can still catch Larson, and all three start Sunday ahead of him on the grid (6th, 2nd and 1st against Larson's 4th) -- though grid position counts for little over a 400-mile race."],
+        ["No elimination format", "NASCAR's 2026 Chase is decided purely on points: whoever leads after Sunday's race is champion, so these four are the only drivers who can still win it."]
+      ] },
+      { h:"Up next", items:[
+        ["Sunday's championship race, 267 laps / 400.5 miles, green flag around 2:13pm ET (NBC, HBO Max, MRN Radio, SiriusXM NASCAR Radio)", "The 36th and final points race of 2026 decides the title on Homestead's abrasive, multi-groove 1.5-mile oval."]
+      ] }
+    ],
+    note:"Sources: web search summaries of Racer.com's and Yahoo Sports' reporting on Saturday's Cup qualifying at Homestead-Miami (Briscoe's pole time/speed and 0.017s margin over Hamlin, the Reddick-Larson-Cindric-Bell-Elliott order, the single-car qualifying format, the race's lap/mile count and green-flag time); none of these sites could be reached directly from this environment, so this is as summarized by search results. This app's own prior data/watch.js entry (written after Friday's practice) for the unchanged Chase standings (Larson's 67/70/84-point gaps), not independently re-confirmed today since qualifying does not score points." }
 ];

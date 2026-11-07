@@ -1270,5 +1270,31 @@ const WATCH = [
         ["Sunday: the championship race, 3 PM ET (NBC, HBO Max, MRN Radio, SiriusXM NASCAR Radio)", "The 2026 champion is decided on Homestead's abrasive, multi-groove 1.5-mile oval."]
       ] }
     ],
-    note:"Sources: web-search summaries of Yahoo Sports', Motorsport.com's and Yardbarker's reports on Friday's Cup practice at Homestead-Miami (Briscoe's fastest lap and margin over Cindric, Hamlin third, Larson 10th after wall contact, Reddick's wreck and 20th-place finish, Preece 16th, Blaney's long-run pace); AP/NBC/Heavy.com reporting from Nov 2, 2026 and this app's own prior data/watch.js entry (written after Martinsville) for the unchanged Chase standings (Larson's 67/70/84-point gaps) and the differing reports of the exact clinch number, not independently re-confirmed today since no race has run since Martinsville. None of these sites could be reached directly from this environment; all read via web search." }
+    note:"Sources: web-search summaries of Yahoo Sports', Motorsport.com's and Yardbarker's reports on Friday's Cup practice at Homestead-Miami (Briscoe's fastest lap and margin over Cindric, Hamlin third, Larson 10th after wall contact, Reddick's wreck and 20th-place finish, Preece 16th, Blaney's long-run pace); AP/NBC/Heavy.com reporting from Nov 2, 2026 and this app's own prior data/watch.js entry (written after Martinsville) for the unchanged Chase standings (Larson's 67/70/84-point gaps) and the differing reports of the exact clinch number, not independently re-confirmed today since no race has run since Martinsville. None of these sites could be reached directly from this environment; all read via web search." },
+  { t:"monza", d:"2026-11-06", s:"wec", from:"2026-11-07", at:"2026-11-07T11:27:35Z",
+    asOf:"Current after Free Practice 3 at Monza (Nov 7): Nick Cassidy fastest for Peugeot in the wet, both title-contending Toyotas well down the Hypercar order, and Saturday afternoon's qualifying and Hyperpole next before Sunday's title-deciding race.",
+    groups:[
+      { h:"What FP3 showed", items:[
+        ["Nick Cassidy, #93 Peugeot TotalEnergies", "Fastest in the wet, 1:42.706, with a late flyer as the track improved slightly."],
+        ["Victor Martins, #36 Alpine Endurance Team", "Second, 0.040s back."],
+        ["Robert Kubica, #83 AF Corse (Ferrari 499P)", "Third, 0.133s off, after topping Friday's FP2."],
+        ["#51 Ferrari AF Corse (reigning champions)", "Managed only 7 laps after a brake-by-wire/ECU issue, ending the session 17th and last among Hypercars."],
+        ["Incident-filled session", "No red flags, but #83 and #007 Aston Martin (Tom Gamble) collided at the Parabolica -- both continued, with the Aston Martin handed a 10-second stop/go penalty; several other cars (the #20 BMW, #36 Alpine, #17 Genesis, #38 and #12 Cadillacs) ran wide or spun at various corners without major damage."]
+      ] },
+      { h:"The drivers' title: Toyota vs Toyota", items:[
+        ["#8 Sebastien Buemi, Brendon Hartley, Ryo Hirakawa (Toyota)", "Still lead the Hypercar drivers' standings by 17 points (114 to 97) over their own team-mates in the #7, but had a scrappy FP3: 16th of 17 Hypercars, 2.276s off Cassidy's pace, and went off into the gravel at the Ascari chicane (no major damage reported, continued running)."],
+        ["#7 Kamui Kobayashi, Mike Conway, Nyck de Vries (Toyota)", "17 points back with a maximum 26 on offer. Classified 10th, 1.144s off the pace -- ahead of their title-rival team-mates on this session but still well off the front. This is reportedly Conway's last race before retiring from top-flight sports car racing."],
+        ["Neither Toyota has shown Hypercar-leading pace all weekend", "Both cars were off the front in Friday's FP1 and FP2 too; practice times don't decide the title, but neither crew has yet shown the raw pace of Peugeot, Alpine or Ferrari this weekend."]
+      ] },
+      { h:"LMGT3: TF Sport's Corvette vs Manthey's Porsche", items:[
+        ["#21 Vista AF Corse (Ferrari 296 GT3 Evo)", "Fastest in LMGT3, 1:56.069."],
+        ["#33 TF Sport (Chevrolet Corvette Z06 GT3.R)", "Leads the LMGT3 teams' standings by 18 points, 92 to 74, and classified 4th in FP3 behind two Iron Lynx Mercedes-AMGs."],
+        ["#92 The Bend/Manthey (Porsche 911 GT3 R)", "18 points back, with Monza's maximum 26 still enough to take the title. This app could not confirm the #92's FP3 result from a source it could verify directly -- it recovered from Friday's FP1 drivetrain issue to run 9th in FP2, but neither its FP3 classification nor whether that issue recurred is confirmed; check race-weekend coverage."]
+      ] },
+      { h:"Up next", items:[
+        ["Saturday afternoon: LMGT3 qualifying (2:20pm) and Hyperpole (2:40pm), Hypercar qualifying (3:00pm) and Hyperpole (3:20pm), local/CET", "Sets Sunday's grid -- the last data point before the championships are decided."],
+        ["Sunday's race, 11:00am-5:00pm local (6 hours)", "The 2026 season finale, deciding both the Hypercar drivers' title between the two Toyota crews and the LMGT3 teams' title between TF Sport and Manthey."]
+      ] }
+    ],
+    note:"Sources: fiawec.com's official FP3 results page (raceId=5066&sessionId=8287) and its article 'The Headlines from FP3 at Monza' (Nov 7, 2026) for the Hypercar classification, times/gaps, the #8's Ascari gravel excursion, the #51's brake-by-wire issue, the #83/#007 Parabolica contact and penalty, and the Saturday qualifying/Hyperpole schedule (fiawec.com's own race page); Sportscar365 ('Peugeot's Cassidy Tops Wet Monza FP3') for the same Hypercar result, read directly. LMGT3 top-6 (fastest car and #33's P4) from fiawec.com's FP3 headlines article and Sportscar365, both read directly; the #92's FP3 position is NOT independently confirmed -- a single secondary Italian-language source reported it 16th but could not be verified firsthand, so it is left out above. data/standings.js (from fiawec.com, read Oct 26, 2026) for the points gaps, unchanged since the prior entry for this event. Mike Conway's reported retirement from the #7 Toyota Friday-notebook reporting (Sportscar365), not independently re-confirmed today." }
 ];

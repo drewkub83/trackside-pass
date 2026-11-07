@@ -1420,4 +1420,29 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of crash.net's Sprint race results and its 'Qatar Sprint Race: New 2026 MotoGP World Championship standings' coverage, Yahoo Sports ('MotoGP Qatar Grand Prix: Marc Marquez wins thrilling sprint as Jorge Martin fights to third'), racesport.nl, gp-inside.com and gpblog.com, all agreeing on Marquez's win, Di Giannantonio second (+0.862s) and Martin third (+1.519s), Bezzecchi's pole-to-crash exit from the lead battle with Marquez, the stewards' no-penalty decision, and that Marquez can clinch the title Sunday with a win plus Martin failing to score (none of these sites could be reached directly from this environment, so this is as summarized by search results). Bezzecchi's mathematical elimination reported by the same Yahoo Sports summary; not independently re-derived here. data/standings.js (automatic update from the MotoGP results service) for the pre-Sprint championship points (399-355-332), which the automatic tool will update separately with tonight's result -- this entry does not compute or restate new point totals itself. Yamaha boycott status and its return-at-Portugal statement, and the reported threat of race bans for Portugal/Valencia, from web search summaries of autosport.com's and crash.net's reporting from Nov 1-2, 2026, carried over and re-confirmed as still the latest available as of this writing; no Sunday-specific update was found. The full Sprint top 10 beyond the podium was not confirmed in sources checked and is left out rather than guessed." }
+  ,{ t:"homestead-miami", d:"2026-11-06", s:"oreilly", from:"2026-11-07", at:"2026-11-07T20:23:12Z",
+    asOf:"Current after Saturday's qualifying for the O'Reilly Series championship race at Homestead-Miami (Nov 7): Sheldon Creed takes the pole in his final start with Haas Factory Team, with title contenders Carson Kvapil and Jesse Love alongside him on the first two rows; the championship standings are unchanged -- only this afternoon's race itself can move them.",
+    groups:[
+      { h:"Qualifying: Creed takes the pole, three of the five contenders start up front", items:[
+        ["Sheldon Creed", "Won the pole at 33.578 seconds (160.820 mph) -- the last O'Reilly Series pole of 2026, in his final start with Haas Factory Team, and the last mathematically-alive long shot in the title fight (42 points back) gets the best possible platform to try to close that gap."],
+        ["Austin Hill", "Second, 33.617 seconds (160.633 mph), alongside Creed on the front row; Hill is not a title contender."],
+        ["Carson Kvapil", "Third -- the Martinsville race winner starts well up, 31 points back in the standings."],
+        ["Jesse Love", "Fourth -- the closest championship challenger to points leader Justin Allgaier starts from the second row."],
+        ["Brent Crews and Parker Retzlaff", "Fifth and sixth; neither is in the title fight."],
+        ["Corey Day", "Seventh -- the third-placed contender in the standings, 23 points back, starts mid-pack rather than up front."],
+        ["Justin Allgaier", "The points leader's starting position was not found in sources checked today; his grid spot for the race that decides the title is unconfirmed here."]
+      ] },
+      { h:"The championship, decided this afternoon", items:[
+        ["Justin Allgaier (JR Motorsports)", "Leads on 2,436 points after Martinsville, unchanged since Friday -- qualifying doesn't score points."],
+        ["Jesse Love (Richard Childress Racing)", "Second, 22 points back, and starts fourth -- one of the best grid spots among the four chasers."],
+        ["Corey Day (Hendrick Motorsports)", "Third, 23 points back, starting seventh."],
+        ["Carson Kvapil (JR Motorsports)", "Fourth, 31 points back, starting third -- the best grid spot of any contender besides Creed."],
+        ["Sheldon Creed", "Fifth and the last driver mathematically alive, 42 points back -- but starts from the pole."],
+        ["No elimination this year", "NASCAR replaced its old elimination playoff with The Chase for 2026: the champion is simply whoever leads points after this race, so these five are the only drivers who can still win the title."]
+      ] },
+      { h:"Up next", items:[
+        ["The race, 5 PM ET, 200 laps", "The season's 33rd and final points-paying O'Reilly Series race of 2026, run on Homestead's abrasive, multi-groove 1.5-mile oval -- whoever leads points when it ends is champion."]
+      ] }
+    ],
+    note:"Sources: web search summaries of Speedway Media ('Sheldon Creed scores final O'Reilly pole of 2026 at Homestead'), Athlon Sports, Speedway Digest and Yahoo Sports' official-starting-lineup reports for Homestead-Miami, all agreeing on Creed's pole time/speed, Hill's second-place time/speed, and the Kvapil-Love-Crews-Retzlaff-Day order from third through seventh; none of these sites could be reached directly from this environment, so this is as summarized by search results. Allgaier's starting position was not found in any source checked and is left out rather than guessed. This app's own prior data/watch.js entry (written after Friday's practice) for the unchanged points standings (Allgaier 2,436; Love 2,414; Day 2,413; Kvapil 2,405; Creed 2,394), not independently re-confirmed today since qualifying does not score points. Session time from data/homestead-miami.js." }
 ];

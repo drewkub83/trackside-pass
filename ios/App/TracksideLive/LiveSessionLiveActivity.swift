@@ -76,7 +76,12 @@ struct LiveSessionLiveActivity: Widget {
             } compactLeading: {
                 Image(systemName: "flag.checkered").foregroundStyle(kindColor(s.kind))
             } compactTrailing: {
-                Text(s.start, style: .time).font(.caption2).frame(width: 52)
+                // short and numeric so it never truncates: minutes and seconds left (live) or until the start (to come)
+                Group {
+                    if s.live || context.isStale { Text(timerInterval: s.start...max(s.end, s.start.addingTimeInterval(1)), pauseTime: nil, countsDown: true, showsHours: false) }
+                    else { Text(timerInterval: Date.now...max(s.start, Date.now.addingTimeInterval(1)), pauseTime: nil, countsDown: true, showsHours: false) }
+                }
+                .monospacedDigit().font(.caption2).minimumScaleFactor(0.7).lineLimit(1).frame(width: 46)
             } minimal: {
                 Image(systemName: "flag.checkered").foregroundStyle(kindColor(s.kind))
             }

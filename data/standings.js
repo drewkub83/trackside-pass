@@ -10,20 +10,20 @@
    the driver, not the car), so naming a fixed car number for someone who's since switched would be wrong --
    name the team/manufacturer instead and say so in `gap` if it's known (e.g. Laurin Heinrich below). */
 const STANDINGS = [
-  { s:"motogp", asOf:"Current after the Petronas Grand Prix of Malaysia (2026-11-01).",
+  { s:"motogp", asOf:"Current after the Qatar Airways Grand Prix of Qatar (2026-11-08).",
     classes:[
       { h:"Riders", rows:[
-        { pos:1, who:"Marc Marquez (Ducati Lenovo Team)", pts:411 },
-        { pos:2, who:"Jorge Martin (Aprilia Racing)", pts:362 },
-        { pos:3, who:"Marco Bezzecchi (Aprilia Racing)", pts:332 },
-        { pos:4, who:"Pedro Acosta (Red Bull KTM Factory Racing)", pts:299 },
-        { pos:5, who:"Ai Ogura (SuperFile Trackhouse MotoGP Team)", pts:281 },
-        { pos:6, who:"Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", pts:274 },
-        { pos:7, who:"Raul Fernandez (SuperFile Trackhouse MotoGP Team)", pts:242 },
+        { pos:1, who:"Marc Marquez (Ducati Lenovo Team)", pts:431 },
+        { pos:2, who:"Jorge Martin (Aprilia Racing)", pts:371 },
+        { pos:3, who:"Marco Bezzecchi (Aprilia Racing)", pts:357 },
+        { pos:4, who:"Pedro Acosta (Red Bull KTM Factory Racing)", pts:309 },
+        { pos:5, who:"Ai Ogura (SuperFile Trackhouse MotoGP Team)", pts:294 },
+        { pos:6, who:"Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", pts:282 },
+        { pos:7, who:"Raul Fernandez (SuperFile Trackhouse MotoGP Team)", pts:258 },
         { pos:8, who:"Alex Marquez (BK8 Gresini Racing MotoGP)", pts:197 },
         { pos:9, who:"Francesco Bagnaia (Ducati Lenovo Team)", pts:173 },
-        { pos:10, who:"Enea Bastianini (Red Bull KTM Tech3)", pts:136 },
-        { pos:11, who:"Fermin Aldeguer (BK8 Gresini Racing MotoGP)", pts:125 },
+        { pos:10, who:"Enea Bastianini (Red Bull KTM Tech3)", pts:147 },
+        { pos:11, who:"Fermin Aldeguer (BK8 Gresini Racing MotoGP)", pts:129 },
         { pos:12, who:"Brad Binder (Red Bull KTM Factory Racing)", pts:118 },
         { pos:13, who:"Luca Marini (Honda HRC Castrol)", pts:117 },
         { pos:14, who:"Fabio Quartararo (Monster Energy Yamaha MotoGP Team)", pts:79 },
@@ -31,31 +31,31 @@ const STANDINGS = [
       ] }
     ],
     note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com), the riders' championship, top 15; Sprint and Grand Prix points both count. A cancelled race scores nothing." },
-  { s:"wec", asOf:"Current as of 2026-10-26, from fiawec.com (the series' own standings page).",
+  { s:"wec", asOf:"Current as of 2026-11-08, from fiawec.com (the series' own standings page).",
     classes:[
       { h:"Hypercar", rows:[
         { pos:1, who:"#8 Brendon Hartley, Ryō Hirakawa, Sébastien Buemi", pts:114 },
         { pos:2, who:"#7 Kamui Kobayashi, Mike Conway, Nyck de Vries", pts:97 },
-        { pos:3, who:"#15 Kevin Magnussen, Raffaele Marciello", pts:75 },
-        { pos:4, who:"#20 René Rast, Robin Frijns", pts:75 },
-        { pos:5, who:"#15 Dries Vanthoor", pts:69 },
-        { pos:6, who:"#50 Antonio Fuoco, Miguel Molina, Nicklas Nielsen", pts:69 },
-        { pos:7, who:"#20 Sheldon van der Linde", pts:65 },
-        { pos:8, who:"#51 Alessandro Pier Guidi, Antonio Giovinazzi, James Calado", pts:59 },
-        { pos:9, who:"#12 Norman Nato, Will Stevens", pts:58 },
-        { pos:10, who:"#35 Charles Milesi, Ferdinand Habsburg", pts:57 }
+        { pos:3, who:"#15 Kevin Magnussen, Raffaele Marciello", pts:83 },
+        { pos:4, who:"#38 Earl Bamber, Sébastien Bourdais", pts:81 },
+        { pos:5, who:"#15 Dries Vanthoor", pts:77 },
+        { pos:6, who:"#38 Jack Aitken", pts:77 },
+        { pos:7, who:"#20 René Rast, Robin Frijns", pts:77 },
+        { pos:8, who:"#50 Antonio Fuoco, Miguel Molina, Nicklas Nielsen", pts:76 },
+        { pos:9, who:"#51 Alessandro Pier Guidi, Antonio Giovinazzi, James Calado", pts:74 },
+        { pos:10, who:"#20 Sheldon van der Linde", pts:67 }
       ] },
       { h:"LMGT3", rows:[
-        { pos:1, who:"#33 TF Sport", pts:92 },
-        { pos:2, who:"#92 The Bend Manthey", pts:74 },
-        { pos:3, who:"#34 Racing Team Turkey By TF", pts:70 },
-        { pos:4, who:"#69 Team WRT", pts:66 },
-        { pos:5, who:"#21 Vista AF Corse", pts:64 },
-        { pos:6, who:"#27 Heart Of Racing Team", pts:62 },
-        { pos:7, who:"#10 Garage 59", pts:57 },
-        { pos:8, who:"#91 Manthey DK Engineering", pts:54 },
-        { pos:9, who:"#23 Heart Of Racing Team", pts:51 },
-        { pos:10, who:"#32 Team WRT", pts:48 }
+        { pos:1, who:"#33 TF Sport", pts:107 },
+        { pos:2, who:"#92 The Bend Manthey", pts:99 },
+        { pos:3, who:"#69 Team WRT", pts:78 },
+        { pos:4, who:"#34 Racing Team Turkey By TF", pts:70 },
+        { pos:5, who:"#23 Heart Of Racing Team", pts:69 },
+        { pos:6, who:"#21 Vista AF Corse", pts:66 },
+        { pos:7, who:"#27 Heart Of Racing Team", pts:63 },
+        { pos:8, who:"#91 Manthey DK Engineering", pts:62 },
+        { pos:9, who:"#10 Garage 59", pts:57 },
+        { pos:10, who:"#78 Akkodis ASP Team", pts:50 }
       ] }
     ],
     note:"(automatic update) Source: fiawec.com standings page, top ten of each table. Hypercar: crews (all drivers of a car share its points); LMGT3: teams, listed by car number. Check the site for the round count." },

@@ -15,6 +15,50 @@
    "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
    (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
+  { t:"lusail", d:"2026-11-06", s:"motogp", event:"Grand Prix of Qatar",
+    groups:[
+      { h:"Race", order:[
+        "1. #72 Marco Bezzecchi (Aprilia Racing)",
+        "2. #93 Marc Marquez (Ducati Lenovo Team)",
+        "3. #25 Raul Fernandez (SuperFile Trackhouse MotoGP Team)",
+        "4. #79 Ai Ogura (SuperFile Trackhouse MotoGP Team)",
+        "5. #23 Enea Bastianini (Red Bull KTM Tech3)",
+        "6. #37 Pedro Acosta (Red Bull KTM Factory Racing)",
+        "7. #89 Jorge Martin (Aprilia Racing)",
+        "8. #49 Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)",
+        "9. #5 Johann Zarco (Castrol Honda LCR)",
+        "10. #27 Iker Lecuona (BK8 Gresini Racing MotoGP)"
+      ] }
+    ],
+    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), top ten of the Sunday Grand Prix, race day 2026-11-08." },
+  { t:"monza", d:"2026-11-06", s:"wec", event:"6 Hours of Monza",
+    groups:[
+      { h:"Hypercar", order:[
+        "1. #38 Cadillac Hertz Team Jota",
+        "2. #36 Alpine Endurance Team",
+        "3. #51 Ferrari AF Corse",
+        "4. #007 Aston Martin Thor Team",
+        "5. #94 Peugeot TotalEnergies",
+        "6. #15 BMW M Team WRT",
+        "7. #50 Ferrari AF Corse",
+        "8. #83 AF Corse",
+        "9. #20 BMW M Team WRT",
+        "10. #93 Peugeot TotalEnergies"
+      ] },
+      { h:"LMGT3", order:[
+        "1. #92 The Bend Manthey",
+        "2. #23 Heart Of Racing Team",
+        "3. #33 TF Sport",
+        "4. #69 Team WRT",
+        "5. #78 Akkodis ASP Team",
+        "6. #91 Manthey DK Engineering",
+        "7. #61 Iron Lynx",
+        "8. #79 Iron Lynx",
+        "9. #21 Vista AF Corse",
+        "10. #27 Heart Of Racing Team"
+      ] }
+    ],
+    note:"(automatic update) Source: fiawec.com race summary page (race/summary/5066), top ten of each class, read 2026-11-08." },
   { t:"mexico-city", d:"2026-10-30", s:"f1", event:"Mexico City Grand Prix",
     groups:[
       { h:"Race", order:[

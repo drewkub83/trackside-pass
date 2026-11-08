@@ -394,5 +394,16 @@ const RESULTS = [
         "5. Stewart Friesen"
       ] }
     ],
-    note:"Sources: Racing News, 'Homestead Race Results: NASCAR Trucks (November 6, 2026)'; Yahoo Sports, 'NASCAR Truck Series results, finishing order of championship race at Homestead'; Yardbarker, 'Kaden Honeycutt wins NASCAR Truck Series race at Homestead and 2026 championship' (Nov 6-7, 2026; via web search, direct fetch blocked here). Honeycutt won his first Truck Series championship, beating points leader Layne Riggs by 83 points; Riggs was collected in contact with Nick Sanchez on lap 2, took a flat tire, and finished 32nd, six laps down. Stewart Friesen's truck number and team were not confirmed in the sources seen." }
+    note:"Sources: Racing News, 'Homestead Race Results: NASCAR Trucks (November 6, 2026)'; Yahoo Sports, 'NASCAR Truck Series results, finishing order of championship race at Homestead'; Yardbarker, 'Kaden Honeycutt wins NASCAR Truck Series race at Homestead and 2026 championship' (Nov 6-7, 2026; via web search, direct fetch blocked here). Honeycutt won his first Truck Series championship, beating points leader Layne Riggs by 83 points; Riggs was collected in contact with Nick Sanchez on lap 2, took a flat tire, and finished 32nd, six laps down. Stewart Friesen's truck number and team were not confirmed in the sources seen." },
+  { t:"homestead-miami", d:"2026-11-06", s:"oreilly", race:"Race - O'Reilly Auto Parts Series", event:"NASCAR O'Reilly Auto Parts Series Championship Race, Homestead-Miami",
+    groups:[
+      { h:"Race", order:[
+        "1. #20 Brandon Jones (Joe Gibbs Racing)",
+        "2. #1 Carson Kvapil (JR Motorsports)",
+        "3. #19 Brent Crews (Joe Gibbs Racing)",
+        "4. #2 Jesse Love (Richard Childress Racing)",
+        "5. #99 Parker Retzlaff (Viking Motorsports)"
+      ] }
+    ],
+    note:"Sources: Motorsport.com, 'Justin Allgaier wins 2026 NASCAR O'Reilly championship as Brandon Jones wins Homestead finale'; Yahoo Sports, 'NASCAR O'Reilly Series results, finishing order of championship race at Homestead'; Racing News, 'Homestead-Miami Race Results: NASCAR O'Reilly (November 7, 2026)' (Nov 7, 2026; via web search, direct fetch blocked here). Jones held off Kvapil by 3.937 seconds for his ninth series win. Justin Allgaier (#7) finished 7th, enough to win the 2026 championship by 14 points over defending champion Jesse Love -- JR Motorsports' fifth series title. Crews was the highest-finishing rookie and secured 2026 Rookie of the Year." }
 ];

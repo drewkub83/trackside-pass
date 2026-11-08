@@ -15,6 +15,22 @@
    "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
    (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
+  { t:"interlagos", d:"2026-11-06", s:"f1", event:"Brazilian Grand Prix",
+    groups:[
+      { h:"Race", order:[
+        "1. #1 Lando Norris (McLaren)",
+        "2. #3 Max Verstappen (Red Bull Racing)",
+        "3. #6 Isack Hadjar (Red Bull Racing)",
+        "4. #63 George Russell (Mercedes)",
+        "5. #12 Kimi Antonelli (Mercedes)",
+        "6. #81 Oscar Piastri (McLaren)",
+        "7. #16 Charles Leclerc (Ferrari)",
+        "8. #30 Liam Lawson (Racing Bulls)",
+        "9. #44 Lewis Hamilton (Ferrari)",
+        "10. #27 Nico Hülkenberg (Audi)"
+      ] }
+    ],
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), top ten of the Grand Prix on 2026-11-08. Sprint results are not included." },
   { t:"lusail", d:"2026-11-06", s:"motogp", event:"Grand Prix of Qatar",
     groups:[
       { h:"Race", order:[
@@ -37,25 +53,25 @@ const RESULTS = [
         "1. #38 Cadillac Hertz Team Jota",
         "2. #36 Alpine Endurance Team",
         "3. #51 Ferrari AF Corse",
-        "4. #007 Aston Martin Thor Team",
-        "5. #94 Peugeot TotalEnergies",
-        "6. #15 BMW M Team WRT",
-        "7. #50 Ferrari AF Corse",
-        "8. #83 AF Corse",
-        "9. #20 BMW M Team WRT",
-        "10. #93 Peugeot TotalEnergies"
+        "4. #94 Peugeot TotalEnergies",
+        "5. #15 BMW M Team WRT",
+        "6. #83 AF Corse",
+        "7. #20 BMW M Team WRT",
+        "8. #93 Peugeot TotalEnergies",
+        "9. #50 Ferrari AF Corse",
+        "10. #8 Toyota Racing"
       ] },
       { h:"LMGT3", order:[
         "1. #92 The Bend Manthey",
         "2. #23 Heart Of Racing Team",
         "3. #33 TF Sport",
         "4. #69 Team WRT",
-        "5. #78 Akkodis ASP Team",
-        "6. #91 Manthey DK Engineering",
+        "5. #91 Manthey DK Engineering",
+        "6. #79 Iron Lynx",
         "7. #61 Iron Lynx",
-        "8. #79 Iron Lynx",
-        "9. #21 Vista AF Corse",
-        "10. #27 Heart Of Racing Team"
+        "8. #21 Vista AF Corse",
+        "9. #27 Heart Of Racing Team",
+        "10. #78 Akkodis ASP Team"
       ] }
     ],
     note:"(automatic update) Source: fiawec.com race summary page (race/summary/5066), top ten of each class, read 2026-11-08." },

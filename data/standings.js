@@ -34,16 +34,16 @@ const STANDINGS = [
   { s:"wec", asOf:"Current as of 2026-11-08, from fiawec.com (the series' own standings page).",
     classes:[
       { h:"Hypercar", rows:[
-        { pos:1, who:"#8 Brendon Hartley, Ryō Hirakawa, Sébastien Buemi", pts:114 },
+        { pos:1, who:"#8 Brendon Hartley, Ryō Hirakawa, Sébastien Buemi", pts:115 },
         { pos:2, who:"#7 Kamui Kobayashi, Mike Conway, Nyck de Vries", pts:97 },
-        { pos:3, who:"#15 Kevin Magnussen, Raffaele Marciello", pts:83 },
+        { pos:3, who:"#15 Kevin Magnussen, Raffaele Marciello", pts:85 },
         { pos:4, who:"#38 Earl Bamber, Sébastien Bourdais", pts:81 },
-        { pos:5, who:"#15 Dries Vanthoor", pts:77 },
-        { pos:6, who:"#38 Jack Aitken", pts:77 },
-        { pos:7, who:"#20 René Rast, Robin Frijns", pts:77 },
-        { pos:8, who:"#50 Antonio Fuoco, Miguel Molina, Nicklas Nielsen", pts:76 },
-        { pos:9, who:"#51 Alessandro Pier Guidi, Antonio Giovinazzi, James Calado", pts:74 },
-        { pos:10, who:"#20 Sheldon van der Linde", pts:67 }
+        { pos:5, who:"#20 René Rast, Robin Frijns", pts:81 },
+        { pos:6, who:"#15 Dries Vanthoor", pts:79 },
+        { pos:7, who:"#38 Jack Aitken", pts:77 },
+        { pos:8, who:"#51 Alessandro Pier Guidi, Antonio Giovinazzi, James Calado", pts:74 },
+        { pos:9, who:"#50 Antonio Fuoco, Miguel Molina, Nicklas Nielsen", pts:72 },
+        { pos:10, who:"#20 Sheldon van der Linde", pts:71 }
       ] },
       { h:"LMGT3", rows:[
         { pos:1, who:"#33 TF Sport", pts:107 },
@@ -51,11 +51,11 @@ const STANDINGS = [
         { pos:3, who:"#69 Team WRT", pts:78 },
         { pos:4, who:"#34 Racing Team Turkey By TF", pts:70 },
         { pos:5, who:"#23 Heart Of Racing Team", pts:69 },
-        { pos:6, who:"#21 Vista AF Corse", pts:66 },
-        { pos:7, who:"#27 Heart Of Racing Team", pts:63 },
-        { pos:8, who:"#91 Manthey DK Engineering", pts:62 },
+        { pos:6, who:"#21 Vista AF Corse", pts:68 },
+        { pos:7, who:"#27 Heart Of Racing Team", pts:64 },
+        { pos:8, who:"#91 Manthey DK Engineering", pts:64 },
         { pos:9, who:"#10 Garage 59", pts:57 },
-        { pos:10, who:"#78 Akkodis ASP Team", pts:50 }
+        { pos:10, who:"#32 Team WRT", pts:48 }
       ] }
     ],
     note:"(automatic update) Source: fiawec.com standings page, top ten of each table. Hypercar: crews (all drivers of a car share its points); LMGT3: teams, listed by car number. Check the site for the round count." },
@@ -264,24 +264,24 @@ const STANDINGS = [
       ] }
     ],
     note:"Driver standings by class, top 6 positions of each table; drivers who share a position share the same points (listed together). A team is named only where the series' team table or a race report confirms it. Source: gt-world-challenge-america.com standings (Drivers and Teams 2026, Pro / Pro-Am / Am), read Oct 16, 2026." },
-  { s:"f1", asOf:"Current after the Mexico City Grand Prix (Nov 1, 2026): 19 races are done and 4 remain.",
+  { s:"f1", asOf:"Current after the Brazilian Grand Prix (Nov 8, 2026): 20 races are done and 3 remain.",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Kimi Antonelli (Mercedes)", pts:380 },
-        { pos:2, who:"Max Verstappen (Red Bull Racing)", pts:261 },
-        { pos:3, who:"Lewis Hamilton (Ferrari)", pts:259 },
-        { pos:4, who:"George Russell (Mercedes)", pts:250 },
-        { pos:5, who:"Charles Leclerc (Ferrari)", pts:245 },
-        { pos:6, who:"Lando Norris (McLaren)", pts:221 },
-        { pos:7, who:"Oscar Piastri (McLaren)", pts:144 },
-        { pos:8, who:"Isack Hadjar (Red Bull Racing)", pts:107 },
-        { pos:9, who:"Liam Lawson (Racing Bulls)", pts:83 },
+        { pos:1, who:"Kimi Antonelli (Mercedes)", pts:390 },
+        { pos:2, who:"Max Verstappen (Red Bull Racing)", pts:279 },
+        { pos:3, who:"George Russell (Mercedes)", pts:262 },
+        { pos:4, who:"Lewis Hamilton (Ferrari)", pts:261 },
+        { pos:5, who:"Charles Leclerc (Ferrari)", pts:251 },
+        { pos:6, who:"Lando Norris (McLaren)", pts:246 },
+        { pos:7, who:"Oscar Piastri (McLaren)", pts:152 },
+        { pos:8, who:"Isack Hadjar (Red Bull Racing)", pts:122 },
+        { pos:9, who:"Liam Lawson (Racing Bulls)", pts:87 },
         { pos:10, who:"Pierre Gasly (Alpine)", pts:42 },
         { pos:11, who:"Arvid Lindblad (Racing Bulls)", pts:38 },
         { pos:12, who:"Franco Colapinto (Alpine)", pts:27 },
         { pos:13, who:"Oliver Bearman (Haas)", pts:23 },
         { pos:14, who:"Gabriel Bortoleto (Audi)", pts:14 },
-        { pos:15, who:"Nico Hülkenberg (Audi)", pts:13 },
+        { pos:15, who:"Nico Hülkenberg (Audi)", pts:14 },
         { pos:16, who:"Esteban Ocon (Haas)", pts:7 },
         { pos:17, who:"Fernando Alonso (Aston Martin)", pts:7 },
         { pos:18, who:"Carlos Sainz (Williams)", pts:7 },
@@ -290,23 +290,24 @@ const STANDINGS = [
         { pos:21, who:"Ryo Hirakawa (Haas)", pts:1 },
         { pos:22, who:"Lance Stroll (Aston Martin)", pts:0 },
         { pos:23, who:"Valtteri Bottas (Cadillac)", pts:0 },
-        { pos:24, who:"Sergio Pérez (Cadillac)", pts:0 }
+        { pos:24, who:"Sergio Pérez (Cadillac)", pts:0 },
+        { pos:25, who:"Rafael Camara (Haas)", pts:0 }
       ] },
       { h:"Constructors", rows:[
-        { pos:1, who:"Mercedes", pts:630 },
-        { pos:2, who:"Ferrari", pts:504 },
-        { pos:3, who:"Red Bull Racing", pts:382 },
-        { pos:4, who:"McLaren", pts:365 },
-        { pos:5, who:"Racing Bulls", pts:108 },
+        { pos:1, who:"Mercedes", pts:652 },
+        { pos:2, who:"Ferrari", pts:512 },
+        { pos:3, who:"Red Bull Racing", pts:415 },
+        { pos:4, who:"McLaren", pts:398 },
+        { pos:5, who:"Racing Bulls", pts:112 },
         { pos:6, who:"Alpine", pts:69 },
         { pos:7, who:"Haas", pts:31 },
-        { pos:8, who:"Audi", pts:27 },
+        { pos:8, who:"Audi", pts:28 },
         { pos:9, who:"Williams", pts:12 },
         { pos:10, who:"Aston Martin", pts:7 },
         { pos:11, who:"Cadillac", pts:0 }
       ] }
     ],
-    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA championship tables), read 2026-11-02. Drivers on the same points share a position only if the table shows it." },
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA championship tables), read 2026-11-08. Drivers on the same points share a position only if the table shows it." },
   { s:"f1academy", asOf:"Current after Austin (Oct 23-25, 2026); Palmowski clinched the title there with the Las Vegas round (Nov 19-21) still to run.",
     classes:[
       { h:"Drivers", rows:[

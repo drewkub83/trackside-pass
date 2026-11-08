@@ -1495,4 +1495,27 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of Racer.com's and Yahoo Sports' reporting on Saturday's Cup qualifying at Homestead-Miami (Briscoe's pole time/speed and 0.017s margin over Hamlin, the Reddick-Larson-Cindric-Bell-Elliott order, the single-car qualifying format, the race's lap/mile count and green-flag time); none of these sites could be reached directly from this environment, so this is as summarized by search results. This app's own prior data/watch.js entry (written after Friday's practice) for the unchanged Chase standings (Larson's 67/70/84-point gaps), not independently re-confirmed today since qualifying does not score points." }
+  ,{ t:"lusail", d:"2026-11-06", s:"motogp", from:"2026-11-07", at:"2026-11-08T12:23:42Z",
+    asOf:"Current after Sunday morning's Warm-Up at the Qatar Grand Prix (Lusail, Nov 8): Fabio Di Giannantonio tops the session from pole-sitter Marco Bezzecchi, with Marc Marquez fifth -- and Marquez can clinch the title outright tonight with a Grand Prix win if Jorge Martin fails to score.",
+    groups:[
+      { h:"Warm-up: Di Giannantonio fastest, Marquez fifth", items:[
+        ["Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", "Fastest on 1:52.281, on the soft rear tyre -- most of the field ran the medium rear instead, the tyre expected for tonight's 22-lap race."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Second, 0.505s back; still starts tonight's race from pole after Saturday's Qualifying 2, unaffected by his Sprint crash."],
+        ["Enea Bastianini (Red Bull KTM Tech3)", "Third, 0.523s off."],
+        ["Pedro Acosta (Red Bull KTM Factory Racing)", "Fourth, 0.578s back."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Fifth, 0.614s off, after a late start to the session -- title rival Jorge Martin also sat out the opening minutes."]
+      ] },
+      { h:"The title fight: what Marquez needs tonight", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Leads 411-362 over Jorge Martin after Saturday's Sprint win (a 49-point gap); multiple sources (grandepremio.com, crash.net, via web search) report he can clinch his eighth premier-class title outright in tonight's Grand Prix if he wins it and Martin fails to score -- that leaves Martin's maximum possible gain (25, for a Martin win) exactly matching the current gap, but Marquez is reported to hold the head-to-head countback (most race wins) that settles a tie in his favour. Any other result for Marquez keeps the title fight alive into the next round."],
+        ["Jorge Martin (Aprilia Racing)", "Needs Marquez to finish off the podium to keep the fight alive past this weekend; took his first podium since fracturing his wrist at Phillip Island in Saturday's Sprint, third after a last-lap pass, having started 11th on the original grid before a red-flag restart."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Crashed out of Saturday's Sprint while battling Marquez for the lead (stewards called it a racing incident, no penalty) and scored nothing; sources disagree on whether that leaves him mathematically eliminated already, but a Marquez win tonight would put the title beyond his reach either way. Still starts from pole after qualifying."]
+      ] },
+      { h:"Yamaha's boycott: unchanged", items:[
+        ["Still out", "Yamaha's four riders remain withdrawn from the whole Qatar round over the team's Middle East travel restrictions; this app found no report of a change since Saturday. Yamaha has said it expects to return at the Portuguese Grand Prix; MotoGP has reportedly threatened race bans for Portugal and Valencia over the boycott, with no official FIM ruling yet."]
+      ] },
+      { h:"Up next", items:[
+        ["Tonight's Grand Prix, 7:00pm local / 4:00pm GMT, after dark, 22 laps", "Marquez's first chance to seal the title outright -- he needs the win, with Martin scoring nothing, to do it tonight."]
+      ] }
+    ],
+    note:"Sources: web search summaries of crash.net's 2026 Qatar MotoGP Lusail Warm-up Results and motosan.es's Spanish-language warm-up report, agreeing on Di Giannantonio's fastest time, the top-five order and gaps, the tyre choices, and Marquez's and Martin's late starts (neither site reachable directly from this environment). Web search summaries of grandepremio.com ('Marc Marquez wins Qatar MotoGP sprint as Martin's last-lap loss sets up title shot' and its companion post-Sprint standings piece) and crash.net ('Marc Marquez wins dramatic Qatar MotoGP sprint after Marco Bezzecchi clash'), both read via search summary, for the Sprint result (Marquez 1st, Martin 3rd after a red-flag restart, Bezzecchi crashed from the lead battle with Marquez, no penalty issued), the resulting 411-362-332 standings, and tonight's exact clinch scenario (win plus Martin scoring zero, resolved in Marquez's favour by the race-wins countback); sources disagreed on whether Bezzecchi is already mathematically out, so that is left uncertain above. data/standings.js for the post-Sprint points (411-362-332), matching the same search summaries. Yamaha boycott status and the Portugal/Valencia ban threat carried over from the prior entry for this event, re-checked and no newer report found. Race start time and lap count from data/lusail.js and the same search summaries." }
 ];

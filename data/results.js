@@ -15,6 +15,127 @@
    "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
    (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
+  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Feature Race - F1 Academy", event:"F1 Academy: Feature Race (United States Grand Prix)",
+    groups:[
+      { h:"Race", order:[
+        "1. #3 Nina Gademan (MP Motorsport)",
+        "2. #9 Payton Westcott (PREMA Racing)",
+        "3. #19 Natalia Granada (PREMA Racing)",
+        "4. #95 Jade Jacquet (ART Grand Prix)",
+        "5. #5 Emma Felbermayr (Rodin Motorsport)",
+        "6. #14 Lisa Billard (ART Grand Prix)",
+        "7. #56 Rachel Robertson (Hitech)",
+        "8. #20 Ella Lloyd (Rodin Motorsport)",
+        "9. #32 Esmee Kosterman (MP Motorsport)",
+        "10. #4 Megan Bruce (Campos Racing)",
+        "11. #28 Ella Stevens (Rodin Motorsport)",
+        "12. #8 Mathilda Paatz (PREMA Racing)",
+        "13. #55 Ava Dobson (Hitech)",
+        "14. #91 Kaylee Countryman (ART Grand Prix)",
+        "15. #18 Rafaela Ferreira (Campos Racing)"
+      ] }
+    ],
+    note:"(automatic update) Source: the series' f1academy.com results page, full classification of Feature Race - F1 Academy, race day 2026-10-25." },
+  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Reverse Grid Race - F1 Academy", event:"F1 Academy: Reverse Grid Race (United States Grand Prix)",
+    groups:[
+      { h:"Race", order:[
+        "1. #12 Alba Larsen (MP Motorsport)",
+        "2. #21 Alisha Palmowski (Campos Racing)",
+        "3. #14 Lisa Billard (ART Grand Prix)",
+        "4. #5 Emma Felbermayr (Rodin Motorsport)",
+        "5. #3 Nina Gademan (MP Motorsport)",
+        "6. #9 Payton Westcott (PREMA Racing)",
+        "7. #4 Megan Bruce (Campos Racing)",
+        "8. #20 Ella Lloyd (Rodin Motorsport)",
+        "9. #8 Mathilda Paatz (PREMA Racing)",
+        "10. #91 Kaylee Countryman (ART Grand Prix)",
+        "11. #32 Esmee Kosterman (MP Motorsport)",
+        "12. #28 Ella Stevens (Rodin Motorsport)",
+        "13. #18 Rafaela Ferreira (Campos Racing)",
+        "14. #19 Natalia Granada (PREMA Racing)",
+        "15. #56 Rachel Robertson (Hitech)"
+      ] }
+    ],
+    note:"(automatic update) Source: the series' f1academy.com results page, full classification of Reverse Grid Race - F1 Academy, race day 2026-10-24." },
+  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Opening Race - F1 Academy", event:"F1 Academy: Opening Race (United States Grand Prix)",
+    groups:[
+      { h:"Race", order:[
+        "1. #21 Alisha Palmowski (Campos Racing)",
+        "2. #3 Nina Gademan (MP Motorsport)",
+        "3. #12 Alba Larsen (MP Motorsport)",
+        "4. #14 Lisa Billard (ART Grand Prix)",
+        "5. #5 Emma Felbermayr (Rodin Motorsport)",
+        "6. #19 Natalia Granada (PREMA Racing)",
+        "7. #9 Payton Westcott (PREMA Racing)",
+        "8. #32 Esmee Kosterman (MP Motorsport)",
+        "9. #28 Ella Stevens (Rodin Motorsport)",
+        "10. #95 Jade Jacquet (ART Grand Prix)",
+        "11. #8 Mathilda Paatz (PREMA Racing)",
+        "12. #91 Kaylee Countryman (ART Grand Prix)",
+        "13. #4 Megan Bruce (Campos Racing)",
+        "14. #18 Rafaela Ferreira (Campos Racing)",
+        "15. #45 Alexia Danielsson (WCD) (Hitech)",
+        "16. #20 Ella Lloyd (Rodin Motorsport)"
+      ] }
+    ],
+    note:"(automatic update) Source: the series' f1academy.com results page, full classification of Opening Race - F1 Academy, race day 2026-10-23." },
+  { t:"cota", d:"2026-10-23", s:"carrera", race:"Race 2 of 2 - Porsche Carrera Cup", event:"Porsche Carrera Cup North America: Race 2 of 2 (United States Grand Prix)",
+    groups:[
+      { h:"Race", order:[
+        "1. #77 Tyler Maxson (Topp Racing)",
+        "2. #40 Janne Stiak (ACI Motorsports)",
+        "3. #96 Jared Thomas (JTR Motorsports Engineering)",
+        "4. #78 Cole Kleck (Topp Racing)",
+        "5. #71 Paul Bocuse (Kellymoss)",
+        "6. #9 Callum Hedge (JDX Racing)",
+        "7. #39 John Jodoin (ACI Motorsports)",
+        "8. #6 Alex Pratt (ACI Motorsports)",
+        "9. #23 Connor Bloum (JDX Racing)",
+        "10. #24 Aaron Jeansonne (Kellymoss)",
+        "11. #54 Patrick Mulcahy (ACI Motorsports)",
+        "12. #3 Nikita Lastochkin (CSM - Reis Nichols)",
+        "13. #14 James Sofronas (GMG Racing)",
+        "14. #45 Scott Blind (Ruckus Racing)",
+        "15. #53 Rob Walker (JTR Motorsports Engineering)",
+        "16. #70 Joel Johnson (JDX Racing)",
+        "17. #58 Steve Wetterau (Kellymoss)",
+        "18. #98 Dan Drohan (CHR)",
+        "19. #29 Josh Conley (Kellymoss)",
+        "20. #60 Kevin Stadtlander (JDX Racing)"
+      ] }
+    ],
+    note:"(automatic update) Source: the series' porschecarreracup.us results page, full classification of Race 2 of 2 - Porsche Carrera Cup, race day 2026-10-25." },
+  { t:"cota", d:"2026-10-23", s:"carrera", race:"Race 1 of 2 - Porsche Carrera Cup", event:"Porsche Carrera Cup North America: Race 1 of 2 (United States Grand Prix)",
+    groups:[
+      { h:"Race", order:[
+        "1. #40 Janne Stiak (ACI Motorsports)",
+        "2. #24 Aaron Jeansonne (Kellymoss)",
+        "3. #77 Tyler Maxson (Topp Racing)",
+        "4. #9 Callum Hedge (JDX Racing)",
+        "5. #96 Jared Thomas (JTR Motorsports Engineering)",
+        "6. #71 Paul Bocuse (Kellymoss)",
+        "7. #78 Cole Kleck (Topp Racing)",
+        "8. #23 Connor Bloum (JDX Racing)",
+        "9. #39 John Jodoin (ACI Motorsports)",
+        "10. #14 James Sofronas (GMG Racing)",
+        "11. #54 Patrick Mulcahy (ACI Motorsports)",
+        "12. #99 Alan Metni (Kellymoss)",
+        "13. #37 Sabre Cook (JDX Racing)",
+        "14. #3 Nikita Lastochkin (CSM - Reis Nichols)",
+        "15. #45 Scott Blind (Ruckus Racing)",
+        "16. #53 Rob Walker (JTR Motorsports Engineering)",
+        "17. #58 Steve Wetterau (Kellymoss)",
+        "18. #70 Joel Johnson (JDX Racing)",
+        "19. #6 Alex Pratt (ACI Motorsports)",
+        "20. #60 Kevin Stadtlander (JDX Racing)",
+        "21. #32 Kyle Washington (GMG Racing)",
+        "22. #74 Matt Smith (ACI Motorsports)",
+        "23. #88 Marco Cirone (ACI Motorsports)",
+        "24. #29 Josh Conley (Kellymoss)",
+        "25. #98 Dan Drohan (CHR)"
+      ] }
+    ],
+    note:"(automatic update) Source: the series' porschecarreracup.us results page, full classification of Race 1 of 2 - Porsche Carrera Cup, race day 2026-10-24." },
   { t:"homestead-miami", d:"2026-11-06", s:"oreilly", race:"Race - O'Reilly Auto Parts Series", event:"NASCAR O'Reilly Auto Parts Series Championship Race",
     groups:[
       { h:"Race", order:[
@@ -539,68 +660,6 @@ const RESULTS = [
       ] }
     ],
     note:"Source: INDYCAR.com \"Instant Recall\" (Sep 7, 2026). The 2026 season finale; McLaughlin led 87 of 95 laps from pole for his first win in 36 races, Kirkwood was 1.3739 s behind. Alex Palou's 8th place was enough: he had already clinched his fourth straight championship. Scott Dixon finished 17th in his last race with Chip Ganassi Racing. 10th place was not in the source. d is the race day (Sunday)." },
-  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Opening Race - F1 Academy", event:"F1 Academy, Austin: Opening Race",
-    groups:[
-      { h:"Race", order:[
-        "1. Alisha Palmowski (Campos Racing)",
-        "2. Nina Gademan",
-        "3. Alba Larsen",
-        "4. Lisa Billard",
-        "5. Emma Felbermayr",
-        "6. Natalia Granada",
-        "7. Payton Westcott"
-      ] }
-    ],
-    note:"Sources: F1 Academy, 'Opening Race: Alisha Palmowski claims her fifth victory of the season in commanding Austin drive' (f1academy.com); Formula1.com, 'Alisha Palmowski closes in on title with Opening Race victory in Austin'; Pit Debrief race report. Car numbers and teams other than the winner's are left out: the reports seen did not give them." },
-  { t:"cota", d:"2026-10-23", s:"carrera", race:"Race 1 of 2 - Porsche Carrera Cup", event:"Porsche Carrera Cup North America, COTA: Race 1 of 2",
-    groups:[
-      { h:"Pro", order:[
-        "1. #40 ACI Motorsports — Janne Stiak",
-        "2. #24 Kellymoss — Aaron Jeansonne",
-        "3. #77 TOPP Racing — Tyler Maxson"
-      ] },
-      { h:"Pro-Am", order:[
-        "1. #14 GMG Racing — James Sofronas",
-        "2. #54 Patrick Mulcahy",
-        "3. #58 Kellymoss — Steve Wetterau"
-      ] },
-      { h:"Masters", order:[
-        "1. #45 Ruckus Racing — Scott Blind"
-      ] }
-    ],
-    note:"Sources: Porsche Motorsport North America (\"Stiak takes COTA win, Maxson clinches Mobil Pro class title\") and Sportscar365 (\"Stiak Earns Win, Maxson Clinches Pro Title in Race 1 at COTA\"), Oct 24, 2026 (via web search; direct fetch was blocked in this environment). Stiak's second win of the season; Maxson's third place clinched the 2026 Pro title (provisional, subject to post-race technical inspection). A late multi-car Masters incident meant the race ended under yellow. Sofronas led all 13 laps. Mulcahy's team was not given; places below those listed were not confirmed in these sources." },
-  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Reverse Grid Race - F1 Academy", event:"F1 Academy, Austin: Reverse Grid Race",
-    groups:[
-      { h:"Race", order:[
-        "1. Alba Larsen",
-        "2. Alisha Palmowski (Campos Racing)",
-        "3. Lisa Billard"
-      ] }
-    ],
-    note:"Sources: Pit Debrief, 'F1 Academy 2026 United States GP Reverse Grid Race report' and 'Reverse Grid Race results' (pitdebrief.com, Oct 24, 2026; via web search, direct fetch blocked here). Larsen's first F1 Academy win, from 4th on the grid; Palmowski came from 8th to 2nd and clinched the 2026 drivers' title; Billard's first series podium. A Safety Car followed a Turn 16 collision (Ferreira, Jacquet, Danielsson). Places below 3rd, car numbers and the other teams were not confirmed in the reports seen, so they are left out." },
-  { t:"cota", d:"2026-10-23", s:"carrera", race:"Race 2 of 2 - Porsche Carrera Cup", event:"Porsche Carrera Cup North America, COTA: Race 2 of 2 (season finale)",
-    groups:[
-      { h:"Pro", order:[
-        "1. #77 TOPP Racing — Tyler Maxson",
-        "2. #40 ACI Motorsports — Janne Stiak",
-        "3. #96 JTR Motorsports Engineering — Jared Thomas"
-      ] },
-      { h:"Pro-Am", order:[
-        "1. #54 ACI Motorsports — Patrick Mulcahy"
-      ] }
-    ],
-    note:"Source: Sportscar365, \"Maxson Captures Season Finale Win at COTA\" (Oct 25, 2026; via web search, direct fetch blocked here). Maxson, already 2026 Pro champion after Race 1, won by more than six seconds. Callum Hedge got a 10-second post-race penalty for track limits, which promoted Stiak to 2nd and Thomas to 3rd. Pro-Am places below the winner and the Masters class result were not in the report seen, so they are left out." },
-  { t:"cota", d:"2026-10-23", s:"f1academy", race:"Feature Race - F1 Academy", event:"F1 Academy, Austin: Feature Race",
-    groups:[
-      { h:"Race", order:[
-        "1. Nina Gademan (MP Motorsport)",
-        "2. Payton Westcott",
-        "3. Natalia Granada",
-        "4. Jade Jacquet",
-        "5. Emma Felbermayr"
-      ] }
-    ],
-    note:"Sources: Pit Debrief, 'F1 Academy 2026 United States GP Feature Race report' and 'Feature Race results' (pitdebrief.com, Oct 25, 2026); Motorsport Week, 'F1 Academy 2026 US GP - Feature Race Results' (via web search). Gademan won from 3rd on the grid. Champion Alisha Palmowski and Alba Larsen collided on lap 10 while fighting for 2nd and both retired. Jacquet's 4th is her best F1 Academy finish. Car numbers and the other teams were not confirmed in the reports seen, so they are left out." },
   { t:"martinsville", d:"2026-10-30", s:"trucks", race:"Race - Craftsman Truck Series", event:"Black's Tire 200 presented by Down East Heating & Air Conditioning",
     groups:[
       { h:"Race", order:[

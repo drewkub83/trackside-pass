@@ -59,14 +59,14 @@ def replace_entry(rel, test, text):
     return True
 
 _feeds = {}
-def feed(year, rid):
-    k = (year, rid)
+def feed(year, rid, series=1):
+    k = (year, rid, series)
     if k not in _feeds:
-        d = get(f"/{year}/1/{rid}/weekend-feed.json"); _feeds[k] = (d or {}).get("weekend_race", [None])[0] if d else None
+        d = get(f"/{year}/{series}/{rid}/weekend-feed.json"); _feeds[k] = (d or {}).get("weekend_race", [None])[0] if d else None
     return _feeds[k]
-def calendar(year):
+def calendar(year, series=1):
     d = get(f"/{year}/race_list_basic.json") or {}
-    return sorted((d.get("series_1") or []), key=lambda r: r["race_date"])
+    return sorted((d.get(f"series_{series}") or []), key=lambda r: r["race_date"])
 def finished(r, race):
     rows = [x for x in (race or {}).get("results") or [] if x.get("finishing_position")]
     return rows if len(rows) >= 25 and r.get("actual_laps") else None

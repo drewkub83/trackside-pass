@@ -420,11 +420,11 @@ const SERIES = [
     "cars": [
     {
       "n": "VC",
-      "full": "Vintage Cup presented by SascoSports",
+      "full": "Vintage Cup presented by Sasco",
       "type": "Run group: Groups 2 and 3",
       "c": "#8A6B3F",
       "fg": "#FFFFFF",
-      "text": "Vintage and historic production cars and sports racers, through about 1985. Its two groups are listed below.",
+      "text": "Vintage and historic production cars and sports racers, through about 1985 (Groups 2 and 3). A weekend has three qualifying sessions and two sprint races of about 20 minutes each, and the cars are eligible for a 60-minute B.R.M Legacy Enduro with one required 5-minute pit stop.",
       "m": "Vintage Cup"
     },
     {
@@ -433,7 +433,7 @@ const SERIES = [
       "type": "Part of the Vintage Cup",
       "c": "#A07F4E",
       "fg": "#FFFFFF",
-      "text": "Features 1950s and 1960s production sports cars and early sports racing models. Common entries include the Porsche 356, Jaguar XK120, MGA, MGB and Austin-Healey Sprites.",
+      "text": "Vintage sports cars, modifieds, sedans and sports racers as built and raced through about 1967, prepared to the SCCA rules of the time. Entries include the Porsche 356, Jaguar XK120 and E-Type, Corvette C1, Mercedes 300SL, Austin-Healey, MGA and MGB, Lotus Elan and Seven, and Mini Coopers.",
       "m": "Vintage Cup"
     },
     {
@@ -442,7 +442,7 @@ const SERIES = [
       "type": "Part of the Vintage Cup",
       "c": "#7C5E34",
       "fg": "#FFFFFF",
-      "text": "Small-to-mid displacement sports cars and sedans from the mid-1960s through the early 1980s: non-big-bore classics like the standard Porsche 911, Triumph and MGB V8 variants.",
+      "text": "Historic sports cars and sedans as built and raced through about 1985, prepared to the SCCA rules of the time: Porsche 911s up to 2.7 liters, Datsun 240Z, Triumph TR6, Mazda RX-7, Lotus Esprit, BMW 2002 and IMSA RS sedans.",
       "m": "Vintage Cup"
     },
     {
@@ -451,34 +451,34 @@ const SERIES = [
       "type": "Run group: Group 4 (4A, 4B, 4C)",
       "c": "#B5443B",
       "fg": "#FFFFFF",
-      "text": "Vintage and historic open-wheel Formula cars, in three groups by era.",
+      "text": "Vintage and historic open-wheel Formula cars (Group 4), in three groups by era. A weekend has three qualifying sessions and two sprint races of about 20 minutes each. Formula cars are not eligible for the HSR enduros.",
       "m": "Grand Prix Classics"
     },
     {
       "n": "4A",
-      "full": "Group 4A: Classic Monoposto",
+      "full": "Group 4A: Vintage Formula Cars",
       "type": "Part of Grand Prix Classics",
       "c": "#C45A50",
       "fg": "#FFFFFF",
-      "text": "Early, small-bore open-wheel cars built before 1972, without wings or slicks, such as vintage Formula Fords.",
+      "text": "Vintage open-wheel cars built before about 1973 under Monoposto Racing's classic rules: Formula 1 and 2, Formula B, Formula Ford, Formula Junior (front and rear engine) and Formula Vee.",
       "m": "Grand Prix Classics"
     },
     {
       "n": "4B",
-      "full": "Group 4B: Monoposto Formula 70",
+      "full": "Group 4B: Historic Formula Cars",
       "type": "Part of Grand Prix Classics",
       "c": "#9C3A32",
       "fg": "#FFFFFF",
-      "text": "1970s-era open-wheel race cars with aerodynamics and slick tires, notably Formula Atlantic, Formula 2 and Formula 5000.",
+      "text": "Historic open-wheel cars from about 1973 to 1979: Formula 1 (3.0 liter) and Formula 5000, Formula 2, Formula B and Atlantic, Super Vee, Formula 3 and Formula C, and Formula Ford 1600.",
       "m": "Grand Prix Classics"
     },
     {
       "n": "4C",
-      "full": "Group 4C: Modern Era Formula",
+      "full": "Group 4C: Modern Formula Cars",
       "type": "Part of Grand Prix Classics",
       "c": "#7E2D27",
       "fg": "#FFFFFF",
-      "text": "Top-tier, large-bore modern open-wheel racers, including historically significant Formula 1 cars, Indy Cars and Indy Lights.",
+      "text": "Open-wheel cars built after about 1979, including Formula 1 and Indy cars (before and after 1991), Indy Lights, Formula 2 and Mazda Atlantic, Star Mazda, Toyota Atlantic and FF2000. HSR's five-year rule applies: cars homologated after 2021 are not eligible.",
       "m": "Grand Prix Classics"
     },
     {
@@ -487,34 +487,34 @@ const SERIES = [
       "type": "Run group: Groups 5, 8 and 11",
       "c": "#C27A1E",
       "fg": "#FFFFFF",
-      "text": "Historic production cars and classic big-bore cars, historic stock cars, and early modern GT3 and TCR cars (HSR's group guide). Its three groups are listed below.",
+      "text": "Historic production and classic big-bore cars and sports racers, post-historic sedans and GTs, and early modern GT3 and TCR cars (Groups 5, 8 and 11). A weekend has three qualifying sessions and two sprint races of about 20 minutes each, and the cars are eligible for a 60-minute B.R.M enduro (Legacy or Modern, depending on class).",
       "m": "Legacy Racers"
     },
     {
       "n": "5",
-      "full": "Group 5: Historic Big-Bore Production",
+      "full": "Group 5: Historic Production and Sports Racers",
       "type": "Part of Legacy Racers",
       "c": "#D68A2B",
       "fg": "#FFFFFF",
-      "text": "High-displacement, aggressive American V8s and powerful international GT cars from 1960 to 1974, such as the Shelby Cobra, Chevrolet Camaro, Boss 302 Mustang, Corvette C2/C3 and Porsche 911 RSRs.",
+      "text": "Historic production cars and big-bore GTs prepared to SCCA rules through about 1975 (5A): Shelby Cobra, GT350 and GT500, Corvette C2 and C3, Jaguar E-Type, Trans-Am Camaros and Mustangs, Porsche 911 RS and RSR, Ferrari 250 and 275. Group 5B adds early Can-Am, USRRC and FIA Group 6 sports racers such as the Lola T70, Ford GT40 and Porsche 906 and 908 (treaded racing tires).",
       "m": "Legacy Racers"
     },
     {
       "n": "8",
-      "full": "Group 8: Historic Stock Cars",
+      "full": "Group 8: Post-Historic Sedans and GTs",
       "type": "Part of Legacy Racers",
       "c": "#A8661A",
       "fg": "#FFFFFF",
-      "text": "Purpose-built oval stock cars retired from professional series such as the NASCAR Winston Cup, Nextel Cup and Busch Series.",
+      "text": "FIA, IMSA, ALMS and SCCA sedans and GTs from about 1973 to 1997: IMSA GTO, GTU and GTX cars and the GTS1 and GTS2 cars, such as Porsche 911 and 935, BMW M1 and M3, Mazda RX-7, Nissan 300ZX, Chevrolet Camaro and Corvette and Ford Mustang. Oval stock cars race in the NASCAR Classic.",
       "m": "Legacy Racers"
     },
     {
       "n": "11",
-      "full": "Group 11: Select FIA/IMSA GT",
+      "full": "Group 11: Modern Sedans and GTs",
       "type": "Part of Legacy Racers",
       "c": "#8E5614",
       "fg": "#FFFFFF",
-      "text": "Specific modern professional GT cars matching distinct historical sportscar eras.",
+      "text": "Later sedans and GTs: TCR front-wheel-drive touring cars (Honda Civic Type R, Hyundai Elantra N, VW Golf, Audi RS3), similar non-homologated cars, early Cup cars such as the Porsche 996 and 997 Cup and Ferrari 360 Challenge, and race-modified street cars (BMW M3, Porsche 911 and Cayman, Viper, Lotus Exige) by assignment. Cars homologated after 2021 are not eligible.",
       "m": "Legacy Racers"
     },
     {
@@ -523,16 +523,16 @@ const SERIES = [
       "type": "Run group: Groups 6 and 7",
       "c": "#2F6DB5",
       "fg": "#FFFFFF",
-      "text": "Historic prototypes and sports racers, up to modern sports racers. Its two groups are listed below.",
+      "text": "Historic prototypes and sports racers, up to modern sports racers (Groups 6 and 7). A weekend has three qualifying sessions and two sprint races of about 20 minutes each, and the cars are eligible for a 60-minute B.R.M enduro (Legacy or Modern, depending on class) with one required 5-minute pit stop.",
       "m": "Historic Trophy"
     },
     {
       "n": "6",
-      "full": "Group 6: Racing Prototypes",
+      "full": "Group 6: Historic Prototypes and Modern Sports Racers",
       "type": "Part of the Historic Trophy",
       "c": "#3F7FC8",
       "fg": "#FFFFFF",
-      "text": "High-downforce icons of endurance racing: original IMSA GTP, Camel Lights, FIA Group C and C2, and early LMP machinery like the Porsche 962.",
+      "text": "Prototypes of IMSA and FIA endurance racing: IMSA GTP and FIA Group C cars (Porsche 956 and 962, Nissan, Toyota, Jaguar XJR), Camel Lights and Group C2, the 1993 to 1997 WSC prototypes, and first-generation Daytona Prototypes. All on appropriate slicks; cars homologated after 2021 are not eligible.",
       "m": "Historic Trophy"
     },
     {
@@ -541,7 +541,7 @@ const SERIES = [
       "type": "Part of the Historic Trophy",
       "c": "#255A9A",
       "fg": "#FFFFFF",
-      "text": "Pure-bred racing chassis on slick tires: legendary Can-Am cars, early Sports 2000 platforms (Lola, Swift) and older chassis like the Ford GT40.",
+      "text": "Historic and modern sports racing cars on slicks. Group 7A: Can-Am cars, FIA Group 6 coupes (Ford GT40, Lola T70, Ferrari 512) and SCCA sports racers. Group 7B, with separate points and awards per class: center-seat Can-Am, Sports 2000 and modern sports racers such as the Radical, KTM X-Bow and Caterham.",
       "m": "Historic Trophy"
     },
     {
@@ -550,25 +550,25 @@ const SERIES = [
       "type": "Run group: Groups 9 and 10",
       "c": "#1F8A5B",
       "fg": "#FFFFFF",
-      "text": "The early modern era of GT cars (GT1, GT2, GT3 and GT4, from the 2000s through the 2020s). Has sprint races and a one-hour enduro with a required pit stop. Its two groups are listed below.",
+      "text": "The early modern era of GT cars (Groups 9 and 10): GT1, GT2, GT3 and GT4 cars from the late 1990s to 2021 homologations. A weekend has three qualifying sessions, two sprint races of about 20 minutes each and an eligible 60-minute enduro with one required 5-minute pit stop. Everyone runs Pirelli tires.",
       "m": "Mission GT"
     },
     {
       "n": "9",
-      "full": "Group 9: Post-Historic GT",
+      "full": "Group 9: Modern GT1, GT2 and GT3",
       "type": "Part of the Mission GT Challenge",
       "c": "#2A9C6A",
       "fg": "#FFFFFF",
-      "text": "High-performance endurance sports cars from past eras of professional GT racing, including FIA GT1, GT2 and GT3 specifications and classic Trans-Am entries.",
+      "text": "Professional GT cars: GT1 and GTLM (Corvette C7.R, Porsche 911 RSR, Ford GT, Viper, Aston Martin DBR9), GT2 and GTE (Ferrari 488 GTE, Porsche 911 RSR) and GT3 and GTD cars (Ferrari 488 GT3, Mercedes-AMG GT3, Audi R8 LMS, Porsche GT3 R), plus Trans-Am TA1 and TA2 cars. Homologated before 2022.",
       "m": "Mission GT"
     },
     {
       "n": "10",
-      "full": "Group 10: Modern Global GT Cup",
+      "full": "Group 10: Early GT3 and GT4",
       "type": "Part of the Mission GT Challenge",
       "c": "#177A4D",
       "fg": "#FFFFFF",
-      "text": "Contemporary, production-based spec series race cars and modern track packages, mainly FIA GT4, Porsche Carrera Cup, Ferrari Challenge and BMW M3 race cars.",
+      "text": "Older GT3-era Cup and race cars by assignment (Porsche 996 and 997 Cup, Callaway Corvette, Ferrari 430 Challenge, Nissan 370Z) and GT4 cars: GT4A for post-2018 homologations (Porsche 718 Cayman GT4, BMW M4 GT4, Ford Mustang GT4, Toyota Supra GT4) and GT4B for older ones (Audi R8 GT4, Alpine A110 GT4, Mercedes-AMG GT4).",
       "m": "Mission GT"
     },
     {
@@ -577,7 +577,7 @@ const SERIES = [
       "type": "Run group",
       "c": "#6B4FBB",
       "fg": "#FFFFFF",
-      "text": "Early modern prototypes, from the 2000s to the 2020s. Has sprint races and a longer enduro with two required pit stops.",
+      "text": "Early modern prototypes, from the 2000s to the 2020s: DPi and LMP1 (P1), Gen 3 Daytona Prototypes and LMP2 (P2), LMPC and LMP3 (P3) and Gen 1 and 2 Daytona Prototypes (P4). A weekend has one 30-minute open practice, a 30-minute qualifying and two 30-minute sprint races (the sprints are for one amateur driver alone), and the cars are eligible for a 60-minute enduro with one required 5-minute pit stop. Michelin tires are required.",
       "m": "Prototype Challenge",
       "spot": "Closed-cockpit and open prototypes, the type you see at the top of IMSA and Le Mans."
     },
@@ -587,7 +587,7 @@ const SERIES = [
       "type": "Run group",
       "c": "#D6A100",
       "fg": "#1A1A1A",
-      "text": "Historic and early modern NASCAR and oval stock cars and trucks.",
+      "text": "Historic and early modern NASCAR and oval stock cars and trucks, in classes by era: current Cup cars (after 2006), 1996 to 2006, 1980 to 1995, other sanctioned stock cars (ARCA, ASA), Trucks, and Grand National cars through about 1979. A weekend has three qualifying sessions and two sprint races of about 20 minutes each. Goodyear tires are used at the standalone events, including the HSR NASCAR Classic at the Le Mans Classic.",
       "m": "NASCAR Classic",
       "spot": "Stock cars with big stock-car body shapes."
     },
@@ -679,7 +679,7 @@ const SERIES = [
       "qualifying": "Short sessions that set each group's grid. Some enduros use the times from the earlier qualifying sessions.",
       "race": "Short sprint races for each run group, and at Daytona the Classic 24 Hour: each group runs four races, one after another around the clock, with the overall result based on laps completed and total time."
     },
-    "fine": "A spectator summary based on HSR's official schedule and supplemental regulations for the 2026 Daytona Classic 24 Hour (10/27/2026) and its group overview. The run-group descriptions match HSR's one-page group guide (3/9/2026); the numbered group descriptions (Groups 2 to 11) are HSR's group definitions as supplied to us, so check hsrrace.com for the exact class lists. The Classic endurance groups are set per event and change from year to year: the 2025 Classic 6 Hour at Watkins Glen used three groups (A early era, B historic era, C modern era), while the 2026 Daytona Classic 24 uses A to G and P as listed here. For official details, see hsrrace.com."
+    "fine": "A spectator summary based on HSR's official schedule and supplemental regulations for the 2026 Daytona Classic 24 Hour (10/27/2026) and HSR's run-group sheets for 2026: the one-page group names guide (3/9/2026) and the series overviews for the Vintage Cup, Grand Prix Classics, Legacy Racers, Historic Trophy, Mission GT Challenge, Prototype Challenge and NASCAR Classic (published February and March 2026), with the numbered group class lists revised in January 2026. The class lists name example cars and are not exclusive: HSR slots other cars into a class by observed performance, and cars homologated after 2021 are not eligible (the five-year rule). The Classic endurance groups are set per event: the 2026 Daytona Classic 24 uses A to G and P as listed here, while HSR's group guide for its other 2026 Classic events (published 5/4/26) uses four groups: A, vintage and historic GT and prototypes on treaded tires (early sportscars through about 1968, early GT and touring cars); B, historic GT and prototypes (IMSA GTP, Group C, Can-Am, GTS, GTO and GTU); C, modern GT (GT1, GT2, GT3, GT4 and TCR); and D, modern sports cars and prototypes (LMP1, LMP2, LMP3, Daytona Prototypes). In those events every car uses the tires legal in its regular HSR group, and formula cars and stock cars are not eligible for the Classic enduros. For official details, see hsrrace.com."
   },
   {
     "id": "supercup", "noWatch": true,

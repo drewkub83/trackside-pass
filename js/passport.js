@@ -164,7 +164,7 @@ function ppFilter(u,rough){ return rough?`<filter id="st${u}f" x="-4%" y="-4%" w
    simplified, as [lon,lat] rings (mainland United States, then southern Canada). */
 const PP_SERIES={
   imsa:{champ:"imsa",ink:"#22272E",acc:"#C98400",top:"IMSA",bot:"GRAND TOUR"},
-  sportscar:{kind:"gtpcar",band:true,ink:"#22272E",acc:"#C98400",top:"SPORTS CAR FAN",bot:"IMSA WEEKEND",size:9.2,space:2.2},
+  sportscar:{kind:"flags",band:true,ink:"#22272E",acc:"#C98400",top:"SPORTS CAR FAN",bot:"IMSA WEEKEND",size:9.2,space:2.2},
   openwheel:{kind:"ofcar",band:true,bandInk:"#17402F",ink:"#17402F",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
   gtwca:{kind:"outlines",ids:["road-america","cota","sonoma","barber","watkins-glen"],any:true,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD AMERICA",bot:"GT FAN",size:8.8,space:1.6},
   nascar:{kind:"outlines",ids:["daytona-oval","talladega","bristol","martinsville"],any:true,band:true,bandInk:"#6E1822",ink:"#5A1119",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},

@@ -1252,8 +1252,9 @@ function recapPicksHtml(it){   /* your three picks per class, each on its own ro
     const label=g.label?` · ${esc(g.label)}`:"";
     return `<div class="rcpPicks"><b>Your picks${label}: ${sc.pts} point${sc.pts===1?"":"s"}</b>${g.classes.filter(c=>(picksOf(g)[c.h]||[]).length).map(c=>{
       const pk=picksOf(g)[c.h]||[], gain=sc.per[c.h+"#"]||[], per=sc.per[c.h]||[];
-      const rows=pk.map((n,i)=>{ const car=c.cars.find(r=>r[0]===n), got=gain[i]||0, open=per[i]==="open";
-        return `<div class="rcpPk ${got>0?"won":"none"}"><span class="rcpSlot">${nth[i]}</span><span class="rcpCar"><b>${car?esc(names(car)):"#"+esc(n)}</b><i>#${esc(n)}${car?" · "+esc(car[1]):""}</i></span><span class="rcpRes">${got>0?`<b>+${got}</b> pts`:open?"not settled":"0 pts"}</span></div>`; }).join("");
+      const rows=pk.map((n,i)=>{ const car=c.cars.find(r=>r[0]===n), got=gain[i]||0, open=per[i]==="open", f=recapFinish(sc,c.h,n),
+          fin=f?(typeof f.pos==="number"?`finished ${f.pos}${["th","st","nd","rd"][(f.pos%100>10&&f.pos%100<14)?0:Math.min(f.pos%10,4)%4]}`:f.pos==="podium"?"finished on the podium":f.of?`outside the top ${f.of}`:""):"";
+        return `<div class="rcpPk ${got>0?"won":"none"}"><span class="rcpSlot">${nth[i]}</span><span class="rcpCar"><b>${car?esc(names(car)):"#"+esc(n)}</b><i>#${esc(n)}${car?" · "+esc(car[1]):""}${fin?` · <u>${fin}</u>`:""}</i></span><span class="rcpRes">${got>0?`<b>+${got}</b> pts`:open?"not settled":"0 pts"}</span></div>`; }).join("");
       return `<div class="rcpCls">${g.classes.length>1?`<i class="rcpClsH">${esc(c.h)}</i>`:""}${rows}</div>`; }).join("")}</div>`; }).join("");
 }
 function recapSection(it){

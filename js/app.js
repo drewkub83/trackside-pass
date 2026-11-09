@@ -611,7 +611,10 @@ function addStand(){
   renderFood(); renderMap(); renderSpot(); toast("Stand added. Others at the track would see it too.");
 }
 function removeStand(i){ const list=userStands(); list.splice(i,1); try{ localStorage.setItem(K.stands+cur.id, JSON.stringify(list)); }catch(e){} renderFood(); renderMap(); }
-function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
+/* stays long enough to read: 2.2 s for a short note, more for a sentence (about 60 ms a character, up to 10 s); a long one can be tapped away; a new one replaces the old timer */
+function toast(msg,ms){ const t=document.getElementById("toast"); msg=String(msg); t.textContent=msg; t.classList.add("show");
+  const long=msg.length>50; t.style.pointerEvents=long?"auto":""; t.onclick=long?()=>{ clearTimeout(window._toastT); t.classList.remove("show"); t.style.pointerEvents=""; }:null;
+  clearTimeout(window._toastT); window._toastT=setTimeout(()=>{ t.classList.remove("show"); t.style.pointerEvents=""; },ms||Math.min(10000,Math.max(2200,1800+msg.length*60))); }
 
 /* events */
 /* cars and drivers to watch for the weekend a track is on (data/watch.js, refreshed after the last race before each event) */

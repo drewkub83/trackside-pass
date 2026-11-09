@@ -1055,7 +1055,7 @@ html.wide #detail{position:relative;--hubw:var(--leftw)}
 html.wide #detail #pMap{display:block!important;position:absolute;inset:0;height:auto;min-height:0;padding:0;overflow:hidden}
 html.wide #detail #hubView{display:flex!important;position:absolute;left:0;top:0;bottom:0;width:var(--hubw);z-index:5;background:var(--paper);border-right:1px solid var(--line);overflow-y:auto;padding-bottom:40px}
 html.wide #detail #pMap .map-wrap{left:var(--hubw)}
-html.wide #detail:not([data-wr="map"]) #pMap>.map-wrap,html.wide #detail:not([data-wr="map"]) #pMap>.fl,html.wide #detail:not([data-wr="map"]) #pMap>.sheet,html.wide #detail:not([data-wr="map"]) #pMap>.sheetBackdrop{display:none!important}
+html.wide #detail:not([data-wr="map"]) #pMap>.map-wrap,html.wide #detail:not([data-wr="map"]) #pMap>.fl{display:none!important}
 html.wide #detail[data-wr="map"] #pMap>.map-wrap{display:block!important}
 html.wide #detail[data-wr="map"] #pMap>.fl{display:flex!important}
 html.wide #detail .fl-tl{display:none!important}
@@ -1423,3 +1423,12 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 .rcpStory{margin:10px 0 2px}.rcpStory h5{margin:0 0 3px;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-2);font-weight:600}.rcpStory p{margin:3px 0;font-size:13.5px;line-height:1.35;color:var(--ink-2)}.rcpStory b{color:var(--ink);font-weight:600}
 
 .fakeSel{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--glass);color:var(--ink);font:inherit}
+
+/* Wide screens (unfolded foldable, tablet): everything that is a pop-up sheet or dialog on a phone opens in the RIGHT pane, whatever the right pane is showing
+   (Pick your podium, weather, standings, results, the live stream, the recap, session info). The hub stays on the left. On the map the sheets keep their bottom-sheet look. */
+html.wide #detail:not([data-wr="map"]) #pMap>.sheet:not([hidden]){display:block!important;left:var(--hubw);right:0;top:0;bottom:0;width:auto;max-height:none;height:auto;border-radius:0;border-width:0 0 0 1px;z-index:9;padding:22px 22px 110px;overflow-y:auto;overflow-x:hidden;background:var(--paper);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+html.wide #detail:not([data-wr="map"]) #pMap>.sheet .handle{display:none}
+html.wide #detail:not([data-wr="map"]) #pMap>.sheetBackdrop:not([hidden]){display:block!important;left:var(--hubw);z-index:8;background:rgba(0,0,0,.16)}
+html.wide #detail .sheet .sclose{position:sticky;float:right;top:0;margin:-6px -6px 6px 8px;z-index:2}
+html.wide #infoModal{left:calc((100vw - var(--appw))/2 + var(--leftw));right:calc((100vw - var(--appw))/2);align-items:center;padding:20px}
+html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border-bottom:1px solid var(--glass-edge);border-radius:24px}

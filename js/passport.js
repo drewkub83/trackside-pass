@@ -170,7 +170,7 @@ const PP_SERIES={
   nascar:{kind:"car",art:"nascar",dark:true,band:true,bandInk:"#6E1822",ink:"#2B1517",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},
   endcup:{kind:"outlines",ids:["daytona","sebring","watkins-glen","road-america","road-atlanta"],any:true,band:true,ink:"#1E2238",bandInk:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
   triple:{kind:"outlines",ids:["daytona","sebring","road-atlanta"],band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
-  hopper:{kind:"tracks",band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#C28A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
+  hopper:{kind:"hopper",mode:"orig",band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#C28A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
   tripper:{kind:"tracks",route:"visited",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
   grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
   wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},
@@ -429,6 +429,13 @@ function ppRegionProj(region){
   const w=ee(180,0)[0]*2, k=118/w; return ppRegFit[region]=(lon,lat)=>{ const p=ee(lon,lat); return [80+p[0]*k,72-(p[1]-0.07)*k]; };
 }
 const ppInRegion=(t,region)=>{ const la=(t.geo.n+t.geo.s)/2, lo=(t.geo.w+t.geo.e)/2; return region==="europe"?(la>35.5&&la<61&&lo>-11&&lo<31):true; };
+/* the grasshopper for the Track Hopper stamp (js/hopper.js): its own colours, or recoloured into the stamp's ink */
+function ppHopArt(art,mode,ink,skin,w,cx,ground){
+  const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), h=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16)), pale=ppMix(ink,skin,.88);
+  const col=c=>{ if(mode!=="ink") return c; const [r,g,b]=h(c), L=(.299*r+.587*g+.114*b)/255; return ppMix(ink,pale,Math.min(1,Math.max(0,(L-.15)/.7))); };
+  return `<ellipse cx="${n(cx+w*.04)}" cy="${n(ground-w*.02)}" rx="${n(w*.34)}" ry="${n(w*.03)}" fill="${ink}" opacity=".15"/><g transform="translate(${n(cx-w/2)} ${n(ground-vh*s)}) scale(${s.toFixed(4)}) translate(${-vx} ${-vy})" stroke-linejoin="round">`
+    +art.p.map(q=>{ const c=col(q[1]); return `<path d="${q[0]}" fill="${c}" stroke="${c}" stroke-width=".4"/>`; }).join("")+`</g>`;
+}
 function seriesStamp(d,o){
   o=o||{}; const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
   const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=sp.region?ppRegionProj(sp.region):ppMapProj();
@@ -447,6 +454,7 @@ function seriesStamp(d,o){
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
     :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
+    :sp.kind==="hopper"?(locked?`<g opacity=".45">${ppHopArt(PP_HOPPER,"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(PP_HOPPER,sp.mode,ink,"#F3EAD2",70,80,102))
     :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(PP_CARS[sp.art](),"#8E8670","#8E8670","#F3EAD2",112,80,100)}</g>`:(sp.dark?`<circle cx="80" cy="80" r="56.5" fill="${ink}"/>`:"")+ppCarArt(PP_CARS[sp.art](),ink,acc,"#F3EAD2",sp.art==="nascar"?118:112,80,sp.dark?92:100,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0,sp.dark))
     :sp.kind==="star"?ppStarArt(ink,acc,"#F3EAD2")
     :sp.kind==="clocks"?ppClocksArt(ink,acc,"#F3EAD2",st?st.zoneSet:null)

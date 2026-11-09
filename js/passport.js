@@ -18,11 +18,12 @@ function ppStats(p){
     evs.forEach(ev=>{ const e=t.events.find(x=>x.d===ev), n=e?(e.t||1):1; if(n>=2&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=n) full=true; }); });
   /* which series raced on the days you checked in, and how far you have travelled */
   const series=new Set(); let bill=false, marathon=false, endu=false; const endLong=new Set(); const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
-  Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||""));
+  const cont=new Set(); let eu=0; const contOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"EU":/^Asia\//.test(z)?"AS":/^Australia\//.test(z)?"OC":/Sao_Paulo|Argentina/.test(z)?"SA":/^America\//.test(z)?"NA":"XX"; };
+  Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||"")); cont.add(contOf(t)); if(contOf(t)==="EU") eu++;
     by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); });
       ids.forEach(i=>series.add(i)); if(ids.size>=2) bill=true; });
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=e.t) marathon=true; }); });
-  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,endu,endLong,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
+  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
 const PP_GLOBAL=[
   {id:"first",name:"First Stamp",desc:"Check in at your first race weekend.",icon:"star",tier:"x",sty:"first",test:s=>s.tracks>=1},
@@ -42,6 +43,17 @@ const PP_GLOBAL=[
   {id:"grandprix",name:"Grand Prix",desc:"Check in at a Formula 1 weekend.",icon:"flag",tier:"s",sty:"f1",test:s=>s.series.has("f1")},
   {id:"double",name:"Double Bill",desc:"Check in on a day when two series raced at the same track.",icon:"two",tier:"s",sty:"double",test:s=>s.bill},
   {id:"trifecta",name:"Series Trifecta",desc:"Check in at IMSA, IndyCar and GT World weekends.",icon:"three",tier:"g",sty:"trifecta",test:s=>["imsa","indycar","gtwca"].every(i=>s.series.has(i))},
+  {id:"wec",name:"Endurance World",desc:"Check in at a FIA World Endurance Championship weekend.",icon:"globe",tier:"s",sty:"wec",test:s=>s.series.has("wec")},
+  {id:"motogp",name:"MotoGP Fan",desc:"Check in at a MotoGP weekend.",icon:"flag",tier:"s",sty:"motogp",test:s=>s.series.has("motogp")},
+  {id:"gteu",name:"GT Europe",desc:"Check in at a GT World Challenge Europe weekend.",icon:"gt",tier:"s",sty:"gtwce",test:s=>s.series.has("gtwce")},
+  {id:"academy",name:"Academy Weekend",desc:"Check in at an F1 Academy weekend.",icon:"star",tier:"x",sty:"f1academy",test:s=>s.series.has("f1academy")},
+  {id:"carrera",name:"Carrera Cup",desc:"Check in at a Porsche Carrera Cup North America weekend.",icon:"car",tier:"x",sty:"carrera",test:s=>s.series.has("carreracup")},
+  {id:"legends",name:"Legends",desc:"Check in at a Legends of Le Mans weekend.",icon:"moon",tier:"x",sty:"legends",test:s=>s.series.has("legendsle")},
+  /* abroad */
+  {id:"euro",name:"European Tour",desc:"Visit 3 different tracks in Europe.",icon:"globe",tier:"s",sty:"euro",test:s=>s.eu>=3},
+  {id:"atlantic",name:"Atlantic Crosser",desc:"Check in at a track in North America and at a track in Europe.",icon:"globe",tier:"s",sty:"atlantic",test:s=>s.cont.has("NA")&&s.cont.has("EU")},
+  {id:"worldtour",name:"World Tour",desc:"Check in at tracks on three different continents.",icon:"globe",tier:"g",sty:"world",test:s=>s.cont.size>=3},
+  {id:"cathedrals",name:"Cathedrals of Speed",desc:"Visit four European icons: Spa-Francorchamps, Monza, Silverstone and Le Mans.",icon:"cup",tier:"g",sty:"cathedrals",test:s=>["spa-francorchamps","monza","silverstone","le-mans"].every(i=>s.visits[i]>0)},
   /* places */
   {id:"zones",name:"Time Zone Traveler",desc:"Check in at tracks in three different time zones.",icon:"globe2",tier:"s",sty:"zones",test:s=>s.zones>=3},
   {id:"border",name:"Border Crosser",desc:"Visit Canadian Tire Motorsport Park in Canada.",icon:"leaf",tier:"s",sty:"border",test:s=>s.visits["canadian-tire-motorsport-park"]>0},
@@ -154,10 +166,10 @@ const PP_SERIES={
   imsa:{champ:"imsa",ink:"#22272E",acc:"#C98400",top:"IMSA",bot:"GRAND TOUR"},
   sportscar:{kind:"flags",band:true,ink:"#22272E",acc:"#C98400",top:"SPORTS CAR FAN",bot:"IMSA WEEKEND",size:9.2,space:2.2},
   openwheel:{kind:"ofcar",band:true,bandInk:"#17402F",ink:"#17402F",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
-  gtwca:{champ:"gtwca",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD",bot:"GT FAN",size:10,space:2},
-  nascar:{match:/NASCAR/i,ink:"#6E1822",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR",size:11.5,space:3},
-  endcup:{endu:6,route:true,band:true,ink:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
-  triple:{endu:10,route:true,band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
+  gtwca:{kind:"outlines",ids:["road-america","cota","sonoma","barber","watkins-glen"],any:true,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD AMERICA",bot:"GT FAN",size:8.8,space:1.6},
+  nascar:{kind:"outlines",ids:["daytona-oval","talladega","bristol","martinsville"],any:true,band:true,bandInk:"#6E1822",ink:"#5A1119",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},
+  endcup:{kind:"outlines",ids:["daytona","sebring","watkins-glen","road-america","road-atlanta"],any:true,band:true,ink:"#1E2238",bandInk:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
+  triple:{kind:"outlines",ids:["daytona","sebring","road-atlanta"],band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
   hopper:{kind:"tracks",band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#C28A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
   tripper:{kind:"tracks",route:"visited",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
   grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
@@ -178,7 +190,17 @@ const PP_SERIES={
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
   double:{kind:"venn",venn:"duo",band:true,bandInk:"#7A2E3A",ink:"#561F29",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
   trifecta:{kind:"venn",venn:"trio",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"IMSA · INDYCAR · GT WORLD",size:8.6,space:1.7},
-  f1:{match:/Formula 1/i,ink:"#1D1D22",acc:"#D0202A",top:"FORMULA 1",bot:"GRAND PRIX",size:9.5,space:1.6}
+  wec:{champ:"wec",region:"world",ink:"#10243E",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
+  motogp:{champ:"motogp",region:"world",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
+  gtwce:{champ:"gtwce",region:"europe",band:true,bandInk:"#14264F",ink:"#14264F",acc:"#C28A00",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
+  f1academy:{kind:"outlines",ids:["cota","las-vegas"],any:true,band:true,bandInk:"#A8245A",ink:"#7E1A43",acc:"#C28A00",top:"F1 ACADEMY",bot:"ACADEMY WEEKEND",size:9.2,space:2.2},
+  carrera:{kind:"outlines",ids:["daytona","sebring","road-america","road-atlanta","cota"],any:true,band:true,bandInk:"#5C1A1A",ink:"#4A1414",acc:"#C28A00",top:"CARRERA CUP",bot:"PORSCHE WEEKEND",size:9.2,space:2.2},
+  legends:{kind:"outlines",ids:["le-mans","monza"],any:true,band:true,bandInk:"#1F3A5F",ink:"#162B47",acc:"#C28A00",top:"LEGENDS OF LE MANS",bot:"CLASSIC WEEKEND",size:8.4,space:1.5},
+  euro:{region:"europe",all:true,band:true,bandInk:"#1F4E79",ink:"#173B5C",acc:"#E0A100",top:"EUROPEAN TOUR",bot:"3 EUROPEAN TRACKS",size:9.2,space:2.2},
+  atlantic:{region:"world",all:true,route:"visited",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ATLANTIC CROSSER",bot:"AMERICA · EUROPE",size:8.8,space:1.8},
+  world:{region:"world",all:true,route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#B23A2A",top:"WORLD TOUR",bot:"3 CONTINENTS",size:9.2,space:2.4},
+  cathedrals:{kind:"outlines",ids:["spa-francorchamps","monza","silverstone","le-mans"],band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"CATHEDRALS OF SPEED",bot:"4 EUROPEAN ICONS",size:9.2,space:2.2},
+  f1:{match:/Formula 1/i,region:"world",ink:"#1D1D22",acc:"#D0202A",top:"FORMULA 1",bot:"GRAND PRIX",size:9.5,space:1.6}
 };
 const PP_LAND=[[[-122.8,49],[-95.2,49],[-95.2,49.4],[-94.8,49.4],[-94.6,48.8],[-94.3,48.7],[-92.6,48.5],[-91.6,48.1],[-90.8,48.3],[-89.3,48.0],[-88.4,48.3],[-84.9,46.9],[-84.8,46.6],[-84.5,46.5],[-84.6,46.4],[-84.1,46.5],[-83.9,46.1],[-83.5,46.0],[-83.6,45.8],[-82.6,45.3],[-82.1,43.6],[-83.1,42.1],[-83.0,41.8],[-82.7,41.7],[-78.9,42.9],[-79.2,43.5],[-78.7,43.6],[-76.8,43.6],[-76.5,44.0],[-74.9,45.0],[-71.5,45.0],[-71.4,45.3],[-70.7,45.5],[-70.0,46.7],[-69.2,47.4],[-68.9,47.2],[-68.2,47.4],[-67.8,47.1],[-67.8,45.7],[-67.0,44.8],[-70.1,43.7],[-70.8,42.9],[-70.8,42.3],[-70.5,41.8],[-70.1,41.8],[-70.2,42.1],[-69.9,41.9],[-70.0,41.6],[-72.9,41.2],[-73.7,40.9],[-72.2,41.1],[-71.9,40.9],[-73.3,40.6],[-74.0,40.6],[-74.0,40.8],[-74.3,40.5],[-74.0,40.4],[-74.2,39.7],[-74.9,38.9],[-75.0,39.2],[-75.5,39.5],[-75.3,39.0],[-75.1,38.8],[-75.1,38.4],[-75.9,37.2],[-75.7,37.9],[-76.2,38.3],[-76.3,39.1],[-76.5,38.7],[-76.3,38.1],[-77.0,38.2],[-76.3,37.9],[-76.3,37.0],[-76.0,36.9],[-75.7,35.6],[-76.4,34.8],[-77.4,34.5],[-78.1,33.9],[-78.6,33.9],[-79.1,33.5],[-79.2,33.2],[-80.9,32.0],[-81.3,31.4],[-81.5,30.7],[-81.3,30.0],[-80.5,28.5],[-80.5,28.0],[-80.1,26.9],[-80.1,25.8],[-80.4,25.2],[-80.7,25.1],[-81.2,25.2],[-81.3,25.6],[-81.7,25.9],[-82.9,27.9],[-82.7,28.6],[-82.9,29.1],[-83.7,29.9],[-84.1,30.1],[-85.1,29.6],[-85.8,30.2],[-86.4,30.4],[-87.5,30.3],[-88.4,30.4],[-89.6,30.2],[-89.4,29.9],[-89.4,29.5],[-89.2,29.3],[-89.4,29.2],[-89.8,29.3],[-90.2,29.1],[-90.9,29.1],[-91.6,29.7],[-92.5,29.6],[-93.2,29.8],[-94.7,29.5],[-95.6,28.7],[-96.6,28.3],[-97.1,27.8],[-97.4,27.4],[-97.4,26.7],[-97.1,25.9],[-97.5,25.8],[-99.0,26.4],[-99.5,27.5],[-100.1,28.1],[-101.0,29.4],[-101.7,29.8],[-102.5,29.8],[-103.1,29.0],[-103.9,29.3],[-104.5,29.6],[-105.0,30.6],[-106.5,31.8],[-108.2,31.8],[-108.2,31.3],[-111.0,31.3],[-114.8,32.5],[-114.7,32.7],[-117.1,32.5],[-117.3,33.0],[-117.9,33.6],[-118.4,33.7],[-118.5,34.0],[-119.1,34.1],[-119.4,34.3],[-120.4,34.4],[-120.6,34.6],[-120.7,35.2],[-121.7,36.2],[-122.5,37.6],[-122.5,37.8],[-123.7,39.0],[-123.9,39.8],[-124.4,40.3],[-124.2,41.1],[-124.2,42.0],[-124.5,42.8],[-124.1,43.7],[-123.9,45.5],[-124.1,46.9],[-124.7,48.2],[-124.6,48.4],[-123.1,48.0],[-122.6,47.1],[-122.3,47.4]],[[-122.8,49],[-125.6,50.4],[-127.4,50.8],[-128.0,51.7],[-127.9,52],[-81.2,52],[-79.9,51.2],[-79.1,51.5],[-78.9,52],[-56.0,52],[-57.1,51.4],[-58.8,51.1],[-60.0,50.2],[-61.7,50.1],[-63.9,50.3],[-66.4,50.2],[-67.2,49.5],[-68.5,49.1],[-71.1,46.8],[-70.3,47.0],[-68.7,48.3],[-66.6,49.1],[-65.1,49.2],[-64.2,48.7],[-65.1,48.1],[-64.5,46.2],[-63.2,45.7],[-61.5,45.9],[-60.5,47.0],[-60.4,46.3],[-59.8,45.9],[-61.0,45.3],[-64.2,44.3],[-65.4,43.5],[-66.1,43.6],[-66.2,44.5],[-64.4,45.3],[-67.1,45.1],[-67.8,45.7],[-67.8,47.1],[-68.2,47.4],[-68.9,47.2],[-69.2,47.4],[-70.0,46.7],[-70.7,45.5],[-71.4,45.3],[-71.5,45.0],[-74.9,45.0],[-76.5,44.0],[-76.8,43.6],[-78.7,43.6],[-79.2,43.5],[-78.9,42.9],[-82.7,41.7],[-83.0,41.8],[-83.1,42.1],[-82.1,43.6],[-82.6,45.3],[-83.6,45.8],[-83.5,46.0],[-83.9,46.1],[-84.1,46.5],[-84.6,46.4],[-84.5,46.5],[-84.8,46.6],[-84.9,46.9],[-88.4,48.3],[-89.3,48.0],[-90.8,48.3],[-91.6,48.1],[-92.6,48.5],[-94.3,48.7],[-94.6,48.8],[-94.8,49.4],[-95.2,49.4],[-95.2,49]]];
 /* Albers equal-area conic, the usual projection for maps of the United States; returns screen-oriented x,y */
@@ -196,7 +218,7 @@ function ppMapProj(){      /* fits the lower 48 into a box 98 x 57, centred on (
 function ppVenues(sp){
   const c=sp.champ&&champ(sp.champ), hit=e=>c?inChamp(c,e):sp.endu?ppIsEndu(e,sp.endu):sp.match&&(sp.match.test(e.s||"")||(e.support||[]).some(x=>sp.match.test(x))), out=[];
   const inUS=t=>{ const la=(t.geo.n+t.geo.s)/2, lo=(t.geo.w+t.geo.e)/2; return la>24&&la<50&&lo>-126&&lo<-66; };
-  (sp.all||sp.kind==="tracks"?TRACKS.filter(inUS):TRACKS.filter(t=>t.events.some(hit))).forEach(t=>{ const lat=(t.geo.n+t.geo.s)/2, lon=(t.geo.w+t.geo.e)/2, key=(t.events.filter(hit).map(e=>e.d.slice(5)).sort()[0])||"", g=out.find(v=>Math.abs(v.lat-lat)<.05&&Math.abs(v.lon-lon)<.05); if(g) g.ids.push(t.id); else out.push({ids:[t.id],lat,lon,key}); });
+  (sp.all||sp.kind==="tracks"?TRACKS.filter(sp.region?(t=>ppInRegion(t,sp.region)):inUS):TRACKS.filter(t=>t.events.some(hit)&&(!sp.region||ppInRegion(t,sp.region)))).forEach(t=>{ const lat=(t.geo.n+t.geo.s)/2, lon=(t.geo.w+t.geo.e)/2, key=(t.events.filter(hit).map(e=>e.d.slice(5)).sort()[0])||"", g=out.find(v=>Math.abs(v.lat-lat)<.05&&Math.abs(v.lon-lon)<.05); if(g) g.ids.push(t.id); else out.push({ids:[t.id],lat,lon,key}); });
   if(sp.route) out.sort((a,b)=>a.key.localeCompare(b.key));      /* calendar order, for the dotted route between venues */
   return out;
 }
@@ -366,9 +388,19 @@ function ppVennArt(ink,acc,kind){
 }
 /* track ids in the order you first checked in at them (for the Road Tripper route) */
 function ppVisitOrder(){ const seen=[]; ppLoad().stamps.slice().sort((a,b)=>(a.at||0)-(b.at||0)).forEach(x=>{ if(!seen.includes(x.t)) seen.push(x.t); }); return seen; }
+/* world / Europe maps for the series that race abroad (coastlines: js/worldland.js, Natural Earth). Returns a projection into the stamp's 160 box. */
+let ppRegFit={};
+function ppRegionProj(region){
+  if(ppRegFit[region]) return ppRegFit[region];
+  if(region==="europe"){ const k=3.0, c=Math.cos(48*Math.PI/180); return ppRegFit[region]=(lon,lat)=>[80+(lon-10)*c*k,61-(lat-48.25)*k]; }
+  const A1=1.340264,A2=-0.081106,A3=0.000893,A4=0.003796, ee=(lon,lat)=>{ const th=Math.asin(Math.sqrt(3)/2*Math.sin(lat*Math.PI/180)), t2=th*th, t6=t2*t2*t2;
+    return [2*Math.sqrt(3)*(lon*Math.PI/180)*Math.cos(th)/(3*(9*A4*t6*t2+7*A3*t6+3*A2*t2+A1)), th*(A1+A2*t2+A3*t6+A4*t6*t2)]; };
+  const w=ee(180,0)[0]*2, k=118/w; return ppRegFit[region]=(lon,lat)=>{ const p=ee(lon,lat); return [80+p[0]*k,72-(p[1]-0.07)*k]; };
+}
+const ppInRegion=(t,region)=>{ const la=(t.geo.n+t.geo.s)/2, lo=(t.geo.w+t.geo.e)/2; return region==="europe"?(la>35.5&&la<61&&lo>-11&&lo<31):true; };
 function seriesStamp(d,o){
   o=o||{}; const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
-  const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=ppMapProj();
+  const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=sp.region?ppRegionProj(sp.region):ppMapProj();
   const st=o.stats||(locked?null:ppStats(ppLoad())), visits=o.visits||(st?st.visits:{}), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
   let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }
   const venues=sp.kind&&sp.kind!=="tracks"?[]:ppVenues(sp), at=v=>proj(v.lon,v.lat).map(n=>n.toFixed(1)).join(" ");
@@ -377,9 +409,9 @@ function seriesStamp(d,o){
   const dots=venues.map(v=>{ const [x,y]=proj(v.lon,v.lat).map(n=>n.toFixed(1)), on=v.ids.some(i=>visits[i]>0);
     return on?`<circle cx="${x}" cy="${y}" r="4" fill="#F3EAD2" stroke="${acc}" stroke-width="1.1"/><circle cx="${x}" cy="${y}" r="2.2" fill="${acc}" stroke="${ink}" stroke-width=".8"/>`
       :`<circle cx="${x}" cy="${y}" r="1.5" fill="#F3EAD2" stroke="${ink}" stroke-width=".6" opacity=".9"/>`; }).join("");
-  const map=`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
+  const map=sp.region?`<g clip-path="url(#st${u}c)"><path d="${PP_WORLD.map(r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z").join("")}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".5" stroke-linejoin="round"/></g>${route}${dots}`:`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
   const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
-  const vis4=id=>visits[id]>0, nO=(sp.ids||[]).length, cells=nO===1?[[61,46]]:nO===2?[[40,48],[82,48]]:nO===3?[[22,50],[61,50],[100,50]]:[[42,36],[80,36],[42,69],[80,69]], cw=nO>=4?38:38, ch=nO>=4?31:34;
+  const vis4=id=>visits[id]>0, nO=(sp.ids||[]).length, cells=nO===1?[[61,46]]:nO===2?[[40,48],[82,48]]:nO===3?[[22,50],[61,50],[100,50]]:nO===5?[[43,36],[83,36],[24,68],[61,68],[98,68]]:[[42,36],[80,36],[42,69],[80,69]], cw=nO===5?36:38, ch=nO===5?28:nO>=4?31:34;
   const any=sp.any;      /* any: lit as soon as one of the circuits is visited */
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
@@ -451,13 +483,14 @@ function legendStamp(d,o){
   const rough=!locked&&o.rough!==false, filt=ppFilter(u,rough);
   const frame=locked?`<path d="${edge}" fill="none" stroke="${ink}" stroke-width="2.2" stroke-dasharray="5 4"/><circle cx="80" cy="80" r="55" fill="none" stroke="${ink}" stroke-width="1.6" stroke-dasharray="3 4"/>`
     :`<path d="${edge}" fill="none" stroke="${ink}" stroke-width="2.6" stroke-linejoin="round"/><circle cx="80" cy="80" r="68.5" fill="none" stroke="${ink}" stroke-width="1.6"/><path d="${band}" fill="${ink}"/><circle cx="80" cy="80" r="55.5" fill="none" stroke="${ink}" stroke-width="1.6"/><circle cx="80" cy="80" r="52" fill="none" stroke="${ink}" stroke-width=".8"/>`;
-  /* every track in the app as a small outline: the ones you have visited are inked, the rest faint */
-  const st=o.stats||(locked?null:ppStats(ppLoad())), vs=o.visits||(st?st.visits:{}), cols=6, rows=Math.ceil(n/cols), cw=11.6, chh=10.2, gx=80-cols*cw/2, gy=57;
-  const trophy=TRACKS.map((t,i)=>{ const c=i%cols, r=Math.floor(i/cols), last=r===rows-1, inLast=n-(rows-1)*cols, off=last?(cols-inLast)*cw/2:0, on=vs[t.id]>0;
-    return `<g opacity="${on||locked?1:.26}"><svg x="${(gx+off+c*cw).toFixed(1)}" y="${(gy+r*chh).toFixed(1)}" width="${cw-1.2}" height="${chh-1}" ${ppOutline(t,9.4,{c:ink,w:on?1.6:1.2})}</svg></g>`; }).join("");
-  const text=locked?"":`<text font-size="10.5" font-weight="700" letter-spacing="1.6" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">FULL GRID</textPath></text><text font-size="8.4" font-weight="700" letter-spacing="1.1" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">ALL ${n} TRACKS</textPath></text>`;
+  /* a progress ring with one tick per track in the app (inked as you collect them) and the count in the middle */
+  const st=o.stats||(locked?null:ppStats(ppLoad())), vs=o.visits||(st?st.visits:{}), got=locked?0:TRACKS.filter(t=>vs[t.id]>0).length;
+  let ticks=""; for(let i=0;i<n;i++){ const a=-Math.PI/2+i*2*Math.PI/n, on=i<got, r0=on?43:44.5, r1=51;
+    ticks+=`<path d="M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}" stroke="${ink}" stroke-width="${on?1.7:1.1}" opacity="${on?1:.3}" fill="none" stroke-linecap="round"/>`; }
+  const trophy=ticks+`<text x="80" y="88" font-size="${n>99?24:28}" font-weight="800" text-anchor="middle" fill="${ink}" ${locked?'opacity=".5"':""}>${locked?n:got}</text><text x="80" y="99" font-size="6.6" font-weight="800" letter-spacing="1.2" text-anchor="middle" fill="${ink}" ${locked?'opacity=".6"':""}>${locked?"TRACKS":"OF "+n+" TRACKS"}</text>`;
+  const text=locked?"":`<text font-size="8.4" font-weight="800" letter-spacing="2" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">FULL GRID</textPath></text>`;
   const date="";
-  return `<svg class="stamp legend${locked?" locked":""}" viewBox="0 0 160 160" aria-hidden="true"><defs><path id="st${u}t" d="M 41,80 A 39,39 0 0 1 119,80"/><path id="st${u}b" d="M 34,80 A 46,46 0 0 0 126,80"/>${filt}</defs>
+  return `<svg class="stamp legend${locked?" locked":""}" viewBox="0 0 160 160" aria-hidden="true"><defs><path id="st${u}t" d="M 47,80 A 33,33 0 0 1 113,80"/>${filt}</defs>
     <g${rough?` filter="url(#st${u}f)"`:""} opacity="${locked?1:.95}">${frame}${text}${trophy}${date}</g></svg>`;
 }
 /* ---------------- the unlock animation ---------------- */

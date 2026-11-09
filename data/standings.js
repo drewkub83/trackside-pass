@@ -363,42 +363,42 @@ const STANDINGS = [
       ] }
     ],
     note:"Champions only, from GAZOO Racing's own release \"GAZOO Racing Crowns 2026 GR Cup Series Champions\" (grcupseries.com, Oct 11, 2026). Points totals were not published there, so none are shown." },
-  { s:"nascar", asOf:"Current after the Xfinity 500 at Martinsville (Nov 1, 2026); Homestead-Miami (Nov 8) is the finale.",
+  { s:"nascar", asOf:"Final 2026 standings after the Cup Series Championship Race at Homestead-Miami (Nov 8, 2026): the season is complete. Kyle Larson is champion.",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Kyle Larson", pts:2469, gap:"Leads with one race left; could not clinch at Martinsville (finished 9th) but has a big cushion into Homestead." },
-        { pos:2, who:"Christopher Bell", pts:2402, gap:"-67" },
-        { pos:3, who:"Denny Hamlin", pts:2399, gap:"-70." },
-        { pos:4, who:"Chase Briscoe", pts:2385, gap:"-84" },
-        { pos:5, who:"Joey Logano", pts:2366, gap:"-103" },
-        { pos:6, who:"Tyler Reddick", pts:2344, gap:"-125" },
-        { pos:7, who:"Ryan Blaney", pts:2336, gap:"-133" },
-        { pos:8, who:"Ty Gibbs", pts:2309, gap:"-160" },
-        { pos:9, who:"William Byron", pts:2303, gap:"-166; won the Martinsville race, his first win of 2026." },
-        { pos:10, who:"Chase Elliott", pts:2268, gap:"-201; finished 2nd at Martinsville." }
+        { pos:1, who:"Kyle Larson", pts:2501, gap:"2026 Cup Series champion -- his third title, and back-to-back after 2025 (first repeat champion since Jimmie Johnson in 2010). Finished 12th at Homestead; the title was effectively settled by a 4th-place Stage 1 finish." },
+        { pos:2, who:"Christopher Bell", pts:2452, gap:"-49" },
+        { pos:3, who:"Denny Hamlin", pts:2445, gap:"-56" },
+        { pos:4, who:"Ryan Blaney", pts:2407, gap:"-94; won the Homestead-Miami finale, holding off Tyler Reddick." },
+        { pos:5, who:"Tyler Reddick", pts:2397, gap:"-104" },
+        { pos:6, who:"Chase Briscoe", pts:2386, gap:"-115" },
+        { pos:7, who:"Joey Logano", pts:2386, gap:"-115 (tied with Briscoe; tiebreak not published in sources checked)" },
+        { pos:8, who:"William Byron", pts:2344, gap:"-157" },
+        { pos:9, who:"Ty Gibbs", pts:2335, gap:"-166" },
+        { pos:10, who:"Austin Cindric", pts:2306, gap:"-195" }
       ] }
     ],
-    note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table (Nov 1, 2026), cross-checked against the pre-race baseline reported by NASCAR.com and other outlets, via web search (direct fetch was blocked in this environment). The 2026 championship is decided by points, not a four-driver Championship finale -- Larson needs only to out-score his rivals at Homestead-Miami (Nov 8)." },
-  { s:"oreilly", asOf:"Current after the National Debt Relief 250 at Martinsville (Oct 31, 2026); Homestead-Miami (Nov 7) is the finale.",
+    note:"(no automatic reader) Source: Yahoo Sports' and Racing News' post-Homestead final points tables (Nov 8-9, 2026, via web search; direct fetch of nascar.com was blocked in this environment), cross-checked against each other for the leader's total and the Larson-Bell-Hamlin margins. Season complete." },
+  { s:"oreilly", asOf:"Final 2026 standings after the O'Reilly Auto Parts Series Championship Race at Homestead-Miami (Nov 7, 2026): the season is complete. Justin Allgaier is champion.",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Justin Allgaier", pts:2436, gap:"Runner-up to Kvapil at Martinsville, his JR Motorsports teammate." },
-        { pos:2, who:"Jesse Love", pts:2414, gap:"-22" },
-        { pos:3, who:"Corey Day", pts:2413, gap:"-23" },
-        { pos:4, who:"Carson Kvapil", pts:2405, gap:"-31; won at Martinsville, his third win of 2026." },
-        { pos:5, who:"Sheldon Creed", pts:2394, gap:"-42" }
+        { pos:1, who:"Justin Allgaier", pts:2477, gap:"2026 O'Reilly Auto Parts Series champion, his second series title. Finished 7th at Homestead-Miami, in a race won by Brandon Jones." },
+        { pos:2, who:"Jesse Love", pts:2463, gap:"-14" },
+        { pos:3, who:"Carson Kvapil", pts:2449, gap:"-28; finished 2nd in the finale." },
+        { pos:4, who:"Sheldon Creed", pts:2444, gap:"-33" },
+        { pos:5, who:"Corey Day", pts:2416, gap:"-61" }
       ] }
     ],
-    note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table, cross-checked against On3's reporting of the same figures (both Oct 31-Nov 1, 2026, via web search; direct fetch was blocked in this environment). Allgaier, Love, Day, Kvapil and Creed all have a mathematical shot at the title at Homestead-Miami." },
-  { s:"trucks", asOf:"Current after the Black's Tire 200 at Martinsville (Oct 30, 2026); Homestead-Miami (Nov 6) is the finale.",
+    note:"(no automatic reader) Source: NASCAR.com's title recap and Yahoo Sports' final Chase standings (both Nov 7-8, 2026, via web search; direct fetch of nascar.com was blocked in this environment), agreeing on the champion's point total and the gaps to Love, Kvapil, Creed and Day. Season complete." },
+  { s:"trucks", asOf:"Final 2026 standings after the Craftsman Truck Series Championship Race at Homestead-Miami (Nov 6, 2026): the season is complete. Kaden Honeycutt is champion.",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Kaden Honeycutt", pts:2403, gap:"Finished 14th at Martinsville after a messy final restart but still leads." },
-        { pos:2, who:"Layne Riggs", pts:2383, gap:"-20; finished 3rd at Martinsville." },
-        { pos:3, who:"Chandler Smith", pts:2300, gap:"-103; won at Martinsville." },
-        { pos:4, who:"Ty Majeski", pts:2275, gap:"-128." },
-        { pos:5, who:"Christian Eckes", pts:2263, gap:"-140." }
+        { pos:1, who:"Kaden Honeycutt", pts:2471, gap:"2026 Craftsman Truck Series champion, his first series title. Won the Homestead-Miami finale, his fifth win of 2026." },
+        { pos:2, who:"Layne Riggs", pts:2388, gap:"-83; finished 32nd in the finale." },
+        { pos:3, who:"Chandler Smith", pts:2340, gap:"-131" },
+        { pos:4, who:"Ty Majeski", pts:2319, gap:"-152" },
+        { pos:5, who:"Christian Eckes", pts:2308, gap:"-163; finished 2nd in the finale." }
       ] }
     ],
-    note:"(no automatic reader) Source: Yahoo Sports' post-Martinsville points table, cross-checked against Jayski's reporting of the same figures (both Oct 30-31, 2026, via web search; direct fetch was blocked in this environment). Only Honeycutt and Riggs can still win the title at Homestead-Miami." }
+    note:"(no automatic reader) Source: Yahoo Sports' final championship standings table and Speedway Media's title recap (both Nov 6-7, 2026, via web search; direct fetch of nascar.com was blocked in this environment); the two sources agree on the 83-point Honeycutt-Riggs margin, but only Yahoo's table gave the full point totals below -- an older Jayski snapshot with the pre-Homestead totals (2403/2383) turned up in the same searches, so these post-race numbers are from the one source and worth a second check if seen again." }
 ];

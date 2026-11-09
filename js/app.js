@@ -1211,7 +1211,7 @@ function gameSeason(year){
   return {rows,pts:rows.reduce((n,r)=>n+r.sc.pts,0),max:rows.reduce((n,r)=>n+r.sc.max,0),winners:rows.reduce((n,r)=>n+r.winners,0)};
 }
 /* ---- Weekend recap (Nov 2026): one sheet for a whole race weekend, every series you follow that raced anywhere: the top 5 of each class, how
-   your Pick your podium picks scored, and a few storylines from What to watch. A card on the Race Day hub (14 days after a weekend with results)
+   your Pick your podium picks scored, and the championship picture from the standings (What to watch is a preview, so it is not used). A card on the Race Day hub (14 days after a weekend with results)
    and on Home (7 days; the x dismisses it); a notification on Monday morning points to it (scheduleRecapPush). ---- */
 const RECAP_WINDOW=14, RECAP_HOME_DAYS=7;
 const sunOf=d=>{ const x=new Date(d+"T12:00:00Z"); x.setUTCDate(x.getUTCDate()+((7-x.getUTCDay())%7)); return x.toISOString().slice(0,10); };   /* the Sunday that ends the weekend's week */
@@ -1231,22 +1231,40 @@ function recapItems(sun,firstTrack){
   return out;
 }
 function recapTop(g,n){ const list=(g.order&&g.order.length)?g.order.slice(0,n):[g.winner?"Winner: "+g.winner:""].concat(g.podium||[]).filter(Boolean).slice(0,n); return list; }
-function recapStory(it){   /* the newest What to watch entry for this weekend: a few of its lines */
-  if(typeof WATCH==="undefined") return []; const ws=WATCH.filter(w=>w.t===it.t.id&&w.s===it.r.s&&w.d===it.e.d); if(!ws.length) return [];
-  const w=ws.slice().sort((a,b)=>String(a.from||"").localeCompare(String(b.from||"")))[ws.length-1], out=[];
-  (w.groups||[]).forEach(g=>(g.items||[]).forEach(x=>{ if(out.length<3&&x&&x[1]) out.push({who:x[0],why:String(x[1]).length>150?String(x[1]).slice(0,147).replace(/\s+\S*$/,"")+"…":x[1]}); }));
-  return out;
+/* the story of the race itself, from published data only: the winner's line, and the championship picture the standings give afterwards (What to watch is a preview, so it is not used here) */
+function recapStory(it){
+  const std=standingsFor(it.r.s); if(!std||!(std.classes||[]).length) return null;
+  const yr=(it.r.d||"").slice(0,4); if(!(std.asOf||"").includes(yr)) return null;
+  const rows=std.classes.slice(0,2).map(c=>{ const r=c.rows||[]; if(!r.length) return null; const gap=(r[1]&&typeof r[0].pts==="number"&&typeof r[1].pts==="number")?r[0].pts-r[1].pts:null;
+    return {h:c.h,lead:r[0].who,gap,second:r[1]&&r[1].who,pts:r[0].pts}; }).filter(Boolean);
+  return rows.length?{rows,asOf:std.asOf}:null;
+}
+const recapShort=w=>String(w||"").replace(/\s*\([^)]*\)\s*$/,"");
+function recapFinish(g,cls,n){   /* where car #n finished in the class's published order: {pos, of} or null */
+  const grp=g.res.groups.find(x=>x.h.toLowerCase()===cls.toLowerCase()); if(!grp) return null;
+  if(grp.order){ const i=grp.order.findIndex(l=>gameNum(l)===n); return i>=0?{pos:i+1,of:grp.order.length}:{pos:null,of:grp.order.length}; }
+  const w=gameNum(grp.winner); if(w===n) return {pos:1,of:0}; return (grp.podium||[]).map(gameNum).includes(n)?{pos:"podium",of:0}:null;
 }
 function recapPicksHtml(it){
   const games=recapGames(it.t,it.e,it.r.s); if(!games.length) return ""; const nth=["1st","2nd","3rd"], word={hit:"right place",near:"on the podium",miss:"missed",open:"not settled"};
-  return games.map(({g,sc})=>`<div class="rcpPicks"><b>Your picks: ${sc.pts} of ${sc.max}</b>${g.classes.filter(c=>(picksOf(g)[c.h]||[]).length).map(c=>`<div class="rcpCls">${g.classes.length>1?`<i>${esc(c.h)}</i>`:""}${(sc.per[c.h]||[]).map((m,i)=>`<span class="rcp ${m}">${nth[i]}: ${word[m]||m}${m==="hit"||m==="near"?` +${(sc.per[c.h+"#"]||[])[i]||0}`:""}</span>`).join("")}</div>`).join("")}</div>`).join("");
+  return games.map(({g,sc})=>{
+    const label=g.label?` · ${esc(g.label)}`:"";
+    return `<div class="rcpPicks"><b>Your picks${label}: ${sc.pts} of ${sc.max}</b>${g.classes.filter(c=>(picksOf(g)[c.h]||[]).length).map(c=>{
+      const pk=picksOf(g)[c.h]||[], per=sc.per[c.h]||[], gain=sc.per[c.h+"#"]||[], pd=gamePodium(sc.res,c.h);
+      const rows=pk.map((n,i)=>{ const car=c.cars.find(r=>r[0]===n), who=car?`#${esc(n)} ${esc(String(car[2]).split(" / ").map(x=>x.trim().split(" ").slice(-1)[0]).join(" / "))}`:`#${esc(n)}`, m=per[i], f=recapFinish(sc,c.h,n), got=gain[i]||0;
+        const fin=f?(typeof f.pos==="number"?`finished ${nth[f.pos-1]||f.pos+"th"}`:f.pos==="podium"?"finished on the podium":`not in the top ${f.of}`):"";
+        return `<div class="rcpPk ${m}"><span class="rcpSlot">${nth[i]}</span><span class="rcpCar"><b>${who}</b>${fin?`<i>${fin}</i>`:""}</span><span class="rcpRes">${word[m]||m}${got>0?` <b>+${got}</b>`:""}</span></div>`; }).join("");
+      const real=pd&&pd.exact.some(Boolean)?`<div class="rcpReal">Actual podium: ${pd.exact.map((n,i)=>{ if(!n) return ""; const car=c.cars.find(r=>r[0]===n); return `${nth[i]} #${esc(n)}${car?" "+esc(String(car[2]).split(" / ")[0].trim().split(" ").slice(-1)[0]):""}`; }).filter(Boolean).join(" · ")}</div>`:"";
+      return `<div class="rcpCls">${g.classes.length>1?`<i class="rcpClsH">${esc(c.h)}</i>`:""}${rows}${real}</div>`; }).join("")}</div>`; }).join("");
 }
 function recapSection(it){
-  const nm=watchSeriesName(it.r)||it.r.event, story=recapStory(it), sprint=/sprint/i.test(it.r.event||"");
-  return `<div class="rcpGame"><div class="rcpHead"><b>${esc(nm)}${sprint?" · Sprint":""}</b><span>${esc(it.t.short)}</span></div>
+  const nm=watchSeriesName(it.r)||it.r.event, story=recapStory(it), sprint=/sprint/i.test(it.r.event||""), rn=it.r.race||it.r.event||"";
+  const sub=rn&&rn!==nm?rn.replace(/\s*-\s*(Formula 1|Porsche Carrera Cup|F1 Academy|O'Reilly Auto Parts Series|Craftsman Truck Series)\s*$/i,""):"";
+  return `<div class="rcpGame"><div class="rcpHead"><b>${esc(nm)}${sprint&&!/sprint/i.test(sub)?" · Sprint":""}</b><span>${esc(it.t.short)}</span></div>
+    ${sub?`<div class="rcpSub">${esc(sub)}</div>`:""}
     ${it.r.groups.map(g=>`<div class="rcpCls2"><h5>${esc(g.h)}</h5>${recapTop(g,5).map(l=>`<div class="rcpRow">${esc(String(l))}</div>`).join("")}</div>`).join("")}
     ${recapPicksHtml(it)}
-    ${story.length?`<div class="rcpStory"><h5>From What to watch</h5>${story.map(x=>`<p><b>${esc(x.who)}</b> ${esc(x.why)}</p>`).join("")}</div>`:""}</div>`;
+    ${story?`<div class="rcpStory"><h5>Championship</h5>${story.rows.map(x=>`<p><b>${esc(story.rows.length>1?x.h+": ":"")}${esc(recapShort(x.lead))}</b> leads${x.gap!==null?` by ${x.gap} point${x.gap===1?"":"s"} over ${esc(recapShort(x.second))}`:""}.</p>`).join("")}<p class="rcpAsOf">${esc(story.asOf)}</p></div>`:""}</div>`;
 }
 function recapSpan(items){ const ds=items.map(i=>i.e.d).sort(), last=items.map(i=>eventEnd(i.e)).sort().pop(); return fmtRange({d:ds[0],t:daysBetween(ds[0],last)+1}); }
 function recapHtml(sun,firstTrack){
@@ -1284,7 +1302,7 @@ function recapLatest(days,firstTrack){
 function hubRecapCard(c){
   const e=(cur.events||[]).filter(x=>!/test/i.test(x.s||"")&&eventEnd(x)<localToday()&&daysBetween(eventEnd(x),localToday())<=RECAP_WINDOW&&recapResults(cur,x).length).sort((a,b)=>b.d.localeCompare(a.d))[0];
   if(!e||c.live) return ""; const sun=sunOf(eventEnd(e)), n=recapItems(sun,cur.id).length;
-  return `<div class="hubCard hubTap" role="button" onclick="openWkRecap('${sun}','${cur.id}')"><div class="hubCardRow"><div><h4>Weekend recap</h4><div class="hubSessionName">${esc(e.e)}</div><div class="hubSessionSub">${n} result${n===1?"":"s"} from your series: top 5, your picks and storylines. Tap to open.</div></div>${c.chev}</div></div>`;
+  return `<div class="hubCard hubTap" role="button" onclick="openWkRecap('${sun}','${cur.id}')"><div class="hubCardRow"><div><h4>Weekend recap</h4><div class="hubSessionName">${esc(e.e)}</div><div class="hubSessionSub">${n} result${n===1?"":"s"} from your series: top 5, your picks and championship picture. Tap to open.</div></div>${c.chev}</div></div>`;
 }
 function recapHomeList(){ try{ return JSON.parse(LSget(K.recapHome,"[]"))||[]; }catch(x){ return []; } }
 function dismissRecapHome(k){ LSset(K.recapHome,JSON.stringify(recapHomeList().concat(k).slice(-40))); renderRecapHome(); }
@@ -1292,7 +1310,7 @@ function renderRecapHome(){
   const el=document.getElementById("wkRecap"); if(!el) return; const lt=recapLatest(RECAP_HOME_DAYS,null);
   if(!lt||recapHomeList().includes(lt.sun)){ el.innerHTML=""; return; }
   const names=[...new Set(lt.items.map(i=>i.t.short))].slice(0,3).join(", ");
-  el.innerHTML=`<div class="wkRecapCard"><button class="wkRecapBtn" onclick="openWkRecap('${lt.sun}')"><span class="kick">Weekend recap</span><b>${esc(recapSpan(lt.items))}</b><small>${esc(names)} · ${lt.items.length} result${lt.items.length===1?"":"s"}, your picks and storylines</small></button><button class="wkRecapX" aria-label="Dismiss this recap" onclick="dismissRecapHome('${lt.sun}')">&times;</button></div>`;
+  el.innerHTML=`<div class="wkRecapCard"><button class="wkRecapBtn" onclick="openWkRecap('${lt.sun}')"><span class="kick">Weekend recap</span><b>${esc(recapSpan(lt.items))}</b><small>${esc(names)} · ${lt.items.length} result${lt.items.length===1?"":"s"}, your picks and championship picture</small></button><button class="wkRecapX" aria-label="Dismiss this recap" onclick="dismissRecapHome('${lt.sun}')">&times;</button></div>`;
 }
 /* ---- Offline readiness (Nov 2026): the service worker saves the app and every track's map on the first visit (sw.js). This looks in the
    phone's cache and says whether it is all there, so you know before you drive to the track. The live results and the weather still need signal. ---- */

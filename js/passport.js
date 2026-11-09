@@ -339,8 +339,23 @@ function ppOfCar(ink,acc,skin,w,cx,ground){
    red parts take the accent, and an ink outline is drawn under everything so the pale body stays readable on the paper colour. */
 /* the outer contour of a traced path: its largest subpath (the holes in it are the other subpaths) */
 function ppBigSub(d){ let best="",ba=-1; d.split(/(?=M)/).forEach(sp=>{ const n=(sp.match(/-?\d+/g)||[]).map(Number); let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; for(let i=0;i+1<n.length;i+=2){ x0=Math.min(x0,n[i]); x1=Math.max(x1,n[i]); y0=Math.min(y0,n[i+1]); y1=Math.max(y1,n[i+1]); } const a=(x1-x0)*(y1-y0); if(a>ba){ ba=a; best=sp; } }); return best.replace(/Z$/,""); }
-const PP_CARS={gtp:()=>PP_CAR_GTP,nascar:()=>PP_CAR_NASCAR}, PP_CAR_LMAX={gtp:235,nascar:120}; PP_CAR_NASCAR.lmin=85; PP_CAR_NASCAR.solid=[0,1];
+const PP_CARS={gtp:()=>PP_CAR_GTP,nascar:()=>PP_CAR_NASCAR}, PP_CAR_LMAX={gtp:235,nascar:120}; PP_CAR_NASCAR.lmin=85; PP_CAR_NASCAR.solid=[0,1]; PP_CAR_NASCAR.wheels=[[1110,1512,175],[3040,1550,175]]; PP_CAR_NASCAR.cartoon=true; PP_CAR_NASCAR.windows=[[[1500,1000],[2100,930],[2230,950],[2620,1140],[1500,1150]]];
+function ppCarCartoon(art,ink,acc,skin,w,cx,ground){
+  /* cartoon version of the car: one saturated body colour (the stamp's accent) with a darker shade for the dark patches and cream for the highlights and the number,
+     a thick cream sticker outline, and two big round cartoon wheels drawn over the traced ones */
+  const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), body=acc, shade=ppMix(acc,ink,.4), tyre=ppMix(ink,"#000000",.35), W=art.wheels||[];
+  const fill=q=>q[2]===3?body:q[1]>150?skin:q[1]<14?shade:body;
+  const parts=art.p.filter(q=>q[2]!==2);
+  const wheel=([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r+14}" fill="${skin}"/><circle cx="${x}" cy="${y}" r="${r}" fill="${tyre}"/><circle cx="${x}" cy="${y}" r="${r*.58}" fill="${skin}"/><circle cx="${x}" cy="${y}" r="${r*.2}" fill="${tyre}"/>`+[0,1,2,3,4].map(k=>{ const a=k/5*Math.PI*2; return `<path d="M${x} ${y}L${n(x+Math.cos(a)*r*.56)} ${n(y+Math.sin(a)*r*.56)}" stroke="${tyre}" stroke-width="${n(r*.12)}" stroke-linecap="round"/>`; }).join("");
+  return `<g transform="translate(${n(cx-w/2)} ${n(ground-vh*s)}) scale(${s.toFixed(4)}) translate(${-vx} ${-vy})" stroke-linejoin="round">`
+    +`<g fill="${skin}" stroke="${skin}" stroke-width="${(3.4/s).toFixed(1)}">`+parts.map(q=>`<path d="${q[0]}"/>`).join("")+`</g>`
+    +(art.solid||[]).map(i=>`<path d="${ppBigSub(art.p[i][0])}Z" fill="${body}"/>`).join("")
+    +parts.map(q=>{ const c=fill(q); return `<path d="${q[0]}" fill="${c}" stroke="${c===skin?skin:c}" stroke-width="${(.5/s).toFixed(1)}"/>`; }).join("")
+    +(art.windows||[]).map(pg=>`<path d="M${pg.map(q=>q.join(" ")).join("L")}Z" fill="${ppMix(skin,"#7FB3D5",.7)}" stroke="${tyre}" stroke-width="${(1.1/s).toFixed(1)}" stroke-linejoin="round"/><path d="M${pg[0][0]+170} ${pg[0][1]+20}L${pg[1][0]-60} ${pg[1][1]+14}" stroke="${skin}" stroke-width="${(.9/s).toFixed(1)}" stroke-linecap="round" opacity=".8"/>`).join("")
+    +W.map(wheel).join("")+`</g>`;
+}
 function ppCarArt(art,ink,acc,skin,w,cx,ground,lmax,dark){
+  if(art.cartoon) return ppCarCartoon(art,ink,acc,skin,w,cx,ground);
   const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), pale=dark?skin:ppMix(ink,skin,.93), low=dark?ppMix(ink,skin,.16):ink, cache={};
   const lmn=art.lmin||0, colour=(L,red,fl)=>{ if(red) return acc; L=Math.max(L,fl===2?45:lmn); const k=(L>>2)+(fl===2?1000:0); return cache[k]||(cache[k]=ppMix(low,pale,Math.pow(Math.min(1,L/(lmax||235)),dark?1.5:lmax?.9:1.25))); };
   const line=dark?ppMix(ink,skin,.5):ink;

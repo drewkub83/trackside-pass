@@ -170,7 +170,7 @@ const PP_SERIES={
   nascar:{kind:"car",art:"nascar",dark:true,band:true,bandInk:"#6E1822",ink:"#2B1517",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},
   endcup:{kind:"outlines",ids:["daytona","sebring","watkins-glen","road-america","road-atlanta"],any:true,band:true,ink:"#1E2238",bandInk:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
   triple:{kind:"outlines",ids:["daytona","sebring","road-atlanta"],band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
-  hopper:{kind:"hopper",mode:"orig",band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#C28A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
+  hopper:{kind:"hopper",mode:"orig",band:true,bandInk:"#C28A00",ink:"#6B4A00",acc:"#6B4A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
   tripper:{kind:"tracks",route:"visited",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
   grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
   wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},

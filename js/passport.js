@@ -167,7 +167,7 @@ const PP_SERIES={
   sportscar:{kind:"car",art:"gtp",band:true,bandInk:"#B3261E",ink:"#1B1B1F",acc:"#B3261E",top:"SPORTS CAR FAN",bot:"IMSA WEEKEND",size:9.2,space:2.2},
   openwheel:{kind:"ofcar",band:true,bandInk:"#17402F",ink:"#17402F",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
   gtwca:{kind:"outlines",ids:["road-america","cota","sonoma","barber","watkins-glen"],any:true,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD AMERICA",bot:"GT FAN",size:8.8,space:1.6},
-  nascar:{kind:"car",art:"nascar",band:true,bandInk:"#6E1822",ink:"#2B1517",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},
+  nascar:{kind:"car",art:"nascar",dark:true,band:true,bandInk:"#6E1822",ink:"#2B1517",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},
   endcup:{kind:"outlines",ids:["daytona","sebring","watkins-glen","road-america","road-atlanta"],any:true,band:true,ink:"#1E2238",bandInk:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
   triple:{kind:"outlines",ids:["daytona","sebring","road-atlanta"],band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
   hopper:{kind:"tracks",band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#C28A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
@@ -338,12 +338,13 @@ function ppOfCar(ink,acc,skin,w,cx,ground){
 /* Car art from js/carart.js (an illustration supplied by the app's owner, reduced to ink tones): luminance maps from the ink colour (dark) to a pale ink tint (light),
    red parts take the accent, and an ink outline is drawn under everything so the pale body stays readable on the paper colour. */
 const PP_CARS={gtp:()=>PP_CAR_GTP,nascar:()=>PP_CAR_NASCAR}, PP_CAR_LMAX={gtp:235,nascar:120};
-function ppCarArt(art,ink,acc,skin,w,cx,ground,lmax){
-  const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), pale=ppMix(ink,skin,.93), cache={};
-  const colour=(L,red)=>{ if(red) return acc; const k=L>>2; return cache[k]||(cache[k]=ppMix(ink,pale,Math.pow(Math.min(1,L/(lmax||235)),lmax?.9:1.25))); };
-  const sh=`<ellipse cx="${n(cx+w*.02)}" cy="${n(ground-w*.03)}" rx="${n(w*.44)}" ry="${n(w*.035)}" fill="${ink}" opacity=".16"/>`;
+function ppCarArt(art,ink,acc,skin,w,cx,ground,lmax,dark){
+  const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), pale=dark?skin:ppMix(ink,skin,.93), low=dark?ppMix(ink,skin,.16):ink, cache={};
+  const colour=(L,red)=>{ if(red) return acc; const k=L>>2; return cache[k]||(cache[k]=ppMix(low,pale,Math.pow(Math.min(1,L/(lmax||235)),dark?1.5:lmax?.9:1.25))); };
+  const line=dark?ppMix(ink,skin,.5):ink;
+  const sh=dark?"":`<ellipse cx="${n(cx+w*.02)}" cy="${n(ground-w*.03)}" rx="${n(w*.44)}" ry="${n(w*.035)}" fill="${ink}" opacity=".16"/>`;
   return sh+`<g transform="translate(${n(cx-w/2)} ${n(ground-vh*s)}) scale(${s.toFixed(4)}) translate(${-vx} ${-vy})" stroke-linejoin="round">`
-    +`<g fill="${ink}" stroke="${ink}" stroke-width="${(1.6/s).toFixed(2)}">`+art.p.map(q=>`<path d="${q[0]}"/>`).join("")+`</g>`
+    +`<g fill="${line}" stroke="${line}" stroke-width="${(1.6/s).toFixed(2)}">`+art.p.map(q=>`<path d="${q[0]}"/>`).join("")+`</g>`
     +art.p.map(q=>{ const c=colour(q[1],q[2]); return `<path d="${q[0]}" fill="${c}" stroke="${c}" stroke-width=".25"/>`; }).join("")+`</g>`;
 }
 /* State and region stamps: real state outlines (Natural Earth, public domain, simplified, [lon,lat] rings) in halftone, with a dot on each circuit */
@@ -428,7 +429,7 @@ function seriesStamp(d,o){
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
     :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
-    :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(PP_CARS[sp.art](),"#8E8670","#8E8670","#F3EAD2",112,80,100)}</g>`:ppCarArt(PP_CARS[sp.art](),ink,acc,"#F3EAD2",sp.art==="nascar"?120:112,80,100,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0))
+    :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(PP_CARS[sp.art](),"#8E8670","#8E8670","#F3EAD2",112,80,100)}</g>`:(sp.dark?`<circle cx="80" cy="80" r="56.5" fill="${ink}"/>`:"")+ppCarArt(PP_CARS[sp.art](),ink,acc,"#F3EAD2",sp.art==="nascar"?118:112,80,sp.dark?92:100,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0,sp.dark))
     :sp.kind==="star"?ppStarArt(ink,acc,"#F3EAD2")
     :sp.kind==="clocks"?ppClocksArt(ink,acc,"#F3EAD2",st?st.zoneSet:null)
     :sp.kind==="stopwatch"?ppStopwatchArt(ink,acc,"#F3EAD2",!locked&&(o.done!==false))
@@ -454,7 +455,7 @@ function seriesStamp(d,o){
       <text font-size="9.6" font-weight="800" letter-spacing="1.8" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${bot}</textPath></text>
 `}
       ${centre}
-      ${o.date?`<text x="80" y="114" font-size="9.6" font-weight="800" letter-spacing=".9" text-anchor="middle" fill="${ink}">${ppDate(o.date)}</text><path d="M35,110.6H46M114,110.6H125" stroke="${acc}" stroke-width="1.2"/>`:""}
+      ${o.date?`<text x="80" y="114" font-size="9.6" font-weight="800" letter-spacing=".9" text-anchor="middle" fill="${sp.dark?"#F3EAD2":ink}">${ppDate(o.date)}</text><path d="M35,110.6H46M114,110.6H125" stroke="${acc}" stroke-width="1.2"/>`:""}
     </g></svg>`;
 }
 /* ---------------- series logos ----------------

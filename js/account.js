@@ -105,6 +105,27 @@ async function openAccount() {
   await acctLoad(); acct.push = await pushState(); acctRender();
   if (acct.req && acct.req.notifications.some(n => !n.read && n.type === "friend_accepted")) sbRpc("mark_notifications_read").then(() => { acct.req.notifications.forEach(n => { if (n.type === "friend_accepted") n.read = true; }); acctBadge(); }).catch(() => {});   // shown once, then cleared
 }
+/* the You hub at the top of the Account tab: your podium points, passport, friends and the races you are going to, all on this one page. Works signed out too (podium, passport and going live on this phone). */
+function acctHubHtml(signed) {
+  const yr = new Date().getFullYear(), gs = typeof gameSeason === "function" ? gameSeason(yr) : { rows: [], pts: 0 };
+  let pp = { stamps: [], unlocked: {} }, st = { tracks: 0, total: 0 }; try { pp = ppLoad(); st = ppStats(pp); } catch (e) {}
+  const badges = Object.keys(pp.unlocked).filter(k => !k.startsWith("t:")).length, today = localToday(), going = [];
+  TRACKS.forEach(t => (t.events || []).forEach(e => { if (eventEnd(e) >= today && isGoing(t, e)) going.push({ t, e }); }));
+  going.sort((a, b) => a.e.d.localeCompare(b.e.d));
+  const fr = (acct.friends || []).length, rq = (acct.req && acct.req.incoming.length) || 0;
+  const tile = (on, big, lab, sub) => `<button class="youTile" onclick="${on}"><b>${big}</b><span>${lab}</span><small>${sub}</small></button>`;
+  const lt = typeof recapLatest === "function" ? recapLatest(14) : null;
+  return `<div class="youHub"><div class="youTiles">
+      ${tile("homeTab('play')", gs.pts, "Podium points", `${gs.rows.length} weekend${gs.rows.length === 1 ? "" : "s"} played in ${yr}`)}
+      ${tile("openPassport()", st.tracks, st.tracks === 1 ? "Track stamped" : "Tracks stamped", `${badges} badge${badges === 1 ? "" : "s"}${st.total ? " · " + st.total + " tracks to collect" : ""}`)}
+      ${tile(signed ? "document.getElementById('acFriends').scrollIntoView({behavior:'smooth',block:'start'})" : "document.getElementById('acBody').scrollTo({top:9999})", signed ? fr : "–", "Friends", signed ? (rq ? rq + " request" + (rq === 1 ? "" : "s") + " waiting" : "see who is playing") : "sign in to add friends")}
+      ${tile("document.getElementById('youGoing').scrollIntoView({behavior:'smooth',block:'start'})", going.length, "Going to", going.length ? "next: " + sbEsc(going[0].t.short) : "mark one with I'm going")}
+    </div>
+    ${lt ? `<button class="youRow" onclick="openWkRecap('${lt.sun}')"><span><b>Your weekend recap</b><small>Results, your picks and points</small></span><i>&rsaquo;</i></button>` : ""}
+    <h4 class="ptH" id="youGoing">Races you are going to</h4>
+    ${going.length ? going.map(x => `<button class="youRow" onclick="openTrack('${x.t.id}')"><span><b>${sbEsc(x.t.short)}</b><small>${sbEsc(x.e.e)} · ${sbEsc(fmtRange(x.e))}</small></span><i>&rsaquo;</i></button>`).join("") : `<p class="plRules fine">None yet. Open a race weekend and tap I'm going: it saves the maps for offline and reminds you.</p>`}
+  </div>`;
+}
 function acctRender() {
   const s = sbSession(); if (!acctOn("account")) return;
   let h;
@@ -125,6 +146,7 @@ function acctRender() {
     const news = rq.notifications.filter(n => n.type === "friend_accepted" && !n.read);
     h = `<div class="acHead"><button class="avBtn" aria-label="Change your picture" onclick="openAvatarPicker()">${avatarHtml("me", p.display_name, 64)}<small>Change</small></button><div><h3 class="acH">${sbEsc(p.display_name)}</h3><p class="plRules">Signed in as ${sbEsc(s.email || "")}</p></div></div>${acctMsg()}
          ${news.map(n => `<div class="acNote">${sbEsc(n.name)} accepted your friend request.</div>`).join("")}
+         ${acctHubHtml(true)}
          ${rq.incoming.length ? `<h4 class="ptH">Friend requests (${rq.incoming.length})</h4>${rq.incoming.map(r => `<div class="acFriend"><span><b>${sbEsc(r.name)}</b> wants to be friends</span><span><button class="btn primary acMini" onclick="acctRespond('${r.id}',true)">Accept</button><button class="acX" onclick="acctRespond('${r.id}',false)">Decline</button></span></div>`).join("")}` : ""}
          ${recapState() ? acctBtn("Your " + recapState().year + (recapState().done ? " recap" : " so far"), "openRecap()") : ""}
          <h4 class="ptH">Add a friend</h4>
@@ -135,7 +157,7 @@ function acctRender() {
            <div class="acRow"><input class="acIn" id="acFriend" maxlength="12" autocapitalize="characters" placeholder="Their code" onkeydown="if(event.key==='Enter')acctAdd()">${acctBtn("Send request", "acctAdd()")}</div>
          </details>
          ${rq.outgoing.length ? `<h4 class="ptH">Waiting for an answer</h4>${rq.outgoing.map(r => `<div class="acFriend"><span>${sbEsc(r.name)}</span><button class="acX" onclick="acctCancel('${r.id}')">Cancel</button></div>`).join("")}` : ""}
-         <h4 class="ptH">Friends (${fr.length})</h4>
+         <h4 class="ptH" id="acFriends">Friends (${fr.length})</h4>
          ${fr.length ? fr.map(f => `<div class="acFriend"><button class="lbBtn avRow" aria-label="Open ${sbEsc(f.display_name)}'s passport" onclick="openPassportOf('${f.id}','')">${avatarHtml(f.id, f.display_name, 30)}<span>${sbEsc(f.display_name)}</span></button><button class="acX" aria-label="Remove ${sbEsc(f.display_name)}" onclick="acctRemove('${f.id}')">Remove</button></div>`).join("") : `<p class="plRules">No friends yet.</p>`}
          <h4 class="ptH">Friend not on Trackside Pass yet?</h4>
          <div class="acRow">${acctBtn("Send them the app", "acctShare()", "quiet")}</div>
@@ -146,7 +168,7 @@ function acctRender() {
          ${acctBtn("Sign out", "acctOut()", "quiet")}
          <p class="plRules fine">To delete your account, go to Settings, Passport and your data. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>`;
   }
-  acBox().innerHTML = acctWrap(h); acctHomeRefresh();
+  acBox().innerHTML = acctWrap(s && acct.profile ? h : acctHubHtml(false) + h); acctHomeRefresh();
 }
 async function acctEmail() {
   const v = (document.getElementById("acEmail").value || "").trim(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { acct.msg = "That does not look like an email address."; return acctRender(); }

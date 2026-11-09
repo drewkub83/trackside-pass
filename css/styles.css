@@ -1446,3 +1446,9 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 .rcpPk.won{background:color-mix(in srgb,var(--accent) 16%,transparent);border-radius:10px;padding:6px 8px;margin:3px 0;border-top:0}.rcpPk.won .rcpRes{color:var(--ink)}.rcpPk.won .rcpRes b{font-size:15px}
 .rcpPk.none{opacity:.5}.rcpPk.none .rcpCar b{font-weight:500}
 .rcpPk .rcpCar i u{text-decoration:none;font-weight:600;color:var(--ink)}
+/* Account tab as the You hub */
+.youHub{margin:8px 0 4px}.youTiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.youTile{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;padding:14px 16px;border-radius:20px;background:var(--tint-2,rgba(128,128,128,.1));border:1px solid var(--glass-edge,transparent);color:var(--ink);font:inherit;cursor:pointer}
+.youTile b{font-size:34px;font-weight:300;line-height:1.05;letter-spacing:-1px}.youTile span{font-size:14px;font-weight:600}.youTile small{font-size:12px;color:var(--ink-2);line-height:1.3}
+.youRow{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;margin-top:8px;border-radius:16px;background:var(--tint-2,rgba(128,128,128,.1));border:0;color:var(--ink);font:inherit;cursor:pointer}
+.youRow span{display:flex;flex-direction:column;min-width:0}.youRow b{font-weight:600;font-size:15px}.youRow small{font-size:12.5px;color:var(--ink-2)}.youRow i{font-style:normal;font-size:22px;color:var(--ink-2)}

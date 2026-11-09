@@ -1245,17 +1245,16 @@ function recapFinish(g,cls,n){   /* where car #n finished in the class's publish
   if(grp.order){ const i=grp.order.findIndex(l=>gameNum(l)===n); return i>=0?{pos:i+1,of:grp.order.length}:{pos:null,of:grp.order.length}; }
   const w=gameNum(grp.winner); if(w===n) return {pos:1,of:0}; return (grp.podium||[]).map(gameNum).includes(n)?{pos:"podium",of:0}:null;
 }
-function recapPicksHtml(it){
-  const games=recapGames(it.t,it.e,it.r.s); if(!games.length) return ""; const nth=["1st","2nd","3rd"], word={hit:"right place",near:"on the podium",miss:"missed",open:"not settled"};
+function recapPicksHtml(it){   /* your three picks per class, each on its own row: greyed when it scored nothing, highlighted with its points when it did */
+  const games=recapGames(it.t,it.e,it.r.s); if(!games.length) return ""; const nth=["1st","2nd","3rd"];
+  const names=r=>{ const d=String(r[2]||"").split(/\s*\/\s*/).filter(Boolean); return d.length<=2?d.join(" / "):d.map(x=>x.trim().split(" ").slice(-1)[0]).join(" / "); };
   return games.map(({g,sc})=>{
     const label=g.label?` · ${esc(g.label)}`:"";
-    return `<div class="rcpPicks"><b>Your picks${label}: ${sc.pts} of ${sc.max}</b>${g.classes.filter(c=>(picksOf(g)[c.h]||[]).length).map(c=>{
-      const pk=picksOf(g)[c.h]||[], per=sc.per[c.h]||[], gain=sc.per[c.h+"#"]||[], pd=gamePodium(sc.res,c.h);
-      const rows=pk.map((n,i)=>{ const car=c.cars.find(r=>r[0]===n), who=car?`#${esc(n)} ${esc(String(car[2]).split(" / ").map(x=>x.trim().split(" ").slice(-1)[0]).join(" / "))}`:`#${esc(n)}`, m=per[i], f=recapFinish(sc,c.h,n), got=gain[i]||0;
-        const fin=f?(typeof f.pos==="number"?`finished ${nth[f.pos-1]||f.pos+"th"}`:f.pos==="podium"?"finished on the podium":`not in the top ${f.of}`):"";
-        return `<div class="rcpPk ${m}"><span class="rcpSlot">${nth[i]}</span><span class="rcpCar"><b>${who}</b>${fin?`<i>${fin}</i>`:""}</span><span class="rcpRes">${word[m]||m}${got>0?` <b>+${got}</b>`:""}</span></div>`; }).join("");
-      const real=pd&&pd.exact.some(Boolean)?`<div class="rcpReal">Actual podium: ${pd.exact.map((n,i)=>{ if(!n) return ""; const car=c.cars.find(r=>r[0]===n); return `${nth[i]} #${esc(n)}${car?" "+esc(String(car[2]).split(" / ")[0].trim().split(" ").slice(-1)[0]):""}`; }).filter(Boolean).join(" · ")}</div>`:"";
-      return `<div class="rcpCls">${g.classes.length>1?`<i class="rcpClsH">${esc(c.h)}</i>`:""}${rows}${real}</div>`; }).join("")}</div>`; }).join("");
+    return `<div class="rcpPicks"><b>Your picks${label}: ${sc.pts} point${sc.pts===1?"":"s"}</b>${g.classes.filter(c=>(picksOf(g)[c.h]||[]).length).map(c=>{
+      const pk=picksOf(g)[c.h]||[], gain=sc.per[c.h+"#"]||[], per=sc.per[c.h]||[];
+      const rows=pk.map((n,i)=>{ const car=c.cars.find(r=>r[0]===n), got=gain[i]||0, open=per[i]==="open";
+        return `<div class="rcpPk ${got>0?"won":"none"}"><span class="rcpSlot">${nth[i]}</span><span class="rcpCar"><b>${car?esc(names(car)):"#"+esc(n)}</b><i>#${esc(n)}${car?" · "+esc(car[1]):""}</i></span><span class="rcpRes">${got>0?`<b>+${got}</b> pts`:open?"not settled":"0 pts"}</span></div>`; }).join("");
+      return `<div class="rcpCls">${g.classes.length>1?`<i class="rcpClsH">${esc(c.h)}</i>`:""}${rows}</div>`; }).join("")}</div>`; }).join("");
 }
 function recapSection(it){
   const nm=watchSeriesName(it.r)||it.r.event, story=recapStory(it), sprint=/sprint/i.test(it.r.event||""), rn=it.r.race||it.r.event||"";

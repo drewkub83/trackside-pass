@@ -1443,3 +1443,5 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 .rcpPk.hit .rcpRes{color:var(--ink);font-weight:600}.rcpPk.miss .rcpCar b{color:var(--ink-2);font-weight:500}
 .rcpReal{margin-top:5px;font-size:12.5px;color:var(--ink-2)}
 .rcpSub{font-size:12.5px;color:var(--ink-2);margin:1px 0 4px}.rcpAsOf{font-size:11.5px!important;opacity:.8}
+.rcpPk.won{background:color-mix(in srgb,var(--accent) 16%,transparent);border-radius:10px;padding:6px 8px;margin:3px 0;border-top:0}.rcpPk.won .rcpRes{color:var(--ink)}.rcpPk.won .rcpRes b{font-size:15px}
+.rcpPk.none{opacity:.5}.rcpPk.none .rcpCar b{font-weight:500}

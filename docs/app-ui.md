@@ -45,3 +45,5 @@ Settings > Look and units > Style also has **Editorial** (`data-style="editorial
 
 ### Weekend recap, picks and story (Nov 9 2026)
 The recap no longer quotes What to watch (a preview that, after qualifying, talks about qualifying). Each series block shows the race name, the top 5 per class, then Your picks as one row per slot (car, where it finished, right place / on the podium / missed, points earned) plus the actual podium, then a "Championship" line from `STANDINGS` (leader and gap, with the standings' own as-of text). Code: `recapPicksHtml`, `recapStory`, `recapFinish` in `js/app.js`.
+
+Share card (Nov 9 2026): the recap sheet has "Share" (text + link) and "Share card" (`recapCardBlob`/`shareRecapCard`: a 1080x1350 PNG drawn on a canvas with the app icon, winners per series and your picks' points; shared as a file through the share sheet, which is what Instagram accepts, or downloaded when file sharing is unavailable). index.html now has Open Graph/Twitter tags with the app icon so a shared link previews as Trackside Pass, not a generic glyph.

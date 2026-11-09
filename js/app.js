@@ -1276,7 +1276,7 @@ function recapHtml(sun,firstTrack){
     <p class="plRules">${items.length} result${items.length===1?"":"s"} from the series you follow.${games.length?` Your picks scored <b>${pts}</b> of ${mx} this weekend${st.rows.length>1?`, and <b>${st.pts}</b> in ${y}`:""}.`:""}</p>
     ${items.map(recapSection).join("")}
     ${nx?`<p class="plRules rcpSeason">Next up: <b>${esc(nx.t.short)}</b>, ${esc(fmtRange(nx.e))}.</p>`:""}
-    <div class="rcpBtns"><button class="btn primary" onclick="shareRecap('${sun}')">Share</button><button class="btn quiet" onclick="closeInfo();homeTab('play')">My picks</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+    <div class="rcpBtns"><button class="btn primary" onclick="shareRecap('${sun}')">Share</button><button class="btn quiet" onclick="shareRecapCard('${sun}')">Share card</button><button class="btn quiet" onclick="closeInfo();homeTab('play')">My picks</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
 }
 function openWkRecap(sun,firstTrack){
   document.getElementById("infoBody").innerHTML=recapHtml(sun,firstTrack||null);
@@ -1291,6 +1291,40 @@ function shareRecap(sun){
   const text=recapText(sun);
   if(navigator.share){ navigator.share({title:"Weekend recap",text}).catch(()=>{}); return; }
   try{ navigator.clipboard.writeText(text).then(()=>toast("Recap copied")); }catch(x){ toast("Sharing is not available here"); }
+}
+/* a picture of the recap with the app icon, 1080x1350 (the portrait size Instagram posts and stories crop well): winners per series, and your picks' points */
+async function recapCardBlob(sun){
+  const items=recapItems(sun,null); if(!items.length) return null;
+  try{ await document.fonts.ready; }catch(x){}
+  const W=1080, H=1350, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g=cv.getContext("2d"), F="Outfit, 'Helvetica Neue', Arial, sans-serif";
+  const bg=g.createLinearGradient(0,0,W,H); bg.addColorStop(0,"#F3F8F5"); bg.addColorStop(.6,"#DCE9E1"); bg.addColorStop(1,"#C3D8CC"); g.fillStyle=bg; g.fillRect(0,0,W,H);
+  const img=await new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ok(null); i.src="icons/icon-512.png"; });
+  if(img){ g.save(); g.beginPath(); g.roundRect(70,70,120,120,28); g.clip(); g.drawImage(img,70,70,120,120); g.restore(); }
+  g.fillStyle="#1d2a24"; g.textBaseline="alphabetic"; g.font=`600 54px ${F}`; g.fillText("Trackside Pass",215,128);
+  g.font=`400 34px ${F}`; g.fillStyle="#52645b"; g.fillText("Weekend recap · "+recapSpan(items),215,178);
+  const fit=(t,w)=>{ t=String(t); while(g.measureText(t).width>w&&t.length>4) t=t.slice(0,-2); return t; };
+  const clean=l=>String(l).replace(/^Winner:\s*/,"").replace(/^\d+\.\s*/,"").replace(/\s*[—-]\s*.*$/,"").replace(/\s*\([^)]*\)\s*$/,"");
+  let y=270; const maxY=H-190; let shown=0;
+  for(const it of items){
+    const grp=it.r.groups[0], top=recapTop(grp,items.length<=3?3:2), games=recapGames(it.t,it.e,it.r.s), pts=games.reduce((n,x)=>n+x.sc.pts,0);
+    const need=70+top.length*46+(games.length?50:0)+24; if(y+need>maxY) break; shown++;
+    g.fillStyle="rgba(255,255,255,.72)"; g.beginPath(); g.roundRect(60,y-40,W-120,need,30); g.fill();
+    g.fillStyle="#C2522C"; g.font=`600 36px ${F}`; g.fillText(fit((watchSeriesName(it.r)||it.r.event),W-380),90,y+8);
+    g.fillStyle="#52645b"; g.font=`400 30px ${F}`; g.textAlign="right"; g.fillText(it.t.short,W-90,y+8); g.textAlign="left";
+    let yy=y+56; g.fillStyle="#1d2a24";
+    top.forEach((l,i)=>{ g.font=`${i?400:600} 34px ${F}`; g.fillText(fit((i+1)+".  "+clean(l),W-200),90,yy); yy+=46; });
+    if(games.length){ g.fillStyle=pts>0?"#C2522C":"#8a978f"; g.font=`600 32px ${F}`; g.fillText(`My picks: ${pts} point${pts===1?"":"s"}`,90,yy+6); }
+    y+=need+22;
+  }
+  if(shown<items.length){ g.fillStyle="#52645b"; g.font=`400 30px ${F}`; g.fillText(`+ ${items.length-shown} more in the app`,90,y+10); }
+  g.fillStyle="#52645b"; g.font=`500 32px ${F}`; g.textAlign="center"; g.fillText("tracksidepass.com",W/2,H-70); g.textAlign="left";
+  return await new Promise(ok=>cv.toBlob(ok,"image/png"));
+}
+async function shareRecapCard(sun){
+  toast("Making your card…"); const blob=await recapCardBlob(sun).catch(()=>null); if(!blob){ toast("Could not make the card"); return; }
+  const file=new File([blob],"trackside-pass-recap.png",{type:"image/png"});
+  try{ if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:"Weekend recap"}); return; } }catch(x){ if(x&&x.name==="AbortError") return; }
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="trackside-pass-recap.png"; document.body.appendChild(a); a.click(); a.remove(); toast("Card saved");
 }
 /* the most recent weekend (within `days`) with results that matter to you, as {sun, items} */
 function recapLatest(days,firstTrack){

@@ -4,7 +4,7 @@ Called by tools/auto_update.py on every run (every 30 minutes Thursday to Monday
 
 Results: for every WEC event the app has (events whose text matches FIA WEC / World Endurance) that started in the last 10 days, the race page
 (/en/race/<event name>-<year>) links to its summary page (/en/race/summary/<id>) once the race has a classification; that page has one table per class
-("Hypercar results", "LMGT3 results": position, car number, team, laps, gap, best lap). The top ten of each class are written as one entry
+("Hypercar results", "LMGT3 results": position, car number, team, laps, gap, best lap). The full classification of each class is written as one entry
 (note starting "(automatic update)"); it is re-read on later runs (a post-race penalty can move the order) and only rewritten when it changed.
 Standings (/en/page/manufacturers-classification): the Hypercar drivers' table (one row per crew) and the LMGT3 teams' table, top ten of each. Rewritten when the table changed.
 Nothing is guessed: a page without the tables writes nothing. Options: --now, --dry-run, --print,
@@ -68,13 +68,13 @@ def result_entry(track, day, event, tabs, src):
         h = rows[0]; ix = {k: h.index(k) for k in ("Pos.", "N°", "Team / Drivers") if k in h}
         if len(ix) < 3: continue
         lines = []
-        for r in rows[1:11]:
+        for r in rows[1:]:
             if len(r) <= max(ix.values()) or not r[ix["Pos."]].isdigit(): continue
             lines.append(f'{r[ix["Pos."]]}. {r[ix["N°"]]} {title(r[ix["Team / Drivers"]])}')
         if len(lines) >= 3: groups.append((m.group(1), lines))
     if len(groups) < 2: return None
     body = ",\n".join("      { h:" + js(h) + ", order:[\n" + ",\n".join("        " + js(x) for x in lines) + "\n      ] }" for h, lines in groups)
-    note = f"{MARK} Source: fiawec.com race summary page ({src}), top ten of each class, read {now.date().isoformat()}."
+    note = f"{MARK} Source: fiawec.com race summary page ({src}), full classification of each class, read {now.date().isoformat()}."
     return f'  {{ t:{js(track)}, d:{js(day)}, s:"wec", event:{js(event)},\n    groups:[\n{body}\n    ],\n    note:{js(note)} }}'
 def do_results():
     evs = json.loads(subprocess.run(["node", "-e", """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];const out=[];

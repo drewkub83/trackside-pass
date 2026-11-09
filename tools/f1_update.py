@@ -6,7 +6,7 @@ For each Grand Prix at a venue the app has an F1 event for:
   1. data/entries.js    "Pick your podium" entry for the weekend (from 8 days before until the race starts): the drivers of the last race, with
                         our win chances. Before qualifying the chances come from recent form only; once qualifying is published they are
                         rebuilt from the grid too.
-  2. data/results.js    the top ten of the race, each as "#NUMBER Driver (Team)" (the game matches the number), from race end +30 minutes; re-read
+  2. data/results.js    the full classification of the race, each as "#NUMBER Driver (Team)" (the game matches the number), from race end +30 minutes; re-read
                         for 2 days after, a post-race penalty can move the order
   3. data/standings.js  the drivers' and constructors' tables after each race
 Win-chance model (backtested on the 65 Grands Prix of 2024-2026, winner log-loss: equal chances 3.02, form only 1.97, grid + form 1.23):
@@ -143,14 +143,14 @@ def entries_for(race, rnd, track, ev):
     if replace_entry("data/entries.js", lambda t: t.startswith(key), text, True): print("  entries:", "after qualifying" if qual else "before qualifying", f"({len(rows)} drivers)", "(Grand Prix game)" if sprint else "")
 
 def sprint_result_for(race, rnd, track, ev):
-    """The Sprint classification (top ten), keyed by the weekend's first day: the Sprint game scores against it."""
+    """The Sprint classification (full classification), keyed by the weekend's first day: the Sprint game scores against it."""
     r = get(f"{now.year}/{rnd}/sprint.json")
     if not r or not r["RaceTable"]["Races"]: print("  no sprint classification yet"); return
     rows = r["RaceTable"]["Races"][0]["SprintResults"]
     if len(rows) < 10: print("  sprint classification incomplete"); return
-    lines = ",\n".join("        " + js(f'{x["position"]}. #{x["Driver"].get("permanentNumber") or x["number"]} {who(x["Driver"]["givenName"], x["Driver"]["familyName"])} ({team(x["Constructor"]["name"])})') for x in rows[:10])
+    lines = ",\n".join("        " + js(f'{x["position"]}. #{x["Driver"].get("permanentNumber") or x["number"]} {who(x["Driver"]["givenName"], x["Driver"]["familyName"])} ({team(x["Constructor"]["name"])})') for x in rows)
     entry = (f'  {{ t:{js(track)}, d:{js(ev["d"])}, s:"f1", event:{js(race["raceName"] + " (Sprint)")},\n    groups:[\n      {{ h:"Race", order:[\n{lines}\n      ] }}\n    ],\n'
-             f'    note:{js(MARK + "Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA classification), top ten of the Sprint on " + race["Sprint"]["date"] + ".")} }}')
+             f'    note:{js(MARK + "Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA classification), full classification of the Sprint on " + race["Sprint"]["date"] + ".")} }}')
     write_result(track, ev["d"], entry)
 
 def write_result(track, d, entry):
@@ -174,10 +174,10 @@ def result_for(race, rnd, track, ev):
     if not r or not r["RaceTable"]["Races"]: print("  no classification yet"); return
     rows = r["RaceTable"]["Races"][0]["Results"]
     if len(rows) < 10: print("  classification incomplete"); return
-    lines = ",\n".join("        " + js(f'{x["position"]}. #{x["Driver"].get("permanentNumber") or x["number"]} {who(x["Driver"]["givenName"], x["Driver"]["familyName"])} ({team(x["Constructor"]["name"])})') for x in rows[:10])
+    lines = ",\n".join("        " + js(f'{x["position"]}. #{x["Driver"].get("permanentNumber") or x["number"]} {who(x["Driver"]["givenName"], x["Driver"]["familyName"])} ({team(x["Constructor"]["name"])})') for x in rows)
     ev = race["raceName"]
     entry = (f'  {{ t:{js(track)}, d:{js(d)}, s:"f1", event:{js(ev)},\n    groups:[\n      {{ h:"Race", order:[\n{lines}\n      ] }}\n    ],\n'
-             f'    note:{js(MARK + "Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), top ten of the Grand Prix on " + race["date"] + ". Sprint results are not included.")} }}')
+             f'    note:{js(MARK + "Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), full classification of the Grand Prix on " + race["date"] + ". Sprint results are not included.")} }}')
     key = f'  {{ t:{js(track)}, d:{js(d)}, s:"f1"'
     s = D.read("data/results.js"); m = re.search(r"^" + re.escape(key) + r".*?\n    note:.*? \},?\n", s, flags=re.S | re.M)
     if m and MARK not in m.group(0): print("  results: a hand-written entry exists, kept"); return

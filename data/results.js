@@ -24,13 +24,25 @@ const RESULTS = [
         "4. #63 George Russell (Mercedes)",
         "5. #12 Kimi Antonelli (Mercedes)",
         "6. #81 Oscar Piastri (McLaren)",
-        "7. #16 Charles Leclerc (Ferrari)",
-        "8. #30 Liam Lawson (Racing Bulls)",
+        "7. #30 Liam Lawson (Racing Bulls)",
+        "8. #16 Charles Leclerc (Ferrari)",
         "9. #44 Lewis Hamilton (Ferrari)",
-        "10. #27 Nico Hülkenberg (Audi)"
+        "10. #27 Nico Hülkenberg (Audi)",
+        "11. #41 Arvid Lindblad (Racing Bulls)",
+        "12. #14 Fernando Alonso (Aston Martin)",
+        "13. #43 Franco Colapinto (Alpine)",
+        "14. #10 Pierre Gasly (Alpine)",
+        "15. #23 Alexander Albon (Williams)",
+        "16. #5 Gabriel Bortoleto (Audi)",
+        "17. #87 Oliver Bearman (Haas)",
+        "18. #11 Sergio Pérez (Cadillac)",
+        "19. #55 Carlos Sainz (Williams)",
+        "20. #51 Rafael Camara (Haas)",
+        "21. #18 Lance Stroll (Aston Martin)",
+        "22. #77 Valtteri Bottas (Cadillac)"
       ] }
     ],
-    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), top ten of the Grand Prix on 2026-11-08. Sprint results are not included." },
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), full classification of the Grand Prix on 2026-11-08. Sprint results are not included." },
   { t:"lusail", d:"2026-11-06", s:"motogp", event:"Grand Prix of Qatar",
     groups:[
       { h:"Race", order:[
@@ -43,10 +55,14 @@ const RESULTS = [
         "7. #89 Jorge Martin (Aprilia Racing)",
         "8. #49 Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)",
         "9. #5 Johann Zarco (Castrol Honda LCR)",
-        "10. #27 Iker Lecuona (BK8 Gresini Racing MotoGP)"
+        "10. #27 Iker Lecuona (BK8 Gresini Racing MotoGP)",
+        "11. #21 Franco Morbidelli (Pertamina Enduro VR46 Racing Team)",
+        "12. #54 Fermin Aldeguer (BK8 Gresini Racing MotoGP)",
+        "13. #12 Maverick Viñales (Red Bull KTM Tech3)",
+        "14. #96 Jake Dixon (Honda HRC Castrol)"
       ] }
     ],
-    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), top ten of the Sunday Grand Prix, race day 2026-11-08." },
+    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), full classification of the Sunday Grand Prix, race day 2026-11-08." },
   { t:"monza", d:"2026-11-06", s:"wec", event:"6 Hours of Monza",
     groups:[
       { h:"Hypercar", order:[
@@ -59,7 +75,14 @@ const RESULTS = [
         "7. #20 BMW M Team WRT",
         "8. #93 Peugeot TotalEnergies",
         "9. #50 Ferrari AF Corse",
-        "10. #8 Toyota Racing"
+        "10. #8 Toyota Racing",
+        "11. #7 Toyota Racing",
+        "12. #007 Aston Martin Thor Team",
+        "13. #17 Genesis Magma Racing",
+        "14. #009 Aston Martin Thor Team",
+        "15. #12 Cadillac Hertz Team Jota",
+        "16. #35 Alpine Endurance Team",
+        "17. #19 Genesis Magma Racing"
       ] },
       { h:"LMGT3", order:[
         "1. #92 The Bend Manthey",
@@ -71,10 +94,18 @@ const RESULTS = [
         "7. #61 Iron Lynx",
         "8. #21 Vista AF Corse",
         "9. #27 Heart Of Racing Team",
-        "10. #78 Akkodis ASP Team"
+        "10. #78 Akkodis ASP Team",
+        "11. #34 Racing Team Turkey By TF",
+        "12. #77 Proton Competition",
+        "13. #10 Garage 59",
+        "14. #88 Proton Competition",
+        "15. #87 Akkodis ASP Team",
+        "16. #54 Vista AF Corse",
+        "17. #58 Garage 59",
+        "18. #32 Team WRT"
       ] }
     ],
-    note:"(automatic update) Source: fiawec.com race summary page (race/summary/5066), top ten of each class, read 2026-11-08." },
+    note:"(automatic update) Source: fiawec.com race summary page (race/summary/5066), full classification of each class, read 2026-11-09." },
   { t:"mexico-city", d:"2026-10-30", s:"f1", event:"Mexico City Grand Prix",
     groups:[
       { h:"Race", order:[
@@ -87,10 +118,22 @@ const RESULTS = [
         "7. #30 Liam Lawson (Racing Bulls)",
         "8. #5 Gabriel Bortoleto (Audi)",
         "9. #6 Isack Hadjar (Red Bull Racing)",
-        "10. #50 Ryo Hirakawa (Haas)"
+        "10. #50 Ryo Hirakawa (Haas)",
+        "11. #23 Alexander Albon (Williams)",
+        "12. #55 Carlos Sainz (Williams)",
+        "13. #81 Oscar Piastri (McLaren)",
+        "14. #27 Nico Hülkenberg (Audi)",
+        "15. #43 Franco Colapinto (Alpine)",
+        "16. #11 Sergio Pérez (Cadillac)",
+        "17. #10 Pierre Gasly (Alpine)",
+        "18. #41 Arvid Lindblad (Racing Bulls)",
+        "19. #87 Oliver Bearman (Haas)",
+        "20. #77 Valtteri Bottas (Cadillac)",
+        "21. #18 Lance Stroll (Aston Martin)",
+        "22. #14 Fernando Alonso (Aston Martin)"
       ] }
     ],
-    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), top ten of the Grand Prix on 2026-11-01. Sprint results are not included." },
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), full classification of the Grand Prix on 2026-11-01. Sprint results are not included." },
   { t:"martinsville", d:"2026-10-30", s:"nascar", event:"Xfinity 500",
     groups:[
       { h:"Race", order:[
@@ -103,10 +146,37 @@ const RESULTS = [
         "7. #3 Austin Dillon (Richard Childress Racing)",
         "8. #23 Bubba Wallace (23XI Racing)",
         "9. #5 Kyle Larson (Hendrick Motorsports)",
-        "10. #20 Christopher Bell (Joe Gibbs Racing)"
+        "10. #20 Christopher Bell (Joe Gibbs Racing)",
+        "11. #1 Ross Chastain (Trackhouse Racing)",
+        "12. #45 Tyler Reddick (23XI Racing)",
+        "13. #48 Alex Bowman (Hendrick Motorsports)",
+        "14. #19 Chase Briscoe (Joe Gibbs Racing)",
+        "15. #34 Todd Gilliland (Front Row Motorsports)",
+        "16. #71 Michael McDowell (Spire Motorsports)",
+        "17. #88 Connor Zilisch (Trackhouse Racing)",
+        "18. #22 Joey Logano (Team Penske)",
+        "19. #38 Zane Smith (Front Row Motorsports)",
+        "20. #33 Austin Hill (Richard Childress Racing)",
+        "21. #77 Carson Hocevar (Spire Motorsports)",
+        "22. #10 Ty Dillon (Kaulig Racing)",
+        "23. #60 Ryan Preece (RFK Racing)",
+        "24. #17 Chris Buescher (RFK Racing)",
+        "25. #16 AJ Allmendinger (Kaulig Racing)",
+        "26. #4 Noah Gragson (Front Row Motorsports)",
+        "27. #6 Brad Keselowski (RFK Racing)",
+        "28. #7 Daniel Suárez (Spire Motorsports)",
+        "29. #43 Erik Jones (Legacy Motor Club)",
+        "30. #47 Ricky Stenhouse Jr (HYAK Motorsports)",
+        "31. #42 John H. Nemechek (Legacy Motor Club)",
+        "32. #35 Riley Herbst (23XI Racing)",
+        "33. #51 Cody Ware (Rick Ware Racing)",
+        "34. #41 Cole Custer (Haas Factory Team)",
+        "35. #12 Ryan Blaney (Team Penske)",
+        "36. #2 Austin Cindric (Team Penske)",
+        "37. #66 Josh Bilicki (Garage 66)"
       ] }
     ],
-    note:"(automatic update) Source: NASCAR race data (cf.nascar.com, the files nascar.com race pages use), top ten of the race, race day 2026-11-01." },
+    note:"(automatic update) Source: NASCAR race data (cf.nascar.com, the files nascar.com race pages use), full classification of the race, race day 2026-11-01." },
   { t:"sepang", d:"2026-10-30", s:"motogp", event:"Grand Prix of Malaysia",
     groups:[
       { h:"Race", order:[
@@ -119,10 +189,16 @@ const RESULTS = [
         "7. #10 Luca Marini (Honda HRC Castrol)",
         "8. #49 Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)",
         "9. #33 Brad Binder (Red Bull KTM Factory Racing)",
-        "10. #21 Franco Morbidelli (Pertamina Enduro VR46 Racing Team)"
+        "10. #21 Franco Morbidelli (Pertamina Enduro VR46 Racing Team)",
+        "11. #20 Fabio Quartararo (Monster Energy Yamaha MotoGP Team)",
+        "12. #42 Alex Rins (Monster Energy Yamaha MotoGP Team)",
+        "13. #63 Francesco Bagnaia (Ducati Lenovo Team)",
+        "14. #12 Maverick Viñales (Red Bull KTM Tech3)",
+        "15. #27 Iker Lecuona (BK8 Gresini Racing MotoGP)",
+        "16. #43 Jack Miller (Prima Pramac Yamaha MotoGP)"
       ] }
     ],
-    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), top ten of the Sunday Grand Prix, race day 2026-11-01." },
+    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), full classification of the Sunday Grand Prix, race day 2026-11-01." },
   { t:"cota", d:"2026-10-23", s:"f1", event:"United States Grand Prix",
     groups:[
       { h:"Race", order:[
@@ -135,10 +211,22 @@ const RESULTS = [
         "7. #81 Oscar Piastri (McLaren)",
         "8. #63 George Russell (Mercedes)",
         "9. #30 Liam Lawson (Racing Bulls)",
-        "10. #10 Pierre Gasly (Alpine)"
+        "10. #10 Pierre Gasly (Alpine)",
+        "11. #27 Nico Hülkenberg (Audi)",
+        "12. #41 Arvid Lindblad (Racing Bulls)",
+        "13. #5 Gabriel Bortoleto (Audi)",
+        "14. #31 Esteban Ocon (Haas)",
+        "15. #18 Lance Stroll (Aston Martin)",
+        "16. #14 Fernando Alonso (Aston Martin)",
+        "17. #23 Alexander Albon (Williams)",
+        "18. #55 Carlos Sainz (Williams)",
+        "19. #11 Sergio Pérez (Cadillac)",
+        "20. #77 Valtteri Bottas (Cadillac)",
+        "21. #43 Franco Colapinto (Alpine)",
+        "22. #87 Oliver Bearman (Haas)"
       ] }
     ],
-    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), top ten of the Grand Prix on 2026-10-25. Sprint results are not included." },
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), full classification of the Grand Prix on 2026-10-25. Sprint results are not included." },
   { t:"portimao", d:"2026-10-15", s:"gtwce", event:"GT World Challenge Europe: Portimão (Endurance Cup finale)",
     groups:[
       { h:"Pro", order:[

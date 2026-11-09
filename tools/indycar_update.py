@@ -5,7 +5,7 @@ which GitHub Actions runs every 30 minutes Thu-Mon; also fine by hand). It reads
   indycar.com/api/results/EventsSessionDetails the classification and every driver's best lap of one session
   indycar.com/Standings                        the official points table (plain HTML)
 For each race that finished in the last 10 days at a venue the app has an event for:
-  1. data/results.js   adds (or, on later runs, refreshes) the top ten of the race as an s:"indycar" entry
+  1. data/results.js   adds (or, on later runs, refreshes) the full classification of the race as an s:"indycar" entry
   2. data/standings.js rewrites the IndyCar driver standings (top 15) when a race was added or changed
   3. data/<track>.js   lowers the venue's lapRecord row if any session of the weekend produced a faster lap (the fastest lap in ANY session,
                        the project's rule; oval qualifying publishes only 4-lap averages, so only practice and race laps count there)
@@ -72,9 +72,9 @@ def main():
 def import_result(track, d, name, race, day):
     rows = sorted((r for r in race["records"] if r.get("PositionFinish")), key=lambda r: r["PositionFinish"])
     if len(rows) < 10: print("  race classification not complete yet"); return False
-    lines = ",\n".join("        " + json.dumps(f'{r["PositionFinish"]}. #{r["CarNumber"]} {r["DriverName"]} ({r["TeamName"]})', ensure_ascii=False) for r in rows[:10])
+    lines = ",\n".join("        " + json.dumps(f'{r["PositionFinish"]}. #{r["CarNumber"]} {r["DriverName"]} ({r["TeamName"]})', ensure_ascii=False) for r in rows)
     entry = (f'  {{ t:{json.dumps(track)}, d:{json.dumps(d)}, s:"indycar", event:{json.dumps(name, ensure_ascii=False)},\n    groups:[\n      {{ h:"Race", order:[\n{lines}\n      ] }}\n    ],\n'
-             f'    note:{json.dumps(MARK + "Source: INDYCAR.com official results (indycar.com/results/ntt-indycar-series), top ten of the race, race day " + day.isoformat() + ".")} }},\n')
+             f'    note:{json.dumps(MARK + "Source: INDYCAR.com official results (indycar.com/results/ntt-indycar-series), full classification of the race, race day " + day.isoformat() + ".")} }},\n')
     s = D.read("data/results.js")
     pat = r'^  \{ t:%s, d:%s, s:"indycar".*?\n    note:.*?\},\n' % (re.escape(json.dumps(track)), re.escape(json.dumps(d)))
     m = re.search(pat, s, flags=re.S | re.M)

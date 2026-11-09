@@ -626,6 +626,13 @@ function watchSeriesName(x){ const sr=SERIES.find(r=>r.id===x.s); return sr?sr.n
 /* one result class, as the finishing order (as many places as the source gave, or a cap for the compact hub
    card) when there is one, else the older winner/gap/podium shape. Shared by the Info tab and the hub so
    the two never drift out of sync. */
+/* the results the hub card shows the top 5 of; a tap opens the whole classification (fullRes is rebuilt on every hub draw) */
+let fullRes=[];
+function openFullRes(i){
+  const res=fullRes[i]; if(!res) return;
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${res.groups.map(g=>resultGroupHtml(g)).join("")}${res.note?`<p class="wnote">${esc(res.note)}</p>`:""}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+  const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
+}
 function resultGroupHtml(g,cap){
   if(g.order&&g.order.length){ const list=cap?g.order.slice(0,cap):g.order;
     return `<div class="wgroup"><h4>${esc(g.h)}</h4>${list.map(line=>`<div class="witem sub"><span>${esc(line)}</span></div>`).join("")}</div>`; }
@@ -1548,7 +1555,7 @@ function hubResultsCard(c){
   const weekendOn=s=>{ const ev=(cur.events||[]).find(e=>s.d>=e.d&&s.d<=eventEnd(e)); return !!ev&&!eventDone(cur,ev); };
   const doneAll=sessionsOf(cur).filter(s=>kindOf(s.n)==="race"&&((s.end<=now&&(now-s.end<=6*3600000||weekendOn(s)))||onNow(s))).sort((a,b)=>b.end-a.end);
   const seenSr={}, doneRaces=doneAll.filter(s=>{ const r=seriesFor(s.n); if(!r||seenSr[r.id]) return false; seenSr[r.id]=1; return true; });
-  let waitingRes=false;
+  let waitingRes=false; fullRes=[];
   resultsHtml=doneRaces.map(jr=>{
     const sr=seriesFor(jr.n);
     const evt=(cur.events||[]).find(e=>jr.d>=e.d&&jr.d<=eventEnd(e));
@@ -1567,7 +1574,9 @@ function hubResultsCard(c){
     const tl=sr.timing?{url:sr.timing}:TIMING_LINKS.find(x=>x.match.test(jr.n));
     const wait=sr.noWatch&&!sr.autoResults?"The race just ended. Official results for this series are not added to the app; see the series' own pages.":sr.autoResults?"The race just ended. The official result usually shows here within the hour.":"The race just ended. The official result is added here from the race report, usually within an hour or two.";
     const waitHtml=`<div class="hubSessionSub">${wait}</div>${tl?`<button class="btn quiet" style="margin-top:10px" onclick="openLiveTiming('${tl.url}')">Final order on the live timing &rsaquo;</button>`:""}`;
-    return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res?res.groups.map(g=>resultGroupHtml(g,5)).join(""):waitHtml}</div>`;
+    if(res){ const idx=fullRes.push(res)-1, more=res.groups.some(g=>(g.order&&g.order.length>5)||(g.podium&&g.podium.length>2));
+      return `<div class="hubCard${more?" hubTap":""}"${more?` role="button" tabindex="0" onclick="openFullRes(${idx})" onkeydown="if(event.key==='Enter')openFullRes(${idx})"`:""}><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res.groups.map(g=>resultGroupHtml(g,5)).join("")}${more?`<div class="fullResLink">Full results &rsaquo;</div>`:""}</div>`; }
+    return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${waitHtml}</div>`;
   }).join("");
   if(waitingRes) refreshResults();
   return resultsHtml;

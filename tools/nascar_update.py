@@ -2,7 +2,7 @@
 """NASCAR Cup Series race results for data/results.js, read from NASCAR's own race data (cf.nascar.com/cacher, the files nascar.com's race pages use;
 the weekend feed of a FINISHED race, never the live feed). Called by tools/auto_update.py on every run (every 30 minutes Thursday to Monday).
 For every Cup race of the last 10 days at a venue the app has a NASCAR Cup event for, once the classification is in (40 or so cars with a finishing
-position and laps run), the top ten are written as one entry (`s:"nascar"`, class "Race", lines "1. #5 Kyle Larson (Hendrick Motorsports)": the game
+position and laps run), the full classification is written as one entry (`s:"nascar"`, class "Race", lines "1. #5 Kyle Larson (Hendrick Motorsports)": the game
 scores by the #NN), note starting "(automatic update)". It is re-read on later runs (a post-race penalty can move the order) and only rewritten when it
 changed. A hand-written entry for the same race is kept. Options: --now, --dry-run, --print, --race <race_id> --track <id> --day YYYY-MM-DD (rehearse
 on any race). Stdlib only; needs node."""
@@ -18,10 +18,10 @@ def js(v): return json.dumps(v, ensure_ascii=False)
 def import_result(track, appday, r, race):
     rows = sorted(G.finished(r, race) or [], key=lambda x: x["finishing_position"])
     if len(rows) < 25: print("  race classification not complete yet"); return False
-    lines = ",\n".join("        " + js(f'{x["finishing_position"]}. #{x["car_number"]} {x["driver_fullname"]} ({x["team_name"]})') for x in rows[:10])
+    lines = ",\n".join("        " + js(f'{x["finishing_position"]}. #{x["car_number"]} {x["driver_fullname"]} ({x["team_name"]})') for x in rows)
     day = r["race_date"][:10]
     entry = (f'  {{ t:{js(track)}, d:{js(appday)}, s:"nascar", event:{js(r["race_name"])},\n    groups:[\n      {{ h:"Race", order:[\n{lines}\n      ] }}\n    ],\n'
-             f'    note:{js(MARK + " Source: NASCAR race data (cf.nascar.com, the files nascar.com race pages use), top ten of the race, race day " + day + ".")} }},\n')
+             f'    note:{js(MARK + " Source: NASCAR race data (cf.nascar.com, the files nascar.com race pages use), full classification of the race, race day " + day + ".")} }},\n')
     s = D.read("data/results.js")
     pat = r'^  \{ t:%s, d:%s, s:"nascar".*?\n    note:.*?\},\n' % (re.escape(js(track)), re.escape(js(appday)))
     m = re.search(pat, s, flags=re.S | re.M)

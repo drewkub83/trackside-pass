@@ -35,11 +35,11 @@ def session_day(track, event_day, n):
          f"const s=(t.sessions||[]).find(x=>x.n==={json.dumps(n)}&&x.d>=ev.d&&x.d<=e);console.log(JSON.stringify({{d:s?s.d:null}}))"
     return node_json("-e", js).get("d")
 def entry(item, n, day, data):
-    rows = [x for x in data["result"] if str(x.get("pos", "")).isdigit()][:10]
+    rows = [x for x in data["result"] if str(x.get("pos", "")).isdigit()]
     lines = ",\n".join("        " + json.dumps(f'{x["pos"]}. #{x["num"]} {x["name"]} ({x["team"]})' if x.get("team") else f'{x["pos"]}. #{x["num"]} {x["name"]}', ensure_ascii=False) for x in rows)
     src = {"f1academy": "f1academy.com results page", "carrera": "porschecarreracup.us results page", "f2": "fiaformula2.com race page", "f3": "fiaformula3.com race page"}[item["s"]]
     ev = f'{item["series"]}: {n.split(" - ")[0]} ({item["event"]})'
-    note = MARK + "Source: the series' " + src + ", top ten of " + n + ", race day " + day + "."
+    note = MARK + "Source: the series' " + src + ", full classification of " + n + ", race day " + day + "."
     return (f'  {{ t:{json.dumps(item["t"])}, d:{json.dumps(item["d"])}, s:{json.dumps(item["s"])}, race:{json.dumps(n, ensure_ascii=False)}, event:{json.dumps(ev, ensure_ascii=False)},\n'
             f'    groups:[\n      {{ h:"Race", order:[\n{lines}\n      ] }}\n    ],\n'
             f'    note:{json.dumps(note, ensure_ascii=False)} }},\n')

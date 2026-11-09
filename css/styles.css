@@ -1432,3 +1432,5 @@ html.wide #detail:not([data-wr="map"]) #pMap>.sheetBackdrop:not([hidden]){displa
 html.wide #detail .sheet .sclose{position:sticky;float:right;top:0;margin:-6px -6px 6px 8px;z-index:2}
 html.wide #infoModal{left:calc((100vw - var(--appw))/2 + var(--leftw));right:calc((100vw - var(--appw))/2);align-items:center;padding:20px}
 html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border-bottom:1px solid var(--glass-edge);border-radius:24px}
+
+.fullResLink{margin-top:10px;font-size:14px;font-weight:600;color:var(--accent)}

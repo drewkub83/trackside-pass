@@ -7,7 +7,7 @@
   2. sessions   the weekend's sessions (MotoGP, Moto2, Moto3: practice, qualifying, Sprint, warm-up, races) into the track's `sessions`, in LOCAL time as the
                 service prints them, whenever the service has a schedule for the event (cancelled sessions are left out). Names: "Free Practice 1 - MotoGP",
                 "Practice - MotoGP", "Qualifying 1 - MotoGP", "Sprint - MotoGP", "Warm-Up Practice - MotoGP", "Race - MotoGP" (the same for Moto2 and Moto3).
-  3. results    the top ten of a finished Sunday MotoGP race into data/results.js as `s:"motogp"`, class "Race", "1. #93 Marc Marquez (Ducati Lenovo Team)"
+  3. results    the full classification of a finished Sunday MotoGP race into data/results.js as `s:"motogp"`, class "Race", "1. #93 Marc Marquez (Ducati Lenovo Team)"
                 (note starting "(automatic update)"; a hand-written entry is kept; re-read for 3 days). A cancelled race writes nothing.
   4. standings  the riders' championship (top 15) into data/standings.js.
 Nothing here guesses: it copies what the service publishes. Options: --now 2026-10-29T12:00:00Z, --dry-run, --calendar-only. Stdlib only; needs node."""
@@ -138,9 +138,9 @@ def results_and_standings():
         if not tid: continue
         appev = D.app_event(app, tid, local_date(ev["date_start"]))
         if not appev: print(f"  {ev['name']}: no app event at {tid}"); continue
-        lines = ",\n".join("        " + js(f'{x["position"]}. #{x["rider"]["number"]} {x["rider"]["full_name"]} ({x["team"]["name"]})') for x in rows[:10])
+        lines = ",\n".join("        " + js(f'{x["position"]}. #{x["rider"]["number"]} {x["rider"]["full_name"]} ({x["team"]["name"]})') for x in rows)
         entry = (f'  {{ t:{js(tid)}, d:{js(appev["d"])}, s:"motogp", event:{js(pretty_event(ev["name"]))},\n    groups:[\n      {{ h:"Race", order:[\n{lines}\n      ] }}\n    ],\n'
-                 f'    note:{js(MARK + " Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), top ten of the Sunday Grand Prix, race day " + local_date(race["date"]) + ".")} }},\n')
+                 f'    note:{js(MARK + " Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), full classification of the Sunday Grand Prix, race day " + local_date(race["date"]) + ".")} }},\n')
         pat = r'^  \{ t:%s, d:%s, s:"motogp".*?\n    note:.*?\},\n' % (re.escape(js(tid)), re.escape(js(appev["d"])))
         m = re.search(pat, rs, flags=re.S | re.M)
         if m and MARK not in m.group(0): print("  results: a hand-written entry exists, kept"); continue

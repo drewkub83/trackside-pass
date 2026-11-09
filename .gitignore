@@ -31,3 +31,4 @@ android/.idea/
 android/gradle/gradle-daemon-jvm.properties
 .wrangler/
 android/app/google-services.json
+stamp-export/

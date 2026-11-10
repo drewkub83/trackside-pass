@@ -168,7 +168,7 @@ const PP_SERIES={
   openwheel:{kind:"ofcar",band:true,bandInk:"#17402F",ink:"#17402F",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
   gtwca:{kind:"outlines",ids:["road-america","cota","sonoma","barber","watkins-glen"],any:true,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD AMERICA",bot:"GT FAN",size:8.8,space:1.6},
   nascar:{kind:"car",art:"nascar",dark:true,band:true,bandInk:"#6E1822",ink:"#2B1517",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},
-  endcup:{kind:"art",art:"stopwatch",w:70,g:100,band:true,bandInk:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
+  endcup:{kind:"art",art:"stopwatch",w:70,g:100,band:true,bandInk:"#2F6F7A",ink:"#1F4F5A",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
   triple:{kind:"triart",band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
   hopper:{kind:"hopper",mode:"orig",band:true,bandInk:"#C28A00",ink:"#6B4A00",acc:"#6B4A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
   tripper:{kind:"bus",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
@@ -188,7 +188,7 @@ const PP_SERIES={
   ten:{kind:"tally",n:10,band:true,bandInk:"#5B3F8C",ink:"#3E2A63",acc:"#C98400",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS",size:8.8,space:1.9},
   season:{kind:"tally",n:25,band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SEASON TICKET",bot:"25 RACE WEEKENDS",size:8.8,space:1.9},
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
-  double:{kind:"venn",venn:"duo",band:true,bandInk:"#7A2E3A",ink:"#561F29",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
+  double:{kind:"art",art:"bill",w:96,g:88,band:true,bandInk:"#7A2E3A",ink:"#561F29",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
   trifecta:{kind:"venn",venn:"trio",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"IMSA · INDYCAR · GT WORLD",size:8.6,space:1.7},
   wec:{champ:"wec",region:"world",ink:"#10243E",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",region:"world",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
@@ -341,8 +341,8 @@ function ppOfCar(ink,acc,skin,w,cx,ground){
    The big pieces of stamp art (world coastlines, the car, camper van, grasshopper and cherries drawings) are separate files that are fetched the first time the passport
    needs them, then kept for offline use by the service worker like any other file. Nothing on Home or the track pages pays for them. While a file is on its way the
    stamp is drawn without its picture and redrawn as soon as it arrives. */
-const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",stopwatch:"js/stopwatch.js",triple:"js/triple.js",skyline:"js/skyline.js",nascar:"js/carart_nascar.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
-const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,nascar:()=>typeof PP_CAR_NASCAR!=="undefined"?PP_CAR_NASCAR:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,triple:()=>typeof PP_TRIPLE!=="undefined"?PP_TRIPLE:null,stopwatch:()=>typeof PP_STOPWATCH!=="undefined"?PP_STOPWATCH:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
+const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",bill:"js/bill.js",stopwatch:"js/stopwatch.js",triple:"js/triple.js",skyline:"js/skyline.js",nascar:"js/carart_nascar.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
+const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,nascar:()=>typeof PP_CAR_NASCAR!=="undefined"?PP_CAR_NASCAR:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,triple:()=>typeof PP_TRIPLE!=="undefined"?PP_TRIPLE:null,stopwatch:()=>typeof PP_STOPWATCH!=="undefined"?PP_STOPWATCH:null,bill:()=>typeof PP_BILL!=="undefined"?PP_BILL:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
 const PP_CAR_LMAX={gtp:235,nascar:120}, ppArtState={};
 let ppCur=null, ppLastFor=null;
 function ppArt(name){

@@ -337,25 +337,31 @@ function ppOfCar(ink,acc,skin,w,cx,ground){
 
 /* Car art from js/carart.js (an illustration supplied by the app's owner, reduced to ink tones): luminance maps from the ink colour (dark) to a pale ink tint (light),
    red parts take the accent, and an ink outline is drawn under everything so the pale body stays readable on the paper colour. */
+/* ---- stamp art loads on demand ----
+   The big pieces of stamp art (world coastlines, the car, camper van, grasshopper and cherries drawings) are separate files that are fetched the first time the passport
+   needs them, then kept for offline use by the service worker like any other file. Nothing on Home or the track pages pays for them. While a file is on its way the
+   stamp is drawn without its picture and redrawn as soon as it arrives. */
+const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",nascar:"js/carart_nascar.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
+const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,nascar:()=>typeof PP_CAR_NASCAR!=="undefined"?PP_CAR_NASCAR:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
+const PP_CAR_LMAX={gtp:235,nascar:120}, ppArtState={};
+let ppCur=null, ppLastFor=null;
+function ppArt(name){
+  const a=PP_ART_GET[name]&&PP_ART_GET[name](); if(a){ if(name==="nascar"&&!a.lmin){ a.lmin=85; a.solid=[0,1]; } return a; }
+  if(PP_ART_FILES[name]&&!ppArtState[name]){ ppArtState[name]=1; const sc=document.createElement("script"); sc.src=PP_ART_FILES[name];
+    sc.onload=()=>{ clearTimeout(window._ppAD); window._ppAD=setTimeout(ppArtRedraw,50); };
+    sc.onerror=()=>{ setTimeout(()=>{ delete ppArtState[name]; },30000); };      /* offline or a hiccup: try again later */
+    document.head.appendChild(sc); }
+  return null;
+}
+function ppArtRedraw(){
+  try{ const pe=document.getElementById("passport"); if(pe&&pe.classList.contains("on")&&typeof renderPassport==="function") renderPassport(); }catch(e){}
+  try{ const fp=document.getElementById("friendPass"); if(fp&&fp.classList.contains("on")&&ppLastFor) renderPassportFor(ppLastFor); }catch(e){}
+  try{ const el=document.getElementById("unlock"); if(ppCur&&el&&!el.hidden) document.getElementById("ulMedal").innerHTML=stampSvg(ppCur,{date:ppCur.when||Date.now()}); }catch(e){}
+}
 /* the outer contour of a traced path: its largest subpath (the holes in it are the other subpaths) */
 function ppBigSub(d){ let best="",ba=-1; d.split(/(?=M)/).forEach(sp=>{ const n=(sp.match(/-?\d+/g)||[]).map(Number); let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; for(let i=0;i+1<n.length;i+=2){ x0=Math.min(x0,n[i]); x1=Math.max(x1,n[i]); y0=Math.min(y0,n[i+1]); y1=Math.max(y1,n[i+1]); } const a=(x1-x0)*(y1-y0); if(a>ba){ ba=a; best=sp; } }); return best.replace(/Z$/,""); }
-const PP_CARS={gtp:()=>PP_CAR_GTP,nascar:()=>PP_CAR_NASCAR}, PP_CAR_LMAX={gtp:235,nascar:120}; PP_CAR_NASCAR.lmin=85; PP_CAR_NASCAR.solid=[0,1]; PP_CAR_NASCAR.wheels=[[1110,1512,175],[3040,1550,175]]; PP_CAR_NASCAR.cartoon=true; PP_CAR_NASCAR.windows=[[[1500,1000],[2100,930],[2230,950],[2620,1140],[1500,1150]]];
-function ppCarCartoon(art,ink,acc,skin,w,cx,ground){
-  /* cartoon version of the car: one saturated body colour (the stamp's accent) with a darker shade for the dark patches and cream for the highlights and the number,
-     a thick cream sticker outline, and two big round cartoon wheels drawn over the traced ones */
-  const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), body=acc, shade=ppMix(acc,ink,.4), tyre=ppMix(ink,"#000000",.35), W=art.wheels||[];
-  const fill=q=>q[2]===3?body:q[1]>150?skin:q[1]<14?shade:body;
-  const parts=art.p.filter(q=>q[2]!==2);
-  const wheel=([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r+14}" fill="${skin}"/><circle cx="${x}" cy="${y}" r="${r}" fill="${tyre}"/><circle cx="${x}" cy="${y}" r="${r*.58}" fill="${skin}"/><circle cx="${x}" cy="${y}" r="${r*.2}" fill="${tyre}"/>`+[0,1,2,3,4].map(k=>{ const a=k/5*Math.PI*2; return `<path d="M${x} ${y}L${n(x+Math.cos(a)*r*.56)} ${n(y+Math.sin(a)*r*.56)}" stroke="${tyre}" stroke-width="${n(r*.12)}" stroke-linecap="round"/>`; }).join("");
-  return `<g transform="translate(${n(cx-w/2)} ${n(ground-vh*s)}) scale(${s.toFixed(4)}) translate(${-vx} ${-vy})" stroke-linejoin="round">`
-    +`<g fill="${skin}" stroke="${skin}" stroke-width="${(3.4/s).toFixed(1)}">`+parts.map(q=>`<path d="${q[0]}"/>`).join("")+`</g>`
-    +(art.solid||[]).map(i=>`<path d="${ppBigSub(art.p[i][0])}Z" fill="${body}"/>`).join("")
-    +parts.map(q=>{ const c=fill(q); return `<path d="${q[0]}" fill="${c}" stroke="${c===skin?skin:c}" stroke-width="${(.5/s).toFixed(1)}"/>`; }).join("")
-    +(art.windows||[]).map(pg=>`<path d="M${pg.map(q=>q.join(" ")).join("L")}Z" fill="${ppMix(skin,"#7FB3D5",.7)}" stroke="${tyre}" stroke-width="${(1.1/s).toFixed(1)}" stroke-linejoin="round"/><path d="M${pg[0][0]+170} ${pg[0][1]+20}L${pg[1][0]-60} ${pg[1][1]+14}" stroke="${skin}" stroke-width="${(.9/s).toFixed(1)}" stroke-linecap="round" opacity=".8"/>`).join("")
-    +W.map(wheel).join("")+`</g>`;
-}
 function ppCarArt(art,ink,acc,skin,w,cx,ground,lmax,dark){
-  if(art.cartoon) return ppCarCartoon(art,ink,acc,skin,w,cx,ground);
+  if(!art) return "";
   const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), pale=dark?skin:ppMix(ink,skin,.93), low=dark?ppMix(ink,skin,.16):ink, cache={};
   const lmn=art.lmin||0, colour=(L,red,fl)=>{ if(red) return acc; L=Math.max(L,fl===2?45:lmn); const k=(L>>2)+(fl===2?1000:0); return cache[k]||(cache[k]=ppMix(low,pale,Math.pow(Math.min(1,L/(lmax||235)),dark?1.5:lmax?.9:1.25))); };
   const line=dark?ppMix(ink,skin,.5):ink;
@@ -431,6 +437,7 @@ function ppRegionProj(region){
 const ppInRegion=(t,region)=>{ const la=(t.geo.n+t.geo.s)/2, lo=(t.geo.w+t.geo.e)/2; return region==="europe"?(la>35.5&&la<61&&lo>-11&&lo<31):true; };
 /* the grasshopper for the Track Hopper stamp (js/hopper.js): its own colours, or recoloured into the stamp's ink */
 function ppHopArt(art,mode,ink,skin,w,cx,ground){
+  if(!art) return "";
   const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), h=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16)), pale=ppMix(ink,skin,.88);
   const col=c=>{ if(mode!=="ink") return c; const [r,g,b]=h(c), L=(.299*r+.587*g+.114*b)/255; return ppMix(ink,pale,Math.min(1,Math.max(0,(L-.15)/.7))); };
   return `<ellipse cx="${n(cx+w*.04)}" cy="${n(ground-w*.02)}" rx="${n(w*.34)}" ry="${n(w*.03)}" fill="${ink}" opacity=".15"/><g transform="translate(${n(cx-w/2)} ${n(ground-vh*s)}) scale(${s.toFixed(4)}) translate(${-vx} ${-vy})" stroke-linejoin="round">`
@@ -447,17 +454,17 @@ function seriesStamp(d,o){
   const dots=venues.map(v=>{ const [x,y]=proj(v.lon,v.lat).map(n=>n.toFixed(1)), on=v.ids.some(i=>visits[i]>0);
     return on?`<circle cx="${x}" cy="${y}" r="4" fill="#F3EAD2" stroke="${acc}" stroke-width="1.1"/><circle cx="${x}" cy="${y}" r="2.2" fill="${acc}" stroke="${ink}" stroke-width=".8"/>`
       :`<circle cx="${x}" cy="${y}" r="1.5" fill="#F3EAD2" stroke="${ink}" stroke-width=".6" opacity=".9"/>`; }).join("");
-  const map=sp.region?`<g clip-path="url(#st${u}c)"><path d="${PP_WORLD.map(r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z").join("")}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".5" stroke-linejoin="round"/></g>${route}${dots}`:`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
+  const map=sp.region?`<g clip-path="url(#st${u}c)"><path d="${(ppArt("world")||[]).map(r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z").join("")}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".5" stroke-linejoin="round"/></g>${route}${dots}`:`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
   const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
   const vis4=id=>visits[id]>0, nO=(sp.ids||[]).length, cells=nO===1?[[61,46]]:nO===2?[[40,48],[82,48]]:nO===3?[[22,50],[61,50],[100,50]]:nO===5?[[43,36],[83,36],[24,68],[61,68],[98,68]]:[[42,36],[80,36],[42,69],[80,69]], cw=nO===5?36:38, ch=nO===5?28:nO>=4?31:34;
   const any=sp.any;      /* any: lit as soon as one of the circuits is visited */
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
     :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
-    :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(PP_BUS,"ink","#8E8670","#F3EAD2",86,80,102)+'</g>':ppHopArt(PP_BUS,"orig",ink,"#F3EAD2",86,80,102))
-    :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(PP_CHERRIES,"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(PP_CHERRIES,"orig",ink,"#F3EAD2",70,80,104))
-    :sp.kind==="hopper"?(locked?`<g opacity=".45">${ppHopArt(PP_HOPPER,"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(PP_HOPPER,sp.mode,ink,"#F3EAD2",70,80,102))
-    :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(PP_CARS[sp.art](),"#8E8670","#8E8670","#F3EAD2",112,80,100)}</g>`:(sp.dark?`<circle cx="80" cy="80" r="56.5" fill="${ink}"/>`:"")+ppCarArt(PP_CARS[sp.art](),ink,acc,"#F3EAD2",sp.art==="nascar"?118:112,80,sp.dark?92:100,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0,sp.dark))
+    :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,102)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,102))
+    :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(ppArt("cherries"),"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(ppArt("cherries"),"orig",ink,"#F3EAD2",70,80,104))
+    :sp.kind==="hopper"?(locked?`<g opacity=".45">${ppHopArt(ppArt("hopper"),"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(ppArt("hopper"),sp.mode,ink,"#F3EAD2",70,80,102))
+    :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(ppArt(sp.art),"#8E8670","#8E8670","#F3EAD2",112,80,100)}</g>`:(sp.dark?`<circle cx="80" cy="80" r="56.5" fill="${ink}"/>`:"")+ppCarArt(ppArt(sp.art),ink,acc,"#F3EAD2",sp.art==="nascar"?118:112,80,sp.dark?92:100,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0,sp.dark))
     :sp.kind==="star"?ppStarArt(ink,acc,"#F3EAD2")
     :sp.kind==="clocks"?ppClocksArt(ink,acc,"#F3EAD2",st?st.zoneSet:null)
     :sp.kind==="stopwatch"?ppStopwatchArt(ink,acc,"#F3EAD2",!locked&&(o.done!==false))
@@ -539,7 +546,7 @@ function legendStamp(d,o){
 let ppQ=[];
 function ppEnqueue(list){ ppQ.push(...list); if(document.getElementById("unlock").hidden) ppNext(); }
 function ppNext(){
-  const d=ppQ.shift(), el=document.getElementById("unlock"); if(!d){ closeUnlock(); return; }
+  const d=ppQ.shift(), el=document.getElementById("unlock"); ppCur=d||null; if(!d){ closeUnlock(); return; }
   const legend=d.tier==="z", ink=PP_INK[d.tier]||PP_INK.x, n=legend?46:16, gold=["#A87712","#E0B84C","#14171A","#FFFFFF","#E0B84C"];
   document.getElementById("ulBurst").innerHTML=Array.from({length:n},(_,i)=>{ const a=(i/n)*Math.PI*2+Math.random()*.5, r=88+Math.random()*44;
     return `<i style="--dx:${Math.round(Math.cos(a)*r)}px;--dy:${Math.round(Math.sin(a)*r)}px;--c:${legend?gold[i%gold.length]:ink};--s:${(3+Math.random()*(legend?6:4)).toFixed(1)}px;${legend?"border-radius:1px;":""}"></i>`; }).join("");
@@ -639,6 +646,7 @@ function renderPassport(){
 /* another player's passport (from the leaderboard or the friends list): d = {name, stamps, unlocked} from the server. Which badges they hold is worked out here
    from their stamps with today's rules, so a change to the badges needs no change to what was saved; the server only supplies the dates. */
 function renderPassportFor(d){
+  ppLastFor=d;
   const p={stamps:d.stamps||[],unlocked:{}}, st=ppStats(p), at=d.unlocked||{}, lastAt=p.stamps.reduce((m,s)=>Math.max(m,s.at||0),0)||Date.now();
   ppEvaluate(p); Object.keys(p.unlocked).forEach(k=>{ p.unlocked[k]=at[k]||lastAt; });
   const total=PP_GLOBAL.length, got=PP_GLOBAL.filter(x=>p.unlocked[x.id]).length;

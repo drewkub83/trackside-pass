@@ -175,7 +175,7 @@ const PP_SERIES={
   grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
   wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},
   street:{kind:"art",art:"gloves",w:76,g:100,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.9},
-  jungle:{kind:"art",art:"skyline",w:108,g:98,band:true,bandInk:"#C28A00",bandText:"#2F3A45",ink:"#2F3A45",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
+  jungle:{kind:"art",art:"skyline",w:108,g:98,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
   sunshine:{kind:"states",states:["Florida"],ids:["daytona","sebring","st-petersburg"],band:true,bandInk:"#1F7A8C",ink:"#175F6D",acc:"#E0A100",top:"SUNSHINE STATE",bot:"3 FLORIDA CIRCUITS",size:8.8,space:1.9},
   lonestar:{kind:"states",states:["Texas"],ids:["cota","arlington"],band:true,bandInk:"#7A1F2B",ink:"#5E1620",acc:"#E0A100",top:"LONE STAR",bot:"TEXAS",size:9.2,space:2.4},
   lakes:{kind:"states",states:["Wisconsin","Michigan","Ohio"],lakes:true,ids:["road-america","detroit","mid-ohio"],band:true,bandInk:"#1F4E79",ink:"#173B5C",acc:"#E0A100",top:"GREAT LAKES LOOP",bot:"WI · MI · OH",size:8.6,space:1.7},

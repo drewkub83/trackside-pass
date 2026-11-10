@@ -171,7 +171,7 @@ const PP_SERIES={
   endcup:{kind:"outlines",ids:["daytona","sebring","watkins-glen","road-america","road-atlanta"],any:true,band:true,ink:"#1E2238",bandInk:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
   triple:{kind:"outlines",ids:["daytona","sebring","road-atlanta"],band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
   hopper:{kind:"hopper",mode:"orig",band:true,bandInk:"#C28A00",ink:"#6B4A00",acc:"#6B4A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
-  tripper:{kind:"tracks",route:"visited",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
+  tripper:{kind:"bus",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
   grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
   wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},
   street:{kind:"outlines",ids:["long-beach","detroit","st-petersburg","arlington"],band:true,bandInk:"#2F3A45",ink:"#2F3A45",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.7},
@@ -454,6 +454,7 @@ function seriesStamp(d,o){
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
     :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
+    :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(PP_BUS,"ink","#8E8670","#F3EAD2",86,80,102)+'</g>':ppHopArt(PP_BUS,"orig",ink,"#F3EAD2",86,80,102))
     :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(PP_CHERRIES,"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(PP_CHERRIES,"orig",ink,"#F3EAD2",70,80,104))
     :sp.kind==="hopper"?(locked?`<g opacity=".45">${ppHopArt(PP_HOPPER,"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(PP_HOPPER,sp.mode,ink,"#F3EAD2",70,80,102))
     :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(PP_CARS[sp.art](),"#8E8670","#8E8670","#F3EAD2",112,80,100)}</g>`:(sp.dark?`<circle cx="80" cy="80" r="56.5" fill="${ink}"/>`:"")+ppCarArt(PP_CARS[sp.art](),ink,acc,"#F3EAD2",sp.art==="nascar"?118:112,80,sp.dark?92:100,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0,sp.dark))

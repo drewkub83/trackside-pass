@@ -182,7 +182,7 @@ const PP_SERIES={
   golden:{kind:"states",states:["California"],ids:["long-beach","laguna-seca","sonoma"],band:true,bandInk:"#C28A00",bandText:"#4A3200",ink:"#4A3200",acc:"#B23A2A",top:"GOLDEN STATE",bot:"CALIFORNIA",size:9.2,space:2.2},
   peach:{kind:"states",states:["Georgia","Alabama"],ids:["road-atlanta","barber"],band:true,bandInk:"#C2553A",ink:"#8C3A26",acc:"#1F5E4A",top:"PEACH AND BAMA",bot:"GEORGIA · ALABAMA",size:8.8,space:1.8},
   border:{kind:"states",states:["Ontario"],ctx:["Michigan","Ohio","Wisconsin"],lakes:true,ids:["canadian-tire-motorsport-park"],band:true,bandInk:"#9C2B2B",ink:"#7A2020",acc:"#E0A100",top:"BORDER CROSSER",bot:"CANADA",size:8.8,space:2},
-  first:{kind:"star",band:true,bandInk:"#2F6F6A",ink:"#1F4F4B",acc:"#C98400",top:"FIRST STAMP",bot:"FIRST CHECK-IN",size:9.2,space:2.2},
+  first:{kind:"cherries",band:true,bandInk:"#2F6F6A",ink:"#1F4F4B",acc:"#C98400",top:"FIRST STAMP",bot:"FIRST CHECK-IN",size:9.2,space:2.2},
   zones:{kind:"clocks",band:true,bandInk:"#8E3B2F",ink:"#6B2A21",acc:"#C98400",top:"TIME ZONE TRAVELER",bot:"3 TIME ZONES",size:8.2,space:1.5},
   marathon:{kind:"stopwatch",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"MARATHON",bot:"ALL FOUR DAYS",size:9.2,space:2.4},
   ten:{kind:"tally",n:10,band:true,bandInk:"#5B3F8C",ink:"#3E2A63",acc:"#C98400",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS",size:8.8,space:1.9},
@@ -434,7 +434,7 @@ function ppHopArt(art,mode,ink,skin,w,cx,ground){
   const [vx,vy,vw,vh]=art.vb, s=w/vw, n=v=>v.toFixed(1).replace(/\.0$/,""), h=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16)), pale=ppMix(ink,skin,.88);
   const col=c=>{ if(mode!=="ink") return c; const [r,g,b]=h(c), L=(.299*r+.587*g+.114*b)/255; return ppMix(ink,pale,Math.min(1,Math.max(0,(L-.15)/.7))); };
   return `<ellipse cx="${n(cx+w*.04)}" cy="${n(ground-w*.02)}" rx="${n(w*.34)}" ry="${n(w*.03)}" fill="${ink}" opacity=".15"/><g transform="translate(${n(cx-w/2)} ${n(ground-vh*s)}) scale(${s.toFixed(4)}) translate(${-vx} ${-vy})" stroke-linejoin="round">`
-    +art.p.map(q=>{ const c=col(q[1]); return `<path d="${q[0]}" fill="${c}" stroke="${c}" stroke-width=".4"/>`; }).join("")+`</g>`;
+    +art.p.map(q=>{ const c=col(q[1]), o=q[2]&&q[2]<1?` fill-opacity="${q[2]}"`:""; return `<path d="${q[0]}" fill="${c}"${o} fill-rule="evenodd" stroke="${c}"${o} stroke-width=".4"/>`; }).join("")+`</g>`;
 }
 function seriesStamp(d,o){
   o=o||{}; const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
@@ -454,6 +454,7 @@ function seriesStamp(d,o){
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
     :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
+    :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(PP_CHERRIES,"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(PP_CHERRIES,"orig",ink,"#F3EAD2",70,80,104))
     :sp.kind==="hopper"?(locked?`<g opacity=".45">${ppHopArt(PP_HOPPER,"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(PP_HOPPER,sp.mode,ink,"#F3EAD2",70,80,102))
     :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(PP_CARS[sp.art](),"#8E8670","#8E8670","#F3EAD2",112,80,100)}</g>`:(sp.dark?`<circle cx="80" cy="80" r="56.5" fill="${ink}"/>`:"")+ppCarArt(PP_CARS[sp.art](),ink,acc,"#F3EAD2",sp.art==="nascar"?118:112,80,sp.dark?92:100,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0,sp.dark))
     :sp.kind==="star"?ppStarArt(ink,acc,"#F3EAD2")

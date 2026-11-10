@@ -174,7 +174,7 @@ const PP_SERIES={
   tripper:{kind:"bus",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
   grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
   wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},
-  street:{kind:"art",art:"gloves",w:76,g:100,band:true,bandInk:"#2F3A45",ink:"#2F3A45",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.9},
+  street:{kind:"art",art:"gloves",w:76,g:100,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.9},
   jungle:{kind:"outlines",ids:["long-beach","detroit","st-petersburg","arlington"],band:true,bandInk:"#C28A00",bandText:"#2F3A45",ink:"#2F3A45",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
   sunshine:{kind:"states",states:["Florida"],ids:["daytona","sebring","st-petersburg"],band:true,bandInk:"#1F7A8C",ink:"#175F6D",acc:"#E0A100",top:"SUNSHINE STATE",bot:"3 FLORIDA CIRCUITS",size:8.8,space:1.9},
   lonestar:{kind:"states",states:["Texas"],ids:["cota","arlington"],band:true,bandInk:"#7A1F2B",ink:"#5E1620",acc:"#E0A100",top:"LONE STAR",bot:"TEXAS",size:9.2,space:2.4},

@@ -188,7 +188,7 @@ const PP_SERIES={
   ten:{kind:"tally",n:10,band:true,bandInk:"#5B3F8C",ink:"#3E2A63",acc:"#C98400",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS",size:8.8,space:1.9},
   season:{kind:"tally",n:25,band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SEASON TICKET",bot:"25 RACE WEEKENDS",size:8.8,space:1.9},
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
-  double:{kind:"art",art:"bill",w:96,g:88,band:true,bandInk:"#7A2E3A",ink:"#561F29",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
+  double:{kind:"art",art:"bill",w:96,g:88,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
   trifecta:{kind:"venn",venn:"trio",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"IMSA · INDYCAR · GT WORLD",size:8.6,space:1.7},
   wec:{champ:"wec",region:"world",ink:"#10243E",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",region:"world",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},

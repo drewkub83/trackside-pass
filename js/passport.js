@@ -175,7 +175,7 @@ const PP_SERIES={
   grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
   wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},
   street:{kind:"art",art:"gloves",w:76,g:100,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.9},
-  jungle:{kind:"outlines",ids:["long-beach","detroit","st-petersburg","arlington"],band:true,bandInk:"#C28A00",bandText:"#2F3A45",ink:"#2F3A45",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
+  jungle:{kind:"art",art:"skyline",w:108,g:98,band:true,bandInk:"#C28A00",bandText:"#2F3A45",ink:"#2F3A45",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
   sunshine:{kind:"states",states:["Florida"],ids:["daytona","sebring","st-petersburg"],band:true,bandInk:"#1F7A8C",ink:"#175F6D",acc:"#E0A100",top:"SUNSHINE STATE",bot:"3 FLORIDA CIRCUITS",size:8.8,space:1.9},
   lonestar:{kind:"states",states:["Texas"],ids:["cota","arlington"],band:true,bandInk:"#7A1F2B",ink:"#5E1620",acc:"#E0A100",top:"LONE STAR",bot:"TEXAS",size:9.2,space:2.4},
   lakes:{kind:"states",states:["Wisconsin","Michigan","Ohio"],lakes:true,ids:["road-america","detroit","mid-ohio"],band:true,bandInk:"#1F4E79",ink:"#173B5C",acc:"#E0A100",top:"GREAT LAKES LOOP",bot:"WI · MI · OH",size:8.6,space:1.7},
@@ -341,8 +341,8 @@ function ppOfCar(ink,acc,skin,w,cx,ground){
    The big pieces of stamp art (world coastlines, the car, camper van, grasshopper and cherries drawings) are separate files that are fetched the first time the passport
    needs them, then kept for offline use by the service worker like any other file. Nothing on Home or the track pages pays for them. While a file is on its way the
    stamp is drawn without its picture and redrawn as soon as it arrives. */
-const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",nascar:"js/carart_nascar.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
-const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,nascar:()=>typeof PP_CAR_NASCAR!=="undefined"?PP_CAR_NASCAR:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
+const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",skyline:"js/skyline.js",nascar:"js/carart_nascar.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
+const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,nascar:()=>typeof PP_CAR_NASCAR!=="undefined"?PP_CAR_NASCAR:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
 const PP_CAR_LMAX={gtp:235,nascar:120}, ppArtState={};
 let ppCur=null, ppLastFor=null;
 function ppArt(name){

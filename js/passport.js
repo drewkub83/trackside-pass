@@ -182,7 +182,7 @@ const PP_SERIES={
   golden:{kind:"states",states:["California"],ids:["long-beach","laguna-seca","sonoma"],band:true,bandInk:"#C28A00",bandText:"#4A3200",ink:"#4A3200",acc:"#B23A2A",top:"GOLDEN STATE",bot:"CALIFORNIA",size:9.2,space:2.2},
   peach:{kind:"states",states:["Georgia","Alabama"],ids:["road-atlanta","barber"],band:true,bandInk:"#C2553A",ink:"#8C3A26",acc:"#1F5E4A",top:"PEACH AND BAMA",bot:"GEORGIA · ALABAMA",size:8.8,space:1.8},
   border:{kind:"states",states:["Ontario"],ctx:["Michigan","Ohio","Wisconsin"],lakes:true,ids:["canadian-tire-motorsport-park"],band:true,bandInk:"#9C2B2B",ink:"#7A2020",acc:"#E0A100",top:"BORDER CROSSER",bot:"CANADA",size:8.8,space:2},
-  first:{kind:"cherries",band:true,bandInk:"#2F6F6A",ink:"#1F4F4B",acc:"#C98400",top:"FIRST STAMP",bot:"FIRST CHECK-IN",size:9.2,space:2.2},
+  first:{kind:"cherries",band:true,bandInk:"#9B1C16",ink:"#7A1612",acc:"#C98400",top:"FIRST STAMP",bot:"FIRST CHECK-IN",size:9.2,space:2.2},
   zones:{kind:"clocks",band:true,bandInk:"#8E3B2F",ink:"#6B2A21",acc:"#C98400",top:"TIME ZONE TRAVELER",bot:"3 TIME ZONES",size:8.2,space:1.5},
   marathon:{kind:"stopwatch",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"MARATHON",bot:"ALL FOUR DAYS",size:9.2,space:2.4},
   ten:{kind:"tally",n:10,band:true,bandInk:"#5B3F8C",ink:"#3E2A63",acc:"#C98400",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS",size:8.8,space:1.9},

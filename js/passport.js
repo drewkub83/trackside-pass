@@ -169,7 +169,7 @@ const PP_SERIES={
   gtwca:{kind:"outlines",ids:["road-america","cota","sonoma","barber","watkins-glen"],any:true,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD AMERICA",bot:"GT FAN",size:8.8,space:1.6},
   nascar:{kind:"car",art:"nascar",dark:true,band:true,bandInk:"#6E1822",ink:"#2B1517",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},
   endcup:{kind:"outlines",ids:["daytona","sebring","watkins-glen","road-america","road-atlanta"],any:true,band:true,ink:"#1E2238",bandInk:"#1E2238",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
-  triple:{kind:"outlines",ids:["daytona","sebring","road-atlanta"],band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
+  triple:{kind:"triart",band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
   hopper:{kind:"hopper",mode:"orig",band:true,bandInk:"#C28A00",ink:"#6B4A00",acc:"#6B4A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
   tripper:{kind:"bus",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
   grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
@@ -341,8 +341,8 @@ function ppOfCar(ink,acc,skin,w,cx,ground){
    The big pieces of stamp art (world coastlines, the car, camper van, grasshopper and cherries drawings) are separate files that are fetched the first time the passport
    needs them, then kept for offline use by the service worker like any other file. Nothing on Home or the track pages pays for them. While a file is on its way the
    stamp is drawn without its picture and redrawn as soon as it arrives. */
-const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",skyline:"js/skyline.js",nascar:"js/carart_nascar.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
-const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,nascar:()=>typeof PP_CAR_NASCAR!=="undefined"?PP_CAR_NASCAR:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
+const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",triple:"js/triple.js",skyline:"js/skyline.js",nascar:"js/carart_nascar.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
+const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,nascar:()=>typeof PP_CAR_NASCAR!=="undefined"?PP_CAR_NASCAR:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,triple:()=>typeof PP_TRIPLE!=="undefined"?PP_TRIPLE:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
 const PP_CAR_LMAX={gtp:235,nascar:120}, ppArtState={};
 let ppCur=null, ppLastFor=null;
 function ppArt(name){
@@ -461,6 +461,7 @@ function seriesStamp(d,o){
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
     :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
+        :sp.kind==="triart"?(function(){ const T=ppArt("triple"); if(!T) return ""; const on={a:vis4("daytona"),b:vis4("sebring"),c:vis4("road-atlanta")}; const one=(k,cx,w)=>'<g opacity="'+(locked?.45:on[k]?1:.28)+'">'+ppHopArt(T[{a:"stop",b:"prop",c:"skel"}[k]],locked?"ink":"orig",locked?"#8E8670":ink,"#F3EAD2",w,cx,98)+'</g>'; return one("a",40,22)+one("b",80,40)+one("c",120,26); })()
     :sp.kind==="art"?(locked?'<g opacity=".45">'+ppHopArt(ppArt(sp.art),"ink","#8E8670","#F3EAD2",sp.w||72,80,sp.g||102)+'</g>':ppHopArt(ppArt(sp.art),sp.mode||"orig",ink,"#F3EAD2",sp.w||72,80,sp.g||102))
     :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,102)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,102))
     :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(ppArt("cherries"),"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(ppArt("cherries"),"orig",ink,"#F3EAD2",70,80,104))

@@ -165,17 +165,17 @@ function ppFilter(u,rough){ return rough?`<filter id="st${u}f" x="-4%" y="-4%" w
 const PP_SERIES={
   imsa:{champ:"imsa",kind:"tour",band:true,bandInk:"#7A1612",ink:"#4A0E0B",acc:"#EB1B24",top:"IMSA GRAND TOUR",bot:"EVERY VENUE",w:102,g:113,size:9.2,space:1.9},
   sportscar:{kind:"car",art:"gtp",band:true,bandInk:"#B3261E",ink:"#1B1B1F",acc:"#B3261E",top:"SPORTS CAR FAN",bot:"IMSA WEEKEND",size:9.2,space:2.2},
-  openwheel:{kind:"art",art:"indy",w:100,g:104,band:true,bandInk:"#7A1612",ink:"#4A0E0B",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
+  openwheel:{kind:"art",art:"indy",w:100,g:103,band:true,bandInk:"#7A1612",ink:"#4A0E0B",acc:"#C23B22",top:"OPEN WHEEL",bot:"INDYCAR WEEKEND",size:9.2,space:2.2},
   gtwca:{kind:"outlines",ids:["road-america","cota","sonoma","barber","watkins-glen"],any:true,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD AMERICA",bot:"GT FAN",size:8.8,space:1.6},
   nascar:{kind:"art",art:"sign",w:84,g:122,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#C28A00",top:"NASCAR",bot:"STOCK CAR WEEKEND",size:10.5,space:2.6},
-  endcup:{kind:"art",art:"stopwatch",w:70,g:100,band:true,bandInk:"#2F6F7A",ink:"#1F4F5A",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
+  endcup:{kind:"art",art:"stopwatch",w:70,g:115,band:true,bandInk:"#2F6F7A",ink:"#1F4F5A",acc:"#C98400",top:"IMSA ENDURANCE CUP",bot:"6 TO 24 HOURS",size:9.2,space:1.9},
   triple:{kind:"triart",band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
   hopper:{kind:"hopper",mode:"orig",band:true,bandInk:"#C28A00",ink:"#6B4A00",acc:"#6B4A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
   tripper:{kind:"bus",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
   grand:{kind:"deca",ink:"#23356E",acc:"#23356E",top:"THE GRAND TOURER",bot:"10 TRACKS VISITED"},
   wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},
-  street:{kind:"art",art:"gloves",w:76,g:100,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.9},
-  jungle:{kind:"art",art:"skyline",w:108,g:98,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
+  street:{kind:"art",art:"gloves",w:76,g:108,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.9},
+  jungle:{kind:"art",art:"skyline",w:108,g:106,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
   sunshine:{kind:"states",states:["Florida"],ids:["daytona","sebring","st-petersburg"],band:true,bandInk:"#1F7A8C",ink:"#175F6D",acc:"#E0A100",top:"SUNSHINE STATE",bot:"3 FLORIDA CIRCUITS",size:8.8,space:1.9},
   lonestar:{kind:"states",states:["Texas"],ids:["cota","arlington"],band:true,bandInk:"#7A1F2B",ink:"#5E1620",acc:"#E0A100",top:"LONE STAR",bot:"TEXAS",size:9.2,space:2.4},
   lakes:{kind:"states",states:["Wisconsin","Michigan","Ohio"],lakes:true,ids:["road-america","detroit","mid-ohio"],band:true,bandInk:"#1F4E79",ink:"#173B5C",acc:"#E0A100",top:"GREAT LAKES LOOP",bot:"WI · MI · OH",size:8.6,space:1.7},
@@ -188,10 +188,10 @@ const PP_SERIES={
   ten:{kind:"deca",mode:"weekends",mid:"10",midSize:21,ink:"#3E2A63",acc:"#3E2A63",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS"},
   season:{kind:"ticket",ink:"#7A5A00",acc:"#C28A00",top:"SEASON TICKET",bot:"25 RACE WEEKENDS"},
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
-  double:{kind:"art",art:"bill",w:96,g:88,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
+  double:{kind:"art",art:"bill",w:96,g:101,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
   trifecta:{kind:"venn",venn:"trio",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"IMSA · INDYCAR · GT WORLD",size:8.6,space:1.7},
   wec:{champ:"wec",region:"world",ink:"#10243E",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
-  motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:112,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
+  motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:115,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
   gtwce:{champ:"gtwce",region:"europe",band:true,bandInk:"#14264F",ink:"#14264F",acc:"#C28A00",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
   f1academy:{kind:"outlines",ids:["cota","las-vegas"],any:true,band:true,bandInk:"#A8245A",ink:"#7E1A43",acc:"#C28A00",top:"F1 ACADEMY",bot:"ACADEMY WEEKEND",size:9.2,space:2.2},
   carrera:{kind:"outlines",ids:["daytona","sebring","road-america","road-atlanta","cota"],any:true,band:true,bandInk:"#5C1A1A",ink:"#4A1414",acc:"#C28A00",top:"CARRERA CUP",bot:"PORSCHE WEEKEND",size:9.2,space:2.2},
@@ -500,7 +500,7 @@ function seriesStamp(d,o){
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
     :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
-        :sp.kind==="triart"?(function(){ const T=ppArt("triple"); if(!T) return ""; const on={a:vis4("daytona"),b:vis4("sebring"),c:vis4("road-atlanta")}; const one=(k,cx,w)=>'<g opacity="'+(locked?.45:on[k]?1:.28)+'">'+ppHopArt(T[{a:"stop",b:"prop",c:"skel"}[k]],locked?"ink":"orig",locked?"#8E8670":ink,"#F3EAD2",w,cx,98)+'</g>'; return one("a",40,22)+one("b",80,40)+one("c",120,26); })()
+        :sp.kind==="triart"?(function(){ const T=ppArt("triple"); if(!T) return ""; const on={a:vis4("daytona"),b:vis4("sebring"),c:vis4("road-atlanta")}; const one=(k,cx,w)=>'<g opacity="'+(locked?.45:on[k]?1:.28)+'">'+ppHopArt(T[{a:"stop",b:"prop",c:"skel"}[k]],locked?"ink":"orig",locked?"#8E8670":ink,"#F3EAD2",w,cx,102)+'</g>'; return one("a",40,22)+one("b",80,40)+one("c",120,26); })()
         :sp.kind==="tour"?(function(){ const T=ppArt("tour"); if(!T) return ""; const [vx,vy,vw,vh]=T.vb, w=sp.w||102, s=w/vw, gx=80-w/2, gy=(sp.g||113)-vh*s, k=2.5, pk=T.pin[0];
       const pins=T.pins.map(([id,x,y])=>{ const on=!locked&&visits[id]>0; return `<g transform="translate(${(gx+(x-vx)*s).toFixed(1)} ${(gy+(y-vy)*s).toFixed(1)}) scale(${(s*k).toFixed(4)})"><path d="${pk[0]}" fill="${on?'#EB1B24':locked?'#B9B2A0':'#9AA3AD'}" fill-opacity="${on?1:.8}" fill-rule="evenodd" stroke="${on?'#7A0E14':'#5C6470'}" stroke-width="${on?9:7}" stroke-linejoin="round"/></g>`; }).join("");
       return (locked?'<g opacity=".45">'+ppHopArt(T,"ink","#8E8670","#F3EAD2",w,80,sp.g||113)+'</g>':ppHopArt(T,"orig",ink,"#F3EAD2",w,80,sp.g||113))+pins; })()
@@ -518,10 +518,10 @@ function seriesStamp(d,o){
           :`<circle cx="${f(cx)}" cy="${cy}" r="5" fill="none" stroke="${ink}" stroke-width="1.2" opacity=".6"/>`; }); }
       return s+(on?`<text x="80" y="111" font-size="6.8" font-weight="800" letter-spacing="2.2" text-anchor="middle" fill="${ink}">LIGHTS OUT</text>`:""); })()
     :sp.kind==="art"?(locked?'<g opacity=".45">'+ppHopArt(ppArt(sp.art),"ink","#8E8670","#F3EAD2",sp.w||72,80,sp.g||102)+'</g>':ppHopArt(ppArt(sp.art),sp.mode||"orig",ink,"#F3EAD2",sp.w||72,80,sp.g||102))
-    :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,102)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,102))
-    :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(ppArt("cherries"),"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(ppArt("cherries"),"orig",ink,"#F3EAD2",70,80,104))
-    :sp.kind==="hopper"?(locked?`<g opacity=".45">${ppHopArt(ppArt("hopper"),"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(ppArt("hopper"),sp.mode,ink,"#F3EAD2",70,80,102))
-    :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(ppArt(sp.art),"#8E8670","#8E8670","#F3EAD2",112,80,100)}</g>`:(sp.dark?`<circle cx="80" cy="80" r="56.5" fill="${ink}"/>`:"")+ppCarArt(ppArt(sp.art),ink,acc,"#F3EAD2",sp.art==="nascar"?118:112,80,sp.dark?92:100,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0,sp.dark))
+    :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,105)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,105))
+    :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(ppArt("cherries"),"ink","#8E8670","#F3EAD2",70,80,115)}</g>`:ppHopArt(ppArt("cherries"),"orig",ink,"#F3EAD2",70,80,115))
+    :sp.kind==="hopper"?(locked?`<g opacity=".45">${ppHopArt(ppArt("hopper"),"ink","#8E8670","#F3EAD2",70,80,114)}</g>`:ppHopArt(ppArt("hopper"),sp.mode,ink,"#F3EAD2",70,80,114))
+    :sp.kind==="car"?(locked?`<g opacity=".45">${ppCarArt(ppArt(sp.art),"#8E8670","#8E8670","#F3EAD2",112,80,109)}</g>`:(sp.dark?`<circle cx="80" cy="80" r="56.5" fill="${ink}"/>`:"")+ppCarArt(ppArt(sp.art),ink,acc,"#F3EAD2",sp.art==="nascar"?118:112,80,sp.dark?92:109,PP_CAR_LMAX[sp.art]!==235?PP_CAR_LMAX[sp.art]:0,sp.dark))
     :sp.kind==="star"?ppStarArt(ink,acc,"#F3EAD2")
     :sp.kind==="clocks"?ppClocksArt(ink,acc,"#F3EAD2",st?st.zoneSet:null)
     :sp.kind==="stopwatch"?ppStopwatchArt(ink,acc,"#F3EAD2",!locked&&(o.done!==false))

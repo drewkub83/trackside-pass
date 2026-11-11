@@ -192,7 +192,7 @@ const PP_SERIES={
   trifecta:{kind:"venn",venn:"trio",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"IMSA · INDYCAR · GT WORLD",size:8.6,space:1.7},
   wec:{champ:"wec",region:"world",ink:"#10243E",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:115,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
-  gtwce:{champ:"gtwce",region:"europe",band:true,bandInk:"#14264F",ink:"#14264F",acc:"#C28A00",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
+  gtwce:{champ:"gtwce",kind:"art",art:"gte",w:88,g:98,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
   f1academy:{kind:"outlines",ids:["cota","las-vegas"],any:true,band:true,bandInk:"#A8245A",ink:"#7E1A43",acc:"#C28A00",top:"F1 ACADEMY",bot:"ACADEMY WEEKEND",size:9.2,space:2.2},
   carrera:{kind:"outlines",ids:["daytona","sebring","road-america","road-atlanta","cota"],any:true,band:true,bandInk:"#5C1A1A",ink:"#4A1414",acc:"#C28A00",top:"CARRERA CUP",bot:"PORSCHE WEEKEND",size:9.2,space:2.2},
   legends:{kind:"outlines",ids:["le-mans","monza"],any:true,band:true,bandInk:"#1F3A5F",ink:"#162B47",acc:"#C28A00",top:"LEGENDS OF LE MANS",bot:"CLASSIC WEEKEND",size:8.4,space:1.5},
@@ -341,8 +341,8 @@ function ppOfCar(ink,acc,skin,w,cx,ground){
    The big pieces of stamp art (world coastlines, the car, camper van, grasshopper and cherries drawings) are separate files that are fetched the first time the passport
    needs them, then kept for offline use by the service worker like any other file. Nothing on Home or the track pages pays for them. While a file is on its way the
    stamp is drawn without its picture and redrawn as soon as it arrives. */
-const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",gt:"js/gt.js",sign:"js/sign.js",moto:"js/moto.js",indy:"js/indy.js",tour:"js/tour.js",bill:"js/bill.js",stopwatch:"js/stopwatch.js",triple:"js/triple.js",skyline:"js/skyline.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
-const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,triple:()=>typeof PP_TRIPLE!=="undefined"?PP_TRIPLE:null,stopwatch:()=>typeof PP_STOPWATCH!=="undefined"?PP_STOPWATCH:null,bill:()=>typeof PP_BILL!=="undefined"?PP_BILL:null,tour:()=>typeof PP_TOUR!=="undefined"?PP_TOUR:null,indy:()=>typeof PP_INDY!=="undefined"?PP_INDY:null,moto:()=>typeof PP_MOTO!=="undefined"?PP_MOTO:null,sign:()=>typeof PP_SIGN!=="undefined"?PP_SIGN:null,gt:()=>typeof PP_GT!=="undefined"?PP_GT:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
+const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",gte:"js/gte.js",gt:"js/gt.js",sign:"js/sign.js",moto:"js/moto.js",indy:"js/indy.js",tour:"js/tour.js",bill:"js/bill.js",stopwatch:"js/stopwatch.js",triple:"js/triple.js",skyline:"js/skyline.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
+const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,triple:()=>typeof PP_TRIPLE!=="undefined"?PP_TRIPLE:null,stopwatch:()=>typeof PP_STOPWATCH!=="undefined"?PP_STOPWATCH:null,bill:()=>typeof PP_BILL!=="undefined"?PP_BILL:null,tour:()=>typeof PP_TOUR!=="undefined"?PP_TOUR:null,indy:()=>typeof PP_INDY!=="undefined"?PP_INDY:null,moto:()=>typeof PP_MOTO!=="undefined"?PP_MOTO:null,sign:()=>typeof PP_SIGN!=="undefined"?PP_SIGN:null,gt:()=>typeof PP_GT!=="undefined"?PP_GT:null,gte:()=>typeof PP_GTE!=="undefined"?PP_GTE:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
 const PP_CAR_LMAX={gtp:235}, ppArtState={};
 let ppCur=null, ppLastFor=null;
 function ppArt(name){
@@ -637,13 +637,15 @@ document.addEventListener("click",e=>{ if(!e.target.closest("#ppMenu,.ppmore")) 
 const PP_REGIONS={na:"North America",sa:"South America",eu:"Europe",me:"Middle East"};
 const ppRegionOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"eu":/^Asia\/(Dubai|Qatar|Riyadh|Bahrain|Kuwait|Muscat|Baghdad|Tehran|Jerusalem)/.test(z)?"me":/^America\/(Sao_Paulo|Argentina|Bogota|Santiago|Lima|Montevideo|Caracas)/.test(z)?"sa":"na"; };
 const PP_BADGE_GROUPS=[
-  ["By series",["sportscar","endcup","openwheel","gtfan","stock","grandprix","double","trifecta","tour"]],
+  ["By series",["sportscar","endcup","openwheel","stock","grandprix","motogp","wec","academy","carrera","legends","double","trifecta","tour"]],
+  ["GT World Challenge",["gtfan","gteu"]],      /* America first, Europe next to it: the two marks spell GT */
+  ["Abroad and the world",["euro","atlantic","worldtour","cathedrals"]],
   ["Places",["street","jungle","endurance","zones","border","sunshine","lonestar","lakes","golden","peach","banks"]],
   ["Milestones",["first","hopper","tripper","grand","weekend","marathon","ten","season","fullgrid"]]];
 /* how close each unearned badge is: [have, need] (only for the ones that are a count of something) */
 const PP_LISTS={street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
   sunshine:[["daytona","sebring","st-petersburg"],3],lonestar:[["cota","arlington"],2],lakes:[["road-america","mid-ohio","detroit"],3],golden:[["long-beach","laguna-seca","sonoma"],3],peach:[["road-atlanta","barber"],2]};
-const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
+const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],euro:[s=>s.eu,3],worldtour:[s=>s.cont.size,3],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
 function ppProg(d,st){
   const l=PP_LISTS[d.id]; if(l) return [Math.min(l[1],l[0].filter(i=>d.id==="endurance"?st.endLong.has(i):st.visits[i]>0).length),l[1]];
   const c=PP_COUNTS[d.id]; if(c){ const need=typeof c[1]==="function"?c[1](st):c[1]; return [Math.min(need,c[0](st)),need]; }

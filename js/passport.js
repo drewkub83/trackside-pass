@@ -17,13 +17,13 @@ function ppStats(p){
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id), evs=new Set(by[id].map(s=>s.ev)); visits[id]=evs.size;
     evs.forEach(ev=>{ const e=t.events.find(x=>x.d===ev), n=e?(e.t||1):1; if(n>=2&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=n) full=true; }); });
   /* which series raced on the days you checked in, and how far you have travelled */
-  const series=new Set(); let bill=false, marathon=false, endu=false; const endLong=new Set(); const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
+  const series=new Set(); let bill=false, marathon=false, marDays=0, endu=false; const endLong=new Set(); const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
   const cont=new Set(); let eu=0; const contOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"EU":/^Asia\//.test(z)?"AS":/^Australia\//.test(z)?"OC":/Sao_Paulo|Argentina/.test(z)?"SA":/^America\//.test(z)?"NA":"XX"; };
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||"")); cont.add(contOf(t)); if(contOf(t)==="EU") eu++;
     by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); });
       ids.forEach(i=>series.add(i)); if(ids.size>=2) bill=true; });
-    new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=e.t) marathon=true; }); });
-  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
+    new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=e.t) marathon=true; } }); });
+  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
 const PP_GLOBAL=[
   {id:"first",name:"First Stamp",desc:"Check in at your first race weekend.",icon:"star",tier:"x",sty:"first",test:s=>s.tracks>=1},
@@ -64,7 +64,7 @@ const PP_GLOBAL=[
   {id:"peach",name:"Peach and Bama",desc:"Visit Road Atlanta and Barber.",icon:"peach",tier:"b",sty:"peach",test:s=>s.visits["road-atlanta"]>0&&s.visits["barber"]>0},
   {id:"banks",name:"High Banks",desc:"Visit a banked oval: Daytona, Phoenix or the Indy 500 oval.",icon:"tri",tier:"b",sty:"banks",test:s=>s.visits["daytona"]>0||s.visits["phoenix"]>0||s.visits["indianapolis-oval"]>0},
   /* how much */
-  {id:"marathon",name:"Marathon",desc:"Check in every day of a four-day race weekend.",icon:"clock",tier:"g",sty:"marathon",test:s=>s.marathon},
+  {id:"marathon",name:"4 Banger",desc:"Check in every day of a four-day race weekend.",icon:"clock",tier:"g",sty:"marathon",test:s=>s.marathon},
   {id:"ten",name:"Ten Weekends",desc:"Check in at 10 race weekends.",icon:"cal",tier:"s",sty:"ten",test:s=>s.weekends>=10},
   {id:"season",name:"Season Ticket",desc:"Check in at 25 race weekends.",icon:"cup",tier:"g",sty:"season",test:s=>s.weekends>=25},
   {id:"grand",name:"Grand Tourer",desc:"Visit 10 different tracks.",icon:"van",tier:"g",sty:"grand",test:s=>s.tracks>=10},
@@ -184,7 +184,7 @@ const PP_SERIES={
   border:{kind:"states",states:["Ontario"],ctx:["Michigan","Ohio","Wisconsin"],lakes:true,ids:["canadian-tire-motorsport-park"],band:true,bandInk:"#9C2B2B",ink:"#7A2020",acc:"#E0A100",top:"BORDER CROSSER",bot:"CANADA",size:8.8,space:2},
   first:{kind:"cherries",band:true,bandInk:"#9B1C16",ink:"#7A1612",acc:"#C98400",top:"FIRST STAMP",bot:"FIRST CHECK-IN",size:9.2,space:2.2},
   zones:{kind:"clocks",band:true,bandInk:"#8E3B2F",ink:"#6B2A21",acc:"#C98400",top:"TIME ZONE TRAVELER",bot:"3 TIME ZONES",size:8.2,space:1.5},
-  marathon:{kind:"stopwatch",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"MARATHON",bot:"ALL FOUR DAYS",size:9.2,space:2.4},
+  marathon:{kind:"pistons",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"4 BANGER",bot:"ALL FOUR DAYS",size:10.5,space:2.6},
   ten:{kind:"deca",mode:"weekends",mid:"10",midSize:21,ink:"#3E2A63",acc:"#3E2A63",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS"},
   season:{kind:"ticket",ink:"#7A5A00",acc:"#C28A00",top:"SEASON TICKET",bot:"25 RACE WEEKENDS"},
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
@@ -504,6 +504,13 @@ function seriesStamp(d,o){
         :sp.kind==="tour"?(function(){ const T=ppArt("tour"); if(!T) return ""; const [vx,vy,vw,vh]=T.vb, w=sp.w||102, s=w/vw, gx=80-w/2, gy=(sp.g||113)-vh*s, k=2.5, pk=T.pin[0];
       const pins=T.pins.map(([id,x,y])=>{ const on=!locked&&visits[id]>0; return `<g transform="translate(${(gx+(x-vx)*s).toFixed(1)} ${(gy+(y-vy)*s).toFixed(1)}) scale(${(s*k).toFixed(4)})"><path d="${pk[0]}" fill="${on?'#EB1B24':locked?'#B9B2A0':'#9AA3AD'}" fill-opacity="${on?1:.8}" fill-rule="evenodd" stroke="${on?'#7A0E14':'#5C6470'}" stroke-width="${on?9:7}" stroke-linejoin="round"/></g>`; }).join("");
       return (locked?'<g opacity=".45">'+ppHopArt(T,"ink","#8E8670","#F3EAD2",w,80,sp.g||113)+'</g>':ppHopArt(T,"orig",ink,"#F3EAD2",w,80,sp.g||113))+pins; })()
+    :sp.kind==="pistons"?(function(){ const lit=locked?Math.min(4,(st&&st.marDays)||0):4, f=n=>n.toFixed(1); let s=`<rect x="35" y="49" width="90" height="62" rx="6" fill="none" stroke="${ink}" stroke-width="1.8"/><path d="M40 108H120" stroke="${ink}" stroke-width="3.4" stroke-linecap="round"/>`;
+      for(let k=0;k<4;k++){ const cx=80+(k-1.5)*21, on=k<lit, y=on?54:77;
+        s+=`<rect x="${f(cx-8.5)}" y="53" width="17" height="46" rx="2" fill="none" stroke="${ink}" stroke-width=".9" opacity=".45"/>`
+          +`<path d="M${f(cx)} ${y+13}V106" stroke="${ink}" stroke-width="2.2" stroke-linecap="round" opacity="${on?1:.5}"/><circle cx="${f(cx)}" cy="106" r="3.2" fill="#F3EAD2" stroke="${ink}" stroke-width="1.5"/>`
+          +`<rect x="${f(cx-7)}" y="${y}" width="14" height="13" rx="2.2" fill="${on?sp.acc:"none"}" stroke="${on?sp.ink:ink}" stroke-width="1.5" opacity="${on?1:.55}"/><path d="M${f(cx-7)} ${y+3.6}H${f(cx+7)}M${f(cx-7)} ${y+6.2}H${f(cx+7)}" stroke="${on?ink:ink}" stroke-width=".8" opacity="${on?.85:.55}"/>`
+          +`<text x="${f(cx)}" y="${y+11.8}" font-size="5.6" font-weight="800" text-anchor="middle" fill="${on?"#F3EAD2":ink}" opacity="${on?1:.55}">${k+1}</text>`; }
+      return s; })()
     :sp.kind==="art"?(locked?'<g opacity=".45">'+ppHopArt(ppArt(sp.art),"ink","#8E8670","#F3EAD2",sp.w||72,80,sp.g||102)+'</g>':ppHopArt(ppArt(sp.art),sp.mode||"orig",ink,"#F3EAD2",sp.w||72,80,sp.g||102))
     :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,102)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,102))
     :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(ppArt("cherries"),"ink","#8E8670","#F3EAD2",70,80,102)}</g>`:ppHopArt(ppArt("cherries"),"orig",ink,"#F3EAD2",70,80,104))
@@ -630,7 +637,7 @@ const PP_BADGE_GROUPS=[
 /* how close each unearned badge is: [have, need] (only for the ones that are a count of something) */
 const PP_LISTS={street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
   sunshine:[["daytona","sebring","st-petersburg"],3],lonestar:[["cota","arlington"],2],lakes:[["road-america","mid-ohio","detroit"],3],golden:[["long-beach","laguna-seca","sonoma"],3],peach:[["road-atlanta","barber"],2]};
-const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
+const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
 function ppProg(d,st){
   const l=PP_LISTS[d.id]; if(l) return [Math.min(l[1],l[0].filter(i=>d.id==="endurance"?st.endLong.has(i):st.visits[i]>0).length),l[1]];
   const c=PP_COUNTS[d.id]; if(c){ const need=typeof c[1]==="function"?c[1](st):c[1]; return [Math.min(need,c[0](st)),need]; }

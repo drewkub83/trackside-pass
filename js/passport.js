@@ -185,7 +185,7 @@ const PP_SERIES={
   first:{kind:"cherries",band:true,bandInk:"#9B1C16",ink:"#7A1612",acc:"#C98400",top:"FIRST STAMP",bot:"FIRST CHECK-IN",size:9.2,space:2.2},
   zones:{kind:"clocks",band:true,bandInk:"#8E3B2F",ink:"#6B2A21",acc:"#C98400",top:"TIME ZONE TRAVELER",bot:"3 TIME ZONES",size:8.2,space:1.5},
   marathon:{kind:"stopwatch",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"MARATHON",bot:"ALL FOUR DAYS",size:9.2,space:2.4},
-  ten:{kind:"tally",n:10,band:true,bandInk:"#5B3F8C",ink:"#3E2A63",acc:"#C98400",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS",size:8.8,space:1.9},
+  ten:{kind:"deca",mode:"weekends",mid:"10",midSize:21,ink:"#3E2A63",acc:"#3E2A63",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS"},
   season:{kind:"tally",n:25,band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SEASON TICKET",bot:"25 RACE WEEKENDS",size:8.8,space:1.9},
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
   double:{kind:"art",art:"bill",w:96,g:88,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
@@ -445,15 +445,18 @@ function ppHopArt(art,mode,ink,skin,w,cx,ground){
 }
 /* Grand Tourer: a ten-sided stamp, an X (ten) in the middle and ten wedges. Wedge n holds the outline of the nth track you
    visited (in order); an unvisited wedge is an empty dot. o.order overrides the visit order (previews). */
+function ppWeekendOrder(){ const seen=new Set(), out=[]; ppLoad().stamps.slice().sort((a,b)=>(a.at||0)-(b.at||0)).forEach(x=>{ const k=x.t+"|"+x.ev; if(!seen.has(k)){ seen.add(k); out.push(x.t); } }); return out; }   /* one track per race weekend, in the order you went */
 function ppDecagon(d,o){
   const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.5)":sp.ink, u=++ppUid, rough=!locked&&o.rough!==false, f=n=>n.toFixed(1);
   const st=o.stats||(locked?null:ppStats(ppLoad())), vs=o.visits||(st?st.visits:{});
-  const order=locked?[]:(o.order||ppVisitOrder()).filter(id=>vs[id]>0&&TRACKS.some(x=>x.id===id)).slice(0,10);
+  const wk=sp.mode==="weekends", order=locked?[]:(o.order||(wk?ppWeekendOrder():ppVisitOrder())).filter(id=>(wk||vs[id]>0)&&TRACKS.some(x=>x.id===id)).slice(0,10);
   const poly=r=>{ let s=""; for(let k=0;k<10;k++){ const a=(-72+36*k)*Math.PI/180; s+=(k?"L":"M")+f(80+r*Math.cos(a))+" "+f(80+r*Math.sin(a)); } return s+"Z"; };
   let wedges="", spokes="";
   for(let i=0;i<10;i++){
     const a=(-90+36*i)*Math.PI/180, ad=a+Math.PI/10, cx=80+33*Math.cos(a), cy=80+33*Math.sin(a), id=order[i], t=id&&TRACKS.find(x=>x.id===id);
     spokes+=`M${f(80+16*Math.cos(ad))} ${f(80+16*Math.sin(ad))}L${f(80+50*Math.cos(ad))} ${f(80+50*Math.sin(ad))}`;
+    if(wk){ const got=i<order.length, a0=a-Math.PI/10, a1=a+Math.PI/10, P=(r,b)=>f(80+r*Math.cos(b))+" "+f(80+r*Math.sin(b));
+      wedges+=`<path d="M${P(17,a0)}L${P(50,a0)}A50 50 0 0 1 ${P(50,a1)}L${P(17,a1)}A17 17 0 0 0 ${P(17,a0)}Z" fill="${got?ink:"none"}" opacity="${got?.88:1}"/><text x="${f(cx)}" y="${f(cy+3.6)}" font-size="10.5" font-weight="800" text-anchor="middle" fill="${got?"#F3EAD2":ink}" opacity="${got?1:locked?.35:.3}">${i+1}</text>`; continue; }
     wedges+=t?`<svg x="${f(cx-9.5)}" y="${f(cy-9.5)}" width="19" height="19" ${ppOutline(t,19,{c:ink,w:1.5})}</svg>`
       :`<circle cx="${f(cx)}" cy="${f(cy)}" r="1.5" fill="${ink}" opacity="${locked?.5:.3}"/>`;
   }
@@ -462,7 +465,7 @@ function ppDecagon(d,o){
     <g${rough?` filter="url(#st${u}f)"`:""} opacity="${locked?1:.93}"><path d="${poly(77)}" fill="none" stroke="${ink}" stroke-width="3.2" stroke-linejoin="round"${locked?' stroke-dasharray="5 4"':""}/><path d="${poly(72)}" fill="none" stroke="${ink}" stroke-width="1" stroke-linejoin="round"/>
     <circle cx="80" cy="80" r="50.5" fill="none" stroke="${ink}" stroke-width="1.6"/><path d="${spokes}" stroke="${ink}" stroke-width="1" fill="none" stroke-linecap="round"/>${wedges}
     ${locked?"":`<text font-size="9.6" font-weight="800" letter-spacing="1.6" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${sp.top}</textPath></text><text font-size="8.2" font-weight="800" letter-spacing="1.3" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${sp.bot}</textPath></text>`}
-    <text x="80" y="${locked?88:89}" font-family="Georgia,'Times New Roman',serif" font-size="26" font-weight="900" text-anchor="middle" fill="${ink}" ${locked?'opacity=".5"':""}>X</text></g></svg>`;
+    <text x="80" y="${locked?87:88}" font-family="Georgia,'Times New Roman',serif" font-size="${sp.mid?sp.midSize||21:26}" font-weight="900" text-anchor="middle" fill="${ink}" ${locked?'opacity=".5"':""}>${sp.mid||"X"}</text></g></svg>`;
 }
 function seriesStamp(d,o){
   o=o||{}; if(PP_SERIES[d.sty].kind==="deca") return ppDecagon(d,o); const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;

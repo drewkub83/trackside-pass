@@ -172,7 +172,7 @@ const PP_SERIES={
   triple:{kind:"triart",band:true,bandInk:"#C98400",bandText:"#1E2238",ink:"#1E2238",acc:"#C98400",top:"ENDURANCE TRIPLE",bot:"10 TO 24 HOURS",size:9.2,space:1.9},
   hopper:{kind:"hopper",mode:"orig",band:true,bandInk:"#C28A00",ink:"#6B4A00",acc:"#6B4A00",top:"TRACK HOPPER",bot:"3 TRACKS",size:9.2,space:2.2},
   tripper:{kind:"bus",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ROAD TRIPPER",bot:"6 TRACKS",size:9.2,space:2.2},
-  grand:{kind:"tracks",route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#C28A00",top:"GRAND TOURER",bot:"10 TRACKS",size:9.2,space:2.2},
+  grand:{kind:"deca",ink:"#23356E",acc:"#23356E",top:"THE GRAND TOURER",bot:"10 TRACKS VISITED"},
   wkend:{kind:"days",band:true,bandInk:"#1B5E5A",ink:"#134B48",acc:"#C28A00",top:"FULL WEEKEND",bot:"EVERY DAY",size:9.2,space:2.2},
   street:{kind:"art",art:"gloves",w:76,g:100,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"STREET FIGHTER",bot:"2 STREET CIRCUITS",size:8.6,space:1.9},
   jungle:{kind:"art",art:"skyline",w:108,g:98,band:true,bandInk:"#23406B",ink:"#1B2F52",acc:"#D9622B",top:"CONCRETE JUNGLE",bot:"ALL FOUR CIRCUITS",size:8.6,space:1.7},
@@ -443,8 +443,29 @@ function ppHopArt(art,mode,ink,skin,w,cx,ground){
   return `<ellipse cx="${n(cx+w*.04)}" cy="${n(ground-w*.02)}" rx="${n(w*.34)}" ry="${n(w*.03)}" fill="${ink}" opacity=".15"/><g transform="translate(${n(cx-w/2)} ${n(ground-vh*s)}) scale(${s.toFixed(4)}) translate(${-vx} ${-vy})" stroke-linejoin="round">`
     +art.p.map(q=>{ const c=col(q[1]), o=q[2]&&q[2]<1?` fill-opacity="${q[2]}"`:""; return `<path d="${q[0]}" fill="${c}"${o} fill-rule="evenodd" stroke="${c}"${o} stroke-width=".4"/>`; }).join("")+`</g>`;
 }
+/* Grand Tourer: a ten-sided stamp, an X (ten) in the middle and ten wedges. Wedge n holds the outline of the nth track you
+   visited (in order); an unvisited wedge is an empty dot. o.order overrides the visit order (previews). */
+function ppDecagon(d,o){
+  const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.5)":sp.ink, u=++ppUid, rough=!locked&&o.rough!==false, f=n=>n.toFixed(1);
+  const st=o.stats||(locked?null:ppStats(ppLoad())), vs=o.visits||(st?st.visits:{});
+  const order=locked?[]:(o.order||ppVisitOrder()).filter(id=>vs[id]>0&&TRACKS.some(x=>x.id===id)).slice(0,10);
+  const poly=r=>{ let s=""; for(let k=0;k<10;k++){ const a=(-72+36*k)*Math.PI/180; s+=(k?"L":"M")+f(80+r*Math.cos(a))+" "+f(80+r*Math.sin(a)); } return s+"Z"; };
+  let wedges="", spokes="";
+  for(let i=0;i<10;i++){
+    const a=(-90+36*i)*Math.PI/180, ad=a+Math.PI/10, cx=80+33*Math.cos(a), cy=80+33*Math.sin(a), id=order[i], t=id&&TRACKS.find(x=>x.id===id);
+    spokes+=`M${f(80+16*Math.cos(ad))} ${f(80+16*Math.sin(ad))}L${f(80+50*Math.cos(ad))} ${f(80+50*Math.sin(ad))}`;
+    wedges+=t?`<svg x="${f(cx-9.5)}" y="${f(cy-9.5)}" width="19" height="19" ${ppOutline(t,19,{c:ink,w:1.5})}</svg>`
+      :`<circle cx="${f(cx)}" cy="${f(cy)}" r="1.5" fill="${ink}" opacity="${locked?.5:.3}"/>`;
+  }
+  const filt=ppFilter(u,rough);
+  return `<svg class="stamp${locked?" locked":""}" viewBox="0 0 160 160" aria-hidden="true"><defs><path id="st${u}t" d="M 21.5,80 A 58.5,58.5 0 0 1 138.5,80"/><path id="st${u}b" d="M 14.5,80 A 65.5,65.5 0 0 0 145.5,80"/>${filt}</defs>
+    <g${rough?` filter="url(#st${u}f)"`:""} opacity="${locked?1:.93}"><path d="${poly(77)}" fill="none" stroke="${ink}" stroke-width="3.2" stroke-linejoin="round"${locked?' stroke-dasharray="5 4"':""}/><path d="${poly(72)}" fill="none" stroke="${ink}" stroke-width="1" stroke-linejoin="round"/>
+    <circle cx="80" cy="80" r="50.5" fill="none" stroke="${ink}" stroke-width="1.6"/><path d="${spokes}" stroke="${ink}" stroke-width="1" fill="none" stroke-linecap="round"/>${wedges}
+    ${locked?"":`<text font-size="9.6" font-weight="800" letter-spacing="1.6" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${sp.top}</textPath></text><text font-size="8.2" font-weight="800" letter-spacing="1.3" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${sp.bot}</textPath></text>`}
+    <text x="80" y="${locked?88:89}" font-family="Georgia,'Times New Roman',serif" font-size="26" font-weight="900" text-anchor="middle" fill="${ink}" ${locked?'opacity=".5"':""}>X</text></g></svg>`;
+}
 function seriesStamp(d,o){
-  o=o||{}; const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
+  o=o||{}; if(PP_SERIES[d.sty].kind==="deca") return ppDecagon(d,o); const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
   const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=sp.region?ppRegionProj(sp.region):ppMapProj();
   const st=o.stats||(locked?null:ppStats(ppLoad())), visits=o.visits||(st?st.visits:{}), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
   let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }

@@ -186,7 +186,7 @@ const PP_SERIES={
   zones:{kind:"clocks",band:true,bandInk:"#8E3B2F",ink:"#6B2A21",acc:"#C98400",top:"TIME ZONE TRAVELER",bot:"3 TIME ZONES",size:8.2,space:1.5},
   marathon:{kind:"stopwatch",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"MARATHON",bot:"ALL FOUR DAYS",size:9.2,space:2.4},
   ten:{kind:"deca",mode:"weekends",mid:"10",midSize:21,ink:"#3E2A63",acc:"#3E2A63",top:"TEN WEEKENDS",bot:"10 RACE WEEKENDS"},
-  season:{kind:"tally",n:25,band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SEASON TICKET",bot:"25 RACE WEEKENDS",size:8.8,space:1.9},
+  season:{kind:"ticket",ink:"#7A5A00",acc:"#C28A00",top:"SEASON TICKET",bot:"25 RACE WEEKENDS"},
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
   double:{kind:"art",art:"bill",w:96,g:88,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
   trifecta:{kind:"venn",venn:"trio",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"IMSA · INDYCAR · GT WORLD",size:8.6,space:1.7},
@@ -449,15 +449,15 @@ function ppWeekendOrder(){ const seen=new Set(), out=[]; ppLoad().stamps.slice()
 function ppDecagon(d,o){
   const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.5)":sp.ink, u=++ppUid, rough=!locked&&o.rough!==false, f=n=>n.toFixed(1);
   const st=o.stats||(locked?null:ppStats(ppLoad())), vs=o.visits||(st?st.visits:{});
-  const wk=sp.mode==="weekends", order=locked?[]:(o.order||(wk?ppWeekendOrder():ppVisitOrder())).filter(id=>(wk||vs[id]>0)&&TRACKS.some(x=>x.id===id)).slice(0,10);
+  const nWk=o.order?o.order.length:(st?st.weekends:0), wk=sp.mode==="weekends", order=(o.order||(wk?Array(Math.min(10,nWk)).fill("x"):(typeof ppView!=="undefined"&&ppView||locked?Object.keys(vs).filter(id=>vs[id]>0):ppVisitOrder()))).filter(id=>wk||(vs[id]>0&&TRACKS.some(x=>x.id===id))).slice(0,10);
   const poly=r=>{ let s=""; for(let k=0;k<10;k++){ const a=(-72+36*k)*Math.PI/180; s+=(k?"L":"M")+f(80+r*Math.cos(a))+" "+f(80+r*Math.sin(a)); } return s+"Z"; };
   let wedges="", spokes="";
   for(let i=0;i<10;i++){
     const a=(-90+36*i)*Math.PI/180, ad=a+Math.PI/10, cx=80+33*Math.cos(a), cy=80+33*Math.sin(a), id=order[i], t=id&&TRACKS.find(x=>x.id===id);
     spokes+=`M${f(80+16*Math.cos(ad))} ${f(80+16*Math.sin(ad))}L${f(80+50*Math.cos(ad))} ${f(80+50*Math.sin(ad))}`;
     if(wk){ const got=i<order.length, a0=a-Math.PI/10, a1=a+Math.PI/10, P=(r,b)=>f(80+r*Math.cos(b))+" "+f(80+r*Math.sin(b));
-      wedges+=`<path d="M${P(17,a0)}L${P(50,a0)}A50 50 0 0 1 ${P(50,a1)}L${P(17,a1)}A17 17 0 0 0 ${P(17,a0)}Z" fill="${got?ink:"none"}" opacity="${got?.88:1}"/><text x="${f(cx)}" y="${f(cy+3.6)}" font-size="10.5" font-weight="800" text-anchor="middle" fill="${got?"#F3EAD2":ink}" opacity="${got?1:locked?.35:.3}">${i+1}</text>`; continue; }
-    wedges+=t?`<svg x="${f(cx-9.5)}" y="${f(cy-9.5)}" width="19" height="19" ${ppOutline(t,19,{c:ink,w:1.5})}</svg>`
+      wedges+=`<path d="M${P(17,a0)}L${P(50,a0)}A50 50 0 0 1 ${P(50,a1)}L${P(17,a1)}A17 17 0 0 0 ${P(17,a0)}Z" fill="${got?sp.ink:"none"}" opacity="${got?.88:1}"/><text x="${f(cx)}" y="${f(cy+3.6)}" font-size="10.5" font-weight="800" text-anchor="middle" fill="${got?"#F3EAD2":ink}" opacity="${got?1:locked?.35:.3}">${i+1}</text>`; continue; }
+    wedges+=t?`<svg x="${f(cx-9.5)}" y="${f(cy-9.5)}" width="19" height="19" ${ppOutline(t,19,{c:sp.ink,w:1.5})}</svg>`
       :`<circle cx="${f(cx)}" cy="${f(cy)}" r="1.5" fill="${ink}" opacity="${locked?.5:.3}"/>`;
   }
   const filt=ppFilter(u,rough);
@@ -467,8 +467,23 @@ function ppDecagon(d,o){
     ${locked?"":`<text font-size="9.6" font-weight="800" letter-spacing="1.6" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${sp.top}</textPath></text><text font-size="8.2" font-weight="800" letter-spacing="1.3" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${sp.bot}</textPath></text>`}
     <text x="80" y="${locked?87:88}" font-family="Georgia,'Times New Roman',serif" font-size="${sp.mid?sp.midSize||21:26}" font-weight="900" text-anchor="middle" fill="${ink}" ${locked?'opacity=".5"':""}>${sp.mid||"X"}</text></g></svg>`;
 }
+/* Season Ticket: a ticket with a perforated stub each side and a 5 x 5 grid of numbered punches, one punched per race weekend. */
+function ppTicket(d,o){
+  const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.5)":sp.ink, acc=locked?"rgba(110,98,72,.5)":(sp.acc||sp.ink), u=++ppUid, rough=!locked&&o.rough!==false, f=n=>n.toFixed(1);
+  const st=o.stats||(locked?null:ppStats(ppLoad())), got=Math.min(25,o.order?o.order.length:(st?st.weekends:0)), real=sp.acc||sp.ink;   /* a stamp you do not hold yet still shows your punches so far */
+  const shape="M10 22H150V68A9 9 0 0 0 150 86V138H10V86A9 9 0 0 0 10 68Z", inner="M15 27H145V70.5A6 6 0 0 0 145 83.5V133H15V83.5A6 6 0 0 0 15 70.5Z";
+  let punch=""; for(let i=0;i<25;i++){ const x=80+((i%5)-2)*14.5, y=63+Math.floor(i/5)*12.6, on=i<got;
+    punch+=on?`<circle cx="${f(x)}" cy="${f(y)}" r="5.3" fill="${real}"/><text x="${f(x)}" y="${f(y+2.2)}" font-size="6.4" font-weight="800" text-anchor="middle" fill="#F3EAD2">${i+1}</text>`
+      :`<circle cx="${f(x)}" cy="${f(y)}" r="5.3" fill="none" stroke="${ink}" stroke-width=".9" opacity="${locked?.45:.5}"/><text x="${f(x)}" y="${f(y+2.2)}" font-size="6.4" font-weight="800" text-anchor="middle" fill="${ink}" opacity="${locked?.3:.35}">${i+1}</text>`; }
+  const filt=ppFilter(u,rough);
+  return `<svg class="stamp${locked?" locked":""}" viewBox="0 0 160 160" aria-hidden="true"><defs>${filt}</defs>
+    <g${rough?` filter="url(#st${u}f)"`:""} opacity="${locked?1:.93}"><path d="${shape}" fill="none" stroke="${ink}" stroke-width="3" stroke-linejoin="round"${locked?' stroke-dasharray="5 4"':""}/><path d="${inner}" fill="none" stroke="${ink}" stroke-width=".9"/>
+    <path d="M30 46V121M130 46V121" stroke="${ink}" stroke-width="1" stroke-dasharray="1.6 2.2" fill="none"/><path d="M20 49H140M20 122H140" stroke="${ink}" stroke-width=".9" fill="none"/>
+    ${locked?"":`<text x="80" y="43" font-size="11.5" font-weight="800" letter-spacing="2.4" text-anchor="middle" fill="${ink}">${sp.top}</text><text x="80" y="129.6" font-size="8" font-weight="800" letter-spacing="1.6" text-anchor="middle" fill="${ink}">${sp.bot}</text>`}
+    ${punch}</g></svg>`;
+}
 function seriesStamp(d,o){
-  o=o||{}; if(PP_SERIES[d.sty].kind==="deca") return ppDecagon(d,o); const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
+  o=o||{}; if(PP_SERIES[d.sty].kind==="ticket") return ppTicket(d,o); if(PP_SERIES[d.sty].kind==="deca") return ppDecagon(d,o); const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
   const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=sp.region?ppRegionProj(sp.region):ppMapProj();
   const st=o.stats||(locked?null:ppStats(ppLoad())), visits=o.visits||(st?st.visits:{}), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
   let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }
@@ -650,9 +665,9 @@ function ppNextUp(p,st){
 function ppBadgeParts(p,st){
   const next=ppView?[]:ppNextUp(p,st), byId=Object.fromEntries(PP_GLOBAL.map(d=>[d.id,d]));
   const need=x=>x.g?`<span class="ppbar"><i style="width:${Math.round(x.g[0]/x.g[1]*100)}%"></i></span>`:"";
-  const nextHtml=next.length?`<div class="ppNextBox"><h4>Next up</h4>${next.map(x=>`<button class="ppnx" onclick="toast(${esc(JSON.stringify(x.d.desc))})"><span class="sbox sm">${stampSvg(x.d,{locked:true})}</span><div><b>${esc(x.d.name)}</b><small>${esc(x.d.desc)}</small>${need(x)}</div>${x.g?`<em>${x.g[0]} of ${x.g[1]}</em>`:""}</button>`).join("")}</div>`:"";
+  const nextHtml=next.length?`<div class="ppNextBox"><h4>Next up</h4>${next.map(x=>`<button class="ppnx" onclick="toast(${esc(JSON.stringify(x.d.desc))})"><span class="sbox sm">${stampSvg(x.d,{locked:true,stats:st})}</span><div><b>${esc(x.d.name)}</b><small>${esc(x.d.desc)}</small>${need(x)}</div>${x.g?`<em>${x.g[0]} of ${x.g[1]}</em>`:""}</button>`).join("")}</div>`:"";
   const big=d=>{ const at=p.unlocked[d.id]; return `<button class="pb${d.tier==="z"?" legend":""}" onclick="${ppView?`toast(${esc(JSON.stringify(d.desc))})`:`ppReplay('${d.id}',${at||0})`}"><span class="sbox mid" style="--r:${ppRot(d.id)}deg">${stampSvg(d,{date:at})}</span><b>${esc(d.name)}</b><small>${new Date(at).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"})}</small></button>`; };
-  const small=d=>{ const g=ppProg(d,st), tip=d.desc+(g?(ppView?` ${g[0]} of ${g[1]} so far.`:` You have ${g[0]} of ${g[1]}.`):""); return `<button class="pb lock mini${d.tier==="z"?" legend":""}" onclick="toast(${esc(JSON.stringify(tip))})"><span class="sbox sm">${stampSvg(d,{locked:true})}</span><b>${esc(d.name)}</b></button>`; };
+  const small=d=>{ const g=ppProg(d,st), tip=d.desc+(g?(ppView?` ${g[0]} of ${g[1]} so far.`:` You have ${g[0]} of ${g[1]}.`):""); return `<button class="pb lock mini${d.tier==="z"?" legend":""}" onclick="toast(${esc(JSON.stringify(tip))})"><span class="sbox sm">${stampSvg(d,{locked:true,stats:st})}</span><b>${esc(d.name)}</b></button>`; };
   /* the badges you hold, by kind; every badge you do not hold yet sits in one closed block below */
   const sets=PP_BADGE_GROUPS.map(([title,ids])=>{ const ds=ids.map(i=>byId[i]).filter(Boolean); return {title,ds,got:ds.filter(d=>p.unlocked[d.id]),lock:ds.filter(d=>!p.unlocked[d.id])}; });
   const earned=sets.filter(x=>x.got.length).map(x=>ppSec(x.title,`${x.got.length} of ${x.ds.length}`,`<div class="bgrid three">${x.got.map(big).join("")}</div>`,true)).join("")||`<p class="ppNone">${ppView?"No badges yet.":"Badges you earn appear here."}</p>`;

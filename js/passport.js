@@ -22,7 +22,7 @@ function ppStats(p){
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||"")); cont.add(contOf(t)); if(contOf(t)==="EU") eu++;
     by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); });
       ids.forEach(i=>series.add(i)); if(ids.size>=2) bill=true; });
-    new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=e.t) marathon=true; } }); });
+    new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
   const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
 const PP_GLOBAL=[

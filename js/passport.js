@@ -25,6 +25,7 @@ function ppStats(p){
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
   const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
+const PP_VINTAGE=["hsr","legendsle","gt3revival","masters"];      /* any vintage / historic series earns the Historic Racing stamp */
 const PP_HEAD=["imsa","indycar","gtwca","gtwce","wec","f1","nascar","motogp"];      /* the headline series: any three of them earn the Series Trifecta */
 const ppHeadSeen=s=>PP_HEAD.filter(i=>s.series.has(i));
 const PP_GLOBAL=[
@@ -50,7 +51,7 @@ const PP_GLOBAL=[
   {id:"gteu",name:"GT Europe",desc:"Check in at a GT World Challenge Europe weekend.",icon:"gt",tier:"s",sty:"gtwce",test:s=>s.series.has("gtwce")},
   {id:"academy",name:"Academy Weekend",desc:"Check in at an F1 Academy weekend.",icon:"star",tier:"x",sty:"f1academy",test:s=>s.series.has("f1academy")},
   {id:"carrera",name:"Carrera Cup",desc:"Check in at a Porsche Carrera Cup North America weekend.",icon:"car",tier:"x",sty:"carrera",test:s=>s.series.has("carreracup")},
-  {id:"legends",name:"Legends",desc:"Check in at a Legends of Le Mans weekend.",icon:"moon",tier:"x",sty:"legends",test:s=>s.series.has("legendsle")},
+  {id:"legends",name:"Historic Racing",desc:"Check in at a historic or vintage race weekend: HSR, Legends of Le Mans, GT3 Revival or Masters Historic.",icon:"moon",tier:"x",sty:"legends",test:s=>PP_VINTAGE.some(i=>s.series.has(i))},
   /* abroad */
   {id:"euro",name:"European Tour",desc:"Visit 3 different tracks in Europe.",icon:"globe",tier:"s",sty:"euro",test:s=>s.eu>=3},
   {id:"atlantic",name:"Atlantic Crosser",desc:"Check in at a track in North America and at a track in Europe.",icon:"globe",tier:"s",sty:"atlantic",test:s=>s.cont.has("NA")&&s.cont.has("EU")},
@@ -197,7 +198,7 @@ const PP_SERIES={
   gtwce:{champ:"gtwce",kind:"art",art:"gte",w:88,g:98,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
   f1academy:{kind:"outlines",ids:["cota","las-vegas"],any:true,band:true,bandInk:"#A8245A",ink:"#7E1A43",acc:"#C28A00",top:"F1 ACADEMY",bot:"ACADEMY WEEKEND",size:9.2,space:2.2},
   carrera:{kind:"art",art:"cup",mode:"ink",w:94,g:95,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#C28A00",top:"CARRERA CUP",bot:"PORSCHE WEEKEND",size:9.2,space:2.2},
-  legends:{kind:"outlines",ids:["le-mans","monza"],any:true,band:true,bandInk:"#1F3A5F",ink:"#162B47",acc:"#C28A00",top:"LEGENDS OF LE MANS",bot:"CLASSIC WEEKEND",size:8.4,space:1.5},
+  legends:{kind:"art",art:"hist",w:104,g:95,band:true,bandInk:"#3A3F47",ink:"#1F2328",acc:"#C28A00",top:"HISTORIC RACING",bot:"VINTAGE WEEKEND",size:9,space:1.8},
   euro:{region:"europe",all:true,band:true,bandInk:"#1F4E79",ink:"#173B5C",acc:"#E0A100",top:"EUROPEAN TOUR",bot:"3 EUROPEAN TRACKS",size:9.2,space:2.2},
   atlantic:{region:"world",all:true,route:"visited",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ATLANTIC CROSSER",bot:"AMERICA · EUROPE",size:8.8,space:1.8},
   world:{region:"world",all:true,route:"visited",band:true,bandInk:"#C28A00",bandText:"#1E2238",ink:"#1E2238",acc:"#B23A2A",top:"WORLD TOUR",bot:"3 CONTINENTS",size:9.2,space:2.4},
@@ -343,8 +344,8 @@ function ppOfCar(ink,acc,skin,w,cx,ground){
    The big pieces of stamp art (world coastlines, the car, camper van, grasshopper and cherries drawings) are separate files that are fetched the first time the passport
    needs them, then kept for offline use by the service worker like any other file. Nothing on Home or the track pages pays for them. While a file is on its way the
    stamp is drawn without its picture and redrawn as soon as it arrives. */
-const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",cup:"js/cup.js",wec:"js/wec.js",gte:"js/gte.js",gt:"js/gt.js",sign:"js/sign.js",moto:"js/moto.js",indy:"js/indy.js",tour:"js/tour.js",bill:"js/bill.js",stopwatch:"js/stopwatch.js",triple:"js/triple.js",skyline:"js/skyline.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
-const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,triple:()=>typeof PP_TRIPLE!=="undefined"?PP_TRIPLE:null,stopwatch:()=>typeof PP_STOPWATCH!=="undefined"?PP_STOPWATCH:null,bill:()=>typeof PP_BILL!=="undefined"?PP_BILL:null,tour:()=>typeof PP_TOUR!=="undefined"?PP_TOUR:null,indy:()=>typeof PP_INDY!=="undefined"?PP_INDY:null,moto:()=>typeof PP_MOTO!=="undefined"?PP_MOTO:null,sign:()=>typeof PP_SIGN!=="undefined"?PP_SIGN:null,gt:()=>typeof PP_GT!=="undefined"?PP_GT:null,gte:()=>typeof PP_GTE!=="undefined"?PP_GTE:null,wec:()=>typeof PP_WEC!=="undefined"?PP_WEC:null,cup:()=>typeof PP_CUP!=="undefined"?PP_CUP:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
+const PP_ART_FILES={world:"js/worldland.js",gtp:"js/carart.js",gloves:"js/gloves.js",hist:"js/hist.js",cup:"js/cup.js",wec:"js/wec.js",gte:"js/gte.js",gt:"js/gt.js",sign:"js/sign.js",moto:"js/moto.js",indy:"js/indy.js",tour:"js/tour.js",bill:"js/bill.js",stopwatch:"js/stopwatch.js",triple:"js/triple.js",skyline:"js/skyline.js",hopper:"js/hopper.js",cherries:"js/cherries.js",bus:"js/bus.js"};
+const PP_ART_GET={world:()=>typeof PP_WORLD!=="undefined"?PP_WORLD:null,gtp:()=>typeof PP_CAR_GTP!=="undefined"?PP_CAR_GTP:null,skyline:()=>typeof PP_SKYLINE!=="undefined"?PP_SKYLINE:null,triple:()=>typeof PP_TRIPLE!=="undefined"?PP_TRIPLE:null,stopwatch:()=>typeof PP_STOPWATCH!=="undefined"?PP_STOPWATCH:null,bill:()=>typeof PP_BILL!=="undefined"?PP_BILL:null,tour:()=>typeof PP_TOUR!=="undefined"?PP_TOUR:null,indy:()=>typeof PP_INDY!=="undefined"?PP_INDY:null,moto:()=>typeof PP_MOTO!=="undefined"?PP_MOTO:null,sign:()=>typeof PP_SIGN!=="undefined"?PP_SIGN:null,gt:()=>typeof PP_GT!=="undefined"?PP_GT:null,gte:()=>typeof PP_GTE!=="undefined"?PP_GTE:null,wec:()=>typeof PP_WEC!=="undefined"?PP_WEC:null,cup:()=>typeof PP_CUP!=="undefined"?PP_CUP:null,hist:()=>typeof PP_HIST!=="undefined"?PP_HIST:null,gloves:()=>typeof PP_GLOVES!=="undefined"?PP_GLOVES:null,hopper:()=>typeof PP_HOPPER!=="undefined"?PP_HOPPER:null,cherries:()=>typeof PP_CHERRIES!=="undefined"?PP_CHERRIES:null,bus:()=>typeof PP_BUS!=="undefined"?PP_BUS:null};
 const PP_CAR_LMAX={gtp:235}, ppArtState={};
 let ppCur=null, ppLastFor=null;
 function ppArt(name){

@@ -17,13 +17,16 @@ function ppStats(p){
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id), evs=new Set(by[id].map(s=>s.ev)); visits[id]=evs.size;
     evs.forEach(ev=>{ const e=t.events.find(x=>x.d===ev), n=e?(e.t||1):1; if(n>=2&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=n) full=true; }); });
   /* which series raced on the days you checked in, and how far you have travelled */
-  const series=new Set(); let bill=false, marathon=false, marDays=0, endu=false; const endLong=new Set(); const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
+  const series=new Set(); let bill=false, marathon=false, marDays=0, endu=false, h24=false, b2b=false; const endLong=new Set(); const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
   const cont=new Set(); let eu=0; const contOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"EU":/^Asia\//.test(z)?"AS":/^Australia\//.test(z)?"OC":/Sao_Paulo|Argentina/.test(z)?"SA":/^America\//.test(z)?"NA":"XX"; };
+  Object.keys(by).forEach(id=>{ const yrs=new Set(by[id].map(s=>+String(s.day).slice(0,4))); yrs.forEach(y=>{ if(yrs.has(y+1)) b2b=true; }); });      /* the same track in two years running */
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||"")); cont.add(contOf(t)); if(contOf(t)==="EU") eu++;
-    by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); });
+    by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); if(/\b24 Hours?\b|Rolex 24 At/i.test(e.e||"")&&!/Roar Before/i.test(e.e||"")) h24=true; });
       ids.forEach(i=>series.add(i)); if(ids.size>=2) bill=true; });
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
-  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
+  let called=false, perfect=false;      /* Pick your podium: the right winner, and a whole podium right (your own picks, so not for a friend's passport) */
+  if(!(typeof ppView!=="undefined"&&ppView)&&typeof ENTRIES!=="undefined") try{ ENTRIES.forEach(g=>{ const sc=gameScore(g); if(!sc) return; Object.keys(sc.per).forEach(k=>{ if(k.slice(-1)==="#") return; const m=sc.per[k]; if(m[0]==="hit") called=true; if(m.length===3&&m.every(x=>x==="hit")) perfect=true; }); }); }catch(e){}
+  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {h24,b2b,called,perfect,by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
 const PP_VINTAGE=["hsr","legendsle","gt3revival","masters"];      /* any vintage / historic series earns the Historic Racing stamp */
 const PP_HEAD=["imsa","indycar","gtwca","gtwce","wec","f1","nascar","motogp"];      /* the headline series: any three of them earn the Series Trifecta */
@@ -71,6 +74,24 @@ const PP_GLOBAL=[
   {id:"ten",name:"Ten Weekends",desc:"Check in at 10 race weekends.",icon:"cal",tier:"s",sty:"ten",test:s=>s.weekends>=10},
   {id:"season",name:"Season Ticket",desc:"Check in at 25 race weekends.",icon:"cup",tier:"g",sty:"season",test:s=>s.weekends>=25},
   {id:"grand",name:"Grand Tourer",desc:"Visit 10 different tracks.",icon:"van",tier:"g",sty:"grand",test:s=>s.tracks>=10},
+  /* iconic places */
+  {id:"lemans",name:"Le Mans",desc:"Visit the Circuit de la Sarthe, home of the 24 Hours of Le Mans.",icon:"flag",tier:"s",sty:"lemans",test:s=>s.visits["le-mans"]>0},
+  {id:"brickyard",name:"The Brickyard",desc:"Visit the Indianapolis Motor Speedway oval, home of the Indy 500.",icon:"flag",tier:"s",sty:"brickyard",test:s=>s.visits["indianapolis-oval"]>0},
+  {id:"greenhell",name:"Green Hell",desc:"Visit the Nürburgring.",icon:"flag",tier:"s",sty:"greenhell",test:s=>s.visits["nurburgring"]>0},
+  {id:"monaco",name:"Monaco",desc:"Visit the Circuit de Monaco.",icon:"flag",tier:"s",sty:"monaco",test:s=>s.visits["monaco"]>0},
+  {id:"triplecrown",name:"Triple Crown",desc:"Visit Monaco, the Indianapolis oval and Le Mans: the three biggest races in motorsport.",icon:"cup",tier:"g",sty:"triplecrown",test:s=>["monaco","indianapolis-oval","le-mans"].every(i=>s.visits[i]>0)},
+  /* regions */
+  {id:"italian",name:"Italian Job",desc:"Visit Monza, Imola, Misano and Mugello.",icon:"flag",tier:"s",sty:"italian",test:s=>["monza","imola","misano","mugello"].every(i=>s.visits[i]>0)},
+  {id:"risingsun",name:"Rising Sun",desc:"Visit Suzuka, Fuji and Motegi.",icon:"flag",tier:"s",sty:"risingsun",test:s=>["suzuka","fuji","motegi"].every(i=>s.visits[i]>0)},
+  {id:"iberian",name:"Iberian Tour",desc:"Visit Barcelona, Portimão, Jerez and Aragón.",icon:"flag",tier:"s",sty:"iberian",test:s=>["barcelona-catalunya","portimao","jerez","aragon"].every(i=>s.visits[i]>0)},
+  {id:"desert",name:"Desert Run",desc:"Visit Bahrain, Jeddah, Lusail and Yas Marina.",icon:"flag",tier:"s",sty:"desert",test:s=>["bahrain","jeddah","lusail","yas-marina"].every(i=>s.visits[i]>0)},
+  {id:"latin",name:"Latin Lap",desc:"Visit Interlagos, Mexico City, Buenos Aires and Goiânia.",icon:"flag",tier:"s",sty:"latin",test:s=>["interlagos","mexico-city","buenos-aires","goiania"].every(i=>s.visits[i]>0)},
+  /* how you race */
+  {id:"roundclock",name:"Round the Clock",desc:"Check in at a 24-hour race: the Rolex 24, Le Mans, Spa or the Nürburgring.",icon:"clock",tier:"s",sty:"roundclock",test:s=>s.h24},
+  {id:"b2b",name:"Back to Back",desc:"Check in at the same track in two years in a row.",icon:"cal",tier:"s",sty:"b2b",test:s=>s.b2b},
+  {id:"pitcrew",name:"Pit Crew",desc:"Check in at the same race weekend as a friend.",icon:"two",tier:"s",sty:"pitcrew",test:s=>false},
+  {id:"called",name:"Called It",desc:"Pick the winner right in Pick your podium.",icon:"cup",tier:"s",sty:"called",test:s=>s.called},
+  {id:"perfect",name:"Perfect Podium",desc:"Pick all three podium places right in one class.",icon:"cup",tier:"g",sty:"perfect",test:s=>s.perfect},
   {id:"fullgrid",name:"Full Grid",desc:"Visit every track in the app. The rarest stamp of all.",icon:"grid",tier:"z",test:s=>s.tracks>=s.total}
 ];
 const PP_TIERS=[["First Visit","b","Check in at %s during a race weekend."],["Return Visit","s","Come back for a second race weekend at %s."],["Regular","g","Three race weekends at %s."]];
@@ -192,6 +213,21 @@ const PP_SERIES={
   season:{kind:"ticket",ink:"#7A5A00",acc:"#C28A00",top:"SEASON TICKET",bot:"25 RACE WEEKENDS"},
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
   double:{kind:"art",art:"bill",w:96,g:101,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
+  lemans:{kind:"hero",ids:["le-mans"],motif:"24",band:true,bandInk:"#27408B",ink:"#1B2A66",acc:"#C28A00",top:"LE MANS",bot:"24 HOURS",size:12,space:3},
+  brickyard:{kind:"hero",ids:["indianapolis-oval"],motif:"bricks",band:true,bandInk:"#9B3A22",ink:"#6E2616",acc:"#C28A00",top:"THE BRICKYARD",bot:"INDIANAPOLIS",size:10,space:2.2},
+  greenhell:{kind:"hero",ids:["nurburgring"],motif:"trees",band:true,bandInk:"#1F5A34",ink:"#143D23",acc:"#C28A00",top:"GREEN HELL",bot:"NÜRBURGRING",size:10.5,space:2.4},
+  monaco:{kind:"hero",ids:["monaco"],motif:"waves",band:true,bandInk:"#B3262B",ink:"#7A1519",acc:"#C28A00",top:"MONACO",bot:"THE PRINCIPALITY",size:11,space:2.6},
+  triplecrown:{kind:"outlines",ids:["monaco","indianapolis-oval","le-mans"],band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"TRIPLE CROWN",bot:"MONACO · INDY · LE MANS",size:9.5,space:2},
+  italian:{kind:"outlines",ids:["monza","imola","misano","mugello"],band:true,bandInk:"#2F7A4B",ink:"#1F5233",acc:"#C8202A",top:"ITALIAN JOB",bot:"4 CIRCUITS",size:10,space:2.4},
+  risingsun:{kind:"outlines",ids:["suzuka","fuji","motegi"],band:true,bandInk:"#C0272D",ink:"#7A1519",acc:"#C0272D",top:"RISING SUN",bot:"JAPAN",size:11,space:2.8},
+  iberian:{kind:"outlines",ids:["barcelona-catalunya","portimao","jerez","aragon"],band:true,bandInk:"#C77D1A",ink:"#7A4A0B",acc:"#B3262B",top:"IBERIAN TOUR",bot:"SPAIN · PORTUGAL",size:9.6,space:2},
+  desert:{kind:"outlines",ids:["bahrain","jeddah","lusail","yas-marina"],band:true,bandInk:"#B8873A",ink:"#6B4A1B",acc:"#B23A2A",top:"DESERT RUN",bot:"THE GULF",size:10.5,space:2.6},
+  latin:{kind:"outlines",ids:["interlagos","mexico-city","buenos-aires","goiania"],band:true,bandInk:"#1E7B74",ink:"#14514C",acc:"#C28A00",top:"LATIN LAP",bot:"SOUTH AMERICA · MEXICO",size:10.5,space:2.4},
+  roundclock:{kind:"clock24",band:true,bandInk:"#2F6F7A",ink:"#1F4F5A",acc:"#C28A00",top:"ROUND THE CLOCK",bot:"24 HOURS",size:9.6,space:2.2},
+  b2b:{kind:"pair",band:true,bandInk:"#5B3F8C",ink:"#3E2A63",acc:"#C98400",top:"BACK TO BACK",bot:"TWO YEARS RUNNING",size:9.6,space:2.1},
+  pitcrew:{kind:"crew",band:true,bandInk:"#B23A2A",ink:"#7A241A",acc:"#C28A00",top:"PIT CREW",bot:"WITH A FRIEND",size:11,space:2.6},
+  called:{kind:"podium",n:1,band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"CALLED IT",bot:"RIGHT WINNER",size:11,space:2.6},
+  perfect:{kind:"podium",n:3,band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"PERFECT PODIUM",bot:"ALL THREE RIGHT",size:9.6,space:2.1},
   trifecta:{kind:"board",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"ANY THREE SERIES",size:9.2,space:2},
   wec:{champ:"wec",kind:"img",art:"wec",w:98,g:108,band:true,bandInk:"#1F5FA8",ink:"#143E72",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:115,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
@@ -526,6 +562,22 @@ function seriesStamp(d,o){
         return `<g><rect x="31" y="${f(c-11)}" width="98" height="22" rx="11" fill="none" stroke="${rk}" stroke-width="1.5" opacity="${k}"${on?"":' stroke-dasharray="3 3"'}/><circle cx="42.5" cy="${f(c)}" r="7" fill="${on?sp.ink:"none"}" stroke="${rk}" stroke-width="1.3" opacity="${k}"/><text x="42.5" y="${f(c+3.4)}" font-size="9.4" font-weight="800" text-anchor="middle" fill="${on?"#F3EAD2":rk}" opacity="${on?1:.45}">${i+1}</text>${on?`<text x="88" y="${f(c+3.4)}" font-size="9.4" font-weight="800" letter-spacing="1.1" text-anchor="middle" fill="${rk}" opacity="${locked?.8:1}">${NAME[sid]||sid.toUpperCase()}</text>`:""}</g>`; }).join(""); })()
     :sp.kind==="img"?(function(){ const A=ppArt(sp.art); if(!A) return ""; const w=sp.w||98, h=A.vb[3]*w/A.vb[2], y=(sp.g||108)-h;
       return `<ellipse cx="82" cy="${(sp.g||108)-1}" rx="${(w*.36).toFixed(1)}" ry="2.4" fill="${ink}" opacity="${locked?.08:.15}"/><image href="${A.img}" x="${(80-w/2).toFixed(1)}" y="${y.toFixed(1)}" width="${w}" height="${h.toFixed(1)}"${locked?' opacity=".4" style="filter:grayscale(1)"':""}/>`; })()
+    :sp.kind==="hero"?(function(){ const tk=TRACKS.find(x=>x.id===sp.ids[0]); if(!tk) return ""; const f=n=>n.toFixed(1); let m="";
+      if(sp.motif==="bricks") for(let r=0;r<3;r++) for(let c=0;c<7;c++){ const x=47+c*9.4+(r%2?4.7:0), y=98+r*5.4; if(x+8.6<=113&&x>=47) m+=`<rect x="${f(x)}" y="${f(y)}" width="8.6" height="4.4" rx=".6" fill="${acc}" opacity=".85"/>`; }
+      else if(sp.motif==="waves") for(let r=0;r<2;r++){ let d=`M48 ${103+r*6}`; for(let k=0;k<8;k++) d+=`q4 ${k%2?3:-3} 8 0`; m+=`<path d="${d}" fill="none" stroke="${acc}" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>`; }
+      else if(sp.motif==="trees") for(let k=0;k<8;k++){ const x=49+k*8.8, h=7+(k%3)*2; m+=`<path d="M${f(x)} 112l4-${h}l4 ${h}z" fill="${acc}" opacity=".9"/>`; }
+      else m=`<path d="M48 106H66M94 106H112" stroke="${ink}" stroke-width="1.2" stroke-linecap="round"/><text x="80" y="110" font-size="11" font-weight="800" letter-spacing="1.5" text-anchor="middle" fill="${acc}">24H</text>`;
+      return `<svg x="45" y="38" width="70" height="56" ${ppOutline(tk,62,{c:ink,w:2.8})}</svg>`+(locked?`<g opacity=".4">${m}</g>`:m); })()
+    :sp.kind==="clock24"?(function(){ const f=n=>n.toFixed(1); let s=`<circle cx="80" cy="80" r="30" fill="${acc}" fill-opacity="${locked?0:.18}" stroke="${ink}" stroke-width="2.2"/>`;
+      for(let i=0;i<24;i++){ const a=i*Math.PI/12, big=i%6===0, r0=big?22:25, r1=28; s+=`<path d="M${f(80+r0*Math.sin(a))} ${f(80-r0*Math.cos(a))}L${f(80+r1*Math.sin(a))} ${f(80-r1*Math.cos(a))}" stroke="${ink}" stroke-width="${big?2:1}" stroke-linecap="round"/>`; }
+      return s+`<text x="80" y="87.5" font-size="21" font-weight="800" text-anchor="middle" fill="${ink}">24</text><path d="M80 80V54" stroke="${acc}" stroke-width="2.4" stroke-linecap="round" opacity="${locked?.4:1}"/>`; })()
+    :sp.kind==="pair"?(function(){ let s=""; [[40,"1"],[88,"2"]].forEach(([x,n])=>{ s+=`<rect x="${x}" y="62" width="34" height="38" rx="6" fill="none" stroke="${ink}" stroke-width="2.2"/><text x="${x+17}" y="76" font-size="6.6" font-weight="800" letter-spacing="1.4" text-anchor="middle" fill="${ink}">YEAR</text><text x="${x+17}" y="94" font-size="19" font-weight="800" text-anchor="middle" fill="${ink}">${n}</text>`; });
+      return s+`<path d="M60 56Q80 36 100 56" fill="none" stroke="${acc}" stroke-width="2.4" stroke-linecap="round"/><path d="M95 49l6 7l-9 2.6" fill="none" stroke="${acc}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`; })()
+    :sp.kind==="crew"?`<circle cx="65" cy="80" r="24" fill="${acc}" fill-opacity="${locked?0:.3}" stroke="${ink}" stroke-width="2.2"/><circle cx="95" cy="80" r="24" fill="${ink}" fill-opacity="${locked?0:.22}" stroke="${ink}" stroke-width="2.2"/><text x="54" y="83" font-size="7.4" font-weight="800" letter-spacing=".8" text-anchor="middle" fill="${ink}">YOU</text><text x="106" y="83" font-size="6.2" font-weight="800" letter-spacing=".4" text-anchor="middle" fill="${ink}">FRIEND</text><path d="M74.5 80l4.2 4.6l8-10.4" fill="none" stroke="${locked?ink:acc}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>`
+    :sp.kind==="podium"?(function(){ const f=n=>n.toFixed(1), all=sp.n===3; let s="";
+      [[42,20,"2",all],[64,32,"1",true],[86,14,"3",all]].forEach(([x,h,n,on])=>{ const y=112-h; s+=`<rect x="${x}" y="${y}" width="22" height="${h}" fill="${on?ink:"none"}" stroke="${ink}" stroke-width="1.8" ${on?"":'opacity=".45"'}/><text x="${x+11}" y="${f(y+Math.min(h-3,13))}" font-size="${h>25?14:10}" font-weight="800" text-anchor="middle" fill="${on?"#F3EAD2":ink}" ${on?"":'opacity=".5"'}>${n}</text>`; });
+      const ck=(cx,cy)=>`<path d="M${cx-4} ${cy}l3.4 3.8l6.2-8" fill="none" stroke="${acc}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>`;
+      return s+(all?ck(53,84)+ck(75,72)+ck(97,90):ck(75,72))+(all?`<path d="M75 40l2.6 5.4l5.9.8l-4.3 4.1l1 5.8l-5.2-2.8l-5.2 2.8l1-5.8l-4.3-4.1l5.9-.8z" fill="${acc}" ${locked?'opacity=".5"':""}/>`:""); })()
     :sp.kind==="art"?(locked?'<g opacity=".45">'+ppHopArt(ppArt(sp.art),"ink","#8E8670","#F3EAD2",sp.w||72,80,sp.g||102)+'</g>':ppHopArt(ppArt(sp.art),sp.mode||"orig",ink,"#F3EAD2",sp.w||72,80,sp.g||102))
     :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,105)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,105))
     :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(ppArt("cherries"),"ink","#8E8670","#F3EAD2",70,80,115)}</g>`:ppHopArt(ppArt("cherries"),"orig",ink,"#F3EAD2",70,80,115))
@@ -649,10 +701,13 @@ const PP_BADGE_GROUPS=[
   ["By series",["sportscar","endcup","openwheel","stock","grandprix","motogp","wec","academy","carrera","legends","double","trifecta","tour"]],
   ["GT World Challenge",["gtfan","gteu"]],      /* America first, Europe next to it: the two marks spell GT */
   ["Abroad and the world",["euro","atlantic","worldtour","cathedrals"]],
+  ["Iconic places",["lemans","brickyard","greenhell","monaco","triplecrown"]],
+  ["Regions",["italian","risingsun","iberian","desert","latin"]],
+  ["How you race",["roundclock","b2b","pitcrew","called","perfect"]],
   ["Places",["street","jungle","endurance","zones","border","sunshine","lonestar","lakes","golden","peach","banks"]],
   ["Milestones",["first","hopper","tripper","grand","weekend","marathon","ten","season","fullgrid"]]];
 /* how close each unearned badge is: [have, need] (only for the ones that are a count of something) */
-const PP_LISTS={street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
+const PP_LISTS={triplecrown:[["monaco","indianapolis-oval","le-mans"],3],italian:[["monza","imola","misano","mugello"],4],risingsun:[["suzuka","fuji","motegi"],3],iberian:[["barcelona-catalunya","portimao","jerez","aragon"],4],desert:[["bahrain","jeddah","lusail","yas-marina"],4],latin:[["interlagos","mexico-city","buenos-aires","goiania"],4],street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
   sunshine:[["daytona","sebring","st-petersburg"],3],lonestar:[["cota","arlington"],2],lakes:[["road-america","mid-ohio","detroit"],3],golden:[["long-beach","laguna-seca","sonoma"],3],peach:[["road-atlanta","barber"],2]};
 const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],trifecta:[s=>Math.min(3,ppHeadSeen(s).length),3],euro:[s=>s.eu,3],worldtour:[s=>s.cont.size,3],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
 function ppProg(d,st){
@@ -739,3 +794,18 @@ function ppRestore(){
 renderPassportCard(); renderPpSw();
 if(typeof renderChampList==="function") renderChampList();     /* app.js drew the home list before the series marks existed */
 
+/* Badges that can be earned away from a check-in. ppAward: a badge a server fact decides (Pit Crew: a friend was at the same weekend, see acctPassportSync).
+   ppCatchUp: re-run the rules now and then, so new or changed badges reach people who already qualify, and Pick your podium badges appear once a result is in. */
+function ppAward(id){
+  const p=ppLoad(); if(p.unlocked[id]) return false; const d=PP_GLOBAL.find(x=>x.id===id); if(!d) return false;
+  p.unlocked[id]=Date.now(); ppSave(p); renderPassportCard(); if(document.getElementById("passport").classList.contains("on")) renderPassport();
+  setTimeout(()=>ppEnqueue([d]),600); if(typeof acctPassportSync==="function") acctPassportSync(); return true;
+}
+function ppCatchUp(){
+  try{ const p=ppLoad(); if(!p.stamps.length&&!Object.keys(p.unlocked).length) return;
+    const fresh=ppEvaluate(p); if(!fresh.length) return;
+    ppSave(p); renderPassportCard(); if(document.getElementById("passport").classList.contains("on")) renderPassport(); setTimeout(()=>ppEnqueue(fresh),700);
+    if(typeof acctPassportSync==="function") acctPassportSync(); }catch(e){}
+}
+setTimeout(ppCatchUp,4500);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") setTimeout(ppCatchUp,1500); });

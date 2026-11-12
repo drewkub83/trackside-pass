@@ -306,6 +306,11 @@ async function acctPassportSync() {
     (r.stamps || []).forEach(s => { if (!seen.has(s.t + "|" + s.day)) { q.stamps.push(s); ch = true; } });
     Object.keys(r.unlocked || {}).forEach(k => { if (!(k in q.unlocked)) { q.unlocked[k] = r.unlocked[k]; ch = true; } });
     if (ch) { if (typeof ppEvaluate === "function") ppEvaluate(q); ppSave(q); renderPassportCard(); const sc = document.getElementById("passport"); if (sc && sc.classList.contains("on")) renderPassport(); }
+    if (typeof ppAward === "function" && !ppLoad().unlocked.pitcrew && q.stamps.length) {      // Pit Crew: a friend checked in at the same weekend as you, this year or last
+      const y = new Date().getFullYear(); let any = false;
+      for (const yy of [y, y - 1]) { try { const rows = await sbRpc("friends_shared", { p_year: yy }); if (rows && rows.length) { any = true; break; } } catch (e) { /* offline */ } }
+      if (any) ppAward("pitcrew");
+    }
     if (typeof pickSeriesSync === "function") pickSeriesSync();      // the followed series for the server's Thursday pick reminder (only sent when it changed)
   } catch (e) { /* offline or no profile yet: it goes next time */ }
   finally { ppSyncing = false; if (ppAgain) { ppAgain = false; setTimeout(acctPassportSync, 500); } }

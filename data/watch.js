@@ -1518,4 +1518,81 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of crash.net's 2026 Qatar MotoGP Lusail Warm-up Results and motosan.es's Spanish-language warm-up report, agreeing on Di Giannantonio's fastest time, the top-five order and gaps, the tyre choices, and Marquez's and Martin's late starts (neither site reachable directly from this environment). Web search summaries of grandepremio.com ('Marc Marquez wins Qatar MotoGP sprint as Martin's last-lap loss sets up title shot' and its companion post-Sprint standings piece) and crash.net ('Marc Marquez wins dramatic Qatar MotoGP sprint after Marco Bezzecchi clash'), both read via search summary, for the Sprint result (Marquez 1st, Martin 3rd after a red-flag restart, Bezzecchi crashed from the lead battle with Marquez, no penalty issued), the resulting 411-362-332 standings, and tonight's exact clinch scenario (win plus Martin scoring zero, resolved in Marquez's favour by the race-wins countback); sources disagreed on whether Bezzecchi is already mathematically out, so that is left uncertain above. data/standings.js for the post-Sprint points (411-362-332), matching the same search summaries. Yamaha boycott status and the Portugal/Valencia ban threat carried over from the prior entry for this event, re-checked and no newer report found. Race start time and lap count from data/lusail.js and the same search summaries." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1", at:"2026-11-12T00:25:45Z",
+    asOf:"Current after the Brazilian Grand Prix (Nov 8, 2026): Kimi Antonelli already clinched the title at Mexico City three rounds early, and Mercedes sealed the constructors' championship in Brazil -- so Las Vegas is about who finishes where behind the champions.",
+    groups:[
+      { h:"The title's done -- Antonelli is champion", items:[
+        ["Kimi Antonelli (Mercedes)", "Clinched the 2026 Drivers' title at the Mexico City Grand Prix (Nov 1) with a third-place finish, at 20 years and 68 days old becoming F1's youngest-ever world champion and the first Italian champion since Alberto Ascari in 1953. He leads on 390 points with three rounds (Las Vegas, Qatar, Abu Dhabi) left to run -- nothing left for him to decide."],
+        ["Mercedes", "Clinched the Constructors' title at the Brazilian Grand Prix -- the team's ninth overall (level with Williams) and first since 2021."]
+      ] },
+      { h:"What's still live: the fight for second (and third, and fourth...)", items:[
+        ["Max Verstappen (Red Bull Racing)", "Second on 279 points after Brazil -- not a title fight, but the best fight left on the grid this weekend."],
+        ["George Russell (Mercedes)", "Third on 262, having moved up with a fourth-place finish at Interlagos."],
+        ["Lewis Hamilton (Ferrari)", "Fourth on 261, just 1 point behind Russell -- the tightest gap anywhere in the top six."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 251, 10 back of his teammate Hamilton -- Ferrari's two drivers are fighting each other as much as Red Bull and Mercedes for the minor places."],
+        ["Lando Norris (McLaren)", "Sixth on 246 but arrives in the best form of anyone in this group -- his Interlagos win was McLaren's most recent, after a season that's had more penalties and bad luck than pace problems."]
+      ] },
+      { h:"Constructors: Ferrari's grip on second isn't bulletproof", items:[
+        ["Ferrari", "512 points, a safe-looking second, 97 clear of Red Bull with three rounds (and six cars' worth of points, two per team per round) left to hand out."],
+        ["Red Bull Racing", "415 points, mathematically still able to close a 97-point gap in three rounds, but only with a near-maximum run and Ferrari stumbling -- a long shot rather than a live fight."],
+        ["McLaren", "398 points, fourth, with its own slim mathematical path back into the picture if results break its way -- more plausible as spoiler than contender."]
+      ] },
+      { h:"The Strip circuit: cold tyres, long straights, a track that bites back", items:[
+        ["Why it's tricky despite the straights", "17 turns and 6.201 km with some of the longest straights on the calendar past the Bellagio, Caesars Palace and the Venetian -- but a night race run in cold desert air starves the tyres of the heat that normally keeps them gripping, leading to the understeer-then-snap-oversteer balance drivers have complained about since the track's 2023 debut."],
+        ["Qualifying matters more than the straights suggest", "Tyre preparation here is a known technical challenge with almost no representative running before the event; teams that get the tyres switched on through one lap in qualifying have tended to convert that into a clean getaway on race night, since cold restarts and traffic in the braking zones make overtaking harder than the long straights imply."],
+        ["Lap record", "1:33.365, set by Max Verstappen in 2025 -- Red Bull and McLaren have been the fastest cars here in the track's three runnings so far."]
+      ] },
+      { h:"Up next (all times Las Vegas local, PST)", items:[
+        ["Practice 1, Thursday Nov 19, 4:30pm", "First look at the Strip circuit for 2026 -- cold-tyre behaviour is usually the first storyline of the weekend."],
+        ["Practice 2, Thursday Nov 19, 8:00pm", "Run under the same lights and temperatures as qualifying and the race -- the session teams actually trust."],
+        ["Practice 3, Friday Nov 20, 4:30pm", "Final tuning before qualifying."],
+        ["Qualifying, Friday Nov 20, 8:00pm", "Pole matters here -- clean air and a tow down the long straights are both hard to find once the pack bunches up."],
+        ["Race, Saturday Nov 21, 8:00pm, 50 laps / 309.958 km", "The championship's settled, but the runner-up fight (Verstappen vs. Russell vs. Hamilton vs. Leclerc) and the constructors' battle for second (Ferrari vs. Red Bull) are both still genuinely in play."]
+      ] }
+    ],
+    note:"Sources: formula1.com's Mexico City Lowdown ('All the key moments as Antonelli secures maiden title...') and racer.com ('Verstappen holds off Hamilton for Mexico win as Antonelli clinches title') for the Mexico City clinch, Antonelli's age/record and finishing position, confirmed by web search summaries agreeing across thescore.com, Al Jazeera and multiple other outlets; gpblog.com's and qatar-tribune.com's post-Brazil coverage for Mercedes' constructors' title in Brazil (ninth title, level with Williams, first since 2021) and the race result (Norris won, Russell 4th, Antonelli 5th); data/standings.js (automatic update from api.jolpi.ca) for the exact point totals (Antonelli 390, Verstappen 279, Russell 262, Hamilton 261, Leclerc 251, Norris 246; Ferrari 512, Red Bull 415, McLaren 398). formula1.com's official 2026 Las Vegas race page (via web search summary) for the circuit length (6.201 km), turn count (17), race distance/lap count (309.958 km / 50 laps) and Verstappen's 1:33.365 lap record. autosport.com and motorsportmagazine.com, via web search summary (neither reachable directly from this environment), for the cold-track/tyre-preparation challenge at this circuit, cross-checked against each other. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1academy", at:"2026-11-12T00:25:45Z",
+    asOf:"Current after Austin (Oct 23-25), going into the season finale: Alisha Palmowski has already clinched the 2026 title, but the fight for 2nd is still live between Nina Gademan and Emma Felbermayr.",
+    groups:[
+      { h:"The title: settled; 2nd place isn't", items:[
+        ["Alisha Palmowski (Campos Racing)", "Already the 2026 champion -- she clinched it at Austin with races still to run, so the title itself is decided before this finale even starts."],
+        ["Nina Gademan (MP Motorsport)", "Moved up to 2nd by winning Austin's Feature Race, her second win of the season, and carries a 6-point edge (119 to 113) into the last two races of the year."],
+        ["Emma Felbermayr", "Third on 113, 6 points back of Gademan with only the Reverse Grid Race and Feature Race left to close the gap."]
+      ] },
+      { h:"Las Vegas storyline: a wild-card debut", items:[
+        ["Luna Fluxa Cross", "The 16-year-old Spanish driver and Mercedes-AMG F1 Junior Programme member makes her F1 Academy debut as this round's Wild Card, driving the #10 Visit Las Vegas car run by Hitech -- she was the first female driver to join Mercedes' junior programme, back in 2022."]
+      ] },
+      { h:"Up next (all times Las Vegas local, PST)", items:[
+        ["Practice, Thursday Nov 19, 6:00pm", "The only practice session of the weekend, on the Las Vegas Strip Circuit at night."],
+        ["Qualifying, Thursday Nov 19, 9:30pm", "Sets the grid for Friday's Reverse Grid Race."],
+        ["Reverse Grid Race, Friday Nov 20, 6:15pm", "Grid set by reversing qualifying's order; sets the grid for Saturday's Feature Race."],
+        ["Feature Race, Saturday Nov 21, 4:20pm", "The season's last race, and the only one that can still move the 2nd-place fight between Gademan and Felbermayr."]
+      ] }
+    ],
+    note:"Sources: web search summaries of formula1.com ('F1 ACADEMY: Palmowski crowned 2026 champion as Larsen takes maiden victory in Austin' and 'F1 ACADEMY: Gademan seizes second victory of the season with assured Austin drive') for Palmowski's title clinch and Gademan's Austin Feature Race win moving her ahead of Felbermayr; data/standings.js for the post-Austin points (Palmowski 172 champion, Gademan 119, Felbermayr 113). formula1.com ('Mercedes junior Luna Fluxa Cross to make F1 ACADEMY debut as Las Vegas Wild Card') for the Wild Card entry, her car number/team and junior-programme background. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
+  ,{ t:"portimao", d:"2026-11-20", s:"motogp", at:"2026-11-12T00:25:45Z",
+    asOf:"Current after the Grand Prix of Qatar (Lusail, Nov 8): Marco Bezzecchi won from start to finish to delay Marc Marquez's title party, but Marquez still leads by 60 points with two rounds left and can clinch the championship this weekend at Portimão.",
+    groups:[
+      { h:"Qatar, in brief: Bezzecchi denies the title (for now)", items:[
+        ["Marco Bezzecchi (Aprilia Racing)", "Led the Qatar Grand Prix from start to finish for the win, after Marquez had already beaten him in Saturday's Sprint."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Second, 3.083s behind Bezzecchi -- enough to keep the title alive into Portugal rather than seal it in Qatar."],
+        ["Raul Fernandez and Ai Ogura (Trackhouse)", "Third and fourth."],
+        ["Jorge Martin (Aprilia Racing)", "Seventh, scoring 9 points just two weeks after fracturing his wrist at Phillip Island (Oct 25) -- his title hopes depend on results like this continuing while Marquez has any kind of off weekend."]
+      ] },
+      { h:"The title fight heading into Portimão", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Leads on 431 points, 60 clear of Martin and 74 clear of Bezzecchi, with two rounds (Portimão, then Valencia) left to run."],
+        ["Jorge Martin (Aprilia Racing)", "Second on 371. Reports agree that a Marquez Sprint win on Saturday, even if Martin finishes second behind him, would clinch the title outright, regardless of Sunday's race or Valencia -- Martin's maximum possible points left after that would no longer be enough to close the gap."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Third on 357, 74 points back with 74 still available across the two remaining rounds -- mathematically alive but needing Marquez to have a very bad weekend here and at Valencia."]
+      ] },
+      { h:"Yamaha's Qatar boycott: still unresolved heading into Portugal", items:[
+        ["Yamaha (factory and Pramac riders)", "Skipped the entire Qatar round over the team's Middle East travel-safety assessment, after a letter opposing the race signed by 19 riders; Yamaha said it expects to return to competition at this Portuguese round."],
+        ["Possible sanctions", "MotoGP/the FIM were reported to be considering race bans for Yamaha riders at Portugal and Valencia over the boycott, but no official FIM ruling had been announced as of the most recent reports checked -- whether Yamaha's riders are actually on track this weekend was not confirmed in sources checked today."]
+      ] },
+      { h:"Sessions this weekend (Algarve International Circuit, Portimão -- local time, WET)", items:[
+        ["Friday Nov 20", "Free Practice 1, 10:45am; Practice, 3:00pm."],
+        ["Saturday Nov 21", "Free Practice 2, 10:10am; Qualifying 1, 10:50am; Qualifying 2, 11:15am; the Sprint, 3:00pm -- Marquez's first chance to clinch outright."],
+        ["Sunday Nov 22", "Warm-Up, 9:40am; the Grand Prix, 1:00pm."]
+      ] }
+    ],
+    note:"Sources: web search summaries of crash.net ('Marc Marquez denied MotoGP title in Qatar as Marco Bezzecchi wins race'), The Race ('Bezzecchi dominates but Marquez on brink of title'), GPBlog ('MotoGP Full Race Results | Marquez title delayed by Bezzecchi' and 'Marc Marquez MotoGP title scenarios: How he can clinch in Portugal') for the Qatar race result, gaps and Martin's wrist-injury context (none reachable directly from this environment, so this is as summarized by search results). data/results.js and data/standings.js (both already updated by this app's automatic MotoGP tools) for the race order and the 431/371/357 points; the Sprint-win clinch scenario checked against those point totals directly (60-point gap plus a 12-point Sprint win swing exceeds the 62 points still available afterward even if Martin finishes second in that Sprint). Yamaha boycott and threatened-ban status from web search summaries of crash.net's reporting on the Qatar boycott and the FIM's response; no newer ruling was found in sources checked today (Nov 12), so this weekend's Yamaha entry status is left unconfirmed. Session times from data/portimao.js." }
 ];

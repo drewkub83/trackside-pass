@@ -25,6 +25,8 @@ function ppStats(p){
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
   const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
+const PP_HEAD=["imsa","indycar","gtwca","gtwce","wec","f1","nascar","motogp"];      /* the headline series: any three of them earn the Series Trifecta */
+const ppHeadSeen=s=>PP_HEAD.filter(i=>s.series.has(i));
 const PP_GLOBAL=[
   {id:"first",name:"First Stamp",desc:"Check in at your first race weekend.",icon:"star",tier:"x",sty:"first",test:s=>s.tracks>=1},
   {id:"hopper",name:"Track Hopper",desc:"Visit 3 different tracks.",icon:"hop",tier:"b",sty:"hopper",test:s=>s.tracks>=3},
@@ -42,7 +44,7 @@ const PP_GLOBAL=[
   {id:"stock",name:"Stock Car",desc:"Check in at a NASCAR weekend.",icon:"stockcar",tier:"x",sty:"nascar",test:s=>s.series.has("nascar")},
   {id:"grandprix",name:"Grand Prix",desc:"Check in at a Formula 1 weekend.",icon:"flag",tier:"s",sty:"f1",test:s=>s.series.has("f1")},
   {id:"double",name:"Double Bill",desc:"Check in on a day when two series raced at the same track.",icon:"two",tier:"s",sty:"double",test:s=>s.bill},
-  {id:"trifecta",name:"Series Trifecta",desc:"Check in at IMSA, IndyCar and GT World weekends.",icon:"three",tier:"g",sty:"trifecta",test:s=>["imsa","indycar","gtwca"].every(i=>s.series.has(i))},
+  {id:"trifecta",name:"Series Trifecta",desc:"Check in at weekends of three different headline series: IMSA, IndyCar, GT World America or Europe, NASCAR, Formula 1, WEC or MotoGP.",icon:"three",tier:"g",sty:"trifecta",test:s=>ppHeadSeen(s).length>=3},
   {id:"wec",name:"Endurance World",desc:"Check in at a FIA World Endurance Championship weekend.",icon:"globe",tier:"s",sty:"wec",test:s=>s.series.has("wec")},
   {id:"motogp",name:"MotoGP Fan",desc:"Check in at a MotoGP weekend.",icon:"flag",tier:"s",sty:"motogp",test:s=>s.series.has("motogp")},
   {id:"gteu",name:"GT Europe",desc:"Check in at a GT World Challenge Europe weekend.",icon:"gt",tier:"s",sty:"gtwce",test:s=>s.series.has("gtwce")},
@@ -189,7 +191,7 @@ const PP_SERIES={
   season:{kind:"ticket",ink:"#7A5A00",acc:"#C28A00",top:"SEASON TICKET",bot:"25 RACE WEEKENDS"},
   banks:{kind:"outlines",ids:["daytona","phoenix","indianapolis-oval"],band:true,bandInk:"#2B5D8A",ink:"#1D4263",acc:"#C98400",top:"HIGH BANKS",bot:"DAYTONA · PHOENIX · INDY",size:9.2,space:2.2},
   double:{kind:"art",art:"bill",w:96,g:101,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#E0A100",top:"DOUBLE BILL",bot:"TWO SERIES, ONE DAY",size:9.2,space:2.2},
-  trifecta:{kind:"venn",venn:"trio",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"IMSA · INDYCAR · GT WORLD",size:8.6,space:1.7},
+  trifecta:{kind:"board",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"ANY THREE SERIES",size:9.2,space:2},
   wec:{champ:"wec",region:"world",ink:"#10243E",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:115,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
   gtwce:{champ:"gtwce",kind:"art",art:"gte",w:88,g:98,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
@@ -517,6 +519,10 @@ function seriesStamp(d,o){
         [69,84].forEach(cy=>{ s+=on?`<circle cx="${f(cx)}" cy="${cy}" r="7.6" fill="#E8202A" opacity=".28"/><circle cx="${f(cx)}" cy="${cy}" r="5.2" fill="#E8202A"/><circle cx="${f(cx-1.6)}" cy="${cy-1.7}" r="1.5" fill="#FFD9D6" opacity=".85"/>`
           :`<circle cx="${f(cx)}" cy="${cy}" r="5" fill="none" stroke="${ink}" stroke-width="1.2" opacity=".6"/>`; }); }
       return s+(on?`<text x="80" y="111" font-size="6.8" font-weight="800" letter-spacing="2.2" text-anchor="middle" fill="${ink}">LIGHTS OUT</text>`:""); })()
+            :sp.kind==="board"?(function(){ const f=n=>n.toFixed(1), seen=locked&&!st?[]:ppHeadSeen(st||ppStats(ppLoad())), got=o.order||seen;
+      const NAME={imsa:"IMSA",indycar:"INDYCAR",gtwca:"GT AMERICA",gtwce:"GT EUROPE",nascar:"NASCAR",f1:"FORMULA 1",wec:"WEC",motogp:"MOTOGP"};
+      return [0,1,2].map(i=>{ const c=54+i*26, sid=got[i], on=!!sid, rk=locked&&!on?"#8E8670":sp.ink, k=on?1:.3;
+        return `<g><rect x="31" y="${f(c-11)}" width="98" height="22" rx="11" fill="none" stroke="${rk}" stroke-width="1.5" opacity="${k}"${on?"":' stroke-dasharray="3 3"'}/><circle cx="42.5" cy="${f(c)}" r="7" fill="${on?sp.ink:"none"}" stroke="${rk}" stroke-width="1.3" opacity="${k}"/><text x="42.5" y="${f(c+3.4)}" font-size="9.4" font-weight="800" text-anchor="middle" fill="${on?"#F3EAD2":rk}" opacity="${on?1:.45}">${i+1}</text>${on?`<text x="88" y="${f(c+3.4)}" font-size="9.4" font-weight="800" letter-spacing="1.1" text-anchor="middle" fill="${rk}" opacity="${locked?.8:1}">${NAME[sid]||sid.toUpperCase()}</text>`:""}</g>`; }).join(""); })()
     :sp.kind==="art"?(locked?'<g opacity=".45">'+ppHopArt(ppArt(sp.art),"ink","#8E8670","#F3EAD2",sp.w||72,80,sp.g||102)+'</g>':ppHopArt(ppArt(sp.art),sp.mode||"orig",ink,"#F3EAD2",sp.w||72,80,sp.g||102))
     :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,105)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,105))
     :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(ppArt("cherries"),"ink","#8E8670","#F3EAD2",70,80,115)}</g>`:ppHopArt(ppArt("cherries"),"orig",ink,"#F3EAD2",70,80,115))
@@ -645,7 +651,7 @@ const PP_BADGE_GROUPS=[
 /* how close each unearned badge is: [have, need] (only for the ones that are a count of something) */
 const PP_LISTS={street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
   sunshine:[["daytona","sebring","st-petersburg"],3],lonestar:[["cota","arlington"],2],lakes:[["road-america","mid-ohio","detroit"],3],golden:[["long-beach","laguna-seca","sonoma"],3],peach:[["road-atlanta","barber"],2]};
-const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],euro:[s=>s.eu,3],worldtour:[s=>s.cont.size,3],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
+const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],trifecta:[s=>Math.min(3,ppHeadSeen(s).length),3],euro:[s=>s.eu,3],worldtour:[s=>s.cont.size,3],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
 function ppProg(d,st){
   const l=PP_LISTS[d.id]; if(l) return [Math.min(l[1],l[0].filter(i=>d.id==="endurance"?st.endLong.has(i):st.visits[i]>0).length),l[1]];
   const c=PP_COUNTS[d.id]; if(c){ const need=typeof c[1]==="function"?c[1](st):c[1]; return [Math.min(need,c[0](st)),need]; }

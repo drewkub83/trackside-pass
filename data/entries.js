@@ -371,7 +371,7 @@ const ENTRIES = [
         ["77", "Valtteri Bottas", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-12. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-13. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"portimao", d:"2026-11-20", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the the field of the latest Sunday race, the Grand Prix of Qatar (2026-11-06), until this weekend's practice is published, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
@@ -393,5 +393,5 @@ const ENTRIES = [
         ["11", "Diogo Moreira", "Pro Honda LCR", "", 0.5, "averaged top 80% of the field over his last 6 Sunday races", 0.198]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-12. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-13. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

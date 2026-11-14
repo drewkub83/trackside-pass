@@ -316,7 +316,7 @@ const RESULTS = [
         "18. #32 Team WRT"
       ] }
     ],
-    note:"(automatic update) Source: fiawec.com race summary page (race/summary/5066), full classification of each class, read 2026-11-13." },
+    note:"(automatic update) Source: fiawec.com race summary page (race/summary/5066), full classification of each class, read 2026-11-14." },
   { t:"mexico-city", d:"2026-10-30", s:"f1", event:"Mexico City Grand Prix",
     groups:[
       { h:"Race", order:[

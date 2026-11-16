@@ -22,7 +22,8 @@ function ppStats(p){
   Object.keys(by).forEach(id=>{ const yrs=new Set(by[id].map(s=>+String(s.day).slice(0,4))); yrs.forEach(y=>{ if(yrs.has(y+1)) b2b=true; }); });      /* the same track in two years running */
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||"")); cont.add(contOf(t)); if(contOf(t)==="EU") eu++;
     by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); if(/\b24 Hours?\b|Rolex 24 At/i.test(e.e||"")&&!/Roar Before/i.test(e.e||"")) h24=true; });
-      ids.forEach(i=>series.add(i)); if([...ids].filter(i=>i!=="igtc").length>=2) bill=true;      /* the Intercontinental GT Challenge runs inside GT World weekends, so it is not a second series on its own */ });
+      const real=[...ids].filter(i=>i!=="igtc").length; if(ids.has("igtc")){ ids.add("gtwca"); ids.add("gtwce"); }   /* an Intercontinental GT Challenge round has the cars and drivers of every GT World Challenge series, so it counts for GT Fan (America) and GT Europe too, but not as a second series for Double Bill */
+      ids.forEach(i=>series.add(i)); if(real>=2) bill=true;      /* the Intercontinental GT Challenge runs inside GT World weekends, so it is not a second series on its own */ });
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
   let called=false, perfect=false;      /* Pick your podium: the right winner, and a whole podium right (your own picks, so not for a friend's passport) */
   if(!(typeof ppView!=="undefined"&&ppView)&&typeof ENTRIES!=="undefined") try{ ENTRIES.forEach(g=>{ const sc=gameScore(g); if(!sc) return; Object.keys(sc.per).forEach(k=>{ if(k.slice(-1)==="#") return; const m=sc.per[k]; if(m[0]==="hit") called=true; if(m.length===3&&m.every(x=>x==="hit")) perfect=true; }); }); }catch(e){}
@@ -44,7 +45,7 @@ const PP_GLOBAL=[
   /* by series */
   {id:"sportscar",name:"Sports Car Fan",desc:"Check in at an IMSA WeatherTech weekend.",icon:"car",tier:"x",sty:"sportscar",test:s=>s.series.has("imsa")},
   {id:"openwheel",name:"Open Wheel",desc:"Check in at an IndyCar weekend.",icon:"wheel",tier:"x",sty:"openwheel",test:s=>s.series.has("indycar")},
-  {id:"gtfan",name:"GT Fan",desc:"Check in at a GT World Challenge America weekend.",icon:"gt",tier:"x",sty:"gtwca",test:s=>s.series.has("gtwca")},
+  {id:"gtfan",name:"GT Fan",desc:"Check in at a GT World Challenge America weekend, or at any Intercontinental GT Challenge round.",icon:"gt",tier:"x",sty:"gtwca",test:s=>s.series.has("gtwca")},
   {id:"stock",name:"Stock Car",desc:"Check in at a NASCAR weekend.",icon:"stockcar",tier:"x",sty:"nascar",test:s=>s.series.has("nascar")},
   {id:"grandprix",name:"Grand Prix",desc:"Check in at a Formula 1 weekend.",icon:"flag",tier:"s",sty:"f1",test:s=>s.series.has("f1")},
   {id:"double",name:"Double Bill",desc:"Check in on a day when two series raced at the same track.",icon:"two",tier:"s",sty:"double",test:s=>s.bill},
@@ -52,7 +53,7 @@ const PP_GLOBAL=[
   {id:"wec",name:"Endurance World",desc:"Check in at a FIA World Endurance Championship weekend.",icon:"globe",tier:"s",sty:"wec",test:s=>s.series.has("wec")},
   {id:"motogp",name:"MotoGP Fan",desc:"Check in at a MotoGP weekend.",icon:"flag",tier:"s",sty:"motogp",test:s=>s.series.has("motogp")},
   {id:"igtc",name:"Intercontinental",desc:"Check in at an Intercontinental GT Challenge weekend: Bathurst, Texas, the Nürburgring 24 Hours, Spa or Suzuka.",icon:"globe",tier:"s",sty:"igtc",test:s=>s.series.has("igtc")},
-  {id:"gteu",name:"GT Europe",desc:"Check in at a GT World Challenge Europe weekend.",icon:"gt",tier:"s",sty:"gtwce",test:s=>s.series.has("gtwce")},
+  {id:"gteu",name:"GT Europe",desc:"Check in at a GT World Challenge Europe weekend, or at any Intercontinental GT Challenge round.",icon:"gt",tier:"s",sty:"gtwce",test:s=>s.series.has("gtwce")},
   {id:"carrera",name:"Carrera Cup",desc:"Check in at a Porsche Carrera Cup North America weekend.",icon:"car",tier:"x",sty:"carrera",test:s=>s.series.has("carreracup")},
   {id:"legends",name:"Historic Racing",desc:"Check in at a historic or vintage race weekend: HSR, Legends of Le Mans, GT3 Revival or Masters Historic.",icon:"moon",tier:"x",sty:"legends",test:s=>PP_VINTAGE.some(i=>s.series.has(i))},
   /* abroad */

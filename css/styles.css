@@ -940,6 +940,9 @@ img,svg{-webkit-user-drag:none}
 .lbTabs{margin-top:12px}.lbList{margin-top:10px}
 .lbRow{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px}.lbRow+.lbRow{margin-top:4px}
 .lbRow.me{background:var(--tint)}
+.lbGap{text-align:center;color:var(--ink-2);letter-spacing:.4em;font-size:12px;margin:2px 0}
+.lbMore{display:block;width:100%;margin:10px 0 2px;padding:11px;border:1.5px solid var(--line);border-radius:14px;background:transparent;color:var(--ink);font:600 14px var(--font,inherit);cursor:pointer}
+.lbRow:nth-child(-n+3):not(.me) .lbRank{color:var(--accent,#C28A00)}
 .lbRank{width:26px;text-align:center;font-weight:700;color:var(--ink-2)}
 .lbName{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis}.lbName small{display:block;font-weight:400;font-size:11.5px;color:var(--ink-2);margin-top:2px}
 .lbRow b{font-size:18px}
@@ -1004,6 +1007,7 @@ html.swiping *,html.swiping *::before,html.swiping *::after{-webkit-backdrop-fil
 
 /* friend's picks */
 .fpTabs{margin:6px 22px 10px}
+.fpTotal{display:flex;align-items:center;gap:14px;margin:4px 0 14px;padding:14px 16px;border-radius:16px;background:var(--tint)}.fpTotal b{font-size:40px;line-height:1}.fpTotal span{font-weight:600}.fpTotal small{display:block;font-weight:400;font-size:12px;color:var(--ink-2);margin-top:3px}
 .fpGame{padding:12px 0;border-top:1px solid var(--line)}.fpGame>small{display:block;color:var(--ink-2);font-size:12.5px;margin:2px 0 6px}
 .fpHead{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.fpHead b{font-size:16px}.fpHead span{font-size:13px;color:var(--ink-2)}
 .fpCls{margin:8px 0 2px;font-size:12px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-2)}
@@ -1452,3 +1456,12 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 .youTile b{font-size:34px;font-weight:300;line-height:1.05;letter-spacing:-1px}.youTile span{font-size:14px;font-weight:600}.youTile small{font-size:12px;color:var(--ink-2);line-height:1.3}
 .youRow{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;margin-top:8px;border-radius:16px;background:var(--tint-2,rgba(128,128,128,.1));border:0;color:var(--ink);font:inherit;cursor:pointer}
 .youRow span{display:flex;flex-direction:column;min-width:0}.youRow b{font-weight:600;font-size:15px}.youRow small{font-size:12.5px;color:var(--ink-2)}.youRow i{font-style:normal;font-size:22px;color:var(--ink-2)}
+
+.vsList{margin-top:8px}.vsRow{padding:9px 12px;border-radius:12px}.vsRow.me{background:var(--tint)}.vsTop{display:flex;justify-content:space-between;font-weight:600}.vsBar{height:8px;border-radius:5px;background:var(--line);margin:6px 0 4px;overflow:hidden}.vsBar i{display:block;height:100%;border-radius:5px;background:var(--accent)}.vsRow.me .vsBar i{background:var(--accent-2,var(--accent))}.vsRow small{font-size:11.5px;color:var(--ink-2)}
+
+.stCard{display:block;width:calc(100% - 28px);text-align:left;margin:0 14px 12px;padding:16px 18px;border:0;border-radius:18px;background:var(--card);box-shadow:0 1px 0 var(--line);color:var(--ink);font:inherit;cursor:pointer}
+.stHead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}.stHead b{font-size:18px}.stHead span{font-size:12px;color:var(--ink-2)}
+.stSeries{padding:10px 0;border-top:1px solid var(--line)}.stSeries b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.stSeries p{margin:3px 0;font-size:13.5px;line-height:1.4;color:var(--ink-2)}.stSeries p span{font-weight:700;color:var(--ink)}
+.stGo{display:block;margin-top:6px;font-size:13px;font-weight:600;color:var(--accent)}
+.fpReport{text-align:center;margin:18px 22px 90px}

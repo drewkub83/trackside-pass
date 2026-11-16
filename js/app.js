@@ -256,7 +256,24 @@ function renderSeason(){
   const grp=(t,l)=>l.length?`<div class="sect">${t}</div><div class="scards">${l.map(x=>x.h).join("")}</div>`:"";
   el.innerHTML=grp("This week",cards.filter(x=>x.d<=weekEnd))+grp("Coming up",cards.filter(x=>x.d>weekEnd));
 }
-function renderHome(){ renderHero(); renderSeason(); renderRecapHome(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
+/* "Storylines for the week": the "What to watch" previews of the next race weekends, all in one card on Home. It shows from a week
+   before a weekend starts until the first day of it (then the weekend's own hub carries What to watch), only for series you follow. */
+const STORY_DAYS=7;
+function storylineWeekends(){
+  if(typeof WATCH==="undefined") return []; const today=localToday(), mine=new Set(followedGameSeries()), by={};
+  WATCH.forEach(x=>{ const n=daysBetween(today,x.d); if(n<1||n>STORY_DAYS||(x.from&&x.from>today)||!mine.has(x.s)) return;
+    const k=x.t+"|"+x.d, key=x.s; (by[k]=by[k]||{t:x.t,d:x.d,best:{}}); const b=by[k].best; if(!b[key]||(x.from||"")>=(b[key].from||"")) b[key]=x; });
+  return Object.values(by).sort((a,b)=>a.d.localeCompare(b.d));
+}
+function renderStorylines(){
+  const el=document.getElementById("storylines"); if(!el) return; const wk=storylineWeekends();
+  if(!wk.length){ el.innerHTML=""; return; }
+  el.innerHTML=`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
+    const series=Object.values(w.best).map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"…":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);
+      return `<div class="stSeries"><b>${esc(watchSeriesName(x)||"Race weekend")}</b>${items.map(i=>`<p><span>${esc(i.n)}</span> ${esc(i.why)}</p>`).join("")}</div>`; }).join("");
+    return `<button class="stCard" onclick="openTrack('${tr.id}','home')"><div class="stHead"><b>${esc(tr.short)}</b><span>${ev?esc(fmtRange(ev)):esc(w.d)} · ${n===1?"starts tomorrow":"in "+n+" days"}</span></div>${series}<span class="stGo">Open the weekend &rsaquo;</span></button>`; }).join("");
+}
+function renderHome(){ renderHero(); renderStorylines(); renderSeason(); renderRecapHome(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
 function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e.d,s&&s.d].filter(Boolean).sort()[0]||"9999-99-99"; }
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort

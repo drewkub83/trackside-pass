@@ -49,6 +49,7 @@
     <p>Every race track in one place. Find your gate, your seat, and the nearest brisket.</p>
   </header>
   <div id="hero"></div>
+  <div id="storylines"></div>
   <div id="wkRecap"></div>
   <div id="season"></div>
   <div id="recapCard"></div>
@@ -111,8 +112,8 @@
 <!-- ANOTHER PLAYER'S PASSPORT -->
 <section class="screen" id="friendPass">
   <div class="bar"><button class="fab" aria-label="Back" onclick="fpClose()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2" id="fpTitle">Passport</h2></div>
-  <div class="gmTabs lbTabs fpTabs" id="fpTabs"><button class="gmTab on" onclick="fpTab('passport')">Passport</button><button class="gmTab" onclick="fpTab('picks')">Picks</button></div>
-  <div id="fpPassport">
+  <div class="gmTabs lbTabs fpTabs" id="fpTabs"><button class="gmTab on" onclick="fpTab('picks')">Points</button><button class="gmTab" onclick="fpTab('passport')">Passport</button></div>
+  <div id="fpPassport" hidden>
     <div class="ppsum" id="fpSum"></div>
     <div class="sect">Stamps earned</div>
     <div id="fpTracks"></div>
@@ -122,7 +123,8 @@
     <div id="fpMore"></div>
     <div id="fpLocked"></div>
   </div>
-  <div class="acScreen" id="fpPicks" hidden></div>
+  <div class="acScreen" id="fpPicks"></div>
+  <p class="plRules fine fpReport"><a href="#" onclick="if(fpUser)acctReport(fpUser.id);return false">Report this player</a></p>
 </section>
 
 <!-- SETTINGS -->

@@ -370,14 +370,27 @@ async function openRecap(year) {
       ${pt ? `<p class="plRules">Most visited: <b>${sbEsc(pt.short)}</b>, ${st.top.n} weekend${st.top.n === 1 ? "" : "s"}.</p>` : ""}` : `<p class="plRules">No check-ins yet this year. Stamps are earned at a track during a race weekend.</p>${me ? `<div class="rcGrid">${tile(me.points, "podium points")}</div>` : ""}`}
     <h4 class="ptH">With friends</h4>
     ${shared === null ? `<p class="plRules">${sbSession() ? "Offline: friends need a signal." : "Sign in to see friends here."}</p>` : pals.length ? pals.map(([n, rs]) => `<div class="rcPal"><b>${sbEsc(n)}</b><span>${rs.length} weekend${rs.length === 1 ? "" : "s"} together</span>${rs.map(r => `<div class="rcWk">${recapWeekend(r.t, r.ev)}</div>`).join("")}</div>`).join("") : `<p class="plRules">No shared weekends yet. When you and a friend both check in at the same race weekend, it shows up here.</p>`}
-    ${rows && rows.some(r => Number(r.points) > 0) ? `<h4 class="ptH">Pick your podium, among friends</h4><div class="lbList">${rows.slice(0, 5).map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span><span class="lbName">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><b>${r.points}</b></div>`).join("")}</div>` : ""}
+    ${rcVersus(rows)}
     <div class="acRow">${acctBtn("Share my " + y, "rcShare()", "quiet")}</div>`;
+}
+
+/* the recap's "how you matched up": you against each friend on Pick your podium points, winners called and weekends played, as bars */
+function rcVersus(rows) {
+  if (!rows || !rows.some(r => Number(r.points) > 0)) return "";
+  const me = rows.find(r => r.is_me), pals = rows.filter(r => !r.is_me);
+  if (!me || !pals.length) return `<h4 class="ptH">Pick your podium</h4><p class="plRules">${Number(me && me.points) || 0} points so far. Add friends from your account to compare.</p>`;
+  const mx = Math.max(1, ...rows.map(r => Number(r.points) || 0)), lead = rows[0], n = rows.length;
+  const gap = Number(lead.points) - Number(me.points);
+  const line = me.rank === 1 ? `You are first of ${n}, ${Number(me.points) - Number((rows[1] || {}).points || 0)} point${Number(me.points) - Number((rows[1] || {}).points || 0) === 1 ? "" : "s"} clear of ${sbEsc((rows[1] || {}).display_name || "the field")}.` : `You are ${me.rank}${["th", "st", "nd", "rd"][me.rank % 10 > 3 || [11, 12, 13].includes(me.rank % 100) ? 0 : me.rank % 10]} of ${n}, ${gap} point${gap === 1 ? "" : "s"} behind ${sbEsc(lead.display_name)}.`;
+  const bar = r => { const d = Number(r.points) - Number(me.points), w = Math.max(3, Math.round((Number(r.points) || 0) / mx * 100));
+    return `<div class="vsRow${r.is_me ? " me" : ""}"><div class="vsTop"><span>${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><b>${r.points}</b></div><div class="vsBar"><i style="width:${w}%"></i></div><small>${r.winners} winner${Number(r.winners) === 1 ? "" : "s"} called · ${r.weekends} weekend${Number(r.weekends) === 1 ? "" : "s"}${r.is_me ? "" : ` · ${d === 0 ? "level with you" : d > 0 ? d + " ahead of you" : -d + " behind you"}`}</small></div>`; };
+  return `<h4 class="ptH">You against your friends</h4><p class="plRules">${line}</p><div class="vsList">${rows.slice(0, 8).map(bar).join("")}${me.rank > 8 ? bar(me) : ""}</div>`;
 }
 function rcShare() { const text = window.rcText || ""; if (navigator.share) navigator.share({ title: "Trackside Pass", text }).catch(() => {}); else if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { if (typeof toast === "function") toast("Copied. Paste it into a message."); }).catch(() => {}); }
 let fpBack = "board", fpUser = null;
 function fpTab(t) {
   document.getElementById("fpPassport").hidden = t !== "passport"; document.getElementById("fpPicks").hidden = t !== "picks";
-  document.querySelectorAll("#fpTabs .gmTab").forEach((b, i) => b.classList.toggle("on", (i === 0) === (t === "passport")));
+  document.querySelectorAll("#fpTabs .gmTab").forEach((b, i) => b.classList.toggle("on", (i === 0) === (t === "picks")));
   if (t === "picks") fpPicksLoad();
 }
 /* a friend's picks and how they scored, newest weekend first (the server only returns weekends whose race has started, and only for friends) */
@@ -388,7 +401,8 @@ async function fpPicksLoad() {
   catch (e) { box.innerHTML = `<p class="plRules">${sbEsc(e.status ? (/friends only/i.test(e.message) ? "Picks are only shared with friends." : e.message) : "Offline: picks need a signal.")}</p>`; return; }
   if (!rows.length) { box.innerHTML = `<h3 class="acH">Pick your podium · ${y}</h3><p class="plRules">No picks to show yet. A friend's picks appear once the race has started.</p>`; return; }
   const by = {}, order = []; rows.forEach(r => { if (!by[r.game_key]) { by[r.game_key] = []; order.push(r.game_key); } by[r.game_key].push(r); });
-  box.innerHTML = `<h3 class="acH">Pick your podium · ${y}</h3>` + order.map(gk => {
+  const season = rows.reduce((n, r) => n + (r.pts || 0), 0), hits = rows.filter(r => r.hit).length;
+  box.innerHTML = `<div class="fpTotal"><b>${season}</b><span>points in ${y}<small>${hits} pick${hits === 1 ? "" : "s"} in the right place · ${order.length} weekend${order.length === 1 ? "" : "s"} played</small></span></div>` + order.map(gk => {
     const [t, d, s] = gk.split("|"), tr = TRACKS.find(x => x.id === t), g = (typeof ENTRIES === "undefined" ? [] : ENTRIES).find(x => gameKey(x) === gk), rs = by[gk];
     const car = (cls, n) => { const c = g && g.classes.find(x => x.h === cls), r = c && c.cars.find(x => String(x[0]) === String(n)); return `#${sbEsc(n)}${r ? " " + sbEsc(r[1]) : ""}`; };
     const scored = rs.every(r => r.pts !== null), tot = rs.reduce((n, r) => n + (r.pts || 0), 0), classes = [...new Set(rs.map(r => r.cls))];
@@ -399,7 +413,7 @@ async function fpPicksLoad() {
 async function openPassportOf(id, name) {
   if (!sbOn()) return;
   const on = document.querySelector(".screen.on"); if (on && on.id !== "friendPass") fpBack = on.id;
-  fpUser = { id, name }; fpTab("passport");
+  fpUser = { id, name }; fpTab("picks");
   try {
     renderPassportFor(await sbRpc("passport_of", { p_user: id }));
   } catch (e) { if (typeof toast === "function") toast(e.status ? e.message : "Offline: a passport needs a signal."); }
@@ -407,7 +421,7 @@ async function openPassportOf(id, name) {
 function fpClose() { showScreen(fpBack || "board"); }
 
 /* ---- leaderboard ---- */
-let lb = { scope: "friends", series: "", game: "", rows: null, err: "" };
+let lb = { scope: "friends", series: "", game: "", rows: null, err: "", all: false };
 function boardGames() { return (typeof ENTRIES === "undefined" ? [] : ENTRIES).filter(g => typeof gameResult === "function" && gameResult(g) && g.d.slice(0, 4) === String(new Date().getFullYear())).sort((a, b) => b.d.localeCompare(a.d)); }
 async function openBoard() {
   if (!sbOn()) return; acctScreen("board", `<h3 class="acH">Leaderboard</h3><p class="plRules">Loading…</p>`); await acctLoad();
@@ -424,18 +438,24 @@ function boardRender() {
   const seg = (items, cur, on) => `<div class="gmTabs lbTabs">${items.map(([v, l]) => `<button class="gmTab${v === cur ? " on" : ""}" onclick="${on}('${v}')">${sbEsc(l)}</button>`).join("")}</div>`;
   const ser = [...new Set((typeof ENTRIES === "undefined" ? [] : ENTRIES).map(g => g.s))].map(s => [s, typeof watchSeriesName === "function" ? watchSeriesName({ s }) : s]);
   const gm = boardGames();
-  const rows = lb.rows ? (lb.rows.length ? lb.rows.map(r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span>${avatarHtml(r.is_me ? "me" : r.user_id, r.display_name, 32)}<button class="lbName lbBtn" aria-label="Open ${sbEsc(r.display_name)}'s passport" onclick="${r.is_me ? "openPassport()" : `openPassportOf('${r.user_id}','')`}"><span class="lbN">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><small>${r.weekends} weekend${Number(r.weekends) === 1 ? "" : "s"} · ${r.winners} winner${Number(r.winners) === 1 ? "" : "s"} called</small></button><b>${r.points}</b>${r.is_me?"":`<button class="acX" aria-label="Report ${sbEsc(r.display_name)}" onclick="acctReport('${r.user_id}')">Report</button>`}</div>`).join("") : `<p class="plRules">${lb.scope === "friends" ? "No scores yet. Add friends from your account, then make picks." : "Nobody has scored yet this season."}</p>`) : `<p class="plRules">${sbEsc(lb.err || "Loading…")}</p>`;
+  const rowHtml = r => `<div class="lbRow${r.is_me ? " me" : ""}"><span class="lbRank">${r.rank}</span>${avatarHtml(r.is_me ? "me" : r.user_id, r.display_name, 32)}<button class="lbName lbBtn" aria-label="Open ${sbEsc(r.display_name)}'s passport" onclick="${r.is_me ? "openPassport()" : `openPassportOf('${r.user_id}','')`}"><span class="lbN">${sbEsc(r.display_name)}${r.is_me ? " (you)" : ""}</span><small>${r.weekends} weekend${Number(r.weekends) === 1 ? "" : "s"} · ${r.winners} winner${Number(r.winners) === 1 ? "" : "s"}</small></button><b>${r.points}</b></div>`;
+  const LB_TOP = 10, all = lb.rows || [], me = all.find(r => r.is_me), more = all.length > LB_TOP;
+  const shown = lb.all || !more ? all : all.slice(0, LB_TOP);
+  const pinned = !lb.all && more && me && me.rank > LB_TOP ? `<div class="lbGap">· · ·</div>${rowHtml(me)}` : "";
+  const toggle = more ? `<button class="lbMore" onclick="boardAll(${lb.all ? "false" : "true"})">${lb.all ? "Show the top " + LB_TOP : "Show everyone (" + all.length + ")"}</button>` : "";
+  const rows = lb.rows ? (lb.rows.length ? shown.map(rowHtml).join("") + pinned + toggle : `<p class="plRules">${lb.scope === "friends" ? "No scores yet. Add friends from your account, then make picks." : "Nobody has scored yet this season."}</p>`) : `<p class="plRules">${sbEsc(lb.err || "Loading…")}</p>`;
   lbBox().innerHTML = acctWrap(`<h3 class="acH">Leaderboard · ${new Date().getFullYear()}</h3>
     ${seg([["friends", "Friends"], ["global", "Everyone"]], lb.scope, "boardScope")}
     <div class="acRow"><select class="acIn acSel" onchange="boardSeries(this.value)"><option value="">All series</option>${ser.map(([v, l]) => `<option value="${sbEsc(v)}"${v === lb.series ? " selected" : ""}>${sbEsc(l)}</option>`).join("")}</select>
-    <select class="acIn acSel" onchange="boardGame(this.value)"><option value="">Whole season</option>${gm.map(g => { const t = TRACKS.find(x => x.id === g.t); return `<option value="${sbEsc(gameKey(g))}"${gameKey(g) === lb.game ? " selected" : ""}>${sbEsc((t ? t.short : g.t) + " · " + (typeof watchSeriesName === "function" ? watchSeriesName({ s: g.s }) : g.s))}</option>`; }).join("")}</select></div>
+    <select class="acIn acSel" onchange="boardGame(this.value)"><option value="">Whole season</option>${(() => { const g = {}; gm.forEach(x => (g[x.s] = g[x.s] || []).push(x)); return Object.keys(g).map(s => `<optgroup label="${sbEsc(typeof watchSeriesName === "function" ? watchSeriesName({ s }) : s)}">${g[s].map(x => { const tk = TRACKS.find(y => y.id === x.t); return `<option value="${sbEsc(gameKey(x))}"${gameKey(x) === lb.game ? " selected" : ""}>${sbEsc(tk ? tk.short : x.t)}</option>`; }).join("")}</optgroup>`).join(""); })()}</select></div>
     <div class="lbList">${rows}</div>
     <p class="plRules fine">Points are scored on the server from the official results. <a href="#" onclick="openPoints();return false">How points work</a></p>
     <div class="acRow">${acctBtn("My account", "openAccount()", "quiet")}</div>`);
 }
-function boardScope(v) { lb.scope = v; lb.rows = null; boardRender(); boardLoad(); }
-function boardSeries(v) { lb.series = v; lb.rows = null; boardRender(); boardLoad(); }
-function boardGame(v) { lb.game = v; lb.rows = null; boardRender(); boardLoad(); }
+function boardAll(v) { lb.all = v; boardRender(); }
+function boardScope(v) { lb.scope = v; lb.all = false; lb.rows = null; boardRender(); boardLoad(); }
+function boardSeries(v) { lb.series = v; lb.all = false; lb.rows = null; boardRender(); boardLoad(); }
+function boardGame(v) { lb.game = v; lb.all = false; lb.rows = null; boardRender(); boardLoad(); }
 
 async function acctReport(id) {
   const why = prompt("Why are you reporting this player? (an offensive name, cheating ...)"); if (!why) return;

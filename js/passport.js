@@ -235,7 +235,7 @@ const PP_SERIES={
   f1academy:{kind:"outlines",ids:["cota","las-vegas"],any:true,band:true,bandInk:"#A8245A",ink:"#7E1A43",acc:"#C28A00",top:"F1 ACADEMY",bot:"ACADEMY WEEKEND",size:9.2,space:2.2},
   carrera:{kind:"art",art:"cup",mode:"ink",w:94,g:95,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#C28A00",top:"CARRERA CUP",bot:"PORSCHE WEEKEND",size:9.2,space:2.2},
   legends:{kind:"art",art:"old",w:50,g:122,band:true,bandInk:"#3A3F47",ink:"#1F2328",acc:"#C28A00",top:"HISTORIC RACING",bot:"VINTAGE WEEKEND",size:9,space:1.8},
-  euro:{region:"europe",all:true,band:true,bandInk:"#1F4E79",ink:"#173B5C",acc:"#E0A100",top:"EUROPEAN TOUR",bot:"3 EUROPEAN TRACKS",size:9.2,space:2.2},
+  euro:{kind:"eustars",band:true,bandInk:"#C28A00",ink:"#6B4A00",acc:"#FFCC00",top:"EUROPEAN TOUR",bot:"3 TRACKS IN EUROPE",size:9.2,space:2},
   atlantic:{region:"world",all:true,route:"visited",band:true,bandInk:"#8A2B22",ink:"#6E2019",acc:"#C28A00",top:"ATLANTIC CROSSER",bot:"AMERICA · EUROPE",size:8.8,space:1.8},
   world:{kind:"sunart",art:"globe",w:72,g:99,contDots:3,dy:110,band:true,bandInk:"#2F6F3E",bandText:"#F3EAD2",ink:"#1F4A2C",acc:"#B23A2A",top:"WORLD TOUR",bot:"3 CONTINENTS",size:9.2,space:2.4},
   cathedrals:{kind:"sunart",art:"chapel",w:80,g:102,flags:true,dots:["spa-francorchamps","monza","silverstone","le-mans"],dy:112,band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"CATHEDRALS OF SPEED",bot:"4 EUROPEAN ICONS",size:9.2,space:2.2},
@@ -589,6 +589,14 @@ function seriesStamp(d,o){
     :sp.kind==="bama"?(function(){ const B=ppArt("bama"); if(!B) return ""; const f=n=>n.toFixed(1);
       const one=(P,on,cx,w)=>`<g opacity="${on?1:.3}"${on?"":' style="filter:grayscale(1)"'}>${ppHopArt(P,"orig",ink,"#F3EAD2",w,cx,110)}</g>`;
       return one(B.dog,vis4("road-atlanta"),54,46)+one(B.ele,vis4("barber"),106,50); })()
+    :sp.kind==="eustars"?(function(){ const f=n=>n.toFixed(2), eu=new Set(TRACKS.filter(x=>/^Europe\//.test(x.tz||"")).map(x=>x.id));
+      const src=o.order||(locked||(typeof ppView!=="undefined"&&ppView)?Object.keys(visits):ppVisitOrder()), mine=[...new Set(src)].filter(id=>eu.has(id)&&visits[id]>0), n=Math.min(3,mine.length), lit=locked?n*4:12, tr=mine.slice(0,3).map(id=>TRACKS.find(x=>x.id===id));
+      let s=`<circle cx="80" cy="80" r="50" fill="${locked?"#8E8670":"#1F3F8F"}" fill-opacity="${locked?.18:1}" stroke="${ink}" stroke-width="1.6"/>`;
+      for(let i=0;i<12;i++){ const a=-Math.PI/2+i*Math.PI/6, cx=80+41*Math.cos(a), cy=80+41*Math.sin(a), R=4.4, on=i<lit, pts=[]; for(let k=0;k<10;k++){ const b=-Math.PI/2+k*Math.PI/5, r=k%2?R*.4:R; pts.push(f(cx+r*Math.cos(b))+" "+f(cy+r*Math.sin(b))); }
+        s+=`<path d="M${pts.join("L")}Z" fill="${on?"#FFCC00":"none"}" stroke="${on?"#FFCC00":(locked?"#8E8670":"#9DB0E0")}" stroke-width=".8" stroke-linejoin="round" opacity="${on?1:.55}"/>`; }
+      const slot=[[80,62],[63,91],[97,91]];
+      slot.forEach(([x,y],i)=>{ const t=tr[i]; s+=t?`<svg x="${x-14}" y="${y-11.5}" width="28" height="23" ${ppOutline(t,23,{c:locked?"#8E8670":"#F3EAD2",w:1.7})}</svg>`:`<circle cx="${x}" cy="${y}" r="2" fill="none" stroke="${locked?"#8E8670":"#9DB0E0"}" stroke-width="1" opacity=".7"/>`; });
+      return s; })()
     :sp.kind==="art"?(locked?'<g opacity=".45">'+ppHopArt(ppArt(sp.art),"ink","#8E8670","#F3EAD2",sp.w||72,80,sp.g||102)+'</g>':ppHopArt(ppArt(sp.art),sp.mode||"orig",ink,"#F3EAD2",sp.w||72,80,sp.g||102))
     :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,105)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,105))
     :sp.kind==="cherries"?(locked?`<g opacity=".45">${ppHopArt(ppArt("cherries"),"ink","#8E8670","#F3EAD2",70,80,115)}</g>`:ppHopArt(ppArt("cherries"),"orig",ink,"#F3EAD2",70,80,115))

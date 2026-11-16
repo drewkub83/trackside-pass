@@ -52,7 +52,6 @@ const PP_GLOBAL=[
   {id:"wec",name:"Endurance World",desc:"Check in at a FIA World Endurance Championship weekend.",icon:"globe",tier:"s",sty:"wec",test:s=>s.series.has("wec")},
   {id:"motogp",name:"MotoGP Fan",desc:"Check in at a MotoGP weekend.",icon:"flag",tier:"s",sty:"motogp",test:s=>s.series.has("motogp")},
   {id:"gteu",name:"GT Europe",desc:"Check in at a GT World Challenge Europe weekend.",icon:"gt",tier:"s",sty:"gtwce",test:s=>s.series.has("gtwce")},
-  {id:"academy",name:"Academy Weekend",desc:"Check in at an F1 Academy weekend.",icon:"star",tier:"x",sty:"f1academy",test:s=>s.series.has("f1academy")},
   {id:"carrera",name:"Carrera Cup",desc:"Check in at a Porsche Carrera Cup North America weekend.",icon:"car",tier:"x",sty:"carrera",test:s=>s.series.has("carreracup")},
   {id:"legends",name:"Historic Racing",desc:"Check in at a historic or vintage race weekend: HSR, Legends of Le Mans, GT3 Revival or Masters Historic.",icon:"moon",tier:"x",sty:"legends",test:s=>PP_VINTAGE.some(i=>s.series.has(i))},
   /* abroad */
@@ -232,7 +231,6 @@ const PP_SERIES={
   wec:{champ:"wec",kind:"img",art:"wec",w:98,g:108,band:true,bandInk:"#1F5FA8",ink:"#143E72",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:115,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
   gtwce:{champ:"gtwce",kind:"art",art:"gte",w:88,g:98,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
-  f1academy:{kind:"outlines",ids:["cota","las-vegas"],any:true,band:true,bandInk:"#A8245A",ink:"#7E1A43",acc:"#C28A00",top:"F1 ACADEMY",bot:"ACADEMY WEEKEND",size:9.2,space:2.2},
   carrera:{kind:"art",art:"cup",mode:"ink",w:94,g:95,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#C28A00",top:"CARRERA CUP",bot:"PORSCHE WEEKEND",size:9.2,space:2.2},
   legends:{kind:"art",art:"old",w:50,g:122,band:true,bandInk:"#3A3F47",ink:"#1F2328",acc:"#C28A00",top:"HISTORIC RACING",bot:"VINTAGE WEEKEND",size:9,space:1.8},
   euro:{kind:"eustars",band:true,bandInk:"#C28A00",ink:"#6B4A00",acc:"#FFCC00",top:"EUROPEAN TOUR",bot:"3 TRACKS IN EUROPE",size:9.2,space:2},
@@ -613,7 +611,7 @@ function seriesStamp(d,o){
     :sp.kind==="venn"?ppVennArt(ink,acc,sp.venn)
     :sp.kind==="outlines"?(nO===4?`<path d="M80,38V102M42,70H118" stroke="${ink}" stroke-width=".6" opacity=".3"/>`:"")+sp.ids.map((id,i)=>{ const t=TRACKS.find(x=>x.id===id); if(!t) return ""; const on=any?sp.ids.some(vis4):vis4(id);
         return `<g opacity="${on||locked?1:.3}"><svg x="${cells[i][0]}" y="${cells[i][1]}" width="${cw}" height="${ch}" ${ppOutline(t,Math.min(cw,ch),{c:ink,w:on?2.2:1.5})}</svg></g>`; }).join("")
-    :sp.kind==="days"?["FRI","SAT","SUN"].map((dn,i)=>{ const x=44+i*25; return `<rect x="${x}" y="50" width="22" height="34" rx="3.5" fill="none" stroke="${ink}" stroke-width="1.5"/><path d="M${x},50.5h22v8.5h-22z" fill="${ink}"/><text x="${x+11}" y="57" font-size="5.6" font-weight="800" letter-spacing=".6" text-anchor="middle" fill="#F3EAD2">${dn}</text><path d="M${x+5.5},70.5l4.6,4.8l7-8.6" fill="none" stroke="${acc}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`; }).join("")
+    :sp.kind==="days"?`<g transform="translate(80 80) scale(1.42) translate(-81.5 -67)">${["FRI","SAT","SUN"].map((dn,i)=>{ const x=44+i*25; return `<rect x="${x}" y="50" width="22" height="34" rx="3.5" fill="none" stroke="${ink}" stroke-width="1.5"/><path d="M${x},50.5h22v8.5h-22z" fill="${ink}"/><text x="${x+11}" y="57" font-size="5.6" font-weight="800" letter-spacing=".6" text-anchor="middle" fill="#F3EAD2">${dn}</text><path d="M${x+5.5},70.5l4.6,4.8l7-8.6" fill="none" stroke="${acc}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`; }).join("")}</g>`
     :map+(abroad?`<text x="36" y="104" font-size="5.2" font-weight="800" letter-spacing=".4" fill="${acc}">+${abroad} ABROAD</text>`:"");
   const defs=`<path id="st${u}t" d="M 30,80 A 50,50 0 0 1 130,80"/><path id="st${u}bt" d="M 13.8,80 A 66.2,66.2 0 0 1 146.2,80"/><path id="st${u}bb" d="M 6.2,80 A 73.8,73.8 0 0 0 153.8,80"/><path id="st${u}b" d="M 20,80 A 60,60 0 0 0 140,80"/><clipPath id="st${u}c"><circle cx="80" cy="80" r="58"/></clipPath><clipPath id="st${u}k"><circle cx="80" cy="80" r="49"/></clipPath>
     <pattern id="st${u}h" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".6" fill="${ink}"/></pattern><pattern id="st${u}hl" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".26" fill="${ink}" opacity=".5"/></pattern>`;
@@ -721,7 +719,7 @@ document.addEventListener("click",e=>{ if(!e.target.closest("#ppMenu,.ppmore")) 
 const PP_REGIONS={na:"North America",sa:"South America",eu:"Europe",me:"Middle East"};
 const ppRegionOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"eu":/^Asia\/(Dubai|Qatar|Riyadh|Bahrain|Kuwait|Muscat|Baghdad|Tehran|Jerusalem)/.test(z)?"me":/^America\/(Sao_Paulo|Argentina|Bogota|Santiago|Lima|Montevideo|Caracas)/.test(z)?"sa":"na"; };
 const PP_BADGE_GROUPS=[
-  ["By series",["sportscar","endcup","openwheel","stock","grandprix","motogp","wec","academy","carrera","legends","double","trifecta","tour"]],
+  ["By series",["sportscar","endcup","openwheel","stock","grandprix","motogp","wec","carrera","legends","double","trifecta","tour"]],
   ["GT World Challenge",["gtfan","gteu"]],      /* America first, Europe next to it: the two marks spell GT */
   ["Abroad and the world",["euro","atlantic","worldtour","cathedrals"]],
   ["Iconic places",["lemans","brickyard","greenhell","monaco","triplecrown"]],

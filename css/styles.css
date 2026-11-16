@@ -1467,3 +1467,10 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 .stSeries p{margin:3px 0;font-size:13.5px;line-height:1.4;color:var(--ink-2)}.stSeries p span{font-weight:700;color:var(--ink)}
 .stGo{display:block;margin-top:6px;font-size:13px;font-weight:600;color:var(--accent)}
 .fpReport{text-align:center;margin:18px 22px 90px}
+
+/* track-only events (grid walk, autographs, fireworks): a teal edge and an 'At the track' tag */
+:root{--kf:#2FA39B}
+.sess.k-f{background:color-mix(in srgb,var(--kf) 7%,var(--glass));position:relative;padding-left:22px}
+.sess.k-f::before{content:"";position:absolute;left:8px;top:16px;bottom:16px;width:3px;border-radius:3px;background:var(--kf);opacity:.7}
+.sess .sn em.fanTag{display:inline-block;padding:1px 8px;border-radius:999px;font-weight:600;font-size:11.5px;background:color-mix(in srgb,var(--kf) 18%,transparent);color:var(--kf);margin-right:6px}
+.hubStarList div.k-f{padding-left:10px;border-left:3px solid color-mix(in srgb,var(--kf) 60%,transparent);border-radius:3px}

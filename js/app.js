@@ -111,7 +111,11 @@ function guessMin(n){ return /Qualif|Shootout/i.test(n)?25:/Race|8 Hour/i.test(n
 /* `e` (end time) is optional: some organisers only publish start times. Those sessions show a start time only and use `m` minutes (or a guess) to know when they are over. */
 /* resolving every session time needs time-zone maths, and the home screen asks for it hundreds of times (eventDone for every event of every track): keep the result per track until its session list is replaced or changes length */
 const SESS_CACHE=new WeakMap();
-function sessionsOf(t){ const src=t.sessions||[], hit=SESS_CACHE.get(t); if(hit&&hit.src===src&&hit.n===src.length&&hit.tz===t.tz) return hit.out; const out=sessionsBuild(t); SESS_CACHE.set(t,{src,n:src.length,tz:t.tz,out}); return out; }
+/* Track-only events (grid walk, autographs, fireworks, concerts: `fan:true` in the session list) are in the schedule and can be starred, but they are not on-track sessions:
+   sessionsOf(t) leaves them out so live/next, results and alerts keep meaning racing; sessionsAllOf(t) has both. */
+function sessionsAllOf(t){ const src=t.sessions||[], hit=SESS_CACHE.get(t); if(hit&&hit.src===src&&hit.n===src.length&&hit.tz===t.tz) return hit.out; const out=sessionsBuild(t); SESS_CACHE.set(t,{src,n:src.length,tz:t.tz,out}); return out; }
+const FAN_CACHE=new WeakMap();
+function sessionsOf(t){ const all=sessionsAllOf(t), hit=FAN_CACHE.get(t); if(hit&&hit.all===all) return hit.out; const out=all.some(x=>x.fan)?all.filter(x=>!x.fan):all; FAN_CACHE.set(t,{all,out}); return out; }
 function sessionsBuild(t){ return (t.sessions||[]).map(s=>{ const start=localToDate(s.d,s.s,t.tz), est=!s.e; return {...s,start,est,end:est?new Date(+start+(s.m||guessMin(s.n))*60000):localToDate(s.d,s.e,t.tz)}; }).sort((a,b)=>a.start-b.start); }
 /* an event is over after its last session ends (or after its last calendar day when there is no session list), but it stays "the weekend you are at"
    until WEEKEND_GRACE_HOUR the next morning at the track (Monday morning after a Sunday race): the results, your points and the weekend's cards are
@@ -155,7 +159,7 @@ async function scheduleStarAlerts(ask){
   const pending=await LN.getPending(), old=pending.notifications.filter(n=>n.id>=STAR_ID_BASE&&n.id<PICK_ID_BASE);
   if(old.length) await LN.cancel({notifications:old.map(n=>({id:n.id}))});
   const now=Date.now(), leadMin=alertLead(), lead=leadMin*60000, out=[];
-  starList().forEach(k=>{ const [tid,d,st,...nm]=k.split("|"), t=TRACKS.find(x=>x.id===tid), n=nm.join("|"), s=t&&sessionsOf(t).find(x=>x.d===d&&x.s===st&&x.n===n);
+  starList().forEach(k=>{ const [tid,d,st,...nm]=k.split("|"), t=TRACKS.find(x=>x.id===tid), n=nm.join("|"), s=t&&sessionsAllOf(t).find(x=>x.d===d&&x.s===st&&x.n===n);
     if(s&&s.start.getTime()-lead>now) out.push({t,s}); });
   if(!out.length) return;
   let display=(await LN.checkPermissions()).display; if(display!=="granted"&&ask) display=(await LN.requestPermissions()).display; if(display!=="granted") return;
@@ -970,7 +974,8 @@ function startOrientation(){ if(orientOn) return; const go=()=>{ orientOn=true; 
 function tzOffsetMs(date,tz){ const dtf=new Intl.DateTimeFormat("en-US",{timeZone:tz,hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"}); const p={}; dtf.formatToParts(date).forEach(x=>p[x.type]=x.value); const asUTC=Date.UTC(+p.year,+p.month-1,+p.day,(+p.hour)%24,+p.minute,+p.second); return asUTC-date.getTime(); }
 function localToDate(d,hm,tz){ const [y,m,dd]=d.split("-").map(Number); const [hh,mm]=hm.split(":").map(Number); const guess=new Date(Date.UTC(y,m-1,dd,hh,mm)); const off=tzOffsetMs(guess,tz); return new Date(guess.getTime()-off); }
 function fmtTime(date,tz){ tz=timesPref()==="mine"?undefined:tz; return date.toLocaleTimeString("en-US",{timeZone:tz,hour:"numeric",minute:"2-digit"}).replace(" ","\u202f"); }
-function sessionsResolved(){ const f=focusAt(cur); return f?sessionsOf(cur).filter(x=>x.d>=f.d&&x.d<=f.end):[]; }
+function sessionsResolved(){ const f=focusAt(cur); return f?sessionsAllOf(cur).filter(x=>x.d>=f.d&&x.d<=f.end):[]; }
+const racingOnly=ss=>ss.filter(x=>!x.fan);
 function shortName(n){ return n.replace("WeatherTech Championship","WeatherTech").replace("Michelin Pilot Challenge","Pilot Challenge").replace("VP Racing SportsCar Challenge","VP Challenge").replace(" - "," · "); }
 function relTime(ms){ const m=Math.round(ms/60000); if(m<1) return "now"; if(m<60) return `in ${m} min`; const h=Math.floor(m/60), r=m%60; if(h<24) return `in ${h}h${r?" "+r+"m":""}`; const d=Math.round(h/24); return `in ${d} day${d>1?"s":""}`; }
 /* "Wed, Sep 30 · 9:05 AM" (adds the year when it is not this year) */
@@ -981,7 +986,7 @@ function fmtWhen(date,tz){ tz=timesPref()==="mine"?undefined:tz; const y=new Dat
 function onTrackNow(ss,now){ const l=ss.filter(x=>x.start<=now&&now<x.end); return l.length?l.reduce((a,b)=>b.start>=a.start?b:a):null; }
 function currentSession(ss,now){ const l=ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000); return l.length?l[l.length-1]:null; }
 function renderNow(){
-  const pill=document.getElementById("nowPill"); const ss=sessionsResolved(), cu=nextAny(); if(!ss.length||!cu||cu.t.id!==cur.id){ pill.hidden=true; return; }
+  const pill=document.getElementById("nowPill"); const ss=racingOnly(sessionsResolved()), cu=nextAny(); if(!ss.length||!cu||cu.t.id!==cur.id){ pill.hidden=true; return; }
   const now=new Date(); const live=currentSession(ss,now); const next=ss.find(s=>s.start>now);
   pill.hidden=false; pill.classList.toggle("live",!!live);
   if(live){ document.getElementById("nowTag").textContent="ON TRACK"; document.getElementById("nowTxt").textContent=`${shortName(live.n)}${live.est?"":" · ends "+fmtTime(live.end,cur.tz)}`; }
@@ -1746,12 +1751,12 @@ function hubBeforeWeekend(c){
   const {ss,now,chev,resultsHtml}=c;
   /* before the weekend: countdown actions, your starred sessions, and how it went here last time */
   let quickHtml="", dayHtml="", lastHereHtml="";
-  { const fq=focusAt(cur), aw=fq?daysBetween(localToday(),fq.d):-1, upcoming=ss.filter(x=>x.end>now);
+  { const fq=focusAt(cur), aw=fq?daysBetween(localToday(),fq.d):-1, upcoming=sessionsResolved().filter(x=>x.end>now);
     if(fq&&aw>0){ const going=isGoing(cur,fq.first);
       quickHtml=`<div class="hubQuick"><button class="${going?"on":""}" aria-pressed="${going}" onclick="hubToggleGoing()"><svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>${going?"I'm going":"I'm going?"}</button></div>`; }
     const mine=upcoming.filter(x=>isStarred(cur,x));
-    if(mine.length) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><h4>Your sessions</h4>${chev}</div><div class="hubStarList">${mine.slice(0,6).map(x=>`<div class="${sessTint(x.n).trim()}"><b>${fmtWhen(x.start,cur.tz)}</b><span>${esc(shortName(x.n))}</span></div>`).join("")}</div><p class="asof hubAsof">${nativeNotifier()?`You'll get an alert ${alertLead()} minutes before each one.`:"Star more in the schedule."}</p></div>`;
-    else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions you care about in the schedule and get an alert before each.</div></div>${chev}</div></div>`;
+    if(mine.length) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><h4>Your sessions</h4>${chev}</div><div class="hubStarList">${mine.slice(0,6).map(x=>`<div class="${x.fan?"k-f":sessTint(x.n).trim()}"><b>${fmtWhen(x.start,cur.tz)}</b><span>${esc(shortName(x.n))}</span></div>`).join("")}</div><p class="asof hubAsof">${nativeNotifier()?`You'll get an alert ${alertLead()} minutes before each one.`:"Star more in the schedule."}</p></div>`;
+    else if(upcoming.length&&aw>=0&&aw<=10) dayHtml=`<div class="hubCard hubTap" role="button" onclick="showNowSession()"><div class="hubCardRow"><div><h4>Plan your weekend</h4><div class="hubSessionSub">Star the sessions and track events you care about in the schedule and get an alert before each.</div></div>${chev}</div>${(()=>{ const fe=upcoming.filter(x=>x.fan).slice(0,3); return fe.length?`<div class="hubStarList">${fe.map(x=>`<div class="k-f"><b>${fmtWhen(x.start,cur.tz)}</b><span>${esc(x.n)}</span></div>`).join("")}</div>`:""; })()}</div>`;
     if(!resultsHtml&&aw>0&&typeof RESULTS!=="undefined"){ const last=RESULTS.filter(r=>r.t===cur.id).sort((a,b)=>b.d.localeCompare(a.d))[0];
       if(last) lastHereHtml=`<div class="hubCard"><h4>Last time here</h4><div class="hubSeries">${esc(last.event)}</div>${last.groups.slice(0,2).map(g=>resultGroupHtml(g,3)).join("")}</div>`; } }
   return {quickHtml,dayHtml,lastHereHtml};
@@ -1814,7 +1819,7 @@ function renderHub(){
   if(!hubMode||hubDragging) return;
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
   const body=document.getElementById("hubBody"); if(!body) return;
-  const ss=sessionsResolved(), now=new Date();
+  const ss=racingOnly(sessionsResolved()), now=new Date();
   const live=currentSession(ss,now), next=ss.find(s=>s.start>now);
   const chev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
   const ctx={ss,now,live,next,chev,liveAll:ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000)}; sessWant={};
@@ -1857,9 +1862,9 @@ function renderSchedule(){
     const live=ss.some(s=>s.d===d&&s.start<=now&&now<s.end); return `<button class="day${d===schedDay?" on":""}${live?" live":""}" onclick="pickDay('${d}')"><small>${wd}</small><b>${dd}</b></button>`; }).join("");
   document.getElementById("schedList").innerHTML=ss.map((s,i)=>({s,i})).filter(x=>x.s.d===schedDay).map(({s,i})=>{ const live=s.start<=now&&now<s.end, past=s.end<=now, sr=seriesFor(s.n);
     const cl=sr?carsFor(sr,s.n):[], chips=cl.length>1?`<span class="chips">${cl.map(chipHtml).join("")}</span>`:"";
-    const inner=`<div class="st">${fmtTime(s.start,cur.tz)}${s.est?"":`<small>to ${fmtTime(s.end,cur.tz)}</small>`}</div><div class="sn">${s.n}${live?"<em>On track now</em>":(!past&&s.start-now<36e5?`<em>${relTime(s.start-now)}</em>`:"")}${chips}</div>${sr?`<span class="ib" aria-hidden="true">i</span>`:""}`;
+    const inner=`<div class="st">${fmtTime(s.start,cur.tz)}${s.est?"":`<small>to ${fmtTime(s.end,cur.tz)}</small>`}</div><div class="sn">${s.n}${s.fan?"<em class=\"fanTag\">At the track</em>":""}${live?"<em>On track now</em>":(!past&&s.start-now<36e5?`<em>${relTime(s.start-now)}</em>`:"")}${chips}</div>${sr?`<span class="ib" aria-hidden="true">i</span>`:""}`;
     const on=isStarred(cur,s), star=past||live?"":`<button class="sstar${on?" on":""}" aria-pressed="${on}" aria-label="${on?"Remove from my sessions":"Alert me before this session"}" onclick="event.stopPropagation();toggleStar(${i})"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></button>`;
-    const kcls=sessTint(s.n);
+    const kcls=s.fan?" k-f":sessTint(s.n);
     return sr?`<div class="sess tap${kcls} ${live?"live":past?"past":""}" role="button" tabindex="0" onclick="showInfo(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showInfo(${i})}" aria-label="About ${esc(s.n)}">${inner}${star}</div>`:`<div class="sess${kcls} ${live?"live":past?"past":""}">${inner}${star}</div>`; }).join("");
   const mineN=ss.filter(x=>x.end>now&&isStarred(cur,x)).length, soonN=ss.filter(x=>x.end>now).length;
   document.getElementById("schedTools").innerHTML="";

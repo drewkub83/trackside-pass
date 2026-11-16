@@ -177,7 +177,8 @@ const PP_ICON={
 const PP_INK={b:"#2F5FA8",s:"#B23A32",g:"#6A3FA0",x:"#1D6B73",z:"#A87712"};
 const PP_MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 const ppDate=ms=>{ const d=new Date(ms); return d.getDate()+" "+PP_MON[d.getMonth()]+" "+d.getFullYear(); };
-function ppRot(id){ let h=7; for(const c of String(id)) h=(h*31+c.charCodeAt(0))%997; return (h%17)-8; }      /* the same slight tilt every time, like a hand stamp */
+const PP_TILT=0;   /* degrees of random hand-stamp tilt (0 = every stamp sits straight; set 8 to bring the tilt back) */
+function ppRot(id){ if(!PP_TILT) return 0; let h=7; for(const c of String(id)) h=(h*31+c.charCodeAt(0))%997; return (h%(2*PP_TILT+1))-PP_TILT; }
 /* the date goes into the ring's bottom wording ("EVERY DAY · 16 NOV 2026"): fit the text to the arc by shrinking the size and spacing */
 const ppBotText=(bot,o)=>o.date?bot+" · "+ppDate(o.date):bot;
 const ppBotFit=(txt,arc,base,ls)=>{ let fs=base, sp=ls; const w=(f,l)=>txt.length*(f*.64+l); while(w(fs,sp)>arc&&sp>.3) sp=Math.max(.3,sp-.2); while(w(fs,sp)>arc&&fs>5.6) fs-=.2; return {fs:fs.toFixed(1),sp:sp.toFixed(1)}; };
@@ -524,6 +525,9 @@ function ppTicket(d,o){
     ${locked?"":`<text x="80" y="43" font-size="11.5" font-weight="800" letter-spacing="2.4" text-anchor="middle" fill="${ink}">${sp.top}</text><text x="80" y="129.6" font-size="8" font-weight="800" letter-spacing="1.6" text-anchor="middle" fill="${ink}">${sp.bot}</text>`}
     ${punch}</g></svg>`;
 }
+/* the centre picture sits in the middle of the ring now that the date is in the ring's wording: [dx,dy] in stamp units, measured from the drawn picture, to centre the whole group (picture plus its dots/flags) */
+const PP_NUDGE={igtc:[-5,10],risingsun:[0,5],grandprix:[0,3],cathedrals:[0,2],border:[0,2],lakes:[0,-2],italian:[0,-3],iberian:[0,-4]};
+const ppNudge=(d,c)=>{ const n=PP_NUDGE[d.id]; return n?`<g transform="translate(${n[0]} ${n[1]})">${c}</g>`:c; };
 function seriesStamp(d,o){
   o=o||{}; if(PP_SERIES[d.sty].kind==="ticket") return ppTicket(d,o); if(PP_SERIES[d.sty].kind==="deca") return ppDecagon(d,o); const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
   const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=sp.region?ppRegionProj(sp.region):ppMapProj();
@@ -630,7 +634,7 @@ function seriesStamp(d,o){
     :map+(abroad?`<text x="36" y="104" font-size="5.2" font-weight="800" letter-spacing=".4" fill="${acc}">+${abroad} ABROAD</text>`:"");
   const defs=`<path id="st${u}t" d="M 30,80 A 50,50 0 0 1 130,80"/><path id="st${u}bt" d="M 13.8,80 A 66.2,66.2 0 0 1 146.2,80"/><path id="st${u}bb" d="M 6.2,80 A 73.8,73.8 0 0 0 153.8,80"/><path id="st${u}b" d="M 20,80 A 60,60 0 0 0 140,80"/><clipPath id="st${u}c"><circle cx="80" cy="80" r="58"/></clipPath><clipPath id="st${u}k"><circle cx="80" cy="80" r="49"/></clipPath>
     <pattern id="st${u}h" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".6" fill="${ink}"/></pattern><pattern id="st${u}hl" width="2.6" height="2.6" patternUnits="userSpaceOnUse"><circle cx="1.3" cy="1.3" r=".26" fill="${ink}" opacity=".5"/></pattern>`;
-  if(locked) return `<svg class="stamp locked" viewBox="0 0 160 160" aria-hidden="true"><defs>${defs}</defs><circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="2.4" stroke-dasharray="5 5"/><g opacity=".85">${centre}</g></svg>`;
+  if(locked) return `<svg class="stamp locked" viewBox="0 0 160 160" aria-hidden="true"><defs>${defs}</defs><circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="2.4" stroke-dasharray="5 5"/><g opacity=".85">${ppNudge(d,centre)}</g></svg>`;
   return `<svg class="stamp" viewBox="0 0 160 160" aria-hidden="true"><defs>${defs}${rough?`<filter id="st${u}f" x="-4%" y="-4%" width="108%" height="108%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" seed="${(u%37)+2}" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -4 3.75" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in" result="c"/><feDisplacementMap in="c" in2="n" scale="1" xChannelSelector="R" yChannelSelector="G"/></filter>`:""}</defs>
     <g${rough?` filter="url(#st${u}f)"`:""} opacity=".94">
       ${sp.band?`<circle cx="80" cy="80" r="70" fill="none" stroke="${sp.bandInk||ink}" stroke-width="12"/><circle cx="80" cy="80" r="78" fill="none" stroke="${sp.bandInk?ink:acc}" stroke-width="1.5"/><circle cx="80" cy="80" r="63" fill="none" stroke="${ink}" stroke-width="1"/>
@@ -643,7 +647,7 @@ function seriesStamp(d,o){
       <text font-size="${sp.size||14}" font-weight="800" letter-spacing="${sp.space||5}" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${top}</textPath></text>
       ${(()=>{ const bt=ppBotText(bot,o), f=ppBotFit(bt,172,9.6,1.8); return `<text font-size="${f.fs}" font-weight="800" letter-spacing="${f.sp}" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${bt}</textPath></text>`; })()}
 `}
-      ${centre}
+      ${ppNudge(d,centre)}
           </g></svg>`;
 }
 /* ---------------- series logos ----------------
@@ -662,7 +666,7 @@ function stampSvg(d,o){
   o=o||{}; const locked=!!o.locked, ink=locked?"rgba(110,98,72,.5)":(PP_INK[d.tier]||PP_INK.x), u=++ppUid, isT=!!d.track;
   const top=(isT?d.track.name:d.name).toUpperCase(), bot=isT?PP_TIERS[+String(d.id).split(":")[2]-1][0].toUpperCase():"TRACKSIDE PASS";
   const ft=ppFs(top,150), fb=ppFs(bot,168), tier=d.tier, esc2=s=>s.replace(/&/g,"&amp;");
-  const centre=isT?`<svg x="45" y="40" width="70" height="54" ${ppOutline(d.track,70,{c:ink,w:2.3})}</svg>`
+  const centre=isT?`<svg x="38" y="48" width="84" height="64" ${ppOutline(d.track,84,{c:ink,w:2.3})}</svg>`
     :`<g transform="translate(50,35) scale(2.5)" fill="none" stroke="${ink}" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round">${PP_ICON[d.icon]||""}</g>`;
   const rings=locked?`<circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="2.4" stroke-dasharray="5 5"/>`
     :`<circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="3.2"/>`+(tier==="b"||tier==="x"?`<circle cx="80" cy="80" r="69.5" fill="none" stroke="${ink}" stroke-width="1.1"/>`:`<circle cx="80" cy="80" r="72" fill="none" stroke="${ink}" stroke-width="1"/><circle cx="80" cy="80" r="68" fill="none" stroke="${ink}" stroke-width="1"/>`)+`<circle cx="80" cy="80" r="46" fill="none" stroke="${ink}" stroke-width="1.3"/>`;

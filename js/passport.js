@@ -11,6 +11,8 @@ function trackToday(t){ return new Date().toLocaleDateString("en-CA",{timeZone:t
 function activeEvent(t){ const today=trackToday(t); return t.events.find(e=>!/test/i.test(e.s||"")&&e.d<=today&&today<=eventEnd(e))||null; }
 /* an IMSA Endurance Cup round: the WeatherTech Championship races of six hours or more (Rolex 24, Sebring 12, the Glen 6, Road America 6, Petit Le Mans 10) */
 const ppIsEndu=(e,min)=>{ const m=/IMSA WeatherTech, (\d+) hours/.exec(e.s||""); return !!m&&+m[1]>=(min||6); };
+/* the GT World Challenge series whose stamps an Intercontinental GT Challenge round also earns: add a new series' id here when it is added to the app (and its stamp's `test` is s.series.has(<id>)) */
+const PP_IGTC_SERIES=["gtwca","gtwce"];
 function ppStats(p){
   const ids=new Set(TRACKS.map(t=>t.id)), by={}; p.stamps.forEach(s=>{ if(ids.has(s.t)) (by[s.t]=by[s.t]||[]).push(s); });
   const visits={}; let full=false;
@@ -22,7 +24,7 @@ function ppStats(p){
   Object.keys(by).forEach(id=>{ const yrs=new Set(by[id].map(s=>+String(s.day).slice(0,4))); yrs.forEach(y=>{ if(yrs.has(y+1)) b2b=true; }); });      /* the same track in two years running */
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||"")); cont.add(contOf(t)); if(contOf(t)==="EU") eu++;
     by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); if(/\b24 Hours?\b|Rolex 24 At/i.test(e.e||"")&&!/Roar Before/i.test(e.e||"")) h24=true; });
-      const real=[...ids].filter(i=>i!=="igtc").length; if(ids.has("igtc")){ ids.add("gtwca"); ids.add("gtwce"); }   /* an Intercontinental GT Challenge round has the cars and drivers of every GT World Challenge series, so it counts for GT Fan (America) and GT Europe too, but not as a second series for Double Bill */
+      const real=[...ids].filter(i=>i!=="igtc").length; if(ids.has("igtc")){ PP_IGTC_SERIES.forEach(i=>ids.add(i)); }   /* an Intercontinental GT Challenge round has the cars and drivers of every GT World Challenge series, so it counts for GT Fan (America) and GT Europe too, but not as a second series for Double Bill */
       ids.forEach(i=>series.add(i)); if(real>=2) bill=true;      /* the Intercontinental GT Challenge runs inside GT World weekends, so it is not a second series on its own */ });
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
   let called=false, perfect=false;      /* Pick your podium: the right winner, and a whole podium right (your own picks, so not for a friend's passport) */

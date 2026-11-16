@@ -5,6 +5,13 @@ import json, math, os, re, sys
 HERE=os.path.dirname(os.path.abspath(__file__)); PERM=os.path.join(HERE,"..","street-circuits","permanent")+"/"; OSM=os.path.join(HERE,"..","street-circuits","osm")+"/"
 ENDURANCE="GT World Challenge Europe Powered by AWS, Endurance Cup"
 SPECS=[
+ dict(id="bathurst", name="Mount Panorama Circuit", short="Bathurst", place="Bathurst, New South Wales", tz="Australia/Sydney", center=[-33.4465,149.5575],
+  circuit=[306192512,1115461019,414156370,30111085,30111102,306192500,306192503,414156376,306192504,414156366,306192501,306192502,30111107,306192513,306192514,306192511,414156373],
+  pit=[37594848,385686852], official="6.213 km", length="6.213 km (3.861 mi)", opened=1938, nturns=23, lap=None,
+  rename={"Murrays Corner":"Murray's Corner","Brocks Skyline":"Skyline"},
+  blurb="Mount Panorama, a 6.213 km public road circuit above the town of Bathurst in New South Wales, Australia, with 23 turns. The lap climbs Mountain Straight to the Cutting and Skyline, drops through the Esses and the Dipper, and finishes down the long Conrod Straight. It hosts the Bathurst 12 Hour, the opening round of the Intercontinental GT Challenge.",
+  sig="Hell Corner, Mountain Straight, the Cutting, Skyline, the Esses, Forrest's Elbow, Conrod Straight, Murray's Corner",
+  events=[dict(d="2027-02-13",e="Bathurst 12 Hour",s="Intercontinental GT Challenge",t=2)]),
  dict(id="spa-francorchamps", name="Circuit de Spa-Francorchamps", short="Spa-Francorchamps", place="Stavelot, Belgium", tz="Europe/Brussels", center=[50.4372,5.9714],
   circuit=[24449918,126807113,175195997,126807111,126807112,1359025268,126807106,1359025267,126807103,126807101,126807109,126807116,175371353,175371365,126807100,176133746,126807114,176133745,178964809,126807105,637268672,613486590,126807099,175178443,175178448,126807110,126835639,126835637,126835638,1430527230],
   pit=323851541, official="7.004 km", length="7.004 km (4.35 mi)", opened=1921, nturns=21, lap="1:47.263 (2009)",

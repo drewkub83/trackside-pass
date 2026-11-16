@@ -166,7 +166,7 @@ const SERIES = [
     fine:"A spectator summary of GT3 racing and GT World Challenge America. For official details, see GT-World-Challenge-America.com."
   },
   {
-    id:"igtc", noWatch:true, match:/Intercontinental GT Challenge/i,
+    id:"igtc", noWatch:true, match:/Intercontinental GT Challenge/i, timing:"https://www.intercontinentalgtchallenge.com/watch-live#live-timing",
     name:"Intercontinental GT Challenge", tag:"Five GT3 endurance races on four continents",
     blurb:"SRO Motorsports Group's global GT3 series: five long endurance races in five countries. The 2027 season opens with the Bathurst 12 Hour in Australia, then the Texas 8 Hour at Circuit of the Americas (new for 2027, replacing the Indianapolis 8 Hour), the Nürburgring 24 Hours in Germany, the CrowdStrike 24 Hours of Spa in Belgium and the Suzuka 1000 km in Japan. Several rounds are also part of GT World Challenge Europe or America, so the same race can count in two championships.",
     cars:[
@@ -961,6 +961,7 @@ const TIMING_LINKS = [
   { match:/IMSA|WeatherTech|Pilot Challenge|VP Racing|MX-5|Super Trofeo/i, name:"IMSA", url:"https://www.imsa.com/scoring/" },
   { match:/FIA WEC|World Endurance|Hypercar|LMGT3/i, name:"FIA WEC live page (free)", url:"https://www.fiawec.com/en/page/live-fiawec" },
   { match:/GT World Challenge Europe|24 Hours of Spa/i, name:"GT World Challenge Europe", url:"https://www.gt-world-challenge-europe.com/watch-live#live-timing" },
-  { match:/GT World Challenge America|GT America|GT4 America|TC America|Toyota GR Cup|Intercontinental GT/i, name:"GT World Challenge America", url:"https://www.gt-world-challenge-america.com/watch-live#live-timing" },
+  { match:/Intercontinental GT/i, name:"Intercontinental GT Challenge", url:"https://www.intercontinentalgtchallenge.com/watch-live#live-timing" },
+  { match:/GT World Challenge America|GT America|GT4 America|TC America|Toyota GR Cup/i, name:"GT World Challenge America", url:"https://www.gt-world-challenge-america.com/watch-live#live-timing" },
   { match:/INDYCAR|IndyCar/i, name:"INDYCAR", url:"https://racecontrol.indycar.com/" }
 ];

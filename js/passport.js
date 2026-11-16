@@ -641,7 +641,7 @@ function seriesStamp(d,o){
       <text font-size="9.6" font-weight="800" letter-spacing="1.8" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${bot}</textPath></text>
 `}
       ${centre}
-      ${o.date?`<text x="80" y="114" font-size="9.6" font-weight="800" letter-spacing=".9" text-anchor="middle" fill="${sp.dark?"#F3EAD2":ink}">${ppDate(o.date)}</text><path d="M35,110.6H46M114,110.6H125" stroke="${acc}" stroke-width="1.2"/>`:""}
+      ${o.date?`<rect x="40" y="105" width="80" height="12.5" rx="6" style="fill:var(--paper)" opacity=".94"/><text x="80" y="114" font-size="9.6" font-weight="800" letter-spacing=".9" text-anchor="middle" fill="${sp.dark?"#F3EAD2":ink}">${ppDate(o.date)}</text><path d="M35,110.6H46M114,110.6H125" stroke="${acc}" stroke-width="1.2"/>`:""}
     </g></svg>`;
 }
 /* ---------------- series logos ----------------
@@ -667,7 +667,7 @@ function stampSvg(d,o){
   const stars=locked?"":(tier==="g"?`<text x="21" y="84.5" font-size="11" text-anchor="middle" fill="${ink}">★</text><text x="139" y="84.5" font-size="11" text-anchor="middle" fill="${ink}">★</text>`:`<circle cx="21" cy="80" r="2" fill="${ink}"/><circle cx="139" cy="80" r="2" fill="${ink}"/>`);
   const text=locked?"":`<text font-size="${ft.toFixed(1)}" font-weight="700" letter-spacing="1.2" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${esc2(top)}</textPath></text>
      <text font-size="${fb.toFixed(1)}" font-weight="700" letter-spacing="1.2" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${esc2(bot)}</textPath></text>`;
-  const date=(!locked&&o.date)?`<line x1="50" y1="101.5" x2="110" y2="101.5" stroke="${ink}" stroke-width="1"/><text x="80" y="114" font-size="9.6" font-weight="700" letter-spacing=".9" text-anchor="middle" fill="${ink}">${ppDate(o.date)}</text>`:"";
+  const date=(!locked&&o.date)?`<rect x="40" y="105" width="80" height="12.5" rx="6" style="fill:var(--paper)" opacity=".94"/><line x1="50" y1="101.5" x2="110" y2="101.5" stroke="${ink}" stroke-width="1"/><text x="80" y="114" font-size="9.6" font-weight="700" letter-spacing=".9" text-anchor="middle" fill="${ink}">${ppDate(o.date)}</text>`:"";
   const rough=!locked&&o.rough!==false;
   const filt=ppFilter(u,rough);
   return `<svg class="stamp${locked?" locked":""}" viewBox="0 0 160 160" aria-hidden="true"><defs><path id="st${u}t" d="M 28,80 A 52,52 0 0 1 132,80"/><path id="st${u}b" d="M 18,80 A 62,62 0 0 0 142,80"/>${filt}</defs>

@@ -23,5 +23,6 @@ TRACKS.push({
   "nturns":170,
   "turns":[],
   "rev":4,
-  "links":[[196.3,853.2,203.7,853.2]]
+  "links":[[196.3,853.2,203.7,853.2]],
+  "lightTracks":true
 });

@@ -237,6 +237,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .map-wrap svg .l-service-e{stroke:var(--road-2);stroke-width:calc(3.6px*var(--lw,1)*var(--rz,1));fill:none;stroke-linecap:round}
 .map-wrap svg .l-track{stroke:#C9A877;stroke-width:calc(2.6px*var(--rz,1));fill:none;stroke-linecap:round;stroke-linejoin:round}
 .map-wrap svg .l-track-e{stroke:#94764B;stroke-width:calc(3.8px*var(--rz,1));fill:none;stroke-linecap:round;stroke-linejoin:round}
+.map-wrap svg .lt .l-track{stroke:#E6DBC6;stroke-width:calc(2px*var(--rz,1))}
+.map-wrap svg .lt .l-track-e{stroke:#D5C7AB;stroke-width:calc(3px*var(--rz,1));opacity:.55}
 .map-wrap svg .l-bridge{stroke:var(--road);stroke-width:calc(3px*var(--rz,1));fill:none}
 .map-wrap svg .l-bridge-e{stroke:var(--ink);stroke-width:calc(5px*var(--rz,1));fill:none;opacity:.4}
 .map-wrap svg .l-tunnel{stroke:var(--road-2);stroke-width:calc(3px*var(--rz,1));fill:none;stroke-dasharray:4 3;opacity:.45}

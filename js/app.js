@@ -529,8 +529,8 @@ function baseSvg(t){
   const b=t.base; let s="";
   s+=b.polys.map(p=>`<path class="b-${p.k}" d="${p.d}"/>`).join("");
   const edge=["primary","residential","service","bridge","track"];
-  s+=b.lines.filter(l=>edge.includes(l.k)).map(l=>`<path class="l-${l.k}-e" d="${l.d}"/>`).join("");
-  s+=b.lines.map(l=>`<path class="l-${l.k}" d="${l.d}"/>`).join("");
+  s+=`<g${t.lightTracks?' class="lt"':""}>`+b.lines.filter(l=>edge.includes(l.k)).map(l=>`<path class="l-${l.k}-e" d="${l.d}"/>`).join("");
+  s+=b.lines.map(l=>`<path class="l-${l.k}" d="${l.d}"/>`).join("")+`</g>`;      /* lightTracks (a track's own flag): the forest tracks on the Nordschleife map are a faint tint so the circuit stands out */
   s+=b.labels.map(([x,y,n,a])=>`<text class="rl" transform="translate(${x},${y}) rotate(${a})" text-anchor="middle" dy="-4">${n}</text>`).join("");
   return s;
 }

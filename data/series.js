@@ -166,6 +166,21 @@ const SERIES = [
     fine:"A spectator summary of GT3 racing and GT World Challenge America. For official details, see GT-World-Challenge-America.com."
   },
   {
+    id:"igtc", noWatch:true, match:/Intercontinental GT Challenge/i,
+    name:"Intercontinental GT Challenge", tag:"Five GT3 endurance races on four continents",
+    blurb:"SRO Motorsports Group's global GT3 series: five long endurance races in five countries. The 2027 season opens with the Bathurst 12 Hour in Australia, then the Texas 8 Hour at Circuit of the Americas (new for 2027, replacing the Indianapolis 8 Hour), the Nürburgring 24 Hours in Germany, the CrowdStrike 24 Hours of Spa in Belgium and the Suzuka 1000 km in Japan. Several rounds are also part of GT World Challenge Europe or America, so the same race can count in two championships.",
+    cars:[
+      {n:"GT3", full:"FIA GT3 race cars", type:"Race versions of supercars", c:"#1F6FB5", fg:"#FFFFFF", pace:"Fast",
+       text:"The same FIA GT3 cars as GT World Challenge: race versions of road cars. The 2026 entries included the BMW M4 GT3 Evo, the Chevrolet Corvette Z06 GT3.R and the Ferrari 296 GT3. Balance of Performance keeps the makes close.",
+       spot:"Looks like a road car with a big rear wing. Team liveries and car numbers are what tell them apart."}
+    ],
+    watch:{
+      qualifying:"Cars set their fastest laps to decide the starting order for the long race.",
+      race:"Each round is one long endurance race: the Bathurst 12 Hour, the Texas 8 Hour, the Nürburgring 24 Hours, the Spa 24 Hours and the Suzuka 1000 km. Pit stops, driver changes and staying out of trouble decide a lot."
+    },
+    fine:"A spectator summary based on SRO's 2027 calendar announcement (June 2026) and the 2026 entry lists. For official details, see the series' own site."
+  },
+  {
     id:"gtwce", autoResults:true, match:/GT World Challenge Europe|24 Hours of Spa/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-europe.com/watch-live#live-timing",
     name:"GT World Challenge Europe Powered by AWS", tag:"GT3 supercars, Sprint and Endurance Cups",
     blurb:"Europe's top GT3 championship, run by SRO Motorsports Group. It is open to cars built to the FIA GT3 rules and balanced by SRO's Balance of Performance, the same rules used at GT World Challenge America. The season has ten rounds, split evenly between the Sprint Cup and the Endurance Cup, and it includes the CrowdStrike 24 Hours of Spa, the biggest GT race in the world.",

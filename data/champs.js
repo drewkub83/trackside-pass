@@ -59,7 +59,13 @@ const CHAMPS = [
       { id:"zandvoort",           short:"Zandvoort",         place:"Zandvoort, Netherlands",        kind:"Road course", e:"GT World Challenge Europe: Zandvoort (Sprint Cup)",          d:"2027-09-17", t:3 },
       { id:"hungaroring",         short:"Hungaroring",       place:"Budapest, Hungary",             kind:"Road course", e:"GT World Challenge Europe: Budapest (Sprint Cup)",           d:"2027-10-01", t:3 },
       { id:"barcelona-catalunya", short:"Barcelona",         place:"Montmeló, Spain",               kind:"Road course", e:"GT World Challenge Europe: Barcelona (Endurance Cup)",       d:"2027-10-22", t:3 }
+    ] },  { id:"igtc", cat:"gt", region:"world", name:"Intercontinental GT", tile:"IGTC", full:"Intercontinental GT Challenge", match:/Intercontinental GT Challenge/i, guide:"igtc",
+    note:"Five endurance races on four continents: the Bathurst 12 Hour, the Texas 8 Hour at COTA (new for 2027, replacing the Indianapolis 8 Hour), the Nürburgring 24 Hours, the CrowdStrike 24 Hours of Spa and the Suzuka 1000 km. Dates are from SRO's 2027 calendar announcement (June 2026); a few sources differ by a day, and the Nürburgring weekend here starts on the Thursday of race week. Bathurst and the Nordschleife show Map coming soon until their maps are added.",
+    stops:[
+      { id:"bathurst", short:"Bathurst", place:"Bathurst, New South Wales", kind:"Road course", e:"Bathurst 12 Hour", d:"2027-02-13", t:2 },
+      { id:"nurburgring-nordschleife", short:"Nürburgring Nordschleife", place:"Nürburg, Germany", kind:"Road course", e:"ADAC Ravenol Nürburgring 24 Hours", d:"2027-05-27", t:4 }
     ] },
+
   { id:"carreracup", cat:"onemake", region:"na", name:"Porsche Carrera Cup", tile:"CARR", full:"Porsche Carrera Cup North America", match:/Porsche Carrera Cup/i, viaSupport:true, optIn:true, parent:"imsa", guide:"carrera",
     note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },
   { id:"pilotchallenge", cat:"onemake", region:"na", name:"Pilot Challenge", tile:"PILOT", full:"Michelin Pilot Challenge", match:/Michelin Pilot Challenge/i, viaSupport:true, optIn:true, parent:"imsa", guide:"pilot",

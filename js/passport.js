@@ -22,7 +22,7 @@ function ppStats(p){
   Object.keys(by).forEach(id=>{ const yrs=new Set(by[id].map(s=>+String(s.day).slice(0,4))); yrs.forEach(y=>{ if(yrs.has(y+1)) b2b=true; }); });      /* the same track in two years running */
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||"")); cont.add(contOf(t)); if(contOf(t)==="EU") eu++;
     by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); if(/\b24 Hours?\b|Rolex 24 At/i.test(e.e||"")&&!/Roar Before/i.test(e.e||"")) h24=true; });
-      ids.forEach(i=>series.add(i)); if(ids.size>=2) bill=true; });
+      ids.forEach(i=>series.add(i)); if([...ids].filter(i=>i!=="igtc").length>=2) bill=true;      /* the Intercontinental GT Challenge runs inside GT World weekends, so it is not a second series on its own */ });
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
   let called=false, perfect=false;      /* Pick your podium: the right winner, and a whole podium right (your own picks, so not for a friend's passport) */
   if(!(typeof ppView!=="undefined"&&ppView)&&typeof ENTRIES!=="undefined") try{ ENTRIES.forEach(g=>{ const sc=gameScore(g); if(!sc) return; Object.keys(sc.per).forEach(k=>{ if(k.slice(-1)==="#") return; const m=sc.per[k]; if(m[0]==="hit") called=true; if(m.length===3&&m.every(x=>x==="hit")) perfect=true; }); }); }catch(e){}
@@ -51,6 +51,7 @@ const PP_GLOBAL=[
   {id:"trifecta",name:"Series Trifecta",desc:"Check in at weekends of three different headline series: IMSA, IndyCar, GT World America or Europe, NASCAR, Formula 1, WEC or MotoGP.",icon:"three",tier:"g",sty:"trifecta",test:s=>ppHeadSeen(s).length>=3},
   {id:"wec",name:"Endurance World",desc:"Check in at a FIA World Endurance Championship weekend.",icon:"globe",tier:"s",sty:"wec",test:s=>s.series.has("wec")},
   {id:"motogp",name:"MotoGP Fan",desc:"Check in at a MotoGP weekend.",icon:"flag",tier:"s",sty:"motogp",test:s=>s.series.has("motogp")},
+  {id:"igtc",name:"Intercontinental",desc:"Check in at an Intercontinental GT Challenge weekend: Bathurst, Texas, the Nürburgring 24 Hours, Spa or Suzuka.",icon:"globe",tier:"s",sty:"igtc",test:s=>s.series.has("igtc")},
   {id:"gteu",name:"GT Europe",desc:"Check in at a GT World Challenge Europe weekend.",icon:"gt",tier:"s",sty:"gtwce",test:s=>s.series.has("gtwce")},
   {id:"carrera",name:"Carrera Cup",desc:"Check in at a Porsche Carrera Cup North America weekend.",icon:"car",tier:"x",sty:"carrera",test:s=>s.series.has("carreracup")},
   {id:"legends",name:"Historic Racing",desc:"Check in at a historic or vintage race weekend: HSR, Legends of Le Mans, GT3 Revival or Masters Historic.",icon:"moon",tier:"x",sty:"legends",test:s=>PP_VINTAGE.some(i=>s.series.has(i))},
@@ -230,6 +231,7 @@ const PP_SERIES={
   trifecta:{kind:"board",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"ANY THREE SERIES",size:9.2,space:2},
   wec:{champ:"wec",kind:"img",art:"wec",w:98,g:108,band:true,bandInk:"#1F5FA8",ink:"#143E72",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:115,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
+  igtc:{champ:"igtc",region:"world",band:true,bandInk:"#1F3A5F",ink:"#14253F",acc:"#C28A00",top:"INTERCONTINENTAL",bot:"GT CHALLENGE",size:9.6,space:1.9},
   gtwce:{champ:"gtwce",kind:"art",art:"gte",w:88,g:98,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
   carrera:{kind:"art",art:"cup",mode:"ink",w:94,g:95,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#C28A00",top:"CARRERA CUP",bot:"PORSCHE WEEKEND",size:9.2,space:2.2},
   legends:{kind:"art",art:"old",w:50,g:122,band:true,bandInk:"#3A3F47",ink:"#1F2328",acc:"#C28A00",top:"HISTORIC RACING",bot:"VINTAGE WEEKEND",size:9,space:1.8},
@@ -730,7 +732,7 @@ const PP_REGIONS={na:"North America",sa:"South America",eu:"Europe",me:"Middle E
 const ppRegionOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"eu":/^Asia\/(Dubai|Qatar|Riyadh|Bahrain|Kuwait|Muscat|Baghdad|Tehran|Jerusalem)/.test(z)?"me":/^America\/(Sao_Paulo|Argentina|Bogota|Santiago|Lima|Montevideo|Caracas)/.test(z)?"sa":"na"; };
 const PP_BADGE_GROUPS=[
   ["By series",["sportscar","endcup","openwheel","stock","grandprix","motogp","wec","carrera","legends","double","trifecta","tour"]],
-  ["GT World Challenge",["gtfan","gteu"]],      /* America first, Europe next to it: the two marks spell GT */
+  ["GT World Challenge",["gtfan","gteu","igtc"]],      /* America first, Europe next to it: the two marks spell GT */
   ["Abroad and the world",["euro","atlantic","worldtour","cathedrals"]],
   ["Iconic places",["lemans","brickyard","greenhell","monaco","triplecrown"]],
   ["Regions",["italian","risingsun","iberian","desert","latin"]],

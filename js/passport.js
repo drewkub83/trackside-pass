@@ -178,6 +178,9 @@ const PP_INK={b:"#2F5FA8",s:"#B23A32",g:"#6A3FA0",x:"#1D6B73",z:"#A87712"};
 const PP_MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 const ppDate=ms=>{ const d=new Date(ms); return d.getDate()+" "+PP_MON[d.getMonth()]+" "+d.getFullYear(); };
 function ppRot(id){ let h=7; for(const c of String(id)) h=(h*31+c.charCodeAt(0))%997; return (h%17)-8; }      /* the same slight tilt every time, like a hand stamp */
+/* the date goes into the ring's bottom wording ("EVERY DAY · 16 NOV 2026"): fit the text to the arc by shrinking the size and spacing */
+const ppBotText=(bot,o)=>o.date?bot+" · "+ppDate(o.date):bot;
+const ppBotFit=(txt,arc,base,ls)=>{ let fs=base, sp=ls; const w=(f,l)=>txt.length*(f*.64+l); while(w(fs,sp)>arc&&sp>.3) sp=Math.max(.3,sp-.2); while(w(fs,sp)>arc&&fs>5.6) fs-=.2; return {fs:fs.toFixed(1),sp:sp.toFixed(1)}; };
 const ppFs=(txt,len)=>Math.max(6.4,Math.min(12.5,len/(txt.length*0.74)));
 function ppOutline(t,size,sw){ const b=trackBox(t), sc=Math.min(size/b[2],size/b[3]); return `viewBox="${b.join(" ")}"><path d="${t.path}" fill="none" stroke="${sw.c}" stroke-width="${(sw.w/sc).toFixed(1)}" stroke-linejoin="round" stroke-linecap="round"/>`; }
 let ppUid=0;
@@ -632,17 +635,16 @@ function seriesStamp(d,o){
     <g${rough?` filter="url(#st${u}f)"`:""} opacity=".94">
       ${sp.band?`<circle cx="80" cy="80" r="70" fill="none" stroke="${sp.bandInk||ink}" stroke-width="12"/><circle cx="80" cy="80" r="78" fill="none" stroke="${sp.bandInk?ink:acc}" stroke-width="1.5"/><circle cx="80" cy="80" r="63" fill="none" stroke="${ink}" stroke-width="1"/>
       <text font-size="${sp.size}" font-weight="800" letter-spacing="${sp.space}" fill="${sp.bandText||'#F3EAD2'}"><textPath href="#st${u}bt" startOffset="50%" text-anchor="middle">${top}</textPath></text>
-      <text font-size="${sp.size}" font-weight="800" letter-spacing="${sp.space}" fill="${sp.bandText||'#F3EAD2'}"><textPath href="#st${u}bb" startOffset="50%" text-anchor="middle">${bot}</textPath></text>`
+      ${(()=>{ const bt=ppBotText(bot,o), f=ppBotFit(bt,205,sp.size,sp.space); return `<text font-size="${f.fs}" font-weight="800" letter-spacing="${f.sp}" fill="${sp.bandText||'#F3EAD2'}"><textPath href="#st${u}bb" startOffset="50%" text-anchor="middle">${bt}</textPath></text>`; })()}`
       :`      <circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="3.4"/>
       <circle cx="80" cy="80" r="71.5" fill="none" stroke="${acc}" stroke-width="1.6"/>
       <path d="${ticks}" fill="none" stroke="${ink}" stroke-width=".9"/>
       <circle cx="80" cy="80" r="63" fill="none" stroke="${ink}" stroke-width="1"/>
       <text font-size="${sp.size||14}" font-weight="800" letter-spacing="${sp.space||5}" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${top}</textPath></text>
-      <text font-size="9.6" font-weight="800" letter-spacing="1.8" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${bot}</textPath></text>
+      ${(()=>{ const bt=ppBotText(bot,o), f=ppBotFit(bt,172,9.6,1.8); return `<text font-size="${f.fs}" font-weight="800" letter-spacing="${f.sp}" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${bt}</textPath></text>`; })()}
 `}
       ${centre}
-      ${o.date?`<rect x="40" y="105" width="80" height="12.5" rx="6" style="fill:var(--paper)" opacity=".94"/><text x="80" y="114" font-size="9.6" font-weight="800" letter-spacing=".9" text-anchor="middle" fill="${sp.dark?"#F3EAD2":ink}">${ppDate(o.date)}</text><path d="M35,110.6H46M114,110.6H125" stroke="${acc}" stroke-width="1.2"/>`:""}
-    </g></svg>`;
+          </g></svg>`;
 }
 /* ---------------- series logos ----------------
    Where a series logo goes (home tile, series page, About sheet, hub labels). Until a logo is licensed there is
@@ -666,8 +668,8 @@ function stampSvg(d,o){
     :`<circle cx="80" cy="80" r="76" fill="none" stroke="${ink}" stroke-width="3.2"/>`+(tier==="b"||tier==="x"?`<circle cx="80" cy="80" r="69.5" fill="none" stroke="${ink}" stroke-width="1.1"/>`:`<circle cx="80" cy="80" r="72" fill="none" stroke="${ink}" stroke-width="1"/><circle cx="80" cy="80" r="68" fill="none" stroke="${ink}" stroke-width="1"/>`)+`<circle cx="80" cy="80" r="46" fill="none" stroke="${ink}" stroke-width="1.3"/>`;
   const stars=locked?"":(tier==="g"?`<text x="21" y="84.5" font-size="11" text-anchor="middle" fill="${ink}">★</text><text x="139" y="84.5" font-size="11" text-anchor="middle" fill="${ink}">★</text>`:`<circle cx="21" cy="80" r="2" fill="${ink}"/><circle cx="139" cy="80" r="2" fill="${ink}"/>`);
   const text=locked?"":`<text font-size="${ft.toFixed(1)}" font-weight="700" letter-spacing="1.2" fill="${ink}"><textPath href="#st${u}t" startOffset="50%" text-anchor="middle">${esc2(top)}</textPath></text>
-     <text font-size="${fb.toFixed(1)}" font-weight="700" letter-spacing="1.2" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${esc2(bot)}</textPath></text>`;
-  const date=(!locked&&o.date)?`<rect x="40" y="105" width="80" height="12.5" rx="6" style="fill:var(--paper)" opacity=".94"/><line x1="50" y1="101.5" x2="110" y2="101.5" stroke="${ink}" stroke-width="1"/><text x="80" y="114" font-size="9.6" font-weight="700" letter-spacing=".9" text-anchor="middle" fill="${ink}">${ppDate(o.date)}</text>`:"";
+     ${(()=>{ const bt=ppBotText(bot,o), f=ppBotFit(bt,176,Math.min(fb,10.5),1.2); return `<text font-size="${f.fs}" font-weight="700" letter-spacing="${f.sp}" fill="${ink}"><textPath href="#st${u}b" startOffset="50%" text-anchor="middle">${esc2(bt)}</textPath></text>`; })()}`;
+  const date="";
   const rough=!locked&&o.rough!==false;
   const filt=ppFilter(u,rough);
   return `<svg class="stamp${locked?" locked":""}" viewBox="0 0 160 160" aria-hidden="true"><defs><path id="st${u}t" d="M 28,80 A 52,52 0 0 1 132,80"/><path id="st${u}b" d="M 18,80 A 62,62 0 0 0 142,80"/>${filt}</defs>

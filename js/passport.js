@@ -599,7 +599,7 @@ function seriesStamp(d,o){
       return s; })()
     :sp.kind==="atlplane"?(function(){ const A=ppArt(sp.art); if(!A) return ""; const f=n=>n.toFixed(1), na=!!(st&&st.cont&&st.cont.has("NA")), eu=!!(st&&st.cont&&st.cont.has("EU")), ln=locked?"#8E8670":ink;
       const dot=(x,on,l)=>`<g opacity="${on?1:.55}"><circle cx="${x}" cy="97" r="4.6" fill="${on?"#FFD27A":"none"}" stroke="${on?"#F3EAD2":"#9DB0E0"}" stroke-width="1.3"/><text x="${x}" y="110" font-size="5.6" font-weight="800" letter-spacing=".8" text-anchor="middle" fill="${locked?"#8E8670":"#F3EAD2"}">${l}</text></g>`;
-      return `<circle cx="80" cy="80" r="50" fill="${locked?"#8E8670":"#2F5F9F"}" fill-opacity="${locked?.18:1}" stroke="${ln}" stroke-width="1.6"/><g${locked?' opacity=".7"':""}>${ppHopArt(A,"orig",ink,"#F3EAD2",90,80,83)}</g>
+      return `<circle cx="80" cy="80" r="50" fill="${locked?"#8E8670":"#2F5F9F"}" fill-opacity="${locked?.18:1}" stroke="${ln}" stroke-width="1.6"/><g${locked?' opacity=".7"':""}>${ppHopArt(A,"orig",ink,"#F3EAD2",80,80,82)}</g>
         <path d="M64 97H96" stroke="${locked?"#8E8670":"#F3EAD2"}" stroke-width="1.2" stroke-dasharray="1.6 2.6" stroke-linecap="round" opacity=".8"/>${dot(57,na,"AMERICA")}${dot(103,eu,"EUROPE")}`; })()
     :sp.kind==="art"?(locked?'<g opacity=".45">'+ppHopArt(ppArt(sp.art),"ink","#8E8670","#F3EAD2",sp.w||72,80,sp.g||102)+'</g>':ppHopArt(ppArt(sp.art),sp.mode||"orig",ink,"#F3EAD2",sp.w||72,80,sp.g||102))
     :sp.kind==="bus"?(locked?'<g opacity=".45">'+ppHopArt(ppArt("bus"),"ink","#8E8670","#F3EAD2",86,80,105)+'</g>':ppHopArt(ppArt("bus"),"orig",ink,"#F3EAD2",86,80,105))

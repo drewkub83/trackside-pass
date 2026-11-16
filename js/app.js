@@ -2239,6 +2239,8 @@ function viewFor(f,x0,y0,x1,y1){
 function circuitBox(){ const path=document.getElementById("trackPath"); if(!path) return null; try{ const b=path.getBBox(); return b.width&&b.height?[b.x,b.y,b.x+b.width,b.y+b.height]:null; }catch(e){ return null; } }
 function fitView(){ const f=frame(), c=circuitBox(); return f&&c?viewFor(f,...c):[...cur.vb]; }
 /* the venue = circuit plus every badge; you can look anywhere in it, but not drift off the map */
+/* zoom-out never goes past this many times the fitted circuit's width, even where parking and gates lie far away (you can still pan there zoomed in) */
+const MAX_OUT=2;
 let limits=null;
 function computeLimits(){
   const f=frame(), c=circuitBox(); if(!f||!c){ limits=null; return; }
@@ -2246,7 +2248,7 @@ function computeLimits(){
   cur.pois.map(p=>applyOv(p,ov[pid(p)])).concat(userStands()).forEach(p=>{ if(p.del) return; x0=Math.min(x0,p.x); y0=Math.min(y0,p.y); x1=Math.max(x1,p.x); y1=Math.max(y1,p.y); });
   const px=(x1-x0)*.06, py=(y1-y0)*.06, v=cur.vb; x0=Math.max(v[0],x0-px); y0=Math.max(v[1],y0-py); x1=Math.min(v[0]+v[2],x1+px); y1=Math.min(v[1]+v[3],y1+py);
   const fv=viewFor(f,...c);   /* the fitted view's visible part (middle two thirds of the holder): always allowed, so the opening view is never pushed */
-  limits={fw:fv[2],F:{x:fv[0]+fv[2]/6,y:fv[1]+fv[3]/6,w:fv[2]/1.5,h:fv[3]/1.5},B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.max(viewFor(f,x0,y0,x1,y1)[2],viewFor(f,...c)[2]*1.25)}   /* zoom-out reaches the whole venue (circuit + every badge, so a short track with far-off parking can be seen whole); at least 1.25x the fitted circuit */;
+  limits={fw:fv[2],F:{x:fv[0]+fv[2]/6,y:fv[1]+fv[3]/6,w:fv[2]/1.5,h:fv[3]/1.5},B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.max(Math.min(viewFor(f,x0,y0,x1,y1)[2],fv[2]*MAX_OUT),fv[2]*1.25)}   /* zoom-out reaches the whole venue (circuit + every badge, so a short track with far-off parking can be seen whole); at least 1.25x the fitted circuit */;
 }
 function clampView(v){
   if(!limits) computeLimits(); if(!limits) return v;

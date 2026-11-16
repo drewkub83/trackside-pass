@@ -1106,7 +1106,7 @@ html.wide #detail #pEvents>.bar,html.wide #detail #pInfo>.bar{display:none}
 .rcpGame>small{display:block;color:var(--ink-2);font-size:12.5px;margin:2px 0 6px}
 .rcpCls{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.rcpCls i{font-style:normal;font-size:12px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-2);align-self:center;margin-right:2px}
 .rcp{font-size:12.5px;padding:3px 9px;border-radius:99px;background:var(--tint);color:var(--ink-2)}.rcp.hit{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--ink);font-weight:600}.rcp.near{background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--ink)}
-.rcpSeason{margin-top:8px}.rcpBtns{display:flex;gap:10px;margin-top:12px}.rcpBtns .btn{flex:1}
+.rcpSeason{margin-top:8px}.rcpBtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.rcpBtns .btn{flex:1 1 auto;min-width:0;white-space:nowrap}
 
 /* every series and category gets its own colour: --h is its hue, the lightness follows the theme (--s-l). The four earliest series keep their hand-picked --s-* colours above (higher specificity). */
 :root[data-style="race"] [data-s="f1"]{--h:330}

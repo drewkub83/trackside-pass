@@ -1301,7 +1301,7 @@ function recapHtml(sun,firstTrack){
     <p class="plRules">${items.length} result${items.length===1?"":"s"} from the series you follow.${games.length?` Your picks scored <b>${pts}</b> of ${mx} this weekend${st.rows.length>1?`, and <b>${st.pts}</b> in ${y}`:""}.`:""}</p>
     ${items.map(recapSection).join("")}
     ${nx?`<p class="plRules rcpSeason">Next up: <b>${esc(nx.t.short)}</b>, ${esc(fmtRange(nx.e))}.</p>`:""}
-    <div class="rcpBtns"><button class="btn primary" onclick="shareRecap('${sun}')">Share</button><button class="btn quiet" onclick="shareRecapCard('${sun}')">Share card</button><button class="btn quiet" onclick="closeInfo();homeTab('play')">My picks</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+    <div class="rcpBtns"><button class="btn primary" onclick="shareRecap('${sun}')">Share</button><button class="btn quiet" onclick="shareRecapCard('${sun}')">Share card</button><button class="btn quiet" onclick="closeInfo();homeTab('play')">My picks</button></div>`;
 }
 function openWkRecap(sun,firstTrack){
   document.getElementById("infoBody").innerHTML=recapHtml(sun,firstTrack||null);

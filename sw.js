@@ -4,7 +4,7 @@
    - After that: opens instantly from the phone, then quietly refreshes files in the background
      when there is a connection, so edits show up on the next launch.
    Bump VERSION to force a clean re-download of everything. */
-const VERSION = "v275";
+const VERSION = "v276";
 const CACHE = "paddock-" + VERSION;
 const FONT_CACHE = "paddock-fonts";
 const TRACKS = ["daytona","sebring","laguna-seca","watkins-glen","road-america","vir","indianapolis","road-atlanta","mid-ohio","long-beach","detroit","canadian-tire-motorsport-park","phoenix","barber","st-petersburg","arlington","cota","sonoma","indianapolis-oval","spa-francorchamps","paul-ricard","nurburgring","barcelona-catalunya","portimao","brands-hatch","imola","misano","magny-cours","zandvoort","hungaroring","interlagos","lusail","mexico-city","yas-marina","las-vegas","miami","montreal","lime-rock","bahrain","jeddah","suzuka","silverstone","shanghai","red-bull-ring","monza","istanbul","melbourne","monaco","marina-bay","baku","madrid","milwaukee-mile","wwt-raceway","portland","fuji","le-mans","markham","daytona-oval","atlanta","las-vegas-motor-speedway","darlington","bristol","martinsville","talladega","texas-motor-speedway","kansas","dover","charlotte","nashville-superspeedway","pocono","michigan","chicagoland","iowa","richmond","new-hampshire","homestead-miami","north-wilkesboro","watkins-glen-nascar","sonoma-nascar","cota-nascar","buriram","sepang","valencia","goiania","mugello","motegi","mandalika","aragon","jerez","assen","sachsenring","brno","le-mans-bugatti","naval-base-coronado","adelaide","buenos-aires","bathurst","nurburgring-nordschleife"];

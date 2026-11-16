@@ -60,7 +60,7 @@ const CHAMPS = [
       { id:"hungaroring",         short:"Hungaroring",       place:"Budapest, Hungary",             kind:"Road course", e:"GT World Challenge Europe: Budapest (Sprint Cup)",           d:"2027-10-01", t:3 },
       { id:"barcelona-catalunya", short:"Barcelona",         place:"Montmeló, Spain",               kind:"Road course", e:"GT World Challenge Europe: Barcelona (Endurance Cup)",       d:"2027-10-22", t:3 }
     ] },  { id:"igtc", cat:"gt", region:"world", name:"Intercontinental GT", tile:"IGTC", full:"Intercontinental GT Challenge", match:/Intercontinental GT Challenge/i, guide:"igtc",
-    note:"Five endurance races on four continents: the Bathurst 12 Hour, the Texas 8 Hour at COTA (new for 2027, replacing the Indianapolis 8 Hour), the Nürburgring 24 Hours, the CrowdStrike 24 Hours of Spa and the Suzuka 1000 km. Dates are from SRO's 2027 calendar announcement (June 2026); a few sources differ by a day, and the Nürburgring weekend here starts on the Thursday of race week. Bathurst and the Nordschleife are mapped; the Nordschleife map does not draw the Grand Prix circuit part of the 24 Hours layout.",
+    note:"Five endurance races on four continents: the Bathurst 12 Hour, the Texas 8 Hour at COTA (new for 2027, replacing the Indianapolis 8 Hour), the Nürburgring 24 Hours, the CrowdStrike 24 Hours of Spa and the Suzuka 1000 km. Dates are from SRO's 2027 calendar announcement (June 2026); a few sources differ by a day, and the Nürburgring weekend here starts on the Thursday of race week. Bathurst and the Nürburgring (the combined Nordschleife and Grand Prix layout of the 24 Hours) are both mapped.",
     stops:[
     ] },
 

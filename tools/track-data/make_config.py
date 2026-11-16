@@ -5,6 +5,13 @@ import json, math, os, re, sys
 HERE=os.path.dirname(os.path.abspath(__file__)); PERM=os.path.join(HERE,"..","street-circuits","permanent")+"/"; OSM=os.path.join(HERE,"..","street-circuits","osm")+"/"
 ENDURANCE="GT World Challenge Europe Powered by AWS, Endurance Cup"
 SPECS=[
+ dict(id="nurburgring-nordschleife", name="Nürburgring Nordschleife", short="Nordschleife", place="Nürburg, Germany", tz="Europe/Berlin", center=[50.3550,6.9650],
+  circuit=[41395670, 41395673, 1009142894, 1009142895, 799394496, 799394497, 41395681, 41395684, 799394498, 799394499, 799394500, 799394501, 799394502, 799394503, 799394504, 799394505, 799394506, 799394507, 683061813, 683061814, 41395647, 683006908, 245166664, 799394508, 799394509, 683061804, 799394510, 799394511, 799394512, 799394513, 414785755, 414785756, 799394515, 799394514, 799394516, 799394517, 799394518, 799394519, 799394520, 799394521, 799394522, 799394523, 799394524, 41395652, 683303211, 683303210, 683303209, 683303208, 41792406, 1571450724, 799394494, 799394495, 41395668],
+  pit=[31009257,32894824,32894825,710354617,199642469,199642470], official="20.832 km", length="20.832 km (12.944 mi)", opened=1927, nturns="154", lap=None,
+  rename={"Nürburgring Nordschleife":None,"T13":None},
+  blurb="The Nordschleife, the 20.832 km northern loop of the Nürburgring in Germany's Eifel hills, known as the Green Hell. The ADAC Ravenol 24h Nürburgring, a round of the Intercontinental GT Challenge, runs on the Nordschleife combined with the Grand Prix circuit; this map draws the Nordschleife, where most of the track and the fans are. Hatzenbach, Flugplatz, Fuchsröhre, Karussell, Pflanzgarten and Döttinger Höhe are among its best-known sections.",
+  sig="Hatzenbach, Flugplatz, Fuchsröhre, Karussell, Pflanzgarten, Döttinger Höhe",
+  events=[dict(d="2027-05-27",e="ADAC Ravenol Nürburgring 24 Hours",s="ADAC 24h Nürburgring, Intercontinental GT Challenge",t=4)]),
  dict(id="bathurst", name="Mount Panorama Circuit", short="Bathurst", place="Bathurst, New South Wales", tz="Australia/Sydney", center=[-33.4465,149.5575],
   circuit=[306192512,1115461019,414156370,30111085,30111102,306192500,306192503,414156376,306192504,414156366,306192501,306192502,30111107,306192513,306192514,306192511,414156373],
   pit=[37594848,385686852], official="6.213 km", length="6.213 km (3.861 mi)", opened=1938, nturns=23, lap=None,

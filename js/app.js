@@ -455,7 +455,7 @@ function openTrack(id,from){
 function openTrackNow(id,from){
   cur = TRACKS.find(t=>t.id===id); userPos=null; stopGps(); dropStaleEdits(); syncPois(); backTo=(from==="imsa"?"series":from)||"series";
   document.querySelectorAll(".dn").forEach(el=>el.textContent=cur.short);
-  view=null; limits=null; fitted=null; cancelAnim(); schedDay=null; fieldCache=null; parking=false; setMode(null); heading=0; devHeading=null; routePts=null; const _hold=document.getElementById("mapHolder"); if(_hold) _hold.style.transform=""; closeSheet(); setParkingUI(); applyDev(); renderNow(); renderSchedule(); if(editing) toggleEdit(); routeDest=null; renderMap(); renderSpot(); document.getElementById("nearBar").hidden=false; applyView(); renderLegend(); renderFood(); renderEvents(); renderInfo();
+  view=null; limits=null; fitted=null; cancelAnim(); schedDay=null; fieldCache=null; parking=false; setMode(null); heading=0; userRot=false; devHeading=null; routePts=null; const _hold=document.getElementById("mapHolder"); if(_hold) _hold.style.transform=""; closeSheet(); setParkingUI(); applyDev(); renderNow(); renderSchedule(); if(editing) toggleEdit(); routeDest=null; renderMap(); renderSpot(); document.getElementById("nearBar").hidden=false; applyView(); renderLegend(); renderFood(); renderEvents(); renderInfo();
   showScreen("detail");
   document.getElementById("mapTabBtn").click();
   window.scrollTo(0,0);
@@ -941,17 +941,21 @@ function computeRoute(){
 function clearRoute(){ routeDest=null; routePts=null; devHeading=null; following=false; const l=document.getElementById("routeLayer"); if(l) l.innerHTML=""; if(sheetState==="shDir") closeSheet(); updateHeading(); }
 /* heading (compass) mode: the map shows the route flat/north-up until the person explicitly taps
    "Start walking" (following=true) -- just requesting directions should never spin the map on its own. */
-let heading=0, devHeading=null, orientOn=false, following=false, smoothHd=null, lastHdAt=0;
+let heading=0, devHeading=null, orientOn=false, following=false, smoothHd=null, lastHdAt=0, userRot=false;   /* userRot: the person turned the map with two fingers: leave it turned until they tap the compass */
 function bearingTo(ax,ay,bx,by){ return (Math.atan2(bx-ax,-(by-ay))*180/Math.PI+360)%360; }
 /* shortest signed distance from b to a around a circle, e.g. angDelta(2,358)=4, not -356 -- this is
    what keeps the map turning the short way instead of spinning almost all the way round. */
 function angDelta(a,b){ let d=(a-b)%360; if(d>180) d-=360; if(d<-180) d+=360; return d; }
 function toggleWalking(){
-  following=!following; devHeading=null; smoothHd=null; if(following) startOrientation();
+  following=!following; devHeading=null; smoothHd=null; if(following){ userRot=false; startOrientation(); }
   const b=document.getElementById("dirWalk"); if(b) b.textContent=following?"Stop following":"Start walking";
   updateHeading();
 }
+/* the compass needle (only while the map is not pointing north; tap = back to north) */
+function updateCompass(){ const b=document.getElementById("compassBtn"); if(!b) return; const hh=((heading%360)+360)%360, off=Math.min(hh,360-hh)>1; b.hidden=!off; const sv=b.querySelector("svg"); if(sv) sv.style.transform=`rotate(${-heading}deg)`; }
+function mapNorth(){ userRot=false; if(following) toggleWalking(); else updateHeading(); }
 function updateHeading(){
+  if(!following&&userRot){ updateCompass(); return; }
   let target=0;
   if(following&&routeDest!==null&&routePts&&routePts.length>1){ if(devHeading!==null) target=devHeading; else { const p=routePts[Math.min(routePts.length-1,3)]; target=bearingTo(routePts[0][0],routePts[0][1],p[0],p[1]); } }
   /* heading itself is left unwrapped (can grow past 360 or below 0) and always moves by the shortest
@@ -959,6 +963,7 @@ function updateHeading(){
      comparing is what used to make the map occasionally spin almost all the way round near due north. */
   const delta=angDelta(target,((heading%360)+360)%360);
   if(Math.abs(delta)>0.4){ heading+=delta; const hold=document.getElementById("mapHolder"); if(hold) hold.style.transform=heading?`rotate(${-heading}deg)`:""; applyView(); }
+  updateCompass();
 }
 function startOrientation(){ if(orientOn) return; const go=()=>{ orientOn=true; window.addEventListener("deviceorientation",e=>{
   const hd=(e.webkitCompassHeading!==undefined)?e.webkitCompassHeading:(e.alpha!==null&&e.absolute?360-e.alpha:null);
@@ -2316,12 +2321,19 @@ function panTo(v){ view=clampView(v); fitted=null; if(!panRaf) panRaf=requestAni
   const anchorAt=(cx,cy)=>{ const svg=document.getElementById("mapSvg"), m=svg.getScreenCTM(); if(!m) return null; const pt=svg.createSVGPoint(); pt.x=cx; pt.y=cy; const p=pt.matrixTransform(m.inverse()); return [p.x,p.y]; };
   wrap.addEventListener("wheel",e=>{ e.preventDefault(); cancelAnim(); if(!view) view=[...cur.vb]; const a=anchorAt(e.clientX,e.clientY); if(!a) return; zoom(Math.exp(-Math.max(-120,Math.min(120,e.deltaY))*(e.ctrlKey?0.012:0.0022)), a[0], a[1], true); },{passive:false});
   const mid=e=>[(e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2], gap=e=>Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-  wrap.addEventListener("touchstart",e=>{ if(e.touches.length===2){ cancelAnim(); if(!view) view=[...cur.vb]; const m=mid(e); pinch={d:gap(e),v:[...view],m,a:anchorAt(m[0],m[1])}; } },{passive:true});
+  const ang=e=>Math.atan2(e.touches[1].clientY-e.touches[0].clientY,e.touches[1].clientX-e.touches[0].clientX)*180/Math.PI;   /* angle between the two fingers, degrees, clockwise on screen */
+  wrap.addEventListener("touchstart",e=>{ if(e.touches.length===2){ cancelAnim(); if(!view) view=[...cur.vb]; const m=mid(e); pinch={d:gap(e),v:[...view],m,a:anchorAt(m[0],m[1]),ang:ang(e),tw:0,latched:false,off:0}; } },{passive:true});
   wrap.addEventListener("touchmove",e=>{ if(pinch&&e.touches.length===2&&pinch.a){                 /* zoom about the fingers, and follow them if they drift */
+    if(!following){ const an=ang(e); pinch.tw+=angDelta(an,pinch.ang); pinch.ang=an;     /* two-finger twist turns the map: nothing happens until the twist passes 12 degrees (so an ordinary pinch never spins it), then it follows the fingers */
+      const hold=document.getElementById("mapHolder");
+      if(!pinch.latched&&Math.abs(pinch.tw)>12){ pinch.latched=true; pinch.off=Math.sign(pinch.tw)*12; pinch.h0=heading; if(hold) hold.style.transition="none"; }
+      if(pinch.latched){ heading=pinch.h0-(pinch.tw-pinch.off); userRot=true; if(hold) hold.style.transform=`rotate(${-heading}deg)`; updateCompass(); } }
     const f=gap(e)/pinch.d, [x,y,w,h]=pinch.v, [ax,ay]=pinch.a; let nv=clampView([ax-(ax-x)/f, ay-(ay-y)/f, w/f, h/f]);   /* size and anchor first (this fixes the zoom), then the drift of the fingers, then clamp again: the drift used to be added after the clamp, so two fingers could carry the map off its edge */
     const m=mid(e), svg=document.getElementById("mapSvg"), k=nv[2]/svg.getBoundingClientRect().width, a=heading*Math.PI/180, c=Math.cos(a), s2=Math.sin(a), dx=m[0]-pinch.m[0], dy=m[1]-pinch.m[1];
     nv=clampView([nv[0]-(dx*c-dy*s2)*k, nv[1]-(dx*s2+dy*c)*k, nv[2], nv[3]]); view=nv; fitted=null; if(!zRaf) zRaf=requestAnimationFrame(()=>{ zRaf=0; applyView(true); settle(); }); } },{passive:true});
-  wrap.addEventListener("touchend",e=>{ if(e.touches.length<2&&pinch){ pinch=null; drag=null; settle(); } },{passive:true});
+  wrap.addEventListener("touchend",e=>{ if(e.touches.length<2&&pinch){ if(pinch.latched){ const hold=document.getElementById("mapHolder"); if(hold) hold.style.transition="";
+        const nh=((heading%360)+360)%360; if(Math.min(nh,360-nh)<8){ userRot=false; updateHeading(); } }      /* within 8 degrees of north: settle back to exactly north */
+      pinch=null; drag=null; settle(); } },{passive:true});
 })();
 
 renderHome(); syncHomeTabs("home"); if(isWide()) showScreenWide("home");

@@ -1478,3 +1478,8 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 .sess.k-f::before{content:"";position:absolute;left:8px;top:16px;bottom:16px;width:3px;border-radius:3px;background:var(--kf);opacity:.7}
 .sess .sn em.fanTag{display:inline-block;padding:1px 8px;border-radius:999px;font-weight:600;font-size:11.5px;background:color-mix(in srgb,var(--kf) 18%,transparent);color:var(--kf);margin-right:6px}
 .hubStarList div.k-f{padding-left:10px;border-left:3px solid color-mix(in srgb,var(--kf) 60%,transparent);border-radius:3px}
+
+/* compass needle: north half red, south half grey; the whole needle turns against the map */
+#compassBtn svg{transition:none}
+#compassBtn .cn{fill:#E5484D;stroke:#E5484D;stroke-linejoin:round}
+#compassBtn .cs{fill:currentColor;stroke:currentColor;stroke-linejoin:round;opacity:.5}

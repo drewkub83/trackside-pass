@@ -229,6 +229,7 @@
     <div class="fl fl-tc"><button class="nowpill" id="nowPill" hidden onclick="showNowSession()"><span class="tag" id="nowTag"></span><span class="txt" id="nowTxt"></span></button></div>
     <div class="fl fl-r">
       <button class="fab wx" id="wxBtn" hidden onclick="openWeather()"></button>
+      <button class="fab" id="compassBtn" hidden aria-label="Point the map north" onclick="mapNorth()"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="cn" d="M12 3l4.2 9H7.8z"/><path class="cs" d="M12 21l4.2-9H7.8z"/></svg></button>
       <button class="fab" id="gpsBtn" aria-label="Locate me" onclick="startGps()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
       <button class="fab" aria-label="Zoom in" onclick="zoom(1.5)"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></button>
       <button class="fab" aria-label="Zoom out" onclick="zoom(1/1.5)"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>

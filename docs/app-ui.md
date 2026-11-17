@@ -69,3 +69,6 @@ Thirteen new passport stamps (first-pass looks, art to come from the owner): F1 
 
 
 Nov 16 evening changes (owner's review): Street Legal is ONE check-in at any F1 street circuit; Short Track Showdown / Superspeedway / Road Course Ringers show only as many dots as visits needed (`PP_COUNT_DOTS`, the first K dots fill); Track Types is `kind:"dolls"` (big doll = superspeedway, middle = intermediate, small = short track, each lights up for the type you checked in at, also on the unearned stamp); Endurance Triple pictures (bus stop / propeller / skeleton) light up per endurance race checked in (endLong) also unearned; new stamp `d500` Daytona 500 (the Daytona 500 weekend alone, first-pass track outline until art arrives).
+
+
+Map rotation (Nov 16 2026): two-finger twist turns the map (`pinch.tw` in the map's touch handlers in js/app.js; nothing happens until the twist passes 12 degrees, release within 8 degrees of north settles to exactly north). `userRot` keeps a hand-turned map turned (updateHeading leaves it alone) until the compass needle (`#compassBtn`, shown only while the map is not north, tap = north via `mapNorth()`) is tapped; route-following (compass heading) mode still takes over and resets it. Touch only: there is no rotate on desktop.

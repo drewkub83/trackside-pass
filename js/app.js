@@ -2318,9 +2318,9 @@ function panTo(v){ view=clampView(v); fitted=null; if(!panRaf) panRaf=requestAni
   const mid=e=>[(e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2], gap=e=>Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
   wrap.addEventListener("touchstart",e=>{ if(e.touches.length===2){ cancelAnim(); if(!view) view=[...cur.vb]; const m=mid(e); pinch={d:gap(e),v:[...view],m,a:anchorAt(m[0],m[1])}; } },{passive:true});
   wrap.addEventListener("touchmove",e=>{ if(pinch&&e.touches.length===2&&pinch.a){                 /* zoom about the fingers, and follow them if they drift */
-    const f=gap(e)/pinch.d, [x,y,w,h]=pinch.v, [ax,ay]=pinch.a; let nv=clampView([ax-(ax-x)/f, ay-(ay-y)/f, w/f, h/f]);
+    const f=gap(e)/pinch.d, [x,y,w,h]=pinch.v, [ax,ay]=pinch.a; let nv=clampView([ax-(ax-x)/f, ay-(ay-y)/f, w/f, h/f]);   /* size and anchor first (this fixes the zoom), then the drift of the fingers, then clamp again: the drift used to be added after the clamp, so two fingers could carry the map off its edge */
     const m=mid(e), svg=document.getElementById("mapSvg"), k=nv[2]/svg.getBoundingClientRect().width, a=heading*Math.PI/180, c=Math.cos(a), s2=Math.sin(a), dx=m[0]-pinch.m[0], dy=m[1]-pinch.m[1];
-    nv=[nv[0]-(dx*c-dy*s2)*k, nv[1]-(dx*s2+dy*c)*k, nv[2], nv[3]]; view=nv; fitted=null; if(!zRaf) zRaf=requestAnimationFrame(()=>{ zRaf=0; applyView(true); settle(); }); } },{passive:true});
+    nv=clampView([nv[0]-(dx*c-dy*s2)*k, nv[1]-(dx*s2+dy*c)*k, nv[2], nv[3]]); view=nv; fitted=null; if(!zRaf) zRaf=requestAnimationFrame(()=>{ zRaf=0; applyView(true); settle(); }); } },{passive:true});
   wrap.addEventListener("touchend",e=>{ if(e.touches.length<2&&pinch){ pinch=null; drag=null; settle(); } },{passive:true});
 })();
 

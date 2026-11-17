@@ -2226,9 +2226,12 @@ function positionPop(){}
 /* The map holder is 150% of the screen (centred), so the visible part is its middle two thirds.
    frame() measures the free band between the floating controls (top pill / back button above, buttons and tab bar below);
    viewFor() picks the view that puts a map box in the middle of that band. */
+let HK=1.5;     /* holder size as a multiple of the screen: big enough that its shortest side covers the screen's diagonal, so a turned map never shows the holder's edge */
 function frame(){
   const wrap=document.getElementById("mapWrap"); if(!wrap) return null;
   const cw=wrap.clientWidth, ch=wrap.clientHeight; if(!cw||!ch) return null;
+  const hk=Math.max(1.5,Math.ceil(Math.hypot(cw,ch)/Math.min(cw,ch)*1.02*20)/20);
+  if(hk!==HK){ HK=hk; const h=document.getElementById("mapHolder"); if(h){ h.style.width=h.style.height=HK*100+"%"; h.style.left=h.style.top=-(HK-1)*50+"%"; } limits=null; }
   const wr=wrap.getBoundingClientRect(); let top=0, bot=ch, seen=false;
   const shown=e=>e&&!e.hidden&&e.getClientRects().length;
   [document.getElementById("nowPill"),document.querySelector(".fl-tl .fab")].forEach(e=>{ if(shown(e)){ top=Math.max(top,e.getBoundingClientRect().bottom-wr.top); seen=true; } });
@@ -2238,7 +2241,7 @@ function frame(){
 }
 function viewFor(f,x0,y0,x1,y1){
   const bw=Math.max(1,x1-x0), bh=Math.max(1,y1-y0), s=Math.min((f.cw-f.padX*2)/bw,Math.max(f.ch*.3,f.ch-f.top-f.bot)/bh);   /* screen px per map unit */
-  const vw=1.5*f.cw/s, vh=1.5*f.ch/s, cx=(x0+x1)/2, cy=(y0+y1)/2+(f.bot-f.top)/2/s;                                       /* nudge into the free band */
+  const vw=HK*f.cw/s, vh=HK*f.ch/s, cx=(x0+x1)/2, cy=(y0+y1)/2+(f.bot-f.top)/2/s;                                       /* nudge into the free band */
   return [cx-vw/2,cy-vh/2,vw,vh];
 }
 function circuitBox(){ const path=document.getElementById("trackPath"); if(!path) return null; try{ const b=path.getBBox(); return b.width&&b.height?[b.x,b.y,b.x+b.width,b.y+b.height]:null; }catch(e){ return null; } }
@@ -2253,7 +2256,7 @@ function computeLimits(){
   cur.pois.map(p=>applyOv(p,ov[pid(p)])).concat(userStands()).forEach(p=>{ if(p.del) return; x0=Math.min(x0,p.x); y0=Math.min(y0,p.y); x1=Math.max(x1,p.x); y1=Math.max(y1,p.y); });
   const px=(x1-x0)*.06, py=(y1-y0)*.06, v=cur.vb; x0=Math.max(v[0],x0-px); y0=Math.max(v[1],y0-py); x1=Math.min(v[0]+v[2],x1+px); y1=Math.min(v[1]+v[3],y1+py);
   const fv=viewFor(f,...c);   /* the fitted view's visible part (middle two thirds of the holder): always allowed, so the opening view is never pushed */
-  limits={fw:fv[2],F:{x:fv[0]+fv[2]/6,y:fv[1]+fv[3]/6,w:fv[2]/1.5,h:fv[3]/1.5},B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.min(Math.max(Math.min(viewFor(f,x0,y0,x1,y1)[2],fv[2]*MAX_OUT),fv[2]*1.25),1.5*Math.min(cur.vb[2],cur.vb[3]*f.cw/f.ch)*1.08)}   /* and never wider than the downloaded map itself: past its edge the screen would show blank ground (the Nordschleife map is as big as its circuit) */   /* zoom-out reaches the whole venue (circuit + every badge, so a short track with far-off parking can be seen whole); at least 1.25x the fitted circuit */;
+  limits={fw:fv[2],F:{x:fv[0]+fv[2]*(1-1/HK)/2,y:fv[1]+fv[3]*(1-1/HK)/2,w:fv[2]/HK,h:fv[3]/HK},B:{x:x0,y:y0,w:x1-x0,h:y1-y0},maxW:Math.min(Math.max(Math.min(viewFor(f,x0,y0,x1,y1)[2],fv[2]*MAX_OUT),fv[2]*1.25),HK*Math.min(cur.vb[2],cur.vb[3]*f.cw/f.ch)*1.08)}   /* and never wider than the downloaded map itself: past its edge the screen would show blank ground (the Nordschleife map is as big as its circuit) */   /* zoom-out reaches the whole venue (circuit + every badge, so a short track with far-off parking can be seen whole); at least 1.25x the fitted circuit */;
 }
 function clampView(v){
   if(!limits) computeLimits(); if(!limits) return v;
@@ -2263,16 +2266,16 @@ function clampView(v){
      rectangle, which for many tracks runs far past anything a fan would walk to. The visible part of the holder is its
      middle two thirds (see frame()); that part may run past the venue by a small margin. When it is bigger than the
      venue (zoomed out), it can sit anywhere that keeps the whole venue on screen. The venue is already clipped to the mapped rectangle. */
-  const B=limits.B, vw=w/1.5, vh=h/1.5, f=frame(), su=f?f.cw/vw:1;   /* su: screen px per map unit */
+  const B=limits.B, vw=w/HK, vh=h/HK, f=frame(), su=f?f.cw/vw:1;   /* su: screen px per map unit */
   /* the floating buttons cover the top and bottom of the screen, so the venue may run under them by that much */
   const padLo=f?f.top/su:0, padHi=f?f.bot/su:0;
   const fit=(lo,size,vis,pos,flo,fsize,pl=0,ph=0)=>{        /* pos = left/top of the holder; returns the clamped value */
     const m=vis*.1;                                                   /* margin: a tenth of the screen, at any zoom */
     let a=lo-m-pl, b=lo+size+m+ph;                                   /* allowed span for the visible part: the venue + margin */
     if(useF){ a=Math.min(a,flo); b=Math.max(b,flo+fsize); }            /* at the opening zoom or further out, also wherever the opening view reaches */
-    const v=pos+(vis*1.5-vis)/2;                                      /* visible part's left/top */
+    const v=pos+(vis*HK-vis)/2;                                      /* visible part's left/top */
     let nv; if(vis<=b-a) nv=Math.min(b-vis,Math.max(a,v)); else nv=Math.min(a,Math.max(b-vis,v));
-    return nv-(vis*1.5-vis)/2;
+    return nv-(vis*HK-vis)/2;
   };
   const F=limits.F, useF=w>=limits.fw*.98;
   return [fit(B.x,B.w,vw,x,F.x,F.w), fit(B.y,B.h,vh,y,F.y,F.h,padLo,padHi), w, h];

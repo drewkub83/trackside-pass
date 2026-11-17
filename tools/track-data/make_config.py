@@ -6,8 +6,8 @@ HERE=os.path.dirname(os.path.abspath(__file__)); PERM=os.path.join(HERE,"..","st
 ENDURANCE="GT World Challenge Europe Powered by AWS, Endurance Cup"
 SPECS=[
  dict(id="nurburgring-nordschleife", name="Nürburgring Nordschleife and Grand Prix circuit", short="Nordschleife", place="Nürburg, Germany", tz="Europe/Berlin", center=[50.3550,6.9650],
-  circuit=[1149161210, 1149161208, 1443047846, 1443047847, 1149161209, 1443047845, 1443047844, 27852990, 820679450, 26543901, 41395670, 41395673, 1009142894, 1009142895, 799394496, 799394497, 41395681, 41395684, 799394498, 799394499, 799394500, 799394501, 799394502, 799394503, 799394504, 799394505, 799394506, 799394507, 683061813, 683061814, 41395647, 683006908, 245166664, 799394508, 799394509, 683061804, 799394510, 799394511, 799394512, 799394513, 414785755, 414785756, 799394515, 799394514, 799394516, 799394517, 799394518, 799394519, 799394520, 799394521, 799394522, 799394523, 799394524, 41395652, 683303211, 683303210, 683303209, 683303208, 41792406, 1571450724, 799394494, 799394495, 41395668, 27852583],
-  pit=[30815119], official="25.378 km", length="25.378 km (15.769 mi)", opened=1927, nturns="170", lap=None,
+  circuit="@nurburgring-nordschleife-lap.json",
+  pit="@nurburgring-nordschleife-pit.json", labels_file="nurburgring-nordschleife-labels.json", official="25.378 km", length="25.378 km (15.769 mi)", opened=1927, nturns="170", lap=None,
   rename={"Nürburgring Nordschleife":None,"T13":None},
   blurb="The Nürburgring Nordschleife with the Grand Prix circuit: the 25.378 km combined layout of the ADAC Ravenol 24h Nürburgring, a round of the Intercontinental GT Challenge. The northern loop through the Eifel hills, known as the Green Hell, is joined to the Grand Prix circuit at the start and finish. Hatzenbach, Flugplatz, Fuchsröhre, Karussell, Pflanzgarten and Döttinger Höhe are among its best-known sections.",
   sig="Hatzenbach, Flugplatz, Fuchsröhre, Karussell, Pflanzgarten, Döttinger Höhe",
@@ -429,21 +429,26 @@ def rb(v):
     if isinstance(v,str): return json.dumps(v,ensure_ascii=False)
     if isinstance(v,list): return "["+", ".join(rb(x) for x in v)+"]"
     if isinstance(v,dict): return "{ "+", ".join(f"{rb(k)} => {rb(x)}" for k,x in v.items())+" }"
+
+def ref_key(k,v):
+    """a lap or pit road given as a coordinate file ('@name.json' next to the builder) instead of OpenStreetMap way ids"""
+    return (k+"_file: "+json.dumps(v[1:])) if isinstance(v,str) and v.startswith("@") else (k+": "+rb(v))
 ONLY=set(a for a in sys.argv[1:] if not a.startswith('-'))   # python3 make_config.py misano zandvoort  -> write only those (never overwrite a hand-edited config)
 for S in SPECS:
     if ONLY and S['id'] not in ONLY: continue
     els=json.load(open(OSM+S["id"]+".json"))["elements"]; W={e["id"]:e for e in els if e.get("type")=="way"}
     labels=[]; seen=set()
-    for wid in S["circuit"]:
+    for wid in (S["circuit"] if isinstance(S["circuit"],list) else []):
         nm=W[abs(wid)].get("tags",{}).get("name","").strip()
         if not nm or nm in seen: continue
         seen.add(nm); 
         txt=None if "*" in S["rename"] else S["rename"].get(nm,nm)
         if txt is None: continue
         g=W[abs(wid)]["geometry"]; m=g[len(g)//2]; labels.append([txt,round(m["lat"],6),round(m["lon"],6),True])
+    if S.get("labels_file"): labels=json.load(open(os.path.join(HERE,"..","street-circuits",S["labels_file"])))   # corner labels kept in a file when the lap is a coordinate file
     cfg=f'''{{
   id: {rb(S["id"])}, name: {rb(S["name"])}, short: {rb(S["short"])}, place: {rb(S["place"])}, tz: {rb(S["tz"])},
-  center: {rb(S["center"])}, circuit: {rb(S["circuit"])}, pit: {rb(S["pit"])},{(" pit_slice: "+rb(S["pit_slice"])+",") if S.get("pit_slice") else ""}
+  center: {rb(S["center"])}, {ref_key("circuit",S["circuit"])}, {ref_key("pit",S["pit"])},{(" pit_slice: "+rb(S["pit_slice"])+",") if S.get("pit_slice") else ""}
   official_mi: {rb(S["official"])}, length: {rb(S["length"])}, opened: {rb(S["opened"])}, nturns: {S["nturns"]},
   corner_labels: {rb(labels)},
   blurb: {rb(S["blurb"])},

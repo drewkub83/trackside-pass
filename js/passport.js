@@ -29,7 +29,13 @@ function ppStats(p){
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
   let called=false, perfect=false;      /* Pick your podium: the right winner, and a whole podium right (your own picks, so not for a friend's passport) */
   if(!(typeof ppView!=="undefined"&&ppView)&&typeof ENTRIES!=="undefined") try{ ENTRIES.forEach(g=>{ const sc=gameScore(g); if(!sc) return; Object.keys(sc.per).forEach(k=>{ if(k.slice(-1)==="#") return; const m=sc.per[k]; if(m[0]==="hit") called=true; if(m.length===3&&m.every(x=>x==="hit")) perfect=true; }); }); }catch(e){}
-  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {h24,b2b,called,perfect,by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
+  /* Formula 1 and NASCAR weekends you checked in at (by track), for the F1 / NASCAR stamps */
+  const f1v=new Set(), nv=new Set(), crown=new Set(); let sprint=false, threeSun=false;
+  Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); by[id].forEach(s=>{ t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{
+    if(/Formula 1/i.test(e.s||"")&&!/Academy/i.test(e.s||"")){ f1v.add(id); try{ const end=eventEnd(e); if((typeof RESULTS!=="undefined"&&RESULTS.some(r=>r.t===id&&/\(Sprint\)/.test(r.event||"")&&r.d>=e.d&&r.d<=end))||(typeof ENTRIES!=="undefined"&&ENTRIES.some(g=>g.t===id&&g.label==="Sprint"&&g.d>=e.d&&g.d<=end))) sprint=true; }catch(x){} }
+    if(/NASCAR/i.test(e.s||"")){ nv.add(id); const sup=(e.support||[]).join(" | "); if(/O'Reilly/i.test(sup)&&/Truck/i.test(sup)) threeSun=true;
+      if(id==="daytona-oval"?/DAYTONA 500/i.test(e.e||""):id==="charlotte"?/Coca-Cola 600/i.test(e.e||""):(id==="darlington"||id==="indianapolis-oval")) crown.add(id); } }); }); });
+  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {f1v,nv,crown,sprint,threeSun,h24,b2b,called,perfect,by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
 const PP_VINTAGE=["hsr","legendsle","gt3revival","masters"];      /* any vintage / historic series earns the Historic Racing stamp */
 const PP_HEAD=["imsa","indycar","gtwca","gtwce","wec","f1","nascar","motogp"];      /* the headline series: any three of them earn the Series Trifecta */
@@ -44,6 +50,21 @@ const PP_GLOBAL=[
   {id:"endurance",name:"Endurance Triple",desc:"Check in at the Rolex 24, the Sebring 12 Hours and Petit Le Mans: IMSA's three races of 10 hours or more.",icon:"moon",tier:"g",sty:"triple",test:s=>["daytona","sebring","road-atlanta"].every(i=>s.endLong.has(i))},
   {id:"endcup",name:"Endurance Cup",desc:"Check in at an IMSA Endurance Cup weekend: the Rolex 24, Sebring 12 Hours, Six Hours of the Glen, Road America six-hour or Petit Le Mans.",icon:"moon",tier:"s",sty:"endcup",test:s=>s.endu},
   {id:"tour",name:"IMSA Grand Tour",desc:"Visit every venue on the IMSA schedule.",icon:"cup",tier:"g",sty:"imsa",test:s=>s.imsaVisited>=s.imsaTotal},
+  /* Formula 1 */
+  {id:"f1street",name:"Street Legal",desc:"Check in at F1 weekends on 3 street circuits: Monaco, Singapore, Las Vegas, Baku, Jeddah or Miami.",icon:"city",tier:"s",sty:"f1street",test:s=>["monaco","marina-bay","las-vegas","baku","jeddah","miami"].filter(i=>s.f1v.has(i)).length>=3},
+  {id:"f1night",name:"Under the Lights",desc:"Check in at 3 Formula 1 night races: Singapore, Las Vegas, Bahrain, Abu Dhabi, Jeddah or Qatar.",icon:"moon",tier:"s",sty:"f1night",test:s=>["marina-bay","las-vegas","bahrain","yas-marina","jeddah","lusail"].filter(i=>s.f1v.has(i)).length>=3},
+  {id:"f1sprint",name:"Sprint Weekend",desc:"Check in at a Formula 1 weekend that has a Sprint race.",icon:"flag",tier:"s",test:s=>s.sprint},
+  {id:"f1classic",name:"The Classics",desc:"Check in at Formula 1 weekends at Silverstone, Monza, Monaco and Suzuka.",icon:"cup",tier:"g",sty:"f1classic",test:s=>["silverstone","monza","monaco","suzuka"].every(i=>s.f1v.has(i))},
+  {id:"f1americas",name:"Americas Swing",desc:"Check in at Formula 1 weekends at 4 of these: COTA, Miami, Las Vegas, Mexico City, São Paulo and Montréal.",icon:"globe",tier:"s",sty:"f1americas",test:s=>["cota","miami","las-vegas","mexico-city","interlagos","montreal"].filter(i=>s.f1v.has(i)).length>=4},
+  {id:"f1finale",name:"Season Finale",desc:"Check in at the Abu Dhabi Grand Prix, the last race of the season.",icon:"flag",tier:"s",sty:"f1finale",test:s=>s.f1v.has("yas-marina")},
+  /* NASCAR */
+  {id:"crown",name:"Crown Jewels",desc:"Check in at NASCAR's four biggest races: the Daytona 500, the Coca-Cola 600, Darlington and the Brickyard.",icon:"cup",tier:"g",sty:"crown",test:s=>["daytona-oval","charlotte","darlington","indianapolis-oval"].every(i=>s.crown.has(i))},
+  {id:"shorttrack",name:"Short Track Showdown",desc:"Check in at NASCAR on 3 short tracks: Bristol, Martinsville, Richmond, North Wilkesboro or Iowa.",icon:"oval",tier:"s",sty:"shorttrack",test:s=>NASCAR_SHORT.filter(i=>s.nv.has(i)).length>=3},
+  {id:"superspeed",name:"Superspeedway",desc:"Check in at NASCAR on 2 superspeedways: Daytona, Talladega or Atlanta.",icon:"oval",tier:"s",sty:"superspeed",test:s=>["daytona-oval","talladega","atlanta"].filter(i=>s.nv.has(i)).length>=2},
+  {id:"roadringers",name:"Road Course Ringers",desc:"Check in at NASCAR on 3 road or street courses: COTA, Sonoma, Watkins Glen or the San Diego street race.",icon:"wheel",tier:"s",sty:"roadringers",test:s=>["cota-nascar","sonoma-nascar","watkins-glen-nascar","naval-base-coronado"].filter(i=>s.nv.has(i)).length>=3},
+  {id:"threeseries",name:"Three-Series Sunday",desc:"Check in at a NASCAR weekend with Cup, O'Reilly and Craftsman Truck races together.",icon:"three",tier:"s",test:s=>s.threeSun},
+  {id:"titlefight",name:"Title Fight",desc:"Check in at the NASCAR championship weekend at Homestead-Miami.",icon:"cup",tier:"g",sty:"titlefight",test:s=>s.nv.has("homestead-miami")},
+  {id:"tracktypes",name:"Track Types",desc:"Check in at NASCAR on a short track, an intermediate and a superspeedway.",icon:"grid",tier:"s",test:s=>ppTypes(s)>=3},
   /* by series */
   {id:"sportscar",name:"Sports Car Fan",desc:"Check in at an IMSA WeatherTech weekend.",icon:"car",tier:"x",sty:"sportscar",test:s=>s.series.has("imsa")},
   {id:"openwheel",name:"Open Wheel",desc:"Check in at an IndyCar weekend.",icon:"wheel",tier:"x",sty:"openwheel",test:s=>s.series.has("indycar")},
@@ -238,6 +259,16 @@ const PP_SERIES={
   trifecta:{kind:"board",band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"SERIES TRIFECTA",bot:"ANY THREE SERIES",size:9.2,space:2},
   wec:{champ:"wec",kind:"img",art:"wec",w:98,g:108,band:true,bandInk:"#1F5FA8",ink:"#143E72",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:115,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
+  f1street:{kind:"outlines",ids:["monaco","marina-bay","las-vegas","baku","jeddah","miami"],band:true,bandInk:"#B3262B",ink:"#7A1519",acc:"#C28A00",top:"STREET LEGAL",bot:"F1 STREETS",size:10.5,space:2.4},
+  f1night:{kind:"outlines",ids:["marina-bay","las-vegas","bahrain","yas-marina","jeddah","lusail"],band:true,bandInk:"#1B2A6B",ink:"#141F52",acc:"#E0A100",top:"UNDER THE LIGHTS",bot:"NIGHT RACES",size:9.6,space:2},
+  f1classic:{kind:"outlines",ids:["silverstone","monza","monaco","suzuka"],band:true,bandInk:"#1F5A34",ink:"#143D23",acc:"#C28A00",top:"THE CLASSICS",bot:"FORMULA 1",size:10.5,space:2.6},
+  f1americas:{kind:"outlines",ids:["cota","miami","las-vegas","mexico-city","interlagos","montreal"],band:true,bandInk:"#2B4C7E",ink:"#1D3558",acc:"#C8202A",top:"AMERICAS SWING",bot:"FORMULA 1",size:10,space:2.2},
+  f1finale:{kind:"outlines",ids:["yas-marina"],band:true,bandInk:"#2B2A20",ink:"#2B2A20",acc:"#C28A00",top:"SEASON FINALE",bot:"ABU DHABI",size:10.5,space:2.4},
+  crown:{kind:"outlines",ids:["daytona-oval","charlotte","darlington","indianapolis-oval"],band:true,bandInk:"#2B2A20",bandText:"#E8C25A",ink:"#2B2A20",acc:"#C28A00",top:"CROWN JEWELS",bot:"NASCAR'S BIG FOUR",size:10,space:2.2},
+  shorttrack:{kind:"outlines",ids:["bristol","martinsville","richmond","north-wilkesboro","iowa"],band:true,bandInk:"#A83225",ink:"#701C14",acc:"#C28A00",top:"SHORT TRACK SHOWDOWN",bot:"THREE OF FIVE",size:8.4,space:1.6},
+  superspeed:{kind:"outlines",ids:["daytona-oval","talladega","atlanta"],band:true,bandInk:"#1F3A5F",ink:"#14253F",acc:"#C28A00",top:"SUPERSPEEDWAY",bot:"TWO OF THREE",size:9.4,space:1.8},
+  roadringers:{kind:"outlines",ids:["cota-nascar","sonoma-nascar","watkins-glen-nascar","naval-base-coronado"],band:true,bandInk:"#2F6F7A",ink:"#1F4F5A",acc:"#C28A00",top:"ROAD COURSE RINGERS",bot:"THREE OF FOUR",size:8.8,space:1.7},
+  titlefight:{kind:"outlines",ids:["homestead-miami"],band:true,bandInk:"#C28A00",bandText:"#2B2A20",ink:"#2B2A20",acc:"#B23A2A",top:"TITLE FIGHT",bot:"HOMESTEAD-MIAMI",size:10.5,space:2.4},
   igtc:{champ:"igtc",region:"world",word:"igword",ww:92,wg:114,band:true,bandInk:"#1F3A5F",ink:"#14253F",acc:"#C28A00",top:"GT CHALLENGE",bot:"FOUR CONTINENTS",size:10,space:2.2},
   gtwce:{champ:"gtwce",kind:"art",art:"gte",w:88,g:98,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
   carrera:{kind:"art",art:"cup",mode:"ink",w:94,g:95,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#C28A00",top:"CARRERA CUP",bot:"PORSCHE WEEKEND",size:9.2,space:2.2},
@@ -534,7 +565,7 @@ const ppNudge=(d,c)=>{ const n=PP_NUDGE[d.id]; return n?`<g transform="translate
 function seriesStamp(d,o){
   o=o||{}; if(PP_SERIES[d.sty].kind==="ticket") return ppTicket(d,o); if(PP_SERIES[d.sty].kind==="deca") return ppDecagon(d,o); const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
   const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=sp.region?ppRegionProj(sp.region):ppMapProj();
-  const st=o.stats||(locked?null:ppStats(ppLoad())), visits=o.visits||(st?st.visits:{}), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
+  const st=o.stats||(locked?null:ppStats(ppLoad())), lsrc=PP_LIST_SRC[d.id], visits=(lsrc&&st&&st[lsrc])?ppSetVisits(st[lsrc]):(o.visits||(st?st.visits:{})), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
   let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }
   const venues=sp.kind&&sp.kind!=="tracks"?[]:ppVenues(sp), at=v=>proj(v.lon,v.lat).map(n=>n.toFixed(1)).join(" ");
   const stops=sp.route==="visited"?(o.order||(locked?[]:ppVisitOrder())).map(id=>venues.find(v=>v.ids.includes(id))).filter(v=>v&&v.ids.some(i=>visits[i]>0)):(sp.route?venues:[]);
@@ -544,7 +575,7 @@ function seriesStamp(d,o){
       :`<circle cx="${x}" cy="${y}" r="1.5" fill="#F3EAD2" stroke="${ink}" stroke-width=".6" opacity=".9"/>`; }).join("");
   const map=sp.region?`<g clip-path="url(#st${u}c)"><path d="${(ppArt("world")||[]).map(r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z").join("")}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".5" stroke-linejoin="round"/></g>${route}${dots}`:`<g clip-path="url(#st${u}k)"><path d="${path(PP_LAND[1])}" fill="url(#st${u}hl)"/></g><g clip-path="url(#st${u}c)"><path d="${path(PP_LAND[0])}" fill="url(#st${u}h)" stroke="${ink}" stroke-width=".6" stroke-linejoin="round"/></g>${route}${dots}`;
   const abroad=sp.kind==="tracks"?Object.keys(visits).filter(id=>visits[id]>0&&!venues.some(v=>v.ids.includes(id))).length:0;
-  const vis4=id=>visits[id]>0, nO=(sp.ids||[]).length, cells=nO===1?[[61,46]]:nO===2?[[40,48],[82,48]]:nO===3?[[22,50],[61,50],[100,50]]:nO===5?[[43,36],[83,36],[24,68],[61,68],[98,68]]:[[42,36],[80,36],[42,69],[80,69]], cw=nO===5?36:38, ch=nO===5?28:nO>=4?31:34;
+  const vis4=id=>visits[id]>0, nO=(sp.ids||[]).length, cells=nO===1?[[46,44]]:nO===6?[[22,40],[61,40],[100,40],[22,70],[61,70],[100,70]]:nO===2?[[40,48],[82,48]]:nO===3?[[22,50],[61,50],[100,50]]:nO===5?[[43,36],[83,36],[24,68],[61,68],[98,68]]:[[42,36],[80,36],[42,69],[80,69]], cw=nO===1?68:nO>=5?36:38, ch=nO===1?58:nO===5?28:nO===6?28:nO>=4?31:34;
   const any=sp.any;      /* any: lit as soon as one of the circuits is visited */
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
@@ -741,6 +772,8 @@ const PP_REGIONS={na:"North America",sa:"South America",eu:"Europe",me:"Middle E
 const ppRegionOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"eu":/^Asia\/(Dubai|Qatar|Riyadh|Bahrain|Kuwait|Muscat|Baghdad|Tehran|Jerusalem)/.test(z)?"me":/^America\/(Sao_Paulo|Argentina|Bogota|Santiago|Lima|Montevideo|Caracas)/.test(z)?"sa":"na"; };
 const PP_BADGE_GROUPS=[
   ["By series",["sportscar","endcup","openwheel","stock","grandprix","motogp","wec","carrera","legends","double","trifecta","tour"]],
+  ["Formula 1",["f1street","f1night","f1sprint","f1classic","f1americas","f1finale"]],
+  ["NASCAR",["crown","shorttrack","superspeed","roadringers","threeseries","titlefight","tracktypes"]],
   ["GT World Challenge",["gtfan","gteu","igtc"]],      /* America first, Europe next to it: the two marks spell GT */
   ["Abroad and the world",["euro","atlantic","worldtour","cathedrals"]],
   ["Iconic places",["lemans","brickyard","greenhell","monaco","triplecrown"]],
@@ -749,11 +782,16 @@ const PP_BADGE_GROUPS=[
   ["Places",["street","jungle","endurance","zones","border","sunshine","lonestar","lakes","golden","peach","banks"]],
   ["Milestones",["first","hopper","tripper","grand","weekend","marathon","ten","season","fullgrid"]]];
 /* how close each unearned badge is: [have, need] (only for the ones that are a count of something) */
-const PP_LISTS={triplecrown:[["monaco","indianapolis-oval","le-mans"],3],italian:[["monza","imola","misano","mugello"],4],risingsun:[["suzuka","fuji","motegi"],3],iberian:[["barcelona-catalunya","portimao","jerez","aragon"],4],desert:[["bahrain","jeddah","lusail","yas-marina"],4],latin:[["interlagos","mexico-city","buenos-aires","goiania"],4],street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
+const NASCAR_SHORT=["bristol","martinsville","richmond","north-wilkesboro","iowa"], NASCAR_MID=["charlotte","kansas","texas-motor-speedway","las-vegas-motor-speedway","michigan","chicagoland","nashville-superspeedway","homestead-miami","darlington"], NASCAR_SUPER=["daytona-oval","talladega"];
+const ppSetVisits=(set)=>{ const v={}; set.forEach(i=>v[i]=1); return v; };
+const ppTypes=s=>[NASCAR_SHORT,NASCAR_MID,NASCAR_SUPER].filter(l=>l.some(i=>s.nv.has(i))).length;
+const PP_LISTS={f1street:[["monaco","marina-bay","las-vegas","baku","jeddah","miami"],3],f1night:[["marina-bay","las-vegas","bahrain","yas-marina","jeddah","lusail"],3],f1classic:[["silverstone","monza","monaco","suzuka"],4],f1americas:[["cota","miami","las-vegas","mexico-city","interlagos","montreal"],4],crown:[["daytona-oval","charlotte","darlington","indianapolis-oval"],4],shorttrack:[NASCAR_SHORT,3],superspeed:[["daytona-oval","talladega","atlanta"],2],roadringers:[["cota-nascar","sonoma-nascar","watkins-glen-nascar","naval-base-coronado"],3],triplecrown:[["monaco","indianapolis-oval","le-mans"],3],italian:[["monza","imola","misano","mugello"],4],risingsun:[["suzuka","fuji","motegi"],3],iberian:[["barcelona-catalunya","portimao","jerez","aragon"],4],desert:[["bahrain","jeddah","lusail","yas-marina"],4],latin:[["interlagos","mexico-city","buenos-aires","goiania"],4],street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
   sunshine:[["daytona","sebring","st-petersburg"],3],lonestar:[["cota","arlington"],2],lakes:[["road-america","mid-ohio","detroit"],3],golden:[["long-beach","laguna-seca","sonoma"],3],peach:[["road-atlanta","barber"],2]};
-const PP_COUNTS={hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],trifecta:[s=>Math.min(3,ppHeadSeen(s).length),3],euro:[s=>s.eu,3],worldtour:[s=>s.cont.size,3],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
+const PP_COUNTS={tracktypes:[ppTypes,3],hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],trifecta:[s=>Math.min(3,ppHeadSeen(s).length),3],euro:[s=>s.eu,3],worldtour:[s=>s.cont.size,3],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
+/* lists whose venues only count when you were there for that series' weekend: the stat set that holds them */
+const PP_LIST_SRC={f1street:"f1v",f1night:"f1v",f1classic:"f1v",f1americas:"f1v",f1finale:"f1v",crown:"crown",shorttrack:"nv",superspeed:"nv",roadringers:"nv",titlefight:"nv"};
 function ppProg(d,st){
-  const l=PP_LISTS[d.id]; if(l) return [Math.min(l[1],l[0].filter(i=>d.id==="endurance"?st.endLong.has(i):st.visits[i]>0).length),l[1]];
+  const l=PP_LISTS[d.id]; if(l){ const src=PP_LIST_SRC[d.id]; return [Math.min(l[1],l[0].filter(i=>d.id==="endurance"?st.endLong.has(i):src&&st[src]?st[src].has(i):st.visits[i]>0).length),l[1]]; }
   const c=PP_COUNTS[d.id]; if(c){ const need=typeof c[1]==="function"?c[1](st):c[1]; return [Math.min(need,c[0](st)),need]; }
   return null;
 }

@@ -51,13 +51,14 @@ const PP_GLOBAL=[
   {id:"endcup",name:"Endurance Cup",desc:"Check in at an IMSA Endurance Cup weekend: the Rolex 24, Sebring 12 Hours, Six Hours of the Glen, Road America six-hour or Petit Le Mans.",icon:"moon",tier:"s",sty:"endcup",test:s=>s.endu},
   {id:"tour",name:"IMSA Grand Tour",desc:"Visit every venue on the IMSA schedule.",icon:"cup",tier:"g",sty:"imsa",test:s=>s.imsaVisited>=s.imsaTotal},
   /* Formula 1 */
-  {id:"f1street",name:"Street Legal",desc:"Check in at F1 weekends on 3 street circuits: Monaco, Singapore, Las Vegas, Baku, Jeddah or Miami.",icon:"city",tier:"s",sty:"f1street",test:s=>["monaco","marina-bay","las-vegas","baku","jeddah","miami"].filter(i=>s.f1v.has(i)).length>=3},
+  {id:"f1street",name:"Street Legal",desc:"Check in at a Formula 1 weekend on a street circuit: Monaco, Singapore, Las Vegas, Baku, Jeddah or Miami.",icon:"city",tier:"s",sty:"f1street",test:s=>["monaco","marina-bay","las-vegas","baku","jeddah","miami"].some(i=>s.f1v.has(i))},
   {id:"f1night",name:"Under the Lights",desc:"Check in at a Formula 1 night race: Singapore, Las Vegas, Bahrain, Abu Dhabi, Jeddah or Qatar.",icon:"moon",tier:"s",sty:"f1night",test:s=>["marina-bay","las-vegas","bahrain","yas-marina","jeddah","lusail"].some(i=>s.f1v.has(i))},
   {id:"f1sprint",name:"Sprint Weekend",desc:"Check in at a Formula 1 weekend that has a Sprint race.",icon:"flag",tier:"s",sty:"f1sprint",test:s=>s.sprint},
   {id:"f1classic",name:"The Classics",desc:"Check in at Formula 1 weekends at Silverstone, Monza, Monaco and Suzuka.",icon:"cup",tier:"g",sty:"f1classic",test:s=>["silverstone","monza","monaco","suzuka"].every(i=>s.f1v.has(i))},
   {id:"f1americas",name:"Americas Swing",desc:"Check in at a Formula 1 weekend in the Americas: COTA, Miami, Las Vegas, Mexico City, São Paulo or Montréal.",icon:"globe",tier:"s",sty:"f1americas",test:s=>["cota","miami","las-vegas","mexico-city","interlagos","montreal"].some(i=>s.f1v.has(i))},
   {id:"f1finale",name:"Season Finale",desc:"Check in at the Abu Dhabi Grand Prix, the last race of the season.",icon:"flag",tier:"s",sty:"f1finale",test:s=>s.f1v.has("yas-marina")},
   /* NASCAR */
+  {id:"d500",name:"Daytona 500",desc:"Check in at the Daytona 500, NASCAR's biggest race.",icon:"cup",tier:"g",sty:"d500",test:s=>s.crown.has("daytona-oval")},
   {id:"crown",name:"Crown Jewels",desc:"Check in at NASCAR's four biggest races: the Daytona 500, the Coca-Cola 600, Darlington and the Brickyard.",icon:"cup",tier:"g",sty:"crown",test:s=>["daytona-oval","charlotte","darlington","indianapolis-oval"].every(i=>s.crown.has(i))},
   {id:"shorttrack",name:"Short Track Showdown",desc:"Check in at NASCAR on 3 short tracks: Bristol, Martinsville, Richmond, North Wilkesboro or Iowa.",icon:"oval",tier:"s",sty:"shorttrack",test:s=>NASCAR_SHORT.filter(i=>s.nv.has(i)).length>=3},
   {id:"superspeed",name:"Superspeedway",desc:"Check in at NASCAR on 2 superspeedways: Daytona, Talladega or Atlanta.",icon:"oval",tier:"s",sty:"superspeed",test:s=>["daytona-oval","talladega","atlanta"].filter(i=>s.nv.has(i)).length>=2},
@@ -260,17 +261,18 @@ const PP_SERIES={
   wec:{champ:"wec",kind:"img",art:"wec",w:98,g:108,band:true,bandInk:"#1F5FA8",ink:"#143E72",acc:"#C28A00",top:"WEC",bot:"WORLD ENDURANCE",size:12,space:3},
   motogp:{champ:"motogp",kind:"art",art:"moto",w:92,g:115,band:true,bandInk:"#1D1D22",ink:"#1D1D22",acc:"#D8312B",top:"MOTOGP",bot:"GRAND PRIX WEEKEND",size:11,space:2.4},
   f1sprint:{kind:"art",art:"runner",mode:"ink",w:84,g:112,band:true,bandInk:"#B3262B",ink:"#7A1519",acc:"#C28A00",top:"SPRINT WEEKEND",bot:"FORMULA 1",size:9.6,space:2.2},
-  f1street:{kind:"sunart",art:"manhole",w:68,g:96,dots:["monaco","marina-bay","las-vegas","baku","jeddah","miami"],dy:110,band:true,bandInk:"#B3262B",ink:"#7A1519",acc:"#C28A00",top:"STREET LEGAL",bot:"F1 STREETS",size:10.5,space:2.4},
+  f1street:{kind:"art",art:"manhole",w:84,g:122,band:true,bandInk:"#B3262B",ink:"#7A1519",acc:"#C28A00",top:"STREET LEGAL",bot:"F1 STREETS",size:10.5,space:2.4},
   f1night:{kind:"art",art:"lamp",w:74,g:122,band:true,bandInk:"#1B2A6B",ink:"#141F52",acc:"#E0A100",top:"UNDER THE LIGHTS",bot:"NIGHT RACES",size:9.6,space:2},
   f1classic:{kind:"sunart",art:"vcar",w:104,g:90,dots:["silverstone","monza","monaco","suzuka"],dy:104,band:true,bandInk:"#1F5A34",ink:"#143D23",acc:"#C28A00",top:"THE CLASSICS",bot:"FORMULA 1",size:10.5,space:2.6},
   f1americas:{kind:"art",art:"americas",w:66,g:126,band:true,bandInk:"#2B4C7E",ink:"#1D3558",acc:"#C8202A",top:"AMERICAS SWING",bot:"FORMULA 1",size:10,space:2.2},
   f1finale:{kind:"art",art:"wrap",w:80,g:118,band:true,bandInk:"#2B2A20",ink:"#2B2A20",acc:"#C28A00",top:"SEASON FINALE",bot:"ABU DHABI",size:10.5,space:2.4},
   threeseries:{kind:"art",art:"three",w:78,g:119,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#C28A00",top:"THREE-SERIES SUNDAY",bot:"CUP · O'REILLY · TRUCKS",size:8.4,space:1.6},
-  tracktypes:{kind:"art",art:"dolls",w:104,g:114,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#C28A00",top:"TRACK TYPES",bot:"SHORT · MID · SUPER",size:10,space:2.2},
+  tracktypes:{kind:"dolls",w:104,g:114,band:true,bandInk:"#2F6F3E",ink:"#1F4A2C",acc:"#C28A00",top:"TRACK TYPES",bot:"SHORT · MID · SUPER",size:10,space:2.2},
+  d500:{kind:"outlines",ids:["daytona-oval"],band:true,bandInk:"#2B2A20",bandText:"#E8C25A",ink:"#2B2A20",acc:"#C28A00",top:"DAYTONA 500",bot:"THE GREAT AMERICAN RACE",size:10.5,space:2.4},
   crown:{kind:"sunart",art:"hat2",w:84,g:101,dots:["daytona-oval","charlotte","darlington","indianapolis-oval"],dy:112,band:true,bandInk:"#2B2A20",bandText:"#E8C25A",ink:"#2B2A20",acc:"#C28A00",top:"CROWN JEWELS",bot:"NASCAR'S BIG FOUR",size:10,space:2.2},
-  shorttrack:{kind:"sunart",art:"mile",w:46,g:101,dots:["bristol","martinsville","richmond","north-wilkesboro","iowa"],dy:112,band:true,bandInk:"#A83225",ink:"#701C14",acc:"#C28A00",top:"SHORT TRACK SHOWDOWN",bot:"THREE OF FIVE",size:8.4,space:1.6},
-  superspeed:{kind:"sunart",art:"send",w:104,g:90,dots:["daytona-oval","talladega","atlanta"],dy:104,band:true,bandInk:"#1F3A5F",ink:"#14253F",acc:"#C28A00",top:"SUPERSPEEDWAY",bot:"TWO OF THREE",size:9.4,space:1.8},
-  roadringers:{kind:"sunart",art:"cone",w:62,g:98,dots:["cota-nascar","sonoma-nascar","watkins-glen-nascar","naval-base-coronado"],dy:112,band:true,bandInk:"#2F6F7A",ink:"#1F4F5A",acc:"#C28A00",top:"ROAD COURSE RINGERS",bot:"THREE OF FOUR",size:8.8,space:1.7},
+  shorttrack:{kind:"sunart",art:"mile",w:46,g:101,dots:["bristol","martinsville","richmond"],dy:112,band:true,bandInk:"#A83225",ink:"#701C14",acc:"#C28A00",top:"SHORT TRACK SHOWDOWN",bot:"THREE OF FIVE",size:8.4,space:1.6},
+  superspeed:{kind:"sunart",art:"send",w:104,g:90,dots:["daytona-oval","talladega"],dy:104,band:true,bandInk:"#1F3A5F",ink:"#14253F",acc:"#C28A00",top:"SUPERSPEEDWAY",bot:"TWO OF THREE",size:9.4,space:1.8},
+  roadringers:{kind:"sunart",art:"cone",w:62,g:98,dots:["cota-nascar","sonoma-nascar","watkins-glen-nascar"],dy:112,band:true,bandInk:"#2F6F7A",ink:"#1F4F5A",acc:"#C28A00",top:"ROAD COURSE RINGERS",bot:"THREE OF FOUR",size:8.8,space:1.7},
   titlefight:{kind:"art",art:"belt",w:112,g:106,band:true,bandInk:"#8E1F24",ink:"#5C1216",acc:"#C28A00",top:"TITLE FIGHT",bot:"HOMESTEAD-MIAMI",size:10.5,space:2.4},
   igtc:{champ:"igtc",region:"world",word:"igword",ww:92,wg:114,band:true,bandInk:"#1F3A5F",ink:"#14253F",acc:"#C28A00",top:"GT CHALLENGE",bot:"FOUR CONTINENTS",size:10,space:2.2},
   gtwce:{champ:"gtwce",kind:"art",art:"gte",w:88,g:98,band:true,bandInk:"#1B2A6B",ink:"#1B2A6B",acc:"#C8202A",top:"GT WORLD EUROPE",bot:"GT FAN",size:9,space:1.8},
@@ -568,7 +570,7 @@ const ppNudge=(d,c)=>{ const n=PP_NUDGE[d.id]; return n?`<g transform="translate
 function seriesStamp(d,o){
   o=o||{}; if(PP_SERIES[d.sty].kind==="ticket") return ppTicket(d,o); if(PP_SERIES[d.sty].kind==="deca") return ppDecagon(d,o); const sp=PP_SERIES[d.sty], locked=!!o.locked, ink=locked?"rgba(110,98,72,.55)":sp.ink, acc=locked?"rgba(110,98,72,.55)":sp.acc, u=++ppUid;
   const top=sp.top, bot=sp.bot, rough=!locked&&o.rough!==false, proj=sp.region?ppRegionProj(sp.region):ppMapProj();
-  const st=o.stats||(locked?null:ppStats(ppLoad())), lsrc=PP_LIST_SRC[d.id], visits=(lsrc&&st&&st[lsrc])?ppSetVisits(st[lsrc]):(o.visits||(st?st.visits:{})), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
+  const st=o.stats||(locked?null:ppStats(ppLoad())), lsrc=PP_LIST_SRC[d.id], visits=PP_COUNT_DOTS[d.id]&&st&&st[lsrc]?ppCountVisits(d.id,sp,st):(lsrc&&st&&st[lsrc])?ppSetVisits(st[lsrc]):(o.visits||(st?st.visits:{})), path=r=>"M"+r.map(([x,y])=>proj(x,y).map(v=>v.toFixed(1)).join(" ")).join("L")+"Z";
   let ticks=""; for(let i=0;i<72;i++){ const a=i*Math.PI/36, r0=i%6===0?65:66.5, r1=69; ticks+=`M${(80+r0*Math.cos(a)).toFixed(2)} ${(80+r0*Math.sin(a)).toFixed(2)}L${(80+r1*Math.cos(a)).toFixed(2)} ${(80+r1*Math.sin(a)).toFixed(2)}`; }
   const venues=sp.kind&&sp.kind!=="tracks"?[]:ppVenues(sp), at=v=>proj(v.lon,v.lat).map(n=>n.toFixed(1)).join(" ");
   const stops=sp.route==="visited"?(o.order||(locked?[]:ppVisitOrder())).map(id=>venues.find(v=>v.ids.includes(id))).filter(v=>v&&v.ids.some(i=>visits[i]>0)):(sp.route?venues:[]);
@@ -583,7 +585,9 @@ function seriesStamp(d,o){
   const centre=sp.kind==="flags"?ppFlags(ink,acc,"#F3EAD2")
     :sp.kind==="states"?ppStateArt(sp,ink,acc,"#F3EAD2",u,visits,locked)
     :sp.kind==="ofcar"?(locked?`<g opacity=".5">${ppOfCar("#8E8670","#8E8670","#F3EAD2",104,80,92)}</g>`:ppOfCar(ink,acc,"#F3EAD2",104,80,92))
-        :sp.kind==="triart"?(function(){ const T=ppArt("triple"); if(!T) return ""; const on={a:vis4("daytona"),b:vis4("sebring"),c:vis4("road-atlanta")}; const one=(k,cx,w)=>'<g opacity="'+(locked?.45:on[k]?1:.28)+'">'+ppHopArt(T[{a:"stop",b:"prop",c:"skel"}[k]],locked?"ink":"orig",locked?"#8E8670":ink,"#F3EAD2",w,cx,102)+'</g>'; return one("a",40,22)+one("b",80,40)+one("c",120,26); })()
+        :sp.kind==="dolls"?(function(){ const D=ppArt("dolls"); if(!D) return ""; const nv=st&&st.nv, got=l=>nv?l.some(i=>nv.has(i)):!!o.visits&&!locked; const on=[got(NASCAR_SUPER),got(NASCAR_MID),got(NASCAR_SHORT)];   /* big doll = superspeedway, middle = intermediate, small = short track */
+          return [0,1,2].map(g=>'<g opacity="'+(on[g]?1:locked?.45:.3)+'">'+ppHopArt({vb:D.vb,p:D.p.filter(r=>r[3]===g)},on[g]?"orig":"ink",on[g]?ink:"#8E8670","#F3EAD2",104,80,114)+'</g>').join(""); })()
+        :sp.kind==="triart"?(function(){ const T=ppArt("triple"); if(!T) return ""; const at=id=>st&&st.endLong?st.endLong.has(id):vis4(id), on={a:at("daytona"),b:at("sebring"),c:at("road-atlanta")}; const one=(k,cx,w)=>'<g opacity="'+(on[k]?1:locked?.45:.28)+'">'+ppHopArt(T[{a:"stop",b:"prop",c:"skel"}[k]],on[k]?"orig":"ink",on[k]?ink:"#8E8670","#F3EAD2",w,cx,102)+'</g>'; return one("a",40,22)+one("b",80,40)+one("c",120,26); })()
         :sp.kind==="tour"?(function(){ const T=ppArt("tour"); if(!T) return ""; const [vx,vy,vw,vh]=T.vb, w=sp.w||102, s=w/vw, gx=80-w/2, gy=(sp.g||113)-vh*s, k=2.5, pk=T.pin[0];
       const pins=T.pins.map(([id,x,y])=>{ const on=!locked&&visits[id]>0; return `<g transform="translate(${(gx+(x-vx)*s).toFixed(1)} ${(gy+(y-vy)*s).toFixed(1)}) scale(${(s*k).toFixed(4)})"><path d="${pk[0]}" fill="${on?'#EB1B24':locked?'#B9B2A0':'#9AA3AD'}" fill-opacity="${on?1:.8}" fill-rule="evenodd" stroke="${on?'#7A0E14':'#5C6470'}" stroke-width="${on?9:7}" stroke-linejoin="round"/></g>`; }).join("");
       return (locked?'<g opacity=".45">'+ppHopArt(T,"ink","#8E8670","#F3EAD2",w,80,sp.g||113)+'</g>':ppHopArt(T,"orig",ink,"#F3EAD2",w,80,sp.g||113))+pins; })()
@@ -776,7 +780,7 @@ const ppRegionOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"eu":/^Asia\/
 const PP_BADGE_GROUPS=[
   ["By series",["sportscar","endcup","openwheel","stock","grandprix","motogp","wec","carrera","legends","double","trifecta","tour"]],
   ["Formula 1",["f1street","f1night","f1sprint","f1classic","f1americas","f1finale"]],
-  ["NASCAR",["crown","shorttrack","superspeed","roadringers","threeseries","titlefight","tracktypes"]],
+  ["NASCAR",["d500","crown","shorttrack","superspeed","roadringers","threeseries","titlefight","tracktypes"]],
   ["GT World Challenge",["gtfan","gteu","igtc"]],      /* America first, Europe next to it: the two marks spell GT */
   ["Abroad and the world",["euro","atlantic","worldtour","cathedrals"]],
   ["Iconic places",["lemans","brickyard","greenhell","monaco","triplecrown"]],
@@ -787,12 +791,15 @@ const PP_BADGE_GROUPS=[
 /* how close each unearned badge is: [have, need] (only for the ones that are a count of something) */
 const NASCAR_SHORT=["bristol","martinsville","richmond","north-wilkesboro","iowa"], NASCAR_MID=["charlotte","kansas","texas-motor-speedway","las-vegas-motor-speedway","michigan","chicagoland","nashville-superspeedway","homestead-miami","darlington"], NASCAR_SUPER=["daytona-oval","talladega"];
 const ppSetVisits=(set)=>{ const v={}; set.forEach(i=>v[i]=1); return v; };
+/* Short Track Showdown, Superspeedway and Road Course Ringers show only as many dots as visits needed: the first K dots fill as you collect venues */
+const PP_COUNT_DOTS={shorttrack:3,roadringers:3,superspeed:2};
+const ppCountVisits=(id,sp,st)=>{ const l=PP_LISTS[id][0], k=Math.min(PP_COUNT_DOTS[id],l.filter(i=>st[PP_LIST_SRC[id]].has(i)).length), v={}; sp.dots.slice(0,k).forEach(i=>v[i]=1); return v; };
 const ppTypes=s=>[NASCAR_SHORT,NASCAR_MID,NASCAR_SUPER].filter(l=>l.some(i=>s.nv.has(i))).length;
-const PP_LISTS={f1street:[["monaco","marina-bay","las-vegas","baku","jeddah","miami"],3],f1classic:[["silverstone","monza","monaco","suzuka"],4],crown:[["daytona-oval","charlotte","darlington","indianapolis-oval"],4],shorttrack:[NASCAR_SHORT,3],superspeed:[["daytona-oval","talladega","atlanta"],2],roadringers:[["cota-nascar","sonoma-nascar","watkins-glen-nascar","naval-base-coronado"],3],triplecrown:[["monaco","indianapolis-oval","le-mans"],3],italian:[["monza","imola","misano","mugello"],4],risingsun:[["suzuka","fuji","motegi"],3],iberian:[["barcelona-catalunya","portimao","jerez","aragon"],4],desert:[["bahrain","jeddah","lusail","yas-marina"],4],latin:[["interlagos","mexico-city","buenos-aires","goiania"],4],street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
+const PP_LISTS={f1classic:[["silverstone","monza","monaco","suzuka"],4],crown:[["daytona-oval","charlotte","darlington","indianapolis-oval"],4],shorttrack:[NASCAR_SHORT,3],superspeed:[["daytona-oval","talladega","atlanta"],2],roadringers:[["cota-nascar","sonoma-nascar","watkins-glen-nascar","naval-base-coronado"],3],triplecrown:[["monaco","indianapolis-oval","le-mans"],3],italian:[["monza","imola","misano","mugello"],4],risingsun:[["suzuka","fuji","motegi"],3],iberian:[["barcelona-catalunya","portimao","jerez","aragon"],4],desert:[["bahrain","jeddah","lusail","yas-marina"],4],latin:[["interlagos","mexico-city","buenos-aires","goiania"],4],street:[["long-beach","detroit","st-petersburg","arlington"],2],jungle:[["long-beach","detroit","st-petersburg","arlington"],4],endurance:[["daytona","sebring","road-atlanta"],3],
   sunshine:[["daytona","sebring","st-petersburg"],3],lonestar:[["cota","arlington"],2],lakes:[["road-america","mid-ohio","detroit"],3],golden:[["long-beach","laguna-seca","sonoma"],3],peach:[["road-atlanta","barber"],2]};
 const PP_COUNTS={tracktypes:[ppTypes,3],hopper:[s=>s.tracks,3],tripper:[s=>s.tracks,6],grand:[s=>s.tracks,10],ten:[s=>s.weekends,10],trifecta:[s=>Math.min(3,ppHeadSeen(s).length),3],euro:[s=>s.eu,3],worldtour:[s=>s.cont.size,3],marathon:[s=>Math.min(4,s.marDays||0),4],season:[s=>s.weekends,25],zones:[s=>s.zones,3],tour:[s=>s.imsaVisited,s=>s.imsaTotal],fullgrid:[s=>s.tracks,s=>s.total]};
 /* lists whose venues only count when you were there for that series' weekend: the stat set that holds them */
-const PP_LIST_SRC={f1street:"f1v",f1classic:"f1v",f1finale:"f1v",crown:"crown",shorttrack:"nv",superspeed:"nv",roadringers:"nv",titlefight:"nv"};
+const PP_LIST_SRC={f1classic:"f1v",f1finale:"f1v",crown:"crown",shorttrack:"nv",superspeed:"nv",roadringers:"nv",titlefight:"nv"};
 function ppProg(d,st){
   const l=PP_LISTS[d.id]; if(l){ const src=PP_LIST_SRC[d.id]; return [Math.min(l[1],l[0].filter(i=>d.id==="endurance"?st.endLong.has(i):src&&st[src]?st[src].has(i):st.visits[i]>0).length),l[1]]; }
   const c=PP_COUNTS[d.id]; if(c){ const need=typeof c[1]==="function"?c[1](st):c[1]; return [Math.min(need,c[0](st)),need]; }

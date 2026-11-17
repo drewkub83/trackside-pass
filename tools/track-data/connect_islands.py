@@ -1,12 +1,12 @@
 # Make every badge on a track walkable: finds areas of the walking grid that no route can reach (an infield with no marked tunnel, a fenced lot) that hold a badge,
 # and writes a straight walkable link from each to the nearest open ground of the main area into the track's "links" (applied by build_route.build), then rebuilds the grid.
-#   python3 tools/track-data/connect_islands.py <track-id> [--max-m 400] [--dry]
+#   python3 tools/track-data/connect_islands.py <track-id> [--max-m 400] [--dry] [--patch] [--keep: keep the track's existing links and assumed crossings]
 # Honest limits: a link is a straight 5 m strip over the gap (a tunnel or bridge that is not drawn, or a sliver the grid closed by mistake); links over 150 m are skipped by default, so look at those by hand.
 import sys, os, math
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_route as B
 tid=sys.argv[1]; PATCH="--patch" in sys.argv; maxm=float(sys.argv[sys.argv.index("--max-m")+1]) if "--max-m" in sys.argv else 150; dry="--dry" in sys.argv
-T=B.load(tid); T["links"]=[]; T["pois"]=[q for q in T["pois"] if not q["n"].startswith("Crossing (position assumed)")]
+T=B.load(tid); OLD_LINKS=list(T.get("links",[])) if "--keep" in sys.argv else []; T["links"]=[]; T["pois"]=[q for q in T["pois"] if not q["n"].startswith("Crossing (position assumed)")]
 def grid_of(T):
     if PATCH:
         R=dict(T["route"]); R["rows"]=[B.rle_decode(r) if R.get("rle") else r for r in R["rows"]]; return T,R
@@ -81,7 +81,7 @@ for k,bl in badge_comp.items():
     if d<=maxm: links.append([round(v,1) for v in ln])
     else: print("   too far, skipped")
 if dry: sys.exit()
-T=B.load(tid); T["links"]=links; T["pois"]=[q for q in T["pois"] if not q["n"].startswith("Crossing (position assumed)")]+newcross
+T=B.load(tid); T["links"]=OLD_LINKS+links; T["pois"]=([q for q in T["pois"] if not q["n"].startswith("Crossing (position assumed)")] if "--keep" not in sys.argv else T["pois"])+newcross
 if PATCH:
     # carve each strip into the existing grid (a hand-tuned grid is kept as it is); the links stay in the file so a later rebuild keeps them
     R0=T["route"]; rr=[list(B.rle_decode(r) if R0.get("rle") else r) for r in R0["rows"]]; cl=R0["cell"]; mp=R0["mpu"]

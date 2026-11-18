@@ -1489,3 +1489,27 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 #compassBtn svg{transition:none}
 #compassBtn .cn{fill:#E5484D;stroke:#E5484D;stroke-linejoin:round}
 #compassBtn .cs{fill:currentColor;stroke:currentColor;stroke-linejoin:round;opacity:.5}
+
+/* Settings > Style: four cards in a 2x2 grid, each with a tiny picture of the look */
+.styleGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.styleGrid button{display:flex;flex-direction:column;gap:8px;padding:8px 8px 10px;text-align:left;border-radius:18px;border:2px solid transparent;background:var(--tint-2);color:var(--ink-2);font-size:14px}
+.styleGrid button span{padding:0 4px}
+.styleGrid button.on{border-color:var(--accent);background:var(--card);color:var(--ink);font-weight:500}
+.sp{position:relative;display:block;height:58px;border-radius:11px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.sp u{position:absolute;display:block;text-decoration:none}
+.sp-classic{background:linear-gradient(160deg,#E9F0EB,#D9E5DF)}
+.sp-classic u:nth-child(1){left:8px;right:8px;top:8px;height:16px;border-radius:9px;background:rgba(255,255,255,.85)}
+.sp-classic u:nth-child(2){left:8px;width:46%;bottom:8px;height:18px;border-radius:9px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.sp-race{background:#15181F}
+.sp-race u:nth-child(1){left:0;right:0;top:0;height:16px;background:#0B0D12}
+.sp-race u:nth-child(1)::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:5px;background:repeating-conic-gradient(#fff 0 25%,#0B0D12 0 50%) 0 0/5px 5px}
+.sp-race u:nth-child(2){left:8px;bottom:8px;width:34px;height:24px;background:#FF5900;border-radius:3px}
+.sp-ticket{background:#F3E9D2}
+.sp-ticket u:nth-child(1){left:0;top:0;bottom:0;width:30%;background:#E4572E}
+.sp-ticket u:nth-child(2){left:30%;top:6px;bottom:6px;border-left:2px dashed rgba(60,40,10,.45)}
+.sp-editorial{background:#FAF8F3}
+.sp-editorial u:nth-child(1){left:8px;right:8px;top:9px;border-top:1.5px solid #111}
+.sp-editorial u:nth-child(2){left:8px;bottom:7px;width:30px;height:26px;border-left:4px solid #D1242A;background:linear-gradient(#111,#111) 10px 3px/16px 20px no-repeat}
+.abAct{margin-top:14px}
+.abAct+.abAct{padding-top:14px;border-top:1px solid var(--line)}
+.abAct small{display:block;margin-top:6px}

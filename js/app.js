@@ -2721,7 +2721,7 @@ const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"],[
 function stylePref(){ try{ const v=localStorage.getItem(STYLE_KEY); return v==="race"?"race":v==="editorial"?"editorial":(v==="ticket"||v==="program")?"ticket":"classic"; }catch(e){ return "classic"; } }   /* "program" was a short-lived style that became Ticket Stubs */
 function applyStyle(){ const r=document.documentElement; if(stylePref()!=="classic") r.setAttribute("data-style",stylePref()); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
 function renderStyleUI(){ const p=stylePref();
-  document.querySelectorAll(".styleSeg").forEach(el=>{ el.innerHTML=STYLES.map(([k,l])=>`<button class="${k===p?"on":""}" onclick="setStyle('${k}')">${l}</button>`).join(""); });
+  document.querySelectorAll(".styleSeg").forEach(el=>{ el.innerHTML=STYLES.map(([k,l])=>`<button class="${k===p?"on":""}" aria-pressed="${k===p}" onclick="setStyle('${k}')"><i class="sp sp-${k}"><u></u><u></u></i><span>${l}</span></button>`).join(""); });
   document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":p==="ticket"?"Race weekends as tickets: a coloured date stub, a dashed tear line and warm paper.":p==="editorial"?"A quiet magazine look: black on off-white, hairline rules, one red accent and a huge countdown.":"The original soft look."); }
 function setStyle(k){ try{ localStorage.setItem(STYLE_KEY,k); }catch(e){} applyStyle(); }
 function setTheme(k){ try{ localStorage.setItem(THEME_KEY,k); }catch(e){} applyTheme(); }

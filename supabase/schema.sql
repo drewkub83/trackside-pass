@@ -840,3 +840,21 @@ begin
 end $$;
 revoke all on function public.send_feedback(text, text, text, text, jsonb) from public;
 grant execute on function public.send_feedback(text, text, text, text, jsonb) to anon, authenticated;
+
+---------------------------------------------------------------- daily feedback email (tools/feedback_digest.mjs, .github/workflows/feedback-digest.yml)
+-- digested_at marks notes already emailed. daily_stats() gives the usage totals for the email; only the service role (the GitHub job) can call it.
+alter table public.feedback add column if not exists digested_at timestamptz;
+create or replace function public.daily_stats(p_from date, p_to date)
+returns jsonb language sql security definer set search_path = public as $$
+  select jsonb_build_object(
+    'people', (select count(distinct did) from usage_events where day between p_from and p_to),
+    'opens', (select count(*) from usage_events where ev = 'open' and day between p_from and p_to),
+    'new_people', (select count(*) from (select did, min(day) as first_day from usage_events group by did) f where first_day between p_from and p_to),
+    'picks', (select count(*) from usage_events where ev = 'pick' and day between p_from and p_to),
+    'checkins', (select count(*) from usage_events where ev = 'checkin' and day between p_from and p_to),
+    'top_tracks', coalesce((select jsonb_agg(jsonb_build_array(arg, n)) from (select arg, count(distinct did) as n from usage_events where ev = 'track' and day between p_from and p_to group by arg order by n desc, arg limit 5) t), '[]'::jsonb),
+    'top_screens', coalesce((select jsonb_agg(jsonb_build_array(arg, n)) from (select arg, count(distinct did) as n from usage_events where ev = 'screen' and day between p_from and p_to group by arg order by n desc, arg limit 5) s), '[]'::jsonb)
+  )
+$$;
+revoke all on function public.daily_stats(date, date) from public, anon, authenticated;
+grant execute on function public.daily_stats(date, date) to service_role;

@@ -28,3 +28,13 @@ Settings > Send feedback opens a form (Idea / Problem / Other, a message up to 1
 select at, kind, msg, contact, ctx->>'screen' as screen, ctx->>'track' as track, ctx->>'plat' as plat from feedback order by at desc;
 ```
 It is not wired to email or push yet; check the table after a race weekend, or ask for a daily summary.
+
+## Daily feedback email (Nov 19 2026)
+`.github/workflows/feedback-digest.yml` runs `tools/feedback_digest.mjs` every day at 13:00 UTC (8 am New York in winter, 9 am in summer). It emails the notes not yet sent (`feedback.digested_at is null`), then marks them sent; with no new notes it sends nothing, except on Mondays, when it sends last week's usage totals (`daily_stats()`). The repository is public, so the script prints counts only: never a note, name or email address.
+
+One-time setup (the first two steps once):
+1. Re-run `supabase/schema.sql` in the Supabase SQL editor (adds `digested_at` and `daily_stats()`).
+2. Make a free Resend account (resend.com) with the email address you want the digest sent to, and create an API key. The free sandbox sender (`onboarding@resend.dev`) can only send to that same address, which is what we want.
+3. GitHub > the repository > Settings > Secrets and variables > Actions: add `RESEND_API_KEY` (the key) and `DIGEST_TO` (your email). `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` already exist for the games sync.
+4. Test: Actions tab > Feedback digest > Run workflow. Send a note from the app first; on a Tuesday to Sunday with no notes it correctly says "nothing new".
+`node tools/feedback_digest.mjs --dry` prints a sample email locally.

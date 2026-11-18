@@ -1,0 +1,27 @@
+# Emails the new feedback notes (and, on Mondays, last week's usage totals) to the app's owner, once a day at 13:00 UTC (8 am New York in winter, 9 am in summer).
+# tools/feedback_digest.mjs reads Supabase with the service-role key and sends through Resend. This repository is public: the script never prints a note.
+# Needs the repository secrets SUPABASE_URL, SUPABASE_SERVICE_KEY, RESEND_API_KEY and DIGEST_TO (see docs/usage-counts.md). Without them it exits quietly.
+name: Feedback digest
+on:
+  schedule:
+    - cron: "0 13 * * *"
+  workflow_dispatch: {}
+concurrency:
+  group: feedback-digest
+  cancel-in-progress: false
+jobs:
+  digest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+      - name: Send the digest
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          DIGEST_TO: ${{ secrets.DIGEST_TO }}
+        run: node tools/feedback_digest.mjs

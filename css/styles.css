@@ -1513,3 +1513,6 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 .abAct{margin-top:14px}
 .abAct+.abAct{padding-top:14px;border-top:1px solid var(--line)}
 .abAct small{display:block;margin-top:6px}
+
+textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
+.fbKind{margin-top:14px}

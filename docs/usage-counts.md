@@ -21,3 +21,10 @@ select ev, arg, count(distinct did) as people, count(*) from usage_events where 
 select plat, count(distinct did) from usage_events group by 1;
 ```
 To delete old rows: `delete from usage_events where day < current_date - 400;`
+
+## Feedback button (Nov 18 2026)
+Settings > Send feedback opens a form (Idea / Problem / Other, a message up to 1,000 characters, an optional email or name for a reply). It calls `send_feedback()` (`supabase/schema.sql`, same one-time re-run), which stores a row in `feedback` with the random device number, the screen, the platform, the screen size and a shortened browser string; at most 5 notes per device per day. Nobody can read the table through the API. Read it in the SQL editor:
+```sql
+select at, kind, msg, contact, ctx->>'screen' as screen, ctx->>'track' as track, ctx->>'plat' as plat from feedback order by at desc;
+```
+It is not wired to email or push yet; check the table after a race weekend, or ask for a daily summary.

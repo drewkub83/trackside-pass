@@ -815,3 +815,28 @@ begin
 end $$;
 revoke all on function public.track_events(text, text, jsonb) from public;
 grant execute on function public.track_events(text, text, jsonb) to anon, authenticated;
+
+---------------------------------------------------------------- feedback notes (Settings > Send feedback, js/usage.js)
+-- Read them in the SQL editor: select at, kind, msg, contact, ctx from feedback order by at desc;
+create table if not exists public.feedback (
+  id bigint generated always as identity primary key,
+  at timestamptz not null default now(),
+  did text not null,
+  kind text not null,
+  msg text not null,
+  contact text,
+  ctx jsonb
+);
+alter table public.feedback enable row level security;   -- no policies: nobody can read or write it through the API
+create or replace function public.send_feedback(p_did text, p_kind text, p_msg text, p_contact text, p_ctx jsonb)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if p_did is null or length(p_did) < 8 or length(p_did) > 64 then raise exception 'bad device'; end if;
+  if p_kind not in ('idea', 'problem', 'other') then raise exception 'bad kind'; end if;
+  if p_msg is null or length(trim(p_msg)) < 3 or length(p_msg) > 1000 then raise exception 'bad message'; end if;
+  if (select count(*) from public.feedback where did = p_did and at > now() - interval '1 day') >= 5 then raise exception 'too many notes today'; end if;
+  insert into public.feedback (did, kind, msg, contact, ctx)
+  values (p_did, p_kind, trim(p_msg), left(p_contact, 80), case when p_ctx is not null and length(p_ctx::text) < 2000 then p_ctx else null end);
+end $$;
+revoke all on function public.send_feedback(text, text, text, text, jsonb) from public;
+grant execute on function public.send_feedback(text, text, text, text, jsonb) to anon, authenticated;

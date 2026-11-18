@@ -85,7 +85,7 @@
 
 <!-- PASSPORT -->
 <section class="screen" id="passport">
-  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen('home')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Passport</h2>
+  <div class="bar"><button class="fab" aria-label="Back" onclick="showScreen(lastTab)"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2 class="ptitle2">Passport</h2>
     <button class="fab ppmore" aria-label="Backup and restore" onclick="ppMenu()"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
     <div class="ppmenu" id="ppMenu" hidden><button onclick="ppMenu(false);ppBackup()">Copy backup code</button><button onclick="ppMenu(false);ppRestore()">Restore from a code</button><small>Your passport is kept on this phone. A backup code moves it to a new phone.</small></div></div>
   <div class="ppcheck"><button class="btn quiet" id="ppCheckBtn" onclick="passportManual()">Check in here</button><small id="ppStatus"></small><small>Stamps only count at a track, during a race weekend.</small></div>
@@ -505,6 +505,8 @@
 <script src="js/native.js"></script>
 <script src="js/app.js"></script>
 <script src="js/account.js"></script>
+<div class="sheetBackdrop gameBd" id="gameBd" hidden onclick="closeGameOver()"></div>
+<div class="sheet gameOver" id="gameOver" hidden><div class="handle"></div><button class="sclose" onclick="closeGameOver()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 <script src="js/avatar.js"></script>
 <script src="js/passport.js"></script>
 <script src="js/onboard.js"></script>

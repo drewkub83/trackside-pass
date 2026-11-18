@@ -116,14 +116,14 @@ function acctHubHtml(signed) {
   const tile = (on, big, lab, sub) => `<button class="youTile" onclick="${on}"><b>${big}</b><span>${lab}</span><small>${sub}</small></button>`;
   const lt = typeof recapLatest === "function" ? recapLatest(14) : null;
   return `<div class="youHub"><div class="youTiles">
-      ${tile("homeTab('play')", gs.pts, "Podium points", `${gs.rows.length} weekend${gs.rows.length === 1 ? "" : "s"} played in ${yr}`)}
+      ${tile("playFrom('account')", gs.pts, "Podium points", `${gs.rows.length} weekend${gs.rows.length === 1 ? "" : "s"} played in ${yr}`)}
       ${tile("openPassport()", st.tracks, st.tracks === 1 ? "Track stamped" : "Tracks stamped", `${badges} badge${badges === 1 ? "" : "s"}${st.total ? " · " + st.total + " tracks to collect" : ""}`)}
       ${tile(signed ? "document.getElementById('acFriends').scrollIntoView({behavior:'smooth',block:'start'})" : "document.getElementById('acBody').scrollTo({top:9999})", signed ? fr : "–", "Friends", signed ? (rq ? rq + " request" + (rq === 1 ? "" : "s") + " waiting" : "see who is playing") : "sign in to add friends")}
       ${tile("document.getElementById('youGoing').scrollIntoView({behavior:'smooth',block:'start'})", going.length, "Going to", going.length ? "next: " + sbEsc(going[0].t.short) : "mark one with I'm going")}
     </div>
     ${lt ? `<button class="youRow" onclick="openWkRecap('${lt.sun}')"><span><b>Your weekend recap</b><small>Results, your picks and points</small></span><i>&rsaquo;</i></button>` : ""}
     <h4 class="ptH" id="youGoing">Races you are going to</h4>
-    ${going.length ? going.map(x => `<button class="youRow" onclick="openTrack('${x.t.id}')"><span><b>${sbEsc(x.t.short)}</b><small>${sbEsc(x.e.e)} · ${sbEsc(fmtRange(x.e))}</small></span><i>&rsaquo;</i></button>`).join("") : `<p class="plRules fine">None yet. Open a race weekend and tap I'm going: it saves the maps for offline and reminds you.</p>`}
+    ${going.length ? going.map(x => `<button class="youRow" onclick="openTrack('${x.t.id}','account')"><span><b>${sbEsc(x.t.short)}</b><small>${sbEsc(x.e.e)} · ${sbEsc(fmtRange(x.e))}</small></span><i>&rsaquo;</i></button>`).join("") : `<p class="plRules fine">None yet. Open a race weekend and tap I'm going: it saves the maps for offline and reminds you.</p>`}
   </div>`;
 }
 function acctRender() {

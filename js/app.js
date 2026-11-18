@@ -409,7 +409,11 @@ function onWideChange(){
 WIDE_MQ.addEventListener("change",onWideChange); window.addEventListener("resize",()=>setTimeout(onWideChange,60));
 /* the home bar (Series, Podium, Leaders, Account) is shown on those four pages only */
 const HOME_TABS=["home","seriesList","play","board","account"];
+let lastTab="home";      /* the last home-bar page you were on: pages opened from one of them (Passport, a track) go back there */
+let playBack="home";     /* where swiping back from the Podium page goes: Home, or Account when you came from its Podium points tile */
+function playFrom(w){ playBack=w; homeTab("play"); }
 function syncHomeTabs(id){
+  if(HOME_TABS.includes(id)){ lastTab=id; if(id!=="play") playBack="home"; }
   const nav=document.getElementById("homeTabs"); if(!nav) return; const show=HOME_TABS.includes(id), acc=typeof sbOn==="function"&&sbOn();
   nav.hidden=!show; document.body.classList.toggle("hastabs",show);
   nav.querySelectorAll("button").forEach(b=>{ const t=b.dataset.t; b.hidden=(t==="board"||t==="account")&&!acc; b.classList.toggle("on",t===id); });
@@ -1474,7 +1478,20 @@ function openPoints(){
   document.getElementById("infoBody").innerHTML=pointsHtml();
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
-function playNow(tid){ openTrack(tid,"play").then(()=>setTimeout(openGame,150)); }
+/* Podium tab: a game opens as a sheet sliding up over this page (the same sheet the race hub uses, moved into an overlay while it is open), not by going to the race's hub first */
+function gameOverOpen(){ const o=document.getElementById("gameOver"); return !!(o&&!o.hidden); }
+function playNow(i){
+  const g=(typeof ENTRIES==="undefined"?[]:ENTRIES)[i]; const t=g&&TRACKS.find(x=>x.id===g.t); if(!t) return;
+  cur=t; gameG=g; gameSel=null; if(!gameCls||!g.classes.some(c=>c.h===gameCls)) gameCls=g.classes[0].h;
+  const o=document.getElementById("gameOver"), sv=document.getElementById("shGame"); if(!o||!sv) return;
+  o.appendChild(sv); sv.hidden=false; renderGame(); o.hidden=false; document.getElementById("gameBd").hidden=false; o.scrollTop=0;
+}
+function closeGameOver(){
+  const o=document.getElementById("gameOver"), sv=document.getElementById("shGame"), sh=document.getElementById("sheet");
+  if(o) o.hidden=true; const bd=document.getElementById("gameBd"); if(bd) bd.hidden=true;
+  if(sv&&sh){ sv.hidden=true; sh.appendChild(sv); }
+  const on=document.querySelector(".screen.on"); if(on&&on.id==="play") renderPlay(); syncHomeTabs(on?on.id:"play");
+}
 function openPlay(){ renderPlay(); showScreen("play"); }
 /* the Podium tab: your season, the games that are open, and what you scored */
 function renderPlay(){
@@ -1489,7 +1506,7 @@ function renderPlay(){
       :done===n?`${n>1?`All ${n} classes`:"Your podium"} picked${when?` · locks at the start of the race, ${esc(when)}`:""}`
       :done?`${done} of ${n} classes picked${when?` · locks ${esc(when)}`:""}`
       :`Call the podium${when?` · locks at the start of the race, ${esc(when)}`:""}`;
-    const tap=open&&!locked?` onclick="playNow('${g.t}')"`:` disabled style="opacity:.7"`;
+    const tap=open&&!locked?` onclick="playNow(${ENTRIES.indexOf(g)})"`:` disabled style="opacity:.7"`;
     return `<button class="plCard"${tap}><span class="plGo">${locked?"Locked":!open?"Soon":done===n?"Edit":"Pick"}</span><b>${esc(t.short)} · ${esc(watchSeriesName({s:g.s}))}${g.label?" · "+esc(g.label):""}</b><small>${esc(fmtSpan({d:g.d,t:3}))}</small><small>${line}</small></button>`;
   };
   box.innerHTML=`<h3 class="acH">Pick your podium · ${y}</h3>
@@ -2897,10 +2914,12 @@ function hubRefresh(){
 /* swipe back: drag from the left edge of the screen (an installed web app has no browser back gesture) */
 function swipeBack(){
   const im=document.getElementById("infoModal"); if(im&&!im.hidden){ closeInfo(); return; }
+  if(gameOverOpen()){ closeGameOver(); return; }
   if(hubBack()) return;
   const sh=document.getElementById("sheet"); if(sh&&!sh.hidden){ closeSheet(); return; }
   const sc=document.querySelector(".screen.on"); if(!sc||sc.id==="home") return;
   if(sc.id==="seriesList"&&serCat){ openSerCat(null); return; }
+  if(sc.id==="play"&&playBack!=="home"){ const w=playBack; playBack="home"; showScreen(w); return; }
   if(["seriesList","play","board","account"].includes(sc.id)){ showScreen("home"); return; }
   /* the detail screen's tabs are Hub/Map/Events/Info: one swipe from Map/Events/Info goes back to the hub, and a
      second swipe from the hub exits to the track list (goHome does both). */
@@ -2908,6 +2927,7 @@ function swipeBack(){
   const b=sc.querySelector('button[aria-label^="Back"]'); if(b) b.click();
 }
 function swipeTarget(){
+  if(gameOverOpen()) return null;
   if(document.getElementById("infoModal")&&!document.getElementById("infoModal").hidden) return null;
   if(document.getElementById("sheet")&&!document.getElementById("sheet").hidden&&!hubReturn) return null;
   const sc=document.querySelector(".screen.on"); if(!sc||sc.id==="home") return null;

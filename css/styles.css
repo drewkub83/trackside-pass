@@ -669,15 +669,19 @@ body.mapmode{position:fixed;top:0;left:0;right:0;width:100%;height:calc(100% + v
 .lgrp{margin:14px 0 0;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3,var(--ink-2))}
 
 /* Settings: collapsible groups. The header is the card; the rows inside keep their own cards. */
-.sgrp{margin:12px 14px 0}
+.sgrp{margin:10px 14px 0}
 .sgh{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:15px 18px;text-align:left;color:var(--ink);background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--glass-edge);border-radius:24px}
 .sgh span{display:flex;flex-direction:column;gap:2px;min-width:0}
 .sgh b{font-size:16px;font-weight:500}
 .sgh small{font-size:13px;color:var(--ink-2)}
-.sgh svg{width:22px;height:22px;flex:none;fill:none;stroke:var(--ink-2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s ease}
-.sgrp.open .sgh svg{transform:rotate(180deg)}
-.sgb{display:none;padding-top:12px;margin:0 -14px}
+.sgh svg{width:22px;height:22px;flex:none;fill:none;stroke:var(--ink-2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sgb{display:none;margin:0 -14px}
+#settings:not([data-view="list"]) .sgrp:not(.open){display:none}
+#settings:not([data-view="list"]) .sgrp.open .sgh{display:none}
+#settings:not([data-view="list"]) .sgrp.open{margin-top:0}
 .sgrp.open .sgb{display:block;animation:sgin .22s ease}
+.sgsub{margin:18px 18px 8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.sgb>.sgsub:first-child{margin-top:12px}
 .sgb .auto,.sgb .appear{margin-bottom:12px}
 @keyframes sgin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .regionHead{list-style:none;padding:12px 26px 4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}

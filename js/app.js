@@ -2100,7 +2100,7 @@ function routeToSpot(){ if(!getSpot()||!cur.route){ toast("Directions aren\'t av
 /* developer unlock (prototype stand-in for an editor role) */
 let devTaps=0, devTimer=null;
 function isDev(){ try{ return localStorage.getItem(K.dev)==="1"||location.hash==="#dev"; }catch(e){ return location.hash==="#dev"; } }
-function applyDev(){ const on=isDev(); const b=document.getElementById("editBtn"); if(b) b.hidden=!on; if(!on&&editing) toggleEdit(); const hb=document.getElementById("hubPreviewBtn"); if(hb) hb.hidden=!on; }
+function applyDev(){ const on=isDev(); const b=document.getElementById("editBtn"); if(b) b.hidden=!on; if(!on&&editing) toggleEdit(); const hb=document.getElementById("hubPreviewBtn"); if(hb) hb.hidden=!on; const db=document.getElementById("devBox"); if(db) db.hidden=!on; }
 function devTap(){ devTaps++; clearTimeout(devTimer); devTimer=setTimeout(()=>devTaps=0,1500);
   if(devTaps>=7){ devTaps=0; const on=!isDev(); try{ localStorage.setItem(K.dev,on?"1":"0"); }catch(e){} applyDev(); toast(on?"Developer tools unlocked.":"Developer tools hidden."); } }
 /* edit mode: drag badges */
@@ -2662,10 +2662,19 @@ async function scheduleRecapPush(ask){
   await LN.schedule({notifications:out});
 }
 scheduleGoingReminders(false); scheduleStarAlerts(false); schedulePickReminders(false); scheduleRaceAlerts(false); scheduleRecapPush(false);
-function toggleSettingsGroup(i){ const g=document.getElementById("sg"+i); const on=!g.classList.contains("open");
-  if(on) document.querySelectorAll(".sgrp.open").forEach(o=>{ if(o!==g){ o.classList.remove("open"); const h=o.querySelector(".sgh"); if(h) h.setAttribute("aria-expanded","false"); } });   /* one open at a time */ g.classList.toggle("open",on); g.querySelector(".sgh").setAttribute("aria-expanded",on);
-  if(on) setTimeout(()=>g.scrollIntoView({block:"nearest",behavior:"smooth"}),30); }
+/* Settings is a short list of pages: tap a row and that page opens (title in the bar), back returns to the list */
+function openSettingsGroup(i){
+  const st=document.getElementById("settings"), g=document.getElementById("sg"+i); if(!st||!g) return;
+  document.querySelectorAll("#settings .sgrp.open").forEach(o=>o.classList.remove("open")); g.classList.add("open"); st.dataset.view=String(i);
+  const t=document.getElementById("setTitle"); if(t) t.textContent=g.querySelector(".sgh b").textContent; st.scrollTop=0; window.scrollTo(0,0);
+}
+function settingsList(){
+  const st=document.getElementById("settings"); if(!st) return; document.querySelectorAll("#settings .sgrp.open").forEach(o=>o.classList.remove("open")); st.dataset.view="list";
+  const t=document.getElementById("setTitle"); if(t) t.textContent="Settings"; window.scrollTo(0,0);
+}
+function settingsBack(){ const st=document.getElementById("settings"); if(st&&st.dataset.view!=="list"){ settingsList(); return; } showScreen(lastTab); }
 function openSettings(){
+ settingsList(); applyDev(); { const h=document.getElementById("hapRow"); if(h) h.hidden=!("vibrate" in navigator); }
  renderAutoSw(); renderRemSw(); renderPickSw(); renderRainSw(); renderCheckinSw(); renderStyleUI(); renderThemeUI(); renderUnitsUI(); renderAccessUI(); renderAlertSw(); renderSettingsMore(); renderMyRaces(); renderAbout(); if(typeof acctSettingsRender==="function") acctSettingsRender(); showScreen("settings"); }
 
 /* ---- day and night: Auto follows sunrise and sunset, or match the phone, or force Day / Night ----

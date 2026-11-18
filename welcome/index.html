@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trackside Pass: your race weekend, in your pocket</title>
+<meta name="description" content="Free race-day maps, walking directions, schedules, weather and a Race Day hub for the tracks you go to. Works with one bar of signal.">
+<link rel="canonical" href="https://tracksidepass.com/welcome/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Trackside Pass">
+<meta property="og:title" content="Trackside Pass: your race weekend, in your pocket">
+<meta property="og:description" content="Race-day maps, walking directions, schedules, weather and a Race Day hub. Works with one bar of signal.">
+<meta property="og:url" content="https://tracksidepass.com/welcome/">
+<meta property="og:image" content="https://tracksidepass.com/icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#F0EEE8">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="../icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light dark;--font:"Outfit","Avenir Next","Segoe UI",system-ui,sans-serif;
+    --paper:#F0EEE8;--card:#fff;--ink:#2B3330;--ink2:#5F6A65;--line:rgba(43,51,48,.12);--accent:#3F6B7D;--accent-soft:rgba(79,127,148,.12);--hero-a:#D3E5DE;--hero-b:#F3D8C5}
+  @media (prefers-color-scheme:dark){:root{--paper:#151A18;--card:#212825;--ink:#EDF0EC;--ink2:#A3AEA9;--line:rgba(255,255,255,.12);--accent:#7DB0C4;--accent-soft:rgba(125,176,196,.16);--hero-a:#28433D;--hero-b:#4A372E}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 0}
+  .brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:300;text-decoration:none}
+  .brand img{width:22px;height:30px}
+  .btn{display:inline-block;padding:13px 22px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-weight:500;font-size:16px}
+  @media (prefers-color-scheme:dark){.btn{color:#0F1513}}
+  .btn.quiet{background:var(--accent-soft);color:var(--ink)}
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;padding:28px 0 64px}
+  h1{font-size:clamp(36px,6vw,58px);line-height:1.05;font-weight:300;letter-spacing:-1px;margin:0 0 16px}
+  .lead{font-size:19px;color:var(--ink2);margin:0 0 26px;max-width:34ch}
+  .cta{display:flex;flex-wrap:wrap;gap:12px}
+  .phone{justify-self:center;width:min(100%,270px);border-radius:34px;padding:8px;background:var(--card);box-shadow:0 24px 60px rgba(30,42,38,.22),0 2px 6px rgba(30,42,38,.08)}
+  .phone img{display:block;width:100%;height:auto;border-radius:27px}
+  section{padding:46px 0;border-top:1px solid var(--line)}
+  h2{font-size:clamp(26px,4vw,36px);font-weight:300;letter-spacing:-.4px;margin:0 0 12px}
+  .feat{display:grid;grid-template-columns:1fr 250px;gap:40px;align-items:center}
+  .feat.flip{grid-template-columns:250px 1fr}.feat.flip .phone{order:-1}
+  .feat p{color:var(--ink2);margin:0 0 12px;max-width:46ch}
+  .feat ul{margin:12px 0 0;padding-left:20px;color:var(--ink2)}.feat li{margin:6px 0}
+  .feat .phone{width:250px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:22px}
+  .card{background:var(--card);border-radius:20px;padding:20px 22px;box-shadow:0 1px 3px rgba(30,42,38,.06)}
+  .card b{display:block;font-size:18px;font-weight:500;margin-bottom:6px}
+  .card span{color:var(--ink2);font-size:16px}
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+  .steps ol{margin:10px 0 0;padding-left:20px;color:var(--ink2)}.steps li{margin:7px 0}
+  .series{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 14px}
+  .series span{padding:7px 14px;border-radius:999px;background:var(--accent-soft);font-size:15px}
+  .fine{color:var(--ink2);font-size:14px}
+  .test{background:var(--accent-soft);border-radius:24px;padding:28px;border-top:0}
+  footer{padding:30px 0 56px;color:var(--ink2);font-size:14px}
+  footer a{margin-right:16px}
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr;gap:28px;padding-bottom:40px}.hero .phone{width:240px}
+    .feat,.feat.flip{grid-template-columns:1fr;gap:22px}.feat .phone,.feat.flip .phone{order:0;width:230px;justify-self:center}
+    .steps{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./"><img src="../icons/pin.svg" alt="" width="22" height="30">Trackside Pass</a>
+    <a class="btn quiet" href="../">Open the app</a>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Your race weekend, in your pocket.</h1>
+      <p class="lead">Track maps, walking directions, schedules, weather and a live Race Day hub for the tracks you go to. Built for race day, so it keeps working with one bar of signal.</p>
+      <div class="cta"><a class="btn" href="../">Open the app</a><a class="btn quiet" href="#install">How to install</a></div>
+      <p class="fine" style="margin-top:16px">Free to use. No app store needed, and no account needed to start.</p>
+    </div>
+    <div class="phone"><img src="img/home.jpg" width="780" height="1688" alt="The Trackside Pass home screen: a countdown to the next race and the storylines for the week"></div>
+  </div>
+
+  <section>
+    <div class="feat">
+      <div>
+        <h2>One page for the whole weekend</h2>
+        <p>Open any track and the Race Day hub shows what is on next, the weather and whether rain is coming, and the nearest restroom or food stand. Star the sessions you care about and get an alert before each one.</p>
+        <ul><li>Practice, qualifying and race times in track time or your own</li><li>Live timing links and results as they are published</li><li>What to watch: the drivers and cars worth following</li></ul>
+      </div>
+      <div class="phone"><img loading="lazy" src="img/hub.jpg" width="780" height="1688" alt="The Race Day hub for Las Vegas: next session, weather, Pick your podium and quick buttons"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="feat flip">
+      <div>
+        <h2>Find your way around the track</h2>
+        <p>Maps of more than 90 tracks, with gates, grandstands, parking, restrooms, food and first aid. Ask for directions and the walking route follows real paths and crosses the circuit only at bridges and tunnels.</p>
+        <ul><li>Walking time to anything on the map</li><li>Notes on steep climbs and drops where the ground has hills</li><li>The app and every track's map are saved on your phone for poor signal</li></ul>
+      </div>
+      <div class="phone"><img loading="lazy" src="img/directions.jpg" width="780" height="1688" alt="Walking directions to the nearest restrooms on the Sebring map: 500 feet, about 2 minutes"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="feat">
+      <div>
+        <h2>Pick your podium, even from the couch</h2>
+        <p>Before each race, call the top three. Picks are scored against the official result, with more points for long shots and for picking early. Play against friends and keep a season score, so there is a reason to open the app between races.</p>
+        <ul><li>A leaderboard with your friends</li><li>A Passport that stamps the tracks you visit</li><li>A recap after every race weekend</li></ul>
+      </div>
+      <div class="phone"><img loading="lazy" src="img/podium.jpg" width="780" height="1688" alt="Pick your podium: three drivers picked for the Las Vegas Grand Prix with win chances listed"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The series it covers</h2>
+    <div class="series"><span>IMSA</span><span>IndyCar</span><span>Formula 1</span><span>MotoGP</span><span>NASCAR</span><span>World Endurance Championship</span><span>GT World Challenge</span><span>Historic racing</span><span>and more each season</span></div>
+    <p class="fine">Trackside Pass is an independent fan project. It is not affiliated with or endorsed by any racing series, team or track. Series and track names belong to their owners.</p>
+  </section>
+
+  <section id="install">
+    <h2>Add it to your phone in a minute</h2>
+    <p style="color:var(--ink2);margin:0">It is a web app, so there is nothing to download from a store. Open the app first, then add it to your home screen so it opens like any other app.</p>
+    <div class="steps">
+      <div class="card"><b>iPhone</b>
+        <ol><li>Tap <a href="../">Open the app</a> in Safari.</li><li>Tap the Share button.</li><li>Choose <i>Add to Home Screen</i>, then Add.</li></ol></div>
+      <div class="card"><b>Android</b>
+        <ol><li>Tap <a href="../">Open the app</a> in Chrome.</li><li>Open the menu (the three dots).</li><li>Choose <i>Install app</i> or <i>Add to Home screen</i>.</li></ol></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="test">
+      <h2>Help me test it</h2>
+      <p style="color:var(--ink2);margin:0 0 16px;max-width:52ch">I am building this on my own and I want real fans to try it at real events. If something is confusing, broken or missing, tell me: open Settings in the app and tap <b>Send feedback</b>. Every note gets read.</p>
+      <a class="btn" href="../">Open the app</a>
+    </div>
+  </section>
+
+  <footer>
+    <a href="../privacy.html">Privacy and terms</a><span>Trackside Pass</span>
+  </footer>
+</div>
+</body>
+</html>

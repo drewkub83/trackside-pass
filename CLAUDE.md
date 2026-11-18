@@ -10,6 +10,7 @@ A race-day companion web app (PWA): track maps and walking directions, schedules
 
 ## Layout
 - `index.html`, `css/styles.css`, `js/app.js` (the app; section index at its top), `js/passport.js`
+- `welcome/index.html` (+ `welcome/img/*.jpg` screenshots): the public landing page at https://tracksidepass.com/welcome/ (what the app does, how to install it on iPhone/Android, a ask for testers). Static, no app code; `build.sh` copies it to `dist/welcome`. Replace the screenshots when the look of Home, the hub, directions or Pick your podium changes a lot.
 - `data/<track-id>.js` one file per track (POIs, sessions, events, facts, outline: small, loaded at startup) plus
   `data/maps/<track-id>.js` (base map, walking grid, elevation: ~90% of the bytes, fetched when the track is opened by
   `ensureMap()` in `js/app.js`; `openTrack()` returns a Promise). **Edit events/POIs in `data/<id>.js` as before.** Tools that

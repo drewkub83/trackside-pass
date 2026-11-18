@@ -11,6 +11,7 @@ if [ -z "$SKIP_VALIDATE" ] && command -v node >/dev/null 2>&1; then
 fi
 rm -rf dist && mkdir dist
 cp -R index.html sw.js manifest.webmanifest css js data icons dist/
+cp -R welcome dist/   # the landing page at /welcome/ (screenshots in welcome/img)
 cp _headers privacy.html dist/   # headers for the Android installer and the service worker (Cloudflare Pages and Netlify both read it)
 [ -d downloads ] && cp -R downloads dist/   # the sideloadable Android app (see CLAUDE.md, Android wrapper)
 V="${COMMIT_REF:-$(git rev-parse HEAD 2>/dev/null)}"; V="${V:0:8}"; [ -z "$V" ] && V="$(date +%y%m%d%H%M)"

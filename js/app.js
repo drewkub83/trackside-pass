@@ -5,7 +5,7 @@
    Schedule + Race Day hub . "schedule: sessions" (time zones, hub, series guide)
    Map interaction ......... "origin for walk times" (parking/restroom modes, saved spot, badge editing, pan/zoom, sheets)
    At the track ............ "open straight at the track" (auto-open, on-track alerts, session notifications)
-   Settings, theme ......... "toggleSettingsGroup", "THEME_KEY", "more settings"
+   Settings, theme ......... "openSettingsGroup", "THEME_KEY", "more settings"
    Weather and units ....... "WEATHER"
    App shell ............... "offline support", "swipe back"
    Startup statements (renderHome(), timers, listeners) sit between the functions and rely on hoisting, so do not split

@@ -190,6 +190,8 @@
   <section class="sgrp" id="sg3">
     <button class="sgh" aria-controls="sgb3" onclick="openSettingsGroup(3)"><span><b>Your data</b><small>Back up and restore</small></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     <div class="sgb" id="sgb3">
+      <div class="auto"><div><b>Share anonymous usage</b><small>Counts which screens get used, with a random number that is not linked to you. No name, email or location. It helps decide what to improve.</small></div>
+    <button class="sw" id="usageSw" role="switch" aria-checked="true" aria-label="Share anonymous usage" onclick="toggleUsage()"><i></i></button></div>
       <div class="appear"><b>Back up and restore</b><small style="margin:0 0 10px">Your stamps and the races you are going to live only on this phone. Copy a backup code before you delete the app or get a new phone, and paste it here to bring them back.</small><div style="display:flex;gap:10px"><button class="btn quiet" onclick="ppBackup()">Copy backup code</button><button class="btn quiet" onclick="ppRestore()">Restore</button></div></div>
       <div class="appear" id="setDelete" hidden></div>
     </div>
@@ -510,6 +512,7 @@
 <script src="js/native.js"></script>
 <script src="js/app.js"></script>
 <script src="js/account.js"></script>
+<script src="js/usage.js"></script>
 <div class="sheetBackdrop gameBd" id="gameBd" hidden onclick="closeGameOver()"></div>
 <div class="sheet gameOver" id="gameOver" hidden><div class="handle"></div><button class="sclose" onclick="closeGameOver()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 <script src="js/avatar.js"></script>

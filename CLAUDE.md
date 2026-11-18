@@ -67,6 +67,7 @@ One entry per series per weekend: `{t: track id, d: event start day, s: series i
 
 
 ## More detail (read only when the task needs it)
+- `docs/usage-counts.md`: anonymous usage counts (`js/usage.js`, Supabase `usage_events`), the opt-out and the SQL to read them
 - `docs/accounts-and-push.md`: Accounts, friends, leaderboards (Supabase), phone push, rain alerts, weather
 - `docs/native-apps.md`: iPhone (Capacitor) and Android wrappers, builds, APK sharing
 - `docs/app-ui.md`: Home tab bar, wide-screen two-pane layout, Race Control style, support series, parked ideas

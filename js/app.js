@@ -37,6 +37,8 @@ const K={
   alertLead:"paddock:alertLead",      /* minutes before a session that its alert goes off (5, 10, 15 or 30) */
   recapSeen:"paddock:recapSeen",      /* weekend points recaps already shown (game keys), so each pops up once */
   sessFeed:"paddock:sessFeed",        /* the last qualifying order / race classification read from a series' results feed (kept so the hub still shows it with no signal) */
+  usageId:"paddock:usageId",          /* random anonymous device number for the usage counts (js/usage.js); never linked to an account */
+  usageOff:"paddock:usageOff",        /* "1" = do not send anonymous usage counts (Settings > Your data) */
   checkinPush:"paddock:checkinPush",  /* "0" = no push when a friend checks in (the server also keeps the choice: profiles.checkin_push) */
   pickSeries:"paddock:pickSeries",   /* the followed series last sent to the server for the Thursday pick reminder (with the account id) */
   pickRemind:"paddock:pickRemind",    /* Thursday "lock in your picks" reminder on/off (iPhone/Android app) */
@@ -140,7 +142,7 @@ const GO_KEY=K.going;
 function goingList(){ try{ return JSON.parse(localStorage.getItem(GO_KEY)||"[]"); }catch(e){ return []; } }
 const goKey=(t,e)=>t.id+"|"+e.d+"|"+e.e;
 function isGoing(t,e){ return goingList().includes(goKey(t,e)); }
-function setGoing(t,e,on){ let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>{ scheduleGoingReminders(on); scheduleRecapPush(false); if(on) offlineEnsure("going",t); },0); }
+function setGoing(t,e,on){ if(on&&typeof uTrack==="function") uTrack("going",t.id); let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>{ scheduleGoingReminders(on); scheduleRecapPush(false); if(on) offlineEnsure("going",t); },0); }
 /* Starred sessions: tap the star on a session to get an alert 10 minutes before it (works anywhere, not just at the track,
    because you picked that session yourself). The star list is on this phone; alerts are the iPhone app's own notifications. */
 const STAR_KEY=K.stars, STAR_ID_BASE=2000, PICK_ID_BASE=3000;   /* notification ids: sessions 1-60, going 1000+, stars 2000-2999, pick reminders 3000-3099 */
@@ -377,6 +379,7 @@ function showScreenWide(id){
   if(right==="play"&&typeof renderPlay==="function") renderPlay();
 }
 function showScreen(id){
+  if(typeof uTrack==="function") uTrack("screen",id);
   if(isWide()) return showScreenWide(id);
   document.querySelectorAll(".screen").forEach(s=>{ s.classList.toggle("on",s.id===id); s.classList.remove("on2"); }); window.scrollTo(0,0); syncMapMode(); syncHomeTabs(id);
 }
@@ -457,7 +460,7 @@ function openTrack(id,from){
     toast(navigator.onLine?"Couldn't load this map. Try again.":"This map isn't saved on your phone yet. Connect once to download it."); });
 }
 function openTrackNow(id,from){
-  cur = TRACKS.find(t=>t.id===id); userPos=null; stopGps(); dropStaleEdits(); syncPois(); backTo=(from==="imsa"?"series":from)||"series";
+  cur = TRACKS.find(t=>t.id===id); if(typeof uTrack==="function") uTrack("track",id); userPos=null; stopGps(); dropStaleEdits(); syncPois(); backTo=(from==="imsa"?"series":from)||"series";
   document.querySelectorAll(".dn").forEach(el=>el.textContent=cur.short);
   view=null; limits=null; fitted=null; cancelAnim(); schedDay=null; fieldCache=null; parking=false; setMode(null); heading=0; userRot=false; devHeading=null; routePts=null; const _hold=document.getElementById("mapHolder"); if(_hold) _hold.style.transform=""; closeSheet(); setParkingUI(); applyDev(); renderNow(); renderSchedule(); if(editing) toggleEdit(); routeDest=null; renderMap(); renderSpot(); document.getElementById("nearBar").hidden=false; applyView(); renderLegend(); renderFood(); renderEvents(); renderInfo();
   showScreen("detail");
@@ -923,7 +926,7 @@ function hillNote(elev){
   if(both) return steep?"Hilly walk — steep in places.":"Hilly walk, up and down.";
   return g>l ? (steep?"Includes a steep climb.":"Includes some uphill.") : (steep?"Includes a steep drop.":"Includes some downhill.");
 }
-function startDirections(){ if(popI===null) return; routeDest=popI; following=false; devHeading=null; const sel=document.getElementById("dirFrom"); const os=routeOrigins(); const prevV=sel.value; sel.innerHTML=os.map(o=>`<option value="${o.v}">${o.l}</option>`).join(""); sel.value=os.some(o=>o.v===prevV)?prevV:os[0].v; const w=document.getElementById("dirWalk"); if(w) w.textContent="Start walking"; showSheet("shDir"); computeRoute(); }
+function startDirections(){ if(popI===null) return; if(typeof uTrack==="function") uTrack("directions",cur.id); routeDest=popI; following=false; devHeading=null; const sel=document.getElementById("dirFrom"); const os=routeOrigins(); const prevV=sel.value; sel.innerHTML=os.map(o=>`<option value="${o.v}">${o.l}</option>`).join(""); sel.value=os.some(o=>o.v===prevV)?prevV:os[0].v; const w=document.getElementById("dirWalk"); if(w) w.textContent="Start walking"; showSheet("shDir"); computeRoute(); }
 function computeRoute(){
   if(routeDest===null||!cur.route) return;
   const ov=layoutOverrides(); const all=cur.pois.map(p=>applyOv(p,ov[pid(p)])).concat(userStands().map(s=>({k:"food",n:s.n,x:s.x,y:s.y}))); const dest=routeDest==="spot"?(()=>{ const s=getSpot(); return s?{n:"My spot",x:s.x,y:s.y}:null; })():all[routeDest]; if(!dest) return;
@@ -1155,7 +1158,7 @@ function gameProbs(g,cls){
 function carP(g,cls,n){ const m=gameProbs(g,cls); return m&&typeof m[n]==="number"?m[n]:null; }
 function pickP(g,cls,n){ const b=(picksOf(g)._p||{})[cls+"|"+n]; return typeof b==="number"?b:carP(g,cls,n); }   /* the chance banked when picked (or the current one for older picks) */
 function setPickP(g,cls,n,p){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); const m=Object.assign({},all[k]._p), tm=Object.assign({},all[k]._m); if(p==null){ delete m[cls+"|"+n]; delete tm[cls+"|"+n]; } else { m[cls+"|"+n]=p; tm[cls+"|"+n]=gameTiming(g).m; } all[k]._p=m; all[k]._m=tm; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} }
-function savePicks(g,cls,list){ const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} if(typeof schedulePickReminders==="function") schedulePickReminders(false); }
+function savePicks(g,cls,list){ if(list.length&&typeof uTrack==="function") uTrack("pick",g.s); const all=picksAll(), k=gameKey(g); all[k]=Object.assign({},all[k]); if(list.length) all[k][cls]=list; else delete all[k][cls]; try{ localStorage.setItem(PICK_KEY,JSON.stringify(all)); }catch(e){} if(typeof schedulePickReminders==="function") schedulePickReminders(false); }
 const gameNum=str=>{ const m=/#(\d+)/.exec(str||""); return m?m[1]:null; };
 function gameResult(g){
   /* a weekend with two races (Carrera Cup, GT America sprint weekends, IndyCar's Milwaukee doubleheader) scores the race the picks lock at (gameLock): entries that name their race (`race`) are matched to it, older ones are not */
@@ -3006,6 +3009,8 @@ function toggleFollow(id){
   LSset(K.unfollow,JSON.stringify(h)); renderSettingsMore(); renderHome(); schedulePickReminders(false); pickSeriesSync(); scheduleRaceAlerts(!h.includes(id)); scheduleRecapPush(false);
 }
 function toggleAwake(){ LSset(K.awake,LSget(K.awake,"0")==="1"?"0":"1"); renderSettingsMore(); updateWake(); }
+function usageOn(){ return LSget(K.usageOff,"0")!=="1"; }
+function toggleUsage(){ LSset(K.usageOff,usageOn()?"1":"0"); renderSettingsMore(); toast(usageOn()?"Thanks: anonymous counts help improve the app.":"Anonymous usage counts are off."); }
 function toggleHaptics(){ LSset(K.haptics,LSget(K.haptics,"1")==="1"?"0":"1"); renderSettingsMore(); if(LSget(K.haptics,"1")==="1"){ try{ navigator.vibrate&&navigator.vibrate(30); }catch(e){} } }
 function renderSettingsMore(){
   const q=s=>document.querySelectorAll(s), on=(id,v)=>{ const b=document.getElementById(id); if(b){ b.classList.toggle("on",v); b.setAttribute("aria-checked",v); } };
@@ -3013,7 +3018,7 @@ function renderSettingsMore(){
   q(".leadSeg").forEach(el=>{ el.innerHTML=segHtml(alertLead(),[[5,"5 min"],[10,"10 min"],[15,"15 min"],[30,"30 min"]],"setAlertLead"); });
   q(".timeSeg").forEach(el=>{ el.innerHTML=segHtml(timesPref(),[["track","Track time"],["mine","My time"]],"setTimes"); });
   const fl=document.getElementById("followList"); if(fl) fl.innerHTML=orderedChamps().filter(c=>!c.optIn).map(c=>`<div class="frow" data-id="${c.id}"><button class="fhandle" aria-label="Drag to reorder ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span>${esc(c.name)}</span><button class="sw${followed(c)?" on":""}" role="switch" aria-checked="${followed(c)}" aria-label="Show ${esc(c.name)}" onclick="toggleFollow('${c.id}')"><i></i></button></div>`).join("");
-  on("raceSw",raceAlertsOn()); on("liveSw",liveActOn()); { const lr=document.getElementById("liveRow"); if(lr) lr.hidden=!liveSessionPlugin(); } on("recapSw",recapPushOn()); on("awakeSw",LSget(K.awake,"0")==="1"); on("hapSw",LSget(K.haptics,"1")==="1");
+  on("usageSw",usageOn()); on("raceSw",raceAlertsOn()); on("liveSw",liveActOn()); { const lr=document.getElementById("liveRow"); if(lr) lr.hidden=!liveSessionPlugin(); } on("recapSw",recapPushOn()); on("awakeSw",LSget(K.awake,"0")==="1"); on("hapSw",LSget(K.haptics,"1")==="1");
   renderFollowSub();
 }
 /* support series (optIn), one folding group per main series they race with; HSR-style series with their own weekends go under "Other series".

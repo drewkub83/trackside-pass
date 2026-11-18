@@ -783,3 +783,35 @@ drop policy if exists avatars_update on storage.objects;
 create policy avatars_update on storage.objects for update to authenticated using (bucket_id = 'avatars' and name = auth.uid()::text || '.jpg') with check (bucket_id = 'avatars' and name = auth.uid()::text || '.jpg');
 drop policy if exists avatars_delete on storage.objects;
 create policy avatars_delete on storage.objects for delete to authenticated using (bucket_id = 'avatars' and name = auth.uid()::text || '.jpg');
+
+---------------------------------------------------------------- anonymous usage counts (js/usage.js)
+-- One row per event: a random device number (not an account), the event name and a short argument (a screen, track or series id).
+-- Nobody can read or write the table through the API (row-level security, no policies); the app writes only through track_events(),
+-- which checks the event names, limits each device to 400 rows a day and keeps no IP address. Read the totals in the SQL editor (docs/usage-counts.md).
+create table if not exists public.usage_events (
+  id bigint generated always as identity primary key,
+  at timestamptz not null default now(),
+  day date not null default ((now() at time zone 'utc')::date),
+  did text not null,
+  plat text,
+  ev text not null,
+  arg text
+);
+create index if not exists usage_events_day_ev on public.usage_events (day, ev);
+create index if not exists usage_events_did on public.usage_events (did, day);
+alter table public.usage_events enable row level security;
+create or replace function public.track_events(p_did text, p_plat text, p_ev jsonb)
+returns void language plpgsql security definer set search_path = public as $$
+declare e jsonb;
+begin
+  if p_did is null or length(p_did) < 8 or length(p_did) > 64 then return; end if;
+  if p_ev is null or jsonb_typeof(p_ev) <> 'array' then return; end if;
+  if (select count(*) from public.usage_events where did = p_did and day = ((now() at time zone 'utc')::date)) > 400 then return; end if;
+  for e in select value from jsonb_array_elements(p_ev) limit 30 loop
+    if (e->>'ev') in ('open', 'screen', 'track', 'pick', 'going', 'directions', 'checkin') then
+      insert into public.usage_events (did, plat, ev, arg) values (p_did, left(coalesce(p_plat, ''), 12), e->>'ev', left(e->>'arg', 60));
+    end if;
+  end loop;
+end $$;
+revoke all on function public.track_events(text, text, jsonb) from public;
+grant execute on function public.track_events(text, text, jsonb) to anon, authenticated;

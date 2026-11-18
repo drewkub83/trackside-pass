@@ -131,7 +131,7 @@ function passportStamp(t){       /* {ok, why, fresh, already, ev} */
   const ev=activeEvent(t); if(!ev) return {ok:false,why:"no-event"};
   const day=trackToday(t), p=ppLoad();
   if(p.stamps.some(s=>s.t===t.id&&s.day===day)) return {ok:true,already:true,ev};
-  p.stamps.push({t:t.id,ev:ev.d,day,at:Date.now()}); const fresh=ppEvaluate(p); ppSave(p); renderPassportCard(); if(document.getElementById("passport").classList.contains("on")) renderPassport();
+  p.stamps.push({t:t.id,ev:ev.d,day,at:Date.now()}); if(typeof uTrack==="function") uTrack("checkin",t.id); const fresh=ppEvaluate(p); ppSave(p); renderPassportCard(); if(document.getElementById("passport").classList.contains("on")) renderPassport();
   if(fresh.length) setTimeout(()=>ppEnqueue(fresh),900); else toast(`Stamped: ${ppMsg(t,ev)}`);
   if(typeof offlineEnsure==="function") setTimeout(()=>offlineEnsure("track",t),5000);
   if(typeof acctPassportSync==="function") acctPassportSync();

@@ -371,7 +371,7 @@ const ENTRIES = [
         ["77", "Valtteri Bottas", "Cadillac", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-17. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-19. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"portimao", d:"2026-11-20", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the the field of the latest Sunday race, the Grand Prix of Qatar (2026-11-06), until this weekend's practice is published, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
@@ -393,5 +393,27 @@ const ENTRIES = [
         ["11", "Diogo Moreira", "Pro Honda LCR", "", 0.5, "averaged top 80% of the field over his last 6 Sunday races", 0.198]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-17. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-19. Win chances are our own estimate, not betting odds. (automatic update)" },
+  { t:"valencia", d:"2026-11-27", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the the field of the latest Sunday race, the Grand Prix of Qatar (2026-11-06), until this weekend's practice is published, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
+    classes:[
+      { h:"Race", cars:[
+        ["93", "Marc Marquez", "Ducati Lenovo Team", "", 26.5, "averaged top 19% of the field over his last 6 Sunday races", 0.812],
+        ["37", "Pedro Acosta", "Red Bull KTM Factory Racing", "", 16.7, "averaged top 25% of the field over his last 6 Sunday races", 0.754],
+        ["89", "Jorge Martin", "Aprilia Racing", "", 16.4, "averaged top 25% of the field over his last 6 Sunday races", 0.752],
+        ["72", "Marco Bezzecchi", "Aprilia Racing", "", 10.3, "averaged top 31% of the field over his last 6 Sunday races", 0.693],
+        ["79", "Ai Ogura", "SuperFile Trackhouse MotoGP Team", "", 6.7, "averaged top 36% of the field over his last 6 Sunday races", 0.639],
+        ["23", "Enea Bastianini", "Red Bull KTM Tech3", "", 6.6, "averaged top 36% of the field over his last 6 Sunday races", 0.638],
+        ["25", "Raul Fernandez", "SuperFile Trackhouse MotoGP Team", "", 5.1, "averaged top 39% of the field over his last 6 Sunday races", 0.607],
+        ["49", "Fabio Di Giannantonio", "Pertamina Enduro VR46 Racing Team", "", 3.0, "averaged top 46% of the field over his last 6 Sunday races", 0.541],
+        ["54", "Fermin Aldeguer", "BK8 Gresini Racing MotoGP", "", 2.6, "averaged top 48% of the field over his last 6 Sunday races", 0.521],
+        ["33", "Brad Binder", "Red Bull KTM Factory Racing", "", 1.9, "averaged top 52% of the field over his last 6 Sunday races", 0.483],
+        ["27", "Iker Lecuona", "BK8 Gresini Racing MotoGP", "", 1.0, "averaged top 60% of the field over his last 4 Sunday races", 0.396],
+        ["21", "Franco Morbidelli", "Pertamina Enduro VR46 Racing Team", "", 0.9, "averaged top 61% of the field over his last 6 Sunday races", 0.392],
+        ["96", "Jake Dixon", "Honda HRC Castrol", "", 0.8, "averaged top 62% of the field over his last 1 Sunday race", 0.378],
+        ["5", "Johann Zarco", "Castrol Honda LCR", "", 0.5, "averaged top 68% of the field over his last 6 Sunday races", 0.317],
+        ["12", "Maverick Viñales", "Red Bull KTM Tech3", "", 0.5, "averaged top 68% of the field over his last 6 Sunday races", 0.316],
+        ["11", "Diogo Moreira", "Pro Honda LCR", "", 0.5, "averaged top 80% of the field over his last 6 Sunday races", 0.198]
+      ] }
+    ],
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-19. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

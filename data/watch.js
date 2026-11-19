@@ -1595,4 +1595,80 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of crash.net ('Marc Marquez denied MotoGP title in Qatar as Marco Bezzecchi wins race'), The Race ('Bezzecchi dominates but Marquez on brink of title'), GPBlog ('MotoGP Full Race Results | Marquez title delayed by Bezzecchi' and 'Marc Marquez MotoGP title scenarios: How he can clinch in Portugal') for the Qatar race result, gaps and Martin's wrist-injury context (none reachable directly from this environment, so this is as summarized by search results). data/results.js and data/standings.js (both already updated by this app's automatic MotoGP tools) for the race order and the 431/371/357 points; the Sprint-win clinch scenario checked against those point totals directly (60-point gap plus a 12-point Sprint win swing exceeds the 62 points still available afterward even if Martin finishes second in that Sprint). Yamaha boycott and threatened-ban status from web search summaries of crash.net's reporting on the Qatar boycott and the FIM's response; no newer ruling was found in sources checked today (Nov 12), so this weekend's Yamaha entry status is left unconfirmed. Session times from data/portimao.js." }
+  ,{ t:"lusail", d:"2026-11-27", s:"f1", at:"2026-11-19T00:26:43Z",
+    asOf:"Current after the Brazilian Grand Prix (Nov 8, 2026), the most recently completed round -- the Las Vegas Grand Prix (Nov 19-21) runs before this Qatar weekend and will likely move the points below, so treat them as a starting point rather than final.",
+    groups:[
+      { h:"Both titles are already settled", items:[
+        ["Kimi Antonelli (Mercedes)", "Clinched the 2026 Drivers' title at the Mexico City Grand Prix (Nov 1), F1's youngest-ever world champion. He leads on 390 points with Las Vegas, this Qatar round and Abu Dhabi left to run -- nothing left for him to decide."],
+        ["Mercedes", "Clinched the Constructors' title at the Brazilian Grand Prix, the team's ninth, its first since 2021."]
+      ] },
+      { h:"What's still live: the runner-up fight", items:[
+        ["Max Verstappen (Red Bull Racing)", "Second on 279 after Brazil, the best fight left on the grid with three rounds still to run."],
+        ["George Russell (Mercedes)", "Third on 262."],
+        ["Lewis Hamilton (Ferrari)", "Fourth on 261, just 1 point behind Russell."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 251, 10 back of team-mate Hamilton."],
+        ["Lando Norris (McLaren)", "Sixth on 246, the most recent race winner of this group (São Paulo)."]
+      ] },
+      { h:"Constructors: Ferrari's grip on second", items:[
+        ["Ferrari", "512 points, second, 97 clear of Red Bull with three rounds left to hand out points."],
+        ["Red Bull Racing", "415, a long-shot mathematical path back into the fight for second rather than a live one."],
+        ["McLaren", "398, fourth, with a slimmer path of its own."]
+      ] },
+      { h:"The circuit: Lusail under the floodlights", items:[
+        ["A night race on a 5.419 km layout", "57 laps, roughly 309 km, run after dark under the circuit's floodlights -- one of the more visually distinctive rounds on the calendar."],
+        ["Where the passing happens", "Turn 1, at the end of the long pit straight, is the circuit's main overtaking point."],
+        ["Penultimate round", "The second-to-last weekend of the season before the finale at Abu Dhabi."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Friday Nov 27", "Practice 1, 4:30pm; Practice 2, 8:00pm."],
+        ["Saturday Nov 28", "Practice 3, 5:30pm; Qualifying, 9:00pm."],
+        ["Sunday Nov 29", "Race, 7:00pm."]
+      ] }
+    ],
+    note:"Sources: formula1.com's Mexico City Lowdown and racer.com (Mexico City title clinch) and gpblog.com/qatar-tribune.com (Brazilian GP constructors' clinch), carried over from the prior entries for this app's F1 coverage; data/standings.js (automatic update from api.jolpi.ca, read 2026-11-08) for the exact point totals, unchanged since the prior entry because the Las Vegas Grand Prix (Nov 19-21) had not yet been run when this was written. formula1.com's official Qatar Grand Prix article (via web search summary) for the race distance/lap count and the floodlit night-race format; racingnews365.com's Qatar race page for the Turn 1 overtaking note. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
+  ,{ t:"lusail", d:"2026-11-27", s:"f2", at:"2026-11-19T00:26:43Z",
+    asOf:"Current after the Azerbaijan round (Baku, Sept 25-26, 2026), the last Formula 2 weekend before this one -- Formula 2 does not race every Formula 1 weekend, and Qatar is its next round after a long gap.",
+    groups:[
+      { h:"The title fight: a 7-point lead with two rounds left", items:[
+        ["Rafael Câmara (Invicta Racing)", "Leads on 207 points after winning Baku's second Feature Race, which pushed his advantage over Tsolov from 1 point to 7."],
+        ["Nikola Tsolov (Campos Racing)", "Second on 200, 7 points back."],
+        ["Alex Dunne (Rodin Motorsport)", "Third on 189, 18 back, after winning Baku's first Feature Race from pole -- still mathematically in it."],
+        ["Gabriele Mini (MP Motorsport)", "Fourth on 163, 44 back -- a longer shot with two rounds (this one and Abu Dhabi) to go."]
+      ] },
+      { h:"Why the gap is still live", items:[
+        ["How many points are left", "A Feature Race winner can score up to 28 (25 for the win, 2 for pole, 1 for fastest lap) and a Sprint Race winner 10, so each of the two remaining rounds (Qatar, then Abu Dhabi) has roughly 38 points on offer -- more than enough to swing a 7-point gap, and still plenty for Dunne's 18-point gap."]
+      ] },
+      { h:"Others to watch", items:[
+        ["Dino Beganovic (DAMS Lucas Oil)", "Won Baku's Sprint Race, his second Sprint win of the season -- the form driver outside the top four coming into Qatar."],
+        ["Joshua Dürksen (Invicta Racing)", "Câmara's team-mate, also in the top ten of the standings and capable of taking points directly off Câmara's rivals."]
+      ] },
+      { h:"Weekend format (Lusail, local time AST, UTC+3)", items:[
+        ["Friday Nov 27", "Practice, 2:00pm; Qualifying, 6:00pm -- qualifying sets the Feature Race grid and, reversed inside the top 10, the Sprint Race grid."],
+        ["Saturday Nov 28", "Sprint Race, 7:40pm, under the lights."],
+        ["Sunday Nov 29", "Feature Race, 3:00pm, the weekend's main race and the one that moves the title fight most."]
+      ] }
+    ],
+    note:"Sources: web search summaries of formula1.com ('F2: Camara handed Feature Race 2 victory as he leads championship after Baku' and 'F2: Dunne takes victory in Baku Feature Race 1 to relaunch title bid') and racer.com ('Dunne earns first F2 win of the season in Baku; Camara takes points lead') for the Baku results, the 207-200 points and the swing from a 1-point to a 7-point lead (none reachable directly from this environment, so these are as summarized by search results); data/standings.js (automatic update from api.fia.com, read 2026-10-26, unchanged since because Formula 2 has not raced between Baku and this Qatar round) for the full top-10 points. Team pairings (Câmara/Dürksen at Invicta, Tsolov at Campos, Dunne at Rodin, Beganovic at DAMS Lucas Oil) from web search summaries of pitdebrief.com's and feederseries.net's 2026 F2 grid coverage. The weekend's published entry list/grid is the season-long F2 roster, not a race-specific one, so there is no separate entry list to check. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
+  ,{ t:"valencia", d:"2026-11-27", s:"motogp", at:"2026-11-19T00:26:43Z",
+    asOf:"Current after the Qatar Grand Prix (Lusail, Nov 8, 2026), the most recently completed round: Marc Marquez leads by 60 points over Jorge Martin with two rounds left -- Portimao (Nov 20-22) runs before this Valencia finale and could settle the title before this weekend even starts.",
+    groups:[
+      { h:"The title fight going into the season's last two rounds", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Leads on 431 points, 60 clear of Martin and 74 clear of Bezzecchi. A big weekend at Portimao -- which runs the week before this one -- could clinch the title there, before Valencia even begins; check back after Portimao to see whether this is a coronation or still a fight."],
+        ["Jorge Martin (Aprilia Racing)", "Second on 371, needing a very strong Portimao plus a Marquez stumble just to keep the title alive into this finale."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Third on 357, 74 back -- mathematically alive only if both Portimao and Valencia go badly for Marquez."]
+      ] },
+      { h:"Yamaha's boycott: still unresolved", items:[
+        ["Yamaha", "Skipped the entire Qatar round over the team's own Middle East travel-safety assessment, after a letter signed by 19 riders opposed racing there; MotoGP said it was 'disappointed' and warned of sporting sanctions, reportedly including possible race bans at Portimao and this Valencia round, but no official FIM ruling had been confirmed as of the most recent reports checked. Whether Yamaha's riders are on track at Portimao or here was not confirmed in sources checked today."]
+      ] },
+      { h:"The circuit: Circuit Ricardo Tormo, MotoGP's long-time finale", items:[
+        ["A tight, technical 4.005 km layout", "Near Cheste, outside Valencia -- a low-grip, stop-and-go track that rewards precise braking over outright power, and has hosted the season's final round in most years since the early 2000s."],
+        ["Last year here", "Marco Bezzecchi won the 2025 Valencia GP from the front, the circuit's first MotoGP race since 2023 after the 2024 finale was moved elsewhere because of flooding."]
+      ] },
+      { h:"Up next (Circuit Ricardo Tormo, local time CET)", items:[
+        ["Friday Nov 27", "Free Practice 1, 10:45am; Practice, 3:00pm."],
+        ["Saturday Nov 28", "Free Practice 2, 10:10am; Qualifying 1, 10:50am; Qualifying 2, 11:15am; the Sprint, 3:00pm."],
+        ["Sunday Nov 29", "Warm-Up, 9:40am; the Grand Prix, 2:00pm (27 laps, about 108 km) -- the season's last race."]
+      ] }
+    ],
+    note:"Sources: data/standings.js (automatic update from the MotoGP results service, read after the Qatar Grand Prix, Nov 8) for the 431/371/357 points, carried over unchanged from the prior entry for the next MotoGP round (Portimao) because no round has run since. Yamaha boycott and sanctions-threat status carried over, re-confirmed as still unresolved, from web search summaries of crash.net's, the-race.com's and aljazeera.com's Nov 1-2 coverage of the boycott and MotoGP's response (none reachable directly from this environment); no newer ruling was found in sources checked today (Nov 19). Circuit character, length and finale history from web search summaries of racingcircuits.info and boxrepsol.com's circuit profiles; the 2025 Valencia result (Bezzecchi's win, the race's return after the 2024 flood-related move) cross-checked across flashscore.com and fim-moto.com. Race distance/lap count from motogp.com's official Valencia race page (via web search summary). Session times from data/valencia.js." }
 ];

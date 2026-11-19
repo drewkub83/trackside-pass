@@ -29,3 +29,6 @@ Status: the iPhone project was checked for TestFlight. Already in place: Apple t
 
 ## Updating the beta
 The app loads the live site, so ordinary changes reach TestFlight testers the same way as everyone else (git push). A new TestFlight build is only needed when something in `ios/` changes (plugin, permission, icon, version).
+
+## Public link (Nov 19 2026)
+https://testflight.apple.com/join/mgJnx3AH — on the landing page (`welcome/index.html`): hero button, the iPhone install card and the "Help me test it" box. If the link is ever replaced in App Store Connect, change all three.

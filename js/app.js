@@ -2706,7 +2706,6 @@ function sunState(){          /* {night, next:{t,k}} for right now */
 function applyTheme(){
   const p=themePref(), root=document.documentElement; let t=null;
   if(p==="day") t="light"; else if(p==="night") t="dark"; else if(p==="auto") t=sunState().night?"dark":"light";
-  if(stylePref()==="glow") t="dark";   /* Afterglow is a night-only look */
   if(t) root.setAttribute("data-theme",t); else root.removeAttribute("data-theme");
   const dark=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches, m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content",dark?"#151A18":"#F0EEE8");
   renderThemeUI(p);
@@ -2715,19 +2714,18 @@ function renderThemeUI(p){
   p=p||themePref();
   const hm=ms=>new Date(ms).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}).replace(" "," ");
   let note={day:"Always light.",night:"Always dark."}[p];
-  if(stylePref()==="glow") note="The Afterglow style is always night.";
   if(p==="auto"){ const s=sunState(); note=s.next?`${s.night?"Night":"Day"} until about ${hm(s.next.t)}. Switches at sunrise and sunset.`:"Switches at sunrise and sunset."; }
   document.querySelectorAll(".themeSeg").forEach(el=>{ el.innerHTML=THEMES.map(([k,l])=>`<button class="${k===p?"on":""}" onclick="setTheme('${k}')">${l}</button>`).join(""); });
   document.querySelectorAll(".themeNote").forEach(el=>el.textContent=note);
 }
 /* Style: "classic" (the original soft look), "race" (Race Control: bold type, black header, orange accent) "ticket" (Ticket Stubs: weekends as paper tickets with a coloured date stub) or "editorial" (a quiet black-on-white magazine look). Saved on the phone;
    index.html applies it before first paint so there is no flash. */
-const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"],["ticket","Ticket Stubs"],["editorial","Editorial"],["glow","Afterglow"]];
-function stylePref(){ try{ const v=localStorage.getItem(STYLE_KEY); return v==="race"?"race":v==="glow"?"glow":v==="editorial"?"editorial":(v==="ticket"||v==="program")?"ticket":"classic"; }catch(e){ return "classic"; } }   /* "program" was a short-lived style that became Ticket Stubs */
-function applyStyle(){ applyTheme(); const r=document.documentElement; if(stylePref()!=="classic") r.setAttribute("data-style",stylePref()); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
+const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"],["ticket","Ticket Stubs"],["editorial","Editorial"]];
+function stylePref(){ try{ const v=localStorage.getItem(STYLE_KEY); return v==="race"?"race":v==="editorial"?"editorial":(v==="ticket"||v==="program")?"ticket":"classic"; }catch(e){ return "classic"; } }   /* "program" was a short-lived style that became Ticket Stubs */
+function applyStyle(){ const r=document.documentElement; if(stylePref()!=="classic") r.setAttribute("data-style",stylePref()); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
 function renderStyleUI(){ const p=stylePref();
   document.querySelectorAll(".styleSeg").forEach(el=>{ el.innerHTML=STYLES.map(([k,l])=>`<button class="${k===p?"on":""}" aria-pressed="${k===p}" onclick="setStyle('${k}')"><i class="sp sp-${k}"><u></u><u></u></i><span>${l}</span></button>`).join(""); });
-  document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":p==="ticket"?"Race weekends as tickets: a coloured date stub, a dashed tear line and warm paper.":p==="glow"?"Near-black with soft teal and ember glows, thin glass cards and very light, large numbers. Always night.":p==="editorial"?"A quiet magazine look: black on off-white, hairline rules, one red accent and a huge countdown.":"The original soft look."); }
+  document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":p==="ticket"?"Race weekends as tickets: a coloured date stub, a dashed tear line and warm paper.":p==="editorial"?"A quiet magazine look: black on off-white, hairline rules, one red accent and a huge countdown.":"The original soft look."); }
 function setStyle(k){ try{ localStorage.setItem(STYLE_KEY,k); }catch(e){} applyStyle(); }
 function setTheme(k){ try{ localStorage.setItem(THEME_KEY,k); }catch(e){} applyTheme(); }
 applyTheme(); setInterval(applyTheme,60000);

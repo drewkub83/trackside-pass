@@ -1516,3 +1516,59 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 
 textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 .fbKind{margin-top:14px}
+
+/* ---- Pit Board style (Nov 2026): one huge signage-style countdown on a field in the series colour, no boxes, hairline rows, a monochrome pill bar.
+   Built from: Apple's clarity/deference (content first, controls quiet), Rams (as little design as possible), Apple Sports and Flighty (big condensed numerals, one colour per team/state). ---- */
+:root[data-style="board"]{--font:"Barlow","Segoe UI",system-ui,sans-serif;--font-d:"Barlow Condensed","Arial Narrow",sans-serif;
+  --paper:#F3F0E8;--card:#FBF9F4;--ink:#0D0D0E;--ink-2:#6B685F;--line:rgba(13,13,14,.14);--glass:rgba(255,255,255,.7);--glass-strong:rgba(251,249,244,.96);--glass-edge:rgba(13,13,14,.08);--tint:rgba(13,13,14,.06);--tint-2:rgba(13,13,14,.06);--accent:#E5481C;--accent-2:#FF7A4D;--nav:#0D0D0E;--shadow:none;--glow:none;--wk:#CFC8B8}
+@media (prefers-color-scheme: dark){:root[data-style="board"]:not([data-theme="light"]){--paper:#0B0B0C;--card:#151517;--ink:#F5F2EB;--ink-2:#9A978E;--line:rgba(245,242,235,.16);--glass:rgba(30,30,32,.7);--glass-strong:rgba(21,21,23,.96);--glass-edge:rgba(245,242,235,.10);--tint:rgba(245,242,235,.08);--tint-2:rgba(245,242,235,.08);--accent:#FF7A4D;--accent-2:#FFA07E;--nav:#F5F2EB}}
+:root[data-style="board"][data-theme="dark"]{--paper:#0B0B0C;--card:#151517;--ink:#F5F2EB;--ink-2:#9A978E;--line:rgba(245,242,235,.16);--glass:rgba(30,30,32,.7);--glass-strong:rgba(21,21,23,.96);--glass-edge:rgba(245,242,235,.10);--tint:rgba(245,242,235,.08);--tint-2:rgba(245,242,235,.08);--accent:#FF7A4D;--accent-2:#FFA07E;--nav:#F5F2EB}
+:root[data-style="board"][data-wk="imsa"]{--wk:#F7B21B}
+:root[data-style="board"][data-wk="indycar"]{--wk:#31D58C}
+:root[data-style="board"][data-wk="f1"],:root[data-style="board"][data-wk="f2"],:root[data-style="board"][data-wk="f3"],:root[data-style="board"][data-wk="f1academy"]{--wk:#FF4B3E}
+:root[data-style="board"][data-wk="motogp"],:root[data-style="board"][data-wk="moto2"],:root[data-style="board"][data-wk="moto3"]{--wk:#FF8A24}
+:root[data-style="board"][data-wk="nascar"],:root[data-style="board"][data-wk="oreilly"],:root[data-style="board"][data-wk="trucks"]{--wk:#FFD23F}
+:root[data-style="board"][data-wk="wec"]{--wk:#5AA2FF}
+:root[data-style="board"][data-wk="gtwca"],:root[data-style="board"][data-wk="gtamerica"]{--wk:#8D9DFF}
+:root[data-style="board"][data-wk="gtwce"],:root[data-style="board"][data-wk="igtc"]{--wk:#FF6B7B}
+:root[data-style="board"] body{background:var(--paper);font-family:var(--font)}
+/* header: a small tracked label, no bar */
+:root[data-style="board"] .mastbar{background:color-mix(in srgb,var(--paper) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+:root[data-style="board"] .mastbar::before{display:none}
+:root[data-style="board"] .mastbar h1{font-family:var(--font-d);font-weight:600;font-size:15px;letter-spacing:.24em;text-transform:uppercase}
+:root[data-style="board"] .mastbar .logo{width:18px;height:25px}
+:root[data-style="board"] .mast{display:none}
+/* the focal element: a full-width field in the series colour with one enormous number */
+:root[data-style="board"] .hero{width:100%;margin:4px 0 0;min-height:min(64svh,560px);display:flex;flex-direction:column;justify-content:flex-end;padding:28px 20px 30px;border:0;border-radius:0 0 44px 44px;background:var(--wk);color:#0C0C0D;box-shadow:none}
+:root[data-style="board"] .hero .art{width:104%;right:-14%;top:2%;opacity:.16}
+:root[data-style="board"] .hero .art path{stroke:#0C0C0D}
+:root[data-style="board"] .hero .kick{align-self:flex-start;background:none;padding:0;border-radius:0;color:rgba(12,12,13,.72);font-family:var(--font-d);font-weight:600;font-size:14px;letter-spacing:.24em;text-transform:uppercase}
+:root[data-style="board"] .hero .num{font-family:var(--font-d);font-weight:600;font-size:min(74vw,300px);line-height:.8;letter-spacing:-.045em;margin-top:18px;color:#0C0C0D}
+:root[data-style="board"] .hero .num .dw{display:block;font-size:30px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;line-height:1.4;margin-bottom:6px}
+:root[data-style="board"] .hero .num small{display:block;margin:12px 0 0;font-family:var(--font-d);font-size:18px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(12,12,13,.72)}
+:root[data-style="board"] .hero .name{font-family:var(--font-d);font-weight:600;font-size:32px;line-height:1;letter-spacing:.01em;margin-top:22px;text-transform:uppercase}
+:root[data-style="board"] .hero .sub{color:rgba(12,12,13,.72);font-size:15px;margin-top:4px}
+/* everything else: no boxes, just rows between hairlines */
+:root[data-style="board"] .sect{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);margin:34px 0 6px;padding:0 20px}
+:root[data-style="board"] :is(.stCard,.track-row,.hubCard,.sess,.plCard,.youRow,.youTile,.appear,.sgh,.acFriend,.wkRecapCard,.alertCard,.season,.recapCard,.plTotal>div){background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding-left:6px;padding-right:6px}
+:root[data-style="board"] .scard{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding-left:16px}
+:root[data-style="board"] .hubCard{margin-bottom:0;padding-top:20px;padding-bottom:20px}
+:root[data-style="board"] .hubCard h4,:root[data-style="board"] .stCard h2{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}
+:root[data-style="board"] .hubSessionName{font-family:var(--font-d);font-weight:600;font-size:58px;line-height:.92;letter-spacing:-.01em;text-transform:uppercase}
+:root[data-style="board"] .hubSessionSub{font-size:16px;color:var(--ink-2)}
+:root[data-style="board"] #hubView{background:linear-gradient(180deg,color-mix(in srgb,var(--wk) 34%,transparent),transparent 340px)}
+:root[data-style="board"] .hubCard.liveNow{background:transparent;box-shadow:inset 6px 0 0 var(--wk);padding-left:18px}
+:root[data-style="board"] .hubCard.liveNow h4{color:var(--ink)}
+:root[data-style="board"] .hubCard.liveNow h4::before{background:var(--wk)}
+:root[data-style="board"] .stCard h3,:root[data-style="board"] .track-row h2,:root[data-style="board"] .ptitle2{font-family:var(--font-d);font-weight:600;text-transform:uppercase;letter-spacing:.02em}
+/* navigation and buttons: monochrome, quiet */
+:root[data-style="board"] .tabs{background:var(--nav);box-shadow:0 12px 30px rgba(0,0,0,.28)}
+:root[data-style="board"] .tabs button{color:color-mix(in srgb,var(--paper) 62%,transparent)}
+:root[data-style="board"] .tabs button.on{background:var(--paper);color:var(--ink);font-family:var(--font-d);font-weight:600;font-size:16px;letter-spacing:.12em;text-transform:uppercase}
+:root[data-style="board"] .btn.primary{background:var(--ink);color:var(--paper);box-shadow:none}
+:root[data-style="board"] .btn.quiet{background:var(--tint)}
+:root[data-style="board"] .fab{background:var(--tint);border:0;box-shadow:none}
+:root[data-style="board"] .hero .num.n3{font-size:min(52vw,210px)}
+.sp-board{background:#F7B21B}
+.sp-board u:nth-child(1){left:9px;top:8px;width:34px;border-top:2px solid #0C0C0D}
+.sp-board u:nth-child(2){left:9px;bottom:6px;width:20px;height:34px;background:linear-gradient(#0C0C0D,#0C0C0D) 0 0/6px 100% no-repeat,linear-gradient(#0C0C0D,#0C0C0D) 12px 0/6px 100% no-repeat}

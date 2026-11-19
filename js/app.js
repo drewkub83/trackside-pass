@@ -225,10 +225,11 @@ function heroPick(){ const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.
 function renderHero(){
   const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(), el=document.getElementById("hero"); if(!c){ el.innerHTML=""; return; }
   const {t,e}=c, today=localToday(), on=e.d<=today, n=daysBetween(today,e.d), day=Math.min(e.t||1,daysBetween(e.d,today)+1), who=champsAt(t,e).map(x=>x.name).join(" + ")||e.s;
+  document.documentElement.dataset.wk=(champsAt(t,e)[0]||{}).id||"";   /* the series colour of the weekend on screen (Pit Board style) */
   el.innerHTML=`<button class="hero" data-s="${(champsAt(t,e)[0]||{}).id||""}" onclick="openTrack('${t.id}','home')">
     <svg class="art" viewBox="${trackBox(t).join(" ")}" aria-hidden="true"><path d="${t.path}" fill="none" stroke="var(--ink)" stroke-width="${(trackBox(t)[2]*0.024).toFixed(1)}" stroke-linejoin="round" stroke-linecap="round"/></svg>
     <span class="kick">${on?"Happening now":(gnear?"You're going":"Next up")} · ${who}</span>
-    <div class="num">${on?"Day "+day:n}<small>${on?`of ${e.t||1} day${(e.t||1)>1?"s":""}`:(n===1?"day to go":"days to go")}</small></div>
+    <div class="num${!on&&n>=100?" n3":""}">${on?`<span class="dw">Day </span>${day}`:n}<small>${on?`of ${e.t||1} day${(e.t||1)>1?"s":""}`:(n===1?"day to go":"days to go")}</small></div>
     <div class="name">${e.e}</div><div class="sub">${t.short} · ${fmtRange(e)}</div></button>`;
 }
 /* "Your series, next up": a card for each followed series whose next race is within SEASON_CARD_DAYS (or on now): the race,
@@ -1849,7 +1850,7 @@ function renderHub(){
   const chev=`<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>`;
   const ctx={ss,now,live,next,chev,liveAll:ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000)}; sessWant={};
   const sessionHtml=hubSessionCard(ctx), stripHtml=hubTodayStrip(ctx), wxHtml=hubWeatherCard(), actionsHtml=hubActionTiles();
-  const fs=hubFocusSeries(ctx); ctx.sid=fs.sid; ctx.fav=fs.fav;
+  const fs=hubFocusSeries(ctx); ctx.sid=fs.sid; ctx.fav=fs.fav; document.documentElement.dataset.wk=fs.sid||"";
   const watchHtml=hubWatchCard(ctx), standingsHtml=hubStandingsCard(ctx);
   const recapHtml2=hubRecapCard(ctx), resultsHtml=hubResultsCard(ctx); ctx.resultsHtml=resultsHtml; const gridHtml=hubGridCard(ctx);
   const liveStreamHtml=hubLiveStream(ctx), liveTimingHtml=hubTimingCard(ctx);
@@ -2720,12 +2721,12 @@ function renderThemeUI(p){
 }
 /* Style: "classic" (the original soft look), "race" (Race Control: bold type, black header, orange accent) "ticket" (Ticket Stubs: weekends as paper tickets with a coloured date stub) or "editorial" (a quiet black-on-white magazine look). Saved on the phone;
    index.html applies it before first paint so there is no flash. */
-const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"],["ticket","Ticket Stubs"],["editorial","Editorial"]];
-function stylePref(){ try{ const v=localStorage.getItem(STYLE_KEY); return v==="race"?"race":v==="editorial"?"editorial":(v==="ticket"||v==="program")?"ticket":"classic"; }catch(e){ return "classic"; } }   /* "program" was a short-lived style that became Ticket Stubs */
+const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"],["ticket","Ticket Stubs"],["editorial","Editorial"],["board","Pit Board"]];
+function stylePref(){ try{ const v=localStorage.getItem(STYLE_KEY); return v==="race"?"race":v==="board"?"board":v==="editorial"?"editorial":(v==="ticket"||v==="program")?"ticket":"classic"; }catch(e){ return "classic"; } }   /* "program" was a short-lived style that became Ticket Stubs */
 function applyStyle(){ const r=document.documentElement; if(stylePref()!=="classic") r.setAttribute("data-style",stylePref()); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
 function renderStyleUI(){ const p=stylePref();
   document.querySelectorAll(".styleSeg").forEach(el=>{ el.innerHTML=STYLES.map(([k,l])=>`<button class="${k===p?"on":""}" aria-pressed="${k===p}" onclick="setStyle('${k}')"><i class="sp sp-${k}"><u></u><u></u></i><span>${l}</span></button>`).join(""); });
-  document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":p==="ticket"?"Race weekends as tickets: a coloured date stub, a dashed tear line and warm paper.":p==="editorial"?"A quiet magazine look: black on off-white, hairline rules, one red accent and a huge countdown.":"The original soft look."); }
+  document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":p==="ticket"?"Race weekends as tickets: a coloured date stub, a dashed tear line and warm paper.":p==="board"?"Open and bold: one huge signage-style countdown on a field in the series colour, no boxes, hairline rows.":p==="editorial"?"A quiet magazine look: black on off-white, hairline rules, one red accent and a huge countdown.":"The original soft look."); }
 function setStyle(k){ try{ localStorage.setItem(STYLE_KEY,k); }catch(e){} applyStyle(); }
 function setTheme(k){ try{ localStorage.setItem(THEME_KEY,k); }catch(e){} applyTheme(); }
 applyTheme(); setInterval(applyTheme,60000);

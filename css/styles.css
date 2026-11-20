@@ -1389,6 +1389,9 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 
 .track-row .nx{display:none}
 .plKick{display:none}
+:where(.plRules,.fine,.mcard,.sheet,.acScreen,.appear) a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+:root[data-theme="dark"] :where(.plRules,.fine,.mcard,.sheet,.acScreen,.appear) a{color:var(--ink);font-weight:500}
+@media (prefers-color-scheme: dark){:root:not([data-theme]) :where(.plRules,.fine,.mcard,.sheet,.acScreen,.appear) a{color:var(--ink);font-weight:500}}
 /* ---- Pit Board style (Nov 2026): one huge signage-style countdown on a field in the series colour, no boxes, hairline rows, a monochrome pill bar.
    Built from: Apple's clarity/deference (content first, controls quiet), Rams (as little design as possible), Apple Sports and Flighty (big condensed numerals, one colour per team/state). ---- */
 :root[data-style="board"]{--font:"Barlow","Segoe UI",system-ui,sans-serif;--font-d:"Barlow Condensed","Arial Narrow",sans-serif;
@@ -1453,14 +1456,14 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 :root[data-style="board"] .ppNextBox{background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding-left:6px;padding-right:6px}
 :root[data-style="board"] .ppNextBox h4,:root[data-style="board"] .ppSecT{font-family:var(--font-d);font-weight:600;letter-spacing:.24em}
 /* Series tab: a departure board. Giant category names, a colour bar per category or series, the next race as a date on the right */
-:root[data-style="board"] #champList .track-row{position:relative;align-items:center;gap:14px;min-height:108px;padding:22px 6px 22px 22px}
+:root[data-style="board"] #champList .track-row{display:flex;position:relative;align-items:center;gap:14px;min-height:108px;padding:22px 6px 22px 22px}
 :root[data-style="board"] #champList .track-row::before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:6px;border-radius:3px;background:var(--rc,var(--ink))}
 :root[data-style="board"] #champList .track-row .tile.txt{display:none}
 :root[data-style="board"] #champList .track-row>div:not(.nx){flex:1;min-width:0}
 :root[data-style="board"] #champList .track-row h2{white-space:normal;overflow:visible;text-overflow:clip}
 :root[data-style="board"] #champList .track-row .mnext{display:none}
-:root[data-style="board"] #champList .track-row.cat h2{font-size:44px;line-height:.9;letter-spacing:0}
-:root[data-style="board"] #champList .track-row.series:not(.cat) h2{font-size:34px;line-height:.95}
+:root[data-style="board"] #champList .track-row.cat h2{font-size:40px;line-height:.9;letter-spacing:0}
+:root[data-style="board"] #champList .track-row.series:not(.cat) h2{font-size:30px;line-height:.98}
 :root[data-style="board"] #champList .track-row .meta{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);margin-top:8px}
 :root[data-style="board"] #champList .track-row .mfull{display:none}
 :root[data-style="board"] #champList .track-row .chev{display:none}

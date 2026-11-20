@@ -166,7 +166,7 @@ function acctRender() {
          <p class="plRules fine">Switched off, only friends can find you, see your score and open your passport. Friends can also see your picks once a race has started, and that you are at a track on a race weekend. Nobody sees your email.</p>
          <h4 class="ptH">Your account</h4>
          ${acctBtn("Sign out", "acctOut()", "quiet")}
-         <p class="plRules fine">To delete your account, go to Settings, Passport and your data. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>`;
+         <p class="plRules fine">To delete your account, go to Settings, Your data. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>`;
   }
   acBox().innerHTML = acctWrap(s && acct.profile ? h : acctHubHtml(false) + h); acctHomeRefresh();
 }
@@ -449,8 +449,7 @@ function boardRender() {
     <div class="acRow"><select class="acIn acSel" onchange="boardSeries(this.value)"><option value="">All series</option>${ser.map(([v, l]) => `<option value="${sbEsc(v)}"${v === lb.series ? " selected" : ""}>${sbEsc(l)}</option>`).join("")}</select>
     <select class="acIn acSel" onchange="boardGame(this.value)"><option value="">Whole season</option>${(() => { const g = {}; gm.forEach(x => (g[x.s] = g[x.s] || []).push(x)); return Object.keys(g).map(s => `<optgroup label="${sbEsc(typeof watchSeriesName === "function" ? watchSeriesName({ s }) : s)}">${g[s].map(x => { const tk = TRACKS.find(y => y.id === x.t); return `<option value="${sbEsc(gameKey(x))}"${gameKey(x) === lb.game ? " selected" : ""}>${sbEsc(tk ? tk.short : x.t)}</option>`; }).join("")}</optgroup>`).join(""); })()}</select></div>
     <div class="lbList">${rows}</div>
-    <p class="plRules fine">Points are scored on the server from the official results. <a href="#" onclick="openPoints();return false">How points work</a></p>
-    <div class="acRow">${acctBtn("My account", "openAccount()", "quiet")}</div>`);
+    <p class="plRules fine">Points are scored on the server from the official results. <a href="#" onclick="openPoints();return false">How points work</a></p>`);
 }
 function boardAll(v) { lb.all = v; boardRender(); }
 function boardScope(v) { lb.scope = v; lb.all = false; lb.rows = null; boardRender(); boardLoad(); }

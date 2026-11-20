@@ -1633,6 +1633,26 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 :root[data-style="board"] .plCard[data-s="igtc"]{--rc:#FF6B7B}
 :root[data-style="board"] .plCard[data-s="f2"]{--rc:#FF4B3E}
 :root[data-style="board"] .plCard[data-s="f3"]{--rc:#FF4B3E}
+/* Leaderboard and Account */
+:root[data-style="board"] .acScreen .lbTabs{background:transparent;padding:0;gap:22px;border-bottom:1px solid var(--line);border-radius:0;margin-top:14px}
+:root[data-style="board"] .acScreen .lbTabs .gmTab{background:transparent;box-shadow:none;border-radius:0;padding:12px 2px;flex:none;font-family:var(--font-d);font-weight:600;font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);border-bottom:3px solid transparent;margin-bottom:-1px}
+:root[data-style="board"] .acScreen .lbTabs .gmTab.on{background:transparent;color:var(--ink);border-bottom-color:var(--wk,var(--ink))}
+:root[data-style="board"] .acSel{border-radius:0;background:transparent;border:0;border-bottom:1px solid var(--line);padding-left:0;font-family:var(--font-d);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:14px}
+:root[data-style="board"] .lbRow{display:flex;align-items:center;gap:14px;padding:16px 6px;border-bottom:1px solid var(--line);background:transparent;border-radius:0;box-shadow:none}
+:root[data-style="board"] .lbRank{font-family:var(--font-d);font-weight:600;font-size:44px;line-height:.9;min-width:44px;color:var(--ink-2);letter-spacing:-.02em}
+:root[data-style="board"] .lbRow:first-child .lbRank{color:var(--ink)}
+:root[data-style="board"] .lbRow .lbN{font-family:var(--font-d);font-weight:600;font-size:24px;text-transform:uppercase;letter-spacing:.01em}
+:root[data-style="board"] .lbRow>b{font-family:var(--font-d);font-weight:600;font-size:44px;line-height:.9;letter-spacing:-.02em;margin-left:auto}
+:root[data-style="board"] .lbRow.me{box-shadow:inset 6px 0 0 var(--wk,var(--ink));padding-left:18px;background:color-mix(in srgb,var(--wk,var(--ink)) 12%,transparent)}
+:root[data-style="board"] .lbMore{font-family:var(--font-d);font-weight:600;letter-spacing:.2em;text-transform:uppercase;font-size:13px}
+:root[data-style="board"] .acHead .acH{font-size:46px}
+:root[data-style="board"] #board .acH{font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);margin:10px 0 0;line-height:1.2}
+:root[data-style="board"] .acScreen .ptH{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);margin:34px 0 8px}
+:root[data-style="board"] .youTiles{gap:0;border-top:1px solid var(--line)}
+:root[data-style="board"] .youTile{padding:20px 6px;text-align:left}
+:root[data-style="board"] .youTile small{color:var(--ink-2)}
+:root[data-style="board"] .acFriend{padding-top:14px;padding-bottom:14px}
+:root[data-style="board"] .acIn{border-radius:0;background:transparent;border:0;border-bottom:1px solid var(--ink);padding-left:0}
 :root[data-style="board"] .scard{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding-left:16px}
 :root[data-style="board"] .hubCard{margin-bottom:0;padding-top:20px;padding-bottom:20px}
 :root[data-style="board"] .hubCard h4,:root[data-style="board"] .stCard h2{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}

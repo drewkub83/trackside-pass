@@ -1518,6 +1518,7 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 .fbKind{margin-top:14px}
 
 .track-row .nx{display:none}
+.plKick{display:none}
 /* ---- Pit Board style (Nov 2026): one huge signage-style countdown on a field in the series colour, no boxes, hairline rows, a monochrome pill bar.
    Built from: Apple's clarity/deference (content first, controls quiet), Rams (as little design as possible), Apple Sports and Flighty (big condensed numerals, one colour per team/state). ---- */
 :root[data-style="board"]{--font:"Barlow","Segoe UI",system-ui,sans-serif;--font-d:"Barlow Condensed","Arial Narrow",sans-serif;
@@ -1607,6 +1608,31 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 :root[data-style="board"] #champList .track-row[data-s="cat-historic"]{--rc:#CFC8B8}
 :root[data-style="board"] #champList .track-row[data-s="cat-stock"],:root[data-style="board"] #champList .track-row[data-s="nascar"]{--rc:#FFD23F}
 :root[data-style="board"] #champList .track-row[data-s="cat-moto"],:root[data-style="board"] #champList .track-row[data-s="motogp"]{--rc:#FF8A24}
+/* Podium tab: a field with the season score, then the games as board rows */
+:root[data-style="board"] #playBody{display:flex;flex-direction:column;padding-top:0}
+:root[data-style="board"] #playBody .acH{display:none}
+:root[data-style="board"] #playBody .plKick{display:block;order:-2;margin:-6px -22px -1px;padding:30px 22px 0;background:var(--wk);color:rgba(12,12,13,.72);font-family:var(--font-d);font-weight:600;font-size:14px;letter-spacing:.24em;text-transform:uppercase}
+:root[data-style="board"] #playBody .plTotal{order:-1;margin:0 -22px;padding:10px 22px 32px;background:var(--wk);border-radius:0 0 44px 44px;gap:22px}
+:root[data-style="board"] #playBody .plTotal>div{background:transparent;border:0;padding:0;flex:1;-webkit-backdrop-filter:none;backdrop-filter:none}
+:root[data-style="board"] #playBody .plTotal b{font-size:min(30vw,124px);line-height:.82;color:#0C0C0D}
+:root[data-style="board"] #playBody .plTotal small{color:rgba(12,12,13,.72);display:block;margin-top:10px}
+:root[data-style="board"] .plRules{font-size:14px;margin-top:22px}
+:root[data-style="board"] .plRules a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+:root[data-style="board"] .plCard{position:relative;margin:0;padding:22px 6px 22px 22px}
+:root[data-style="board"] .plCard::before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:6px;border-radius:3px;background:var(--rc,var(--ink))}
+:root[data-style="board"] .plCard .plGo{position:absolute;right:6px;top:24px;float:none;margin:0;width:auto}
+:root[data-style="board"] .plCard b{padding-right:64px}
+:root[data-style="board"] .plCard[data-s="imsa"]{--rc:#F7B21B}
+:root[data-style="board"] .plCard[data-s="indycar"]{--rc:#31D58C}
+:root[data-style="board"] .plCard[data-s="f1"]{--rc:#FF4B3E}
+:root[data-style="board"] .plCard[data-s="motogp"]{--rc:#FF8A24}
+:root[data-style="board"] .plCard[data-s="nascar"]{--rc:#FFD23F}
+:root[data-style="board"] .plCard[data-s="wec"]{--rc:#5AA2FF}
+:root[data-style="board"] .plCard[data-s="gtwca"]{--rc:#8D9DFF}
+:root[data-style="board"] .plCard[data-s="gtwce"]{--rc:#FF6B7B}
+:root[data-style="board"] .plCard[data-s="igtc"]{--rc:#FF6B7B}
+:root[data-style="board"] .plCard[data-s="f2"]{--rc:#FF4B3E}
+:root[data-style="board"] .plCard[data-s="f3"]{--rc:#FF4B3E}
 :root[data-style="board"] .scard{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding-left:16px}
 :root[data-style="board"] .hubCard{margin-bottom:0;padding-top:20px;padding-bottom:20px}
 :root[data-style="board"] .hubCard h4,:root[data-style="board"] .stCard h2{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}

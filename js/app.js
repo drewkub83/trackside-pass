@@ -1513,12 +1513,13 @@ function renderPlay(){
       :done?`${done} of ${n} classes picked${when?` · locks ${esc(when)}`:""}`
       :`Call the podium${when?` · locks at the start of the race, ${esc(when)}`:""}`;
     const tap=open&&!locked?` onclick="playNow(${ENTRIES.indexOf(g)})"`:` disabled style="opacity:.7"`;
-    return `<button class="plCard"${tap}><span class="plGo">${locked?"Locked":!open?"Soon":done===n?"Edit":"Pick"}</span><b>${esc(t.short)} · ${esc(watchSeriesName({s:g.s}))}${g.label?" · "+esc(g.label):""}</b><small>${esc(fmtSpan({d:g.d,t:3}))}</small><small>${line}</small></button>`;
+    return `<button class="plCard" data-s="${g.s}"${tap}><span class="plGo">${locked?"Locked":!open?"Soon":done===n?"Edit":"Pick"}</span><b>${esc(t.short)} · ${esc(watchSeriesName({s:g.s}))}${g.label?" · "+esc(g.label):""}</b><small>${esc(fmtSpan({d:g.d,t:3}))}</small><small>${line}</small></button>`;
   };
   box.innerHTML=`<h3 class="acH">Pick your podium · ${y}</h3>
-    <p class="plRules">Before each race, call the top three drivers or cars from the official entry list. Right place scores 5, a podium finisher in the wrong place 2, more for long shots and for picking early.</p>
+    <p class="plRules">Before each race, call the top three drivers or cars from the official entry list. Right place scores 5, a podium finisher in the wrong place 2, more for long shots and for picking early. <a href="#" onclick="openPoints();return false">How points work</a></p>
+    <div class="plKick">${y} season</div>
     <div class="plTotal"><div><b>${st.pts}</b><small>points in ${y}</small></div><div><b>${st.rows.length}</b><small>weekend${st.rows.length===1?"":"s"} played</small></div></div>
-    <div class="acRow"><button class="btn quiet acBtn" onclick="openPoints()">How points work</button>${typeof sbOn==="function"&&sbOn()&&!signed?`<button class="btn primary acBtn" onclick="homeTab('account')">Sign in to play with friends</button>`:""}</div>
+    ${typeof sbOn==="function"&&sbOn()&&!signed?`<div class="acRow"><button class="btn primary acBtn" onclick="homeTab('account')">Sign in to play with friends</button></div>`:""}
     <h4 class="ptH">Games</h4>${games.length?games.map(card).join(""):`<p class="plRules">No game is open right now. The next one appears here when a race weekend is on the schedule and its entry list is published.</p>`}
     ${st.rows.length?gameRecordHtml():""}`;
 }

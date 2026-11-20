@@ -1724,4 +1724,35 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of Pit Debrief's Las Vegas free practice report and results page (pitdebrief.com, posted Nov 19-20, 2026; not reachable directly from this environment) for the session being wet with two red flags, Palmowski's 2:24.509 fastest time (1.089s clear of Billard), Gademan's 2:26.519 (4th), and Felbermayr's barrier crash and blank timesheet. motorsport.com ('Audi backs Emma Felbermayr for 2026 F1 Academy season with Rodin Motorsport') for Felbermayr's Audi Revolut F1 Team / Rodin Motorsport entry, and f1academy.com's driver pages for Billard's ART Grand Prix seat. data/standings.js for the unchanged points (Palmowski 172, champion; Gademan 119; Felbermayr 113) -- practice doesn't score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1", from:"2026-11-19", at:"2026-11-20T05:22:33Z",
+    asOf:"Current after Thursday's Practice 2 at the Las Vegas Grand Prix (Nov 19): a wet, red-flag-interrupted session that only turned into a real time-attack in its last few minutes -- George Russell grabbed top spot right at the end.",
+    groups:[
+      { h:"FP2: dries out just in time for a late shootout", items:[
+        ["George Russell (Mercedes)", "Took P1 with a lap on his final run, 1:47.272 -- 0.071s ahead of Pierre Gasly."],
+        ["Pierre Gasly (Alpine)", "Second, 0.071s back."],
+        ["Charles Leclerc (Ferrari)", "Third, 0.333s back -- the first driver to dip below 1:50 in the session, as the track kept drying."],
+        ["Isack Hadjar (Red Bull)", "Fourth, 1.135s back, despite having his fastest lap compromised when he was blocked by Ollie Bearman's Haas at the restart."],
+        ["Lewis Hamilton (Ferrari)", "6th, back in his own car after sitting out FP1 under the rookie rule -- a clean return to the Strip circuit."],
+        ["Max Verstappen (Red Bull Racing)", "13th, only setting a time in the closing minutes and reporting car problems on the radio."]
+      ] },
+      { h:"How the session played out", items:[
+        ["Wet start, drying finish", "Cars began on full wet tyres on a still-damp track after a session (FP1) that had also been largely washed out; a dry line started to emerge around the 15-minute mark and the whole field moved onto intermediates, with Leclerc remarking conditions were getting 'close to slick tyres' as the track kept drying."],
+        ["A late red flag", "A short stoppage with just over 10 minutes left cleared blown debris near the final corner before the closing dash for lap times."],
+        ["Mistakes in the damp", "Fernando Alonso ran deep at Turn 5 and nearly caught the barrier with his front wing but kept it out of the wall; Lando Norris also ran deep at a few corners."]
+      ] },
+      { h:"Still the backdrop: title long since decided, second place isn't", items:[
+        ["Kimi Antonelli (Mercedes)", "Already the 2026 champion, clinched at Mexico City three rounds early -- practice doesn't change that, and he was down in 8th on Thursday."],
+        ["Max Verstappen (Red Bull Racing)", "Second on 279 points -- leads the best fight left on the grid, for runner-up, but had a rough FP2."],
+        ["George Russell (Mercedes)", "Third on 262 -- topped FP2, the first clean sign of pace from anyone in the runner-up fight this weekend."],
+        ["Lewis Hamilton (Ferrari)", "Fourth on 261, 1 point back of Russell."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 251."],
+        ["Lando Norris (McLaren)", "Sixth on 246, the most recent race winner (Interlagos) of this group, but ran deep more than once on Thursday."]
+      ] },
+      { h:"Up next (Las Vegas local, PST)", items:[
+        ["Practice 3, Friday Nov 20, 4:30pm", "Final tuning before qualifying -- the first chance to see pace on a fully dry track if the weather cooperates."],
+        ["Qualifying, Friday Nov 20, 8:00pm", "Pole matters here -- clean air and a tow down the long straights are both hard to find once the pack bunches up."],
+        ["Race, Saturday Nov 21, 8:00pm, 50 laps / 309.958 km", "The runner-up fight (Verstappen vs. Russell vs. Hamilton vs. Leclerc) and the constructors' battle for second (Ferrari vs. Red Bull) are both still genuinely in play."]
+      ] }
+    ],
+    note:"Sources: formula1.com ('FP2: Russell beats Gasly and Leclerc to top spot in wet Las Vegas GP practice', read Nov 20, 2026) for the full classification, the wet-to-drying conditions, the mid-session red flag for track debris, Hadjar being blocked by Bearman, Verstappen's late running and car problems, and the Alonso/Norris off-line moments. data/standings.js (automatic update from api.jolpi.ca) for the unchanged points (Antonelli 390 and champion; Verstappen 279, Russell 262, Hamilton 261, Leclerc 251, Norris 246) -- practice does not score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
 ];

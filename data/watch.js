@@ -1778,4 +1778,30 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of Pit Debrief's and Motorsport Week's Las Vegas qualifying reports/results pages (pitdebrief.com and motorsportweek.com, both posted Nov 20, 2026; not reachable directly from this environment), cross-checked across several search passes, for Palmowski's pole, the wet-to-drying conditions with two red flags (one reportedly from a Countryman spin), and the top five (Palmowski, Felbermayr, Larsen, Megan Bruce, Gademan). Dive-Bomb's coverage agreed on the pole and top three but gave different intermediate lap times, so Palmowski's 2:09.915 (the figure most searches returned, credited to Pit Debrief) is given with that caveat rather than as settled official timing. Felbermayr's three-place grid penalty was reported by Pit Debrief in multiple passes but not mentioned by Dive-Bomb, so it is flagged here as reported rather than confirmed; the official F1 Academy timing/penalty sheet was not reachable to verify it directly. data/standings.js for the unchanged points (Palmowski 172, champion; Gademan 119; Felbermayr 113) -- qualifying doesn't score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js." }
+  ,{ t:"portimao", d:"2026-11-20", s:"motogp", from:"2026-11-19", at:"2026-11-20T13:25:23Z",
+    asOf:"Current after Friday's Free Practice 1 at Portimão: Marco Bezzecchi and Jorge Martin gave Aprilia a 1-2, with Marc Marquez fourth as he closes in on the title.",
+    groups:[
+      { h:"FP1, in brief: Aprilia 1-2, Marquez fourth", items:[
+        ["Marco Bezzecchi (Aprilia Racing)", "Fastest, a 1:39.002."],
+        ["Jorge Martin (Aprilia Racing)", "Second, 0.142s back -- still riding with his wrist from the Phillip Island sprint not fully healed, but reportedly in better shape for it than he was at Sepang and Qatar."],
+        ["Alex Marquez (BK8 Gresini Racing MotoGP)", "Third, 0.243s back."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Fourth, 0.259s back -- the pace he actually needs this weekend is in the Sprint and the Grand Prix, not FP1."]
+      ] },
+      { h:"The title fight: Marquez can clinch it in Saturday's Sprint", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Leads on 431 points, 60 clear of Martin. Outscoring Martin by just 2 points in Saturday's Sprint would clinch the title outright -- the first time a MotoGP premier-class title would be settled on a Saturday since Valentino Rossi's in 2002 -- and would be his eighth premier-class crown, level with Giacomo Agostini."],
+        ["Jorge Martin (Aprilia Racing)", "Second on 371. Needs to outscore Marquez by at least 24 points across this weekend's Sprint and Grand Prix just to stay within reach (36 points) going into the Valencia finale -- a tall order given Marquez's current form."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Third on 357, 74 back. His title hopes are already wafer-thin: a single Sprint point for Marquez all but ends them mathematically."]
+      ] },
+      { h:"Two late changes to the grid", items:[
+        ["Francesco Bagnaia (Ducati Lenovo Team) -- OUT", "Missing this round after breaking two metatarsals in his right foot in a Qatar Sprint crash (Fermin Aldeguer ran into the back of his bike); Ducati fitted a plate to stabilise the fracture."],
+        ["Iker Lecuona (stand-in, Ducati Lenovo Team)", "Replaces Bagnaia at the factory team for his first start on the works Ducati, after several stand-in rides for Gresini already this season."],
+        ["Yamaha", "Back on track after sitting out the entire Qatar round in a boycott over the team's own travel-safety concerns; all four of its regular riders (Quartararo, Rins, Miller) plus Augusto Fernandez, standing in for Toprak Razgatlioglu (out for the rest of the season after shoulder surgery), are at Portimão. No sporting sanction over the Qatar no-show had been confirmed in sources checked today, beyond reports that one was still being considered."]
+      ] },
+      { h:"Up next (Algarve International Circuit, Portimão -- local time, WET)", items:[
+        ["Friday Nov 20", "Practice, 3:00pm."],
+        ["Saturday Nov 21", "Free Practice 2, 10:10am; Qualifying 1, 10:50am; Qualifying 2, 11:15am; the Sprint, 3:00pm -- Marquez's first chance to clinch."],
+        ["Sunday Nov 22", "Warm-Up, 9:00am; the Grand Prix, 1:00pm."]
+      ] }
+    ],
+    note:"Sources: web search summaries of MotoGP.com ('Bezzecchi and Martin hand Aprilia 1-2 in FP1, Marc Marquez fourth fastest'), Crash.net ('2026 MotoGP Portugal - Friday Practice Results' and 'Marc Marquez previews Portugal MotoGP title shot') and GrandePremio ('Aprilia strikes first in Portugal as Bezzecchi and Martin beat Marquez in MotoGP FP1') for the FP1 times and gaps (none reachable directly from this environment, read via web search); Crash.net's 'Marc Marquez could match rare Valentino Rossi MotoGP record in Portugal' for the Saturday-clinch scenario (outscoring Martin by 2+ points in the Sprint), the Rossi 2002 comparison and the Agostini-equaling eighth title, cross-checked against this app's own data/standings.js totals (a 62-point swing to put the title out of Martin's reach matches the Sprint's 12 + the Grand Prix's 25 + Valencia's 37 points remaining); the same source and timeslive.co.za/the-race.com/autosport.com ('Bagnaia ruled out of Portimao, Ducati calls up Lecuona') for Bagnaia's foot fracture and Lecuona's call-up; grandepremio.com ('Yamaha ends MotoGP absence as four riders return in Portugal after Qatar boycott') for Yamaha's return, the Qatar boycott reason and Augusto Fernandez standing in for the injured Razgatlioglu; crash.net's 'Jorge Martin condition update for Portimao MotoGP' for Martin's wrist status and the 24-point target (checked against the 60-point gap and the 36 points Martin needs to stay within, which matches). data/standings.js for the 431/371/357 points, unchanged since Qatar (practice doesn't score). Session times from data/portimao.js." }
 ];

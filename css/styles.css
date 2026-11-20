@@ -1551,6 +1551,35 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 /* everything else: no boxes, just rows between hairlines */
 :root[data-style="board"] .sect{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2);margin:34px 0 6px;padding:0 20px}
 :root[data-style="board"] :is(.stCard,.track-row,.hubCard,.sess,.plCard,.youRow,.youTile,.appear,.sgh,.acFriend,.wkRecapCard,.alertCard,.season,.recapCard,.plTotal>div){background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding-left:6px;padding-right:6px}
+/* every other screen: the same open, hairline language */
+:root[data-style="board"] .item{background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding-left:6px;padding-right:6px}
+:root[data-style="board"] .item .date{border-radius:10px}
+:root[data-style="board"] .section h3,:root[data-style="board"] .item h4{font-family:var(--font-d);font-weight:600}
+:root[data-style="board"] .section h3{font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2)}
+:root[data-style="board"] .item h4{font-size:22px;letter-spacing:.01em;text-transform:uppercase;line-height:1.05}
+:root[data-style="board"] .ivenue{background:transparent;border:0;border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:2px 20px;margin:0 0 20px}
+:root[data-style="board"] .ivenue dl{grid-template-columns:104px 1fr;gap:0 16px}
+:root[data-style="board"] .ivenue dt,:root[data-style="board"] .ivenue dd{margin:0;padding:14px 0;border-top:1px solid var(--line);text-align:left}
+:root[data-style="board"] .ivenue dt{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2)}
+:root[data-style="board"] .ivenue dd{font-weight:500}
+:root[data-style="board"] .acH{font-family:var(--font-d);font-weight:600;font-size:46px;line-height:.95;letter-spacing:0;text-transform:uppercase}
+:root[data-style="board"] .plTotal b{font-family:var(--font-d);font-weight:600;font-size:92px;line-height:.82;letter-spacing:-.03em;color:var(--ink)}
+:root[data-style="board"] .plTotal small{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}
+:root[data-style="board"] .plCard b{font-family:var(--font-d);font-weight:600;font-size:30px;line-height:1;text-transform:uppercase;letter-spacing:.01em}
+:root[data-style="board"] .plGo{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+:root[data-style="board"] .appear>b,:root[data-style="board"] .youTile span{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}
+:root[data-style="board"] .youTile b{font-family:var(--font-d);font-weight:600;font-size:48px;line-height:.9}
+:root[data-style="board"] .track-row .tile.txt{font-family:var(--font-d);font-weight:600;letter-spacing:.06em;background:var(--tint)}
+/* map: controls stay solid so they read over any ground; sheets get a hairline */
+:root[data-style="board"] .fl .fab,:root[data-style="board"] .fl .pill{background:var(--paper);border:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.14)}
+:root[data-style="board"] .sheet,:root[data-style="board"] .mcard{border:1px solid var(--line);border-radius:28px;box-shadow:0 20px 50px rgba(0,0,0,.22)}
+/* Passport */
+:root[data-style="board"] .ppsum{background:var(--wk);color:#0C0C0D;border:0;border-radius:32px;box-shadow:none;padding:24px 22px}
+:root[data-style="board"] .ppsum .ppn{font-family:var(--font-d);font-weight:600;font-size:104px;line-height:.82;letter-spacing:-.04em;color:#0C0C0D}
+:root[data-style="board"] .ppsum .ppn small{font-family:var(--font-d);font-weight:600;font-size:18px;letter-spacing:.22em;text-transform:uppercase;color:rgba(12,12,13,.72);display:block;margin:10px 0 0}
+:root[data-style="board"] .ppsum .ppb{color:rgba(12,12,13,.72);font-family:var(--font-d);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:14px}
+:root[data-style="board"] .ppNextBox{background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding-left:6px;padding-right:6px}
+:root[data-style="board"] .ppNextBox h4,:root[data-style="board"] .ppSecT{font-family:var(--font-d);font-weight:600;letter-spacing:.24em}
 :root[data-style="board"] .scard{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding-left:16px}
 :root[data-style="board"] .hubCard{margin-bottom:0;padding-top:20px;padding-bottom:20px}
 :root[data-style="board"] .hubCard h4,:root[data-style="board"] .stCard h2{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}

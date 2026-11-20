@@ -426,6 +426,24 @@ function syncHomeTabs(id){
   const pb=nav.querySelector('[data-t="play"]'); if(pb) pb.classList.toggle("dot2",podiumOpen());
 }
 /* a quiet dot on the Podium tab while a game is open and you have not finished your picks */
+/* Pit Board's glass lens: a pill that glides between the tabs (springy), magnifies the icon under it and shows rainbow edges while it moves.
+   Equal-width tabs mean the lens only has to slide; the other styles do not show it (.lens is display:none there). */
+function lensSync(nav,instant){
+  const on=nav.querySelector("button.on"), l=nav.querySelector(".lens"); if(!on||!l||!nav.offsetWidth) return;
+  const x=on.offsetLeft, w=on.offsetWidth; if(l.dataset.x===String(x)&&l.dataset.w===String(w)) return;
+  const first=!l.dataset.x; l.dataset.x=x; l.dataset.w=w;
+  if(first||instant) l.style.transition="none";
+  l.style.setProperty("--lx",x+"px"); l.style.setProperty("--lw",w+"px");
+  if(first||instant){ void l.offsetWidth; l.style.transition=""; } else { l.classList.add("moving"); clearTimeout(l._t); l._t=setTimeout(()=>l.classList.remove("moving"),560); }
+}
+function lensInit(){
+  document.querySelectorAll(".tabs").forEach(nav=>{
+    if(!nav.querySelector(".lens")) nav.insertAdjacentHTML("afterbegin",'<i class="lens" aria-hidden="true"></i>');
+    if(!nav._lo){ nav._lo=new MutationObserver(()=>lensSync(nav)); nav._lo.observe(nav,{attributes:true,subtree:true,attributeFilter:["class","hidden"]}); }
+    lensSync(nav,true);
+  });
+}
+lensInit(); window.addEventListener("resize",()=>document.querySelectorAll(".tabs").forEach(n=>lensSync(n,true)));
 function podiumOpen(){
   if(typeof ENTRIES==="undefined"||typeof TRACKS==="undefined") return false; const today=localToday();
   try{ return ENTRIES.some(g=>TRACKS.some(x=>x.id===g.t)&&!gameResult(g)&&daysBetween(today,g.d)<=goDays()&&!gameLocked(g)&&g.classes.some(c=>(picksOf(g)[c.h]||[]).length<3)); }catch(e){ return false; }
@@ -2726,7 +2744,7 @@ function renderThemeUI(p){
    index.html applies it before first paint so there is no flash. */
 const STYLE_KEY=K.style, STYLES=[["classic","Classic"],["race","Race Control"],["editorial","Editorial"],["board","Pit Board"]];
 function stylePref(){ try{ const v=localStorage.getItem(STYLE_KEY); return v==="race"?"race":v==="board"?"board":v==="editorial"?"editorial":(v==="ticket"||v==="program")?"board":"classic"; }catch(e){ return "classic"; } }   /* "program" was a short-lived style that became Ticket Stubs */
-function applyStyle(){ const r=document.documentElement; if(stylePref()!=="classic") r.setAttribute("data-style",stylePref()); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
+function applyStyle(){ setTimeout(()=>{ lensInit(); document.querySelectorAll(".tabs").forEach(n=>lensSync(n,true)); },60); const r=document.documentElement; if(stylePref()!=="classic") r.setAttribute("data-style",stylePref()); else r.removeAttribute("data-style"); renderStyleUI(); if(typeof cur!=="undefined"&&cur&&document.getElementById("mapSvg")){ const v=view; renderMap(); view=v; applyView(); } }
 function renderStyleUI(){ const p=stylePref();
   document.querySelectorAll(".styleSeg").forEach(el=>{ el.innerHTML=STYLES.map(([k,l])=>`<button class="${k===p?"on":""}" aria-pressed="${k===p}" onclick="setStyle('${k}')"><i class="sp sp-${k}"><u></u><u></u></i><span>${l}</span></button>`).join(""); });
   document.querySelectorAll(".styleNote").forEach(el=>el.textContent=p==="race"?"Bold condensed type, a black header with a checkered strip, orange accents.":p==="board"?"Open and bold: one huge signage-style countdown on a field in the series colour, no boxes, hairline rows.":p==="editorial"?"A quiet magazine look: black on off-white, hairline rules, one red accent and a huge countdown.":"The original soft look."); }

@@ -1549,6 +1549,16 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 :root[data-style="board"] #obv .obNote{color:var(--ink-2)}
 :root[data-style="board"] #obv .obSkip{font-family:var(--font-d);font-weight:600;letter-spacing:.2em;text-transform:uppercase;font-size:14px}
 :root[data-style="board"] #obv .obDots i.on,:root[data-style="board"] #obv .obDots .on{background:var(--ink)}
+/* schedule rows: qualifying, race, fan events and the session on track get a clean bar on the left */
+:root[data-style="board"] .sess{position:relative}
+:root[data-style="board"] .sess.sess{padding-left:24px}
+:root[data-style="board"] .sess.k-q,:root[data-style="board"] .sess.k-r,:root[data-style="board"] .sess.k-f,:root[data-style="board"] .sess.live{padding-left:24px;background:transparent}
+:root[data-style="board"] .sess.k-q::before,:root[data-style="board"] .sess.k-r::before,:root[data-style="board"] .sess.k-f::before,:root[data-style="board"] .sess.live::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:6px;border-radius:3px;opacity:1}
+:root[data-style="board"] .sess.k-q::before{background:var(--kq)}
+:root[data-style="board"] .sess.k-r::before{background:var(--kr)}
+:root[data-style="board"] .sess.k-f::before{background:var(--kf)}
+:root[data-style="board"] .sess.live{box-shadow:none;background:color-mix(in srgb,#2FA36B 12%,transparent)}
+:root[data-style="board"] .sess.live::before{background:#2FA36B}
 :root[data-style="board"] .scard{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding-left:16px}
 :root[data-style="board"] .hubCard{margin-bottom:0;padding-top:20px;padding-bottom:20px}
 :root[data-style="board"] .hubCard h4,:root[data-style="board"] .stCard h2{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}

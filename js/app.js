@@ -434,7 +434,7 @@ function lensSync(nav,instant){
   const first=!l.dataset.x; l.dataset.x=x; l.dataset.w=w;
   if(first||instant) l.style.transition="none";
   l.style.setProperty("--lx",x+"px"); l.style.setProperty("--lw",w+"px");
-  if(first||instant){ void l.offsetWidth; l.style.transition=""; } else { l.classList.add("moving"); clearTimeout(l._t); l._t=setTimeout(()=>l.classList.remove("moving"),560); }
+  if(first||instant){ void l.offsetWidth; l.style.transition=""; } else { l.classList.add("moving"); clearTimeout(l._t); l._t=setTimeout(()=>l.classList.remove("moving"),440); }
 }
 function lensInit(){
   document.querySelectorAll(".tabs").forEach(nav=>{

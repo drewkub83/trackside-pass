@@ -1755,4 +1755,27 @@ const WATCH = [
       ] }
     ],
     note:"Sources: formula1.com ('FP2: Russell beats Gasly and Leclerc to top spot in wet Las Vegas GP practice', read Nov 20, 2026) for the full classification, the wet-to-drying conditions, the mid-session red flag for track debris, Hadjar being blocked by Bearman, Verstappen's late running and car problems, and the Alonso/Norris off-line moments. data/standings.js (automatic update from api.jolpi.ca) for the unchanged points (Antonelli 390 and champion; Verstappen 279, Russell 262, Hamilton 261, Leclerc 251, Norris 246) -- practice does not score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1academy", from:"2026-11-19", at:"2026-11-20T07:24:35Z",
+    asOf:"Current after F1 Academy's Qualifying at Las Vegas (Thursday Nov 19, night local time): Alisha Palmowski took pole on a drying, red-flag-hit track, with Emma Felbermayr and Alba Larsen completing the top three -- but a practice-incident grid penalty for Felbermayr could still shuffle Friday's reverse-grid order.",
+    groups:[
+      { h:"Qualifying, in brief", items:[
+        ["Alisha Palmowski (Campos Racing)", "Took her seventh pole of the season, reported at 2:09.915, as conditions evolved from wet to a drying track through two red flags. Doesn't move the title she already has, but it's another reminder she's fast on a circuit new to the series."],
+        ["Emma Felbermayr (Audi Revolut F1 Team / Rodin Motorsport)", "Qualified second, a big improvement after Thursday's practice crash -- but reportedly picked up a three-place grid penalty for both of this weekend's races over a Free Practice incident, which (if it stands) would drop her back and help Gademan in the 2nd-place fight."],
+        ["Alba Larsen (ART Grand Prix)", "Third, rounding out the top three."],
+        ["Nina Gademan (MP Motorsport)", "Qualified fifth, behind Felbermayr and Megan Bruce -- a quieter session than she'll want with the 2nd-place championship fight still live."]
+      ] },
+      { h:"Why it matters: only two sessions left, no more practice", items:[
+        ["Reverse Grid Race sets up the finale", "Friday's Reverse Grid Race (grid set by reversing today's qualifying order, before any penalties) sets the grid for Saturday's Feature Race -- the last race of the 2026 season and the only one left that can move the Gademan-Felbermayr points gap."]
+      ] },
+      { h:"Still the backdrop: the title's settled, 2nd place isn't", items:[
+        ["Alisha Palmowski", "Already the 2026 champion, clinched at Austin -- nothing left this weekend changes that."],
+        ["Nina Gademan", "Leads the fight for 2nd, 119 to 113 over Felbermayr, with the Reverse Grid Race and Feature Race left to settle it."],
+        ["Emma Felbermayr", "6 points back of Gademan, with a possible grid penalty for both remaining races on top of that."]
+      ] },
+      { h:"Up next (Las Vegas local, PST)", items:[
+        ["Reverse Grid Race, Friday Nov 20, 6:15pm", "Grid set by reversing qualifying's order; sets the grid for Saturday's Feature Race."],
+        ["Feature Race, Saturday Nov 21, 4:20pm", "The season's last race, and the only one that can still move the 2nd-place fight between Gademan and Felbermayr."]
+      ] }
+    ],
+    note:"Sources: web search summaries of Pit Debrief's and Motorsport Week's Las Vegas qualifying reports/results pages (pitdebrief.com and motorsportweek.com, both posted Nov 20, 2026; not reachable directly from this environment), cross-checked across several search passes, for Palmowski's pole, the wet-to-drying conditions with two red flags (one reportedly from a Countryman spin), and the top five (Palmowski, Felbermayr, Larsen, Megan Bruce, Gademan). Dive-Bomb's coverage agreed on the pole and top three but gave different intermediate lap times, so Palmowski's 2:09.915 (the figure most searches returned, credited to Pit Debrief) is given with that caveat rather than as settled official timing. Felbermayr's three-place grid penalty was reported by Pit Debrief in multiple passes but not mentioned by Dive-Bomb, so it is flagged here as reported rather than confirmed; the official F1 Academy timing/penalty sheet was not reachable to verify it directly. data/standings.js for the unchanged points (Palmowski 172, champion; Gademan 119; Felbermayr 113) -- qualifying doesn't score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js." }
 ];

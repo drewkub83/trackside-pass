@@ -944,7 +944,7 @@ function computeRoute(){
   const d="M"+sm.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L");
   layer.innerHTML=`<path class="route-c" d="${d}"/><path class="route" d="${d}"/><circle cx="${o.x}" cy="${o.y}" r="5" fill="#fff" stroke="var(--gate)" stroke-width="2.5"/>`;
   const mins=Math.max(1,Math.round(metres/80)), elev=routeElevation(sm);
-  document.getElementById("dirStat").textContent=`${distLabel(metres)} · about ${mins} min walk`;
+  document.getElementById("dirStat").innerHTML=`<span class="stD">${distLabel(metres)}<span class="stSep"> · </span></span><span class="stA">about </span><span class="stMin">${mins}</span><span class="stT"> min walk</span>`;
   document.getElementById("dirNote").textContent=metres>0?[hillNote(elev),"Follows roads where possible and crosses the track only at the bridges and tunnel."].filter(Boolean).join(" "):"";
   updateHeading();
 }

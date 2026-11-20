@@ -1517,6 +1517,7 @@ html.wide #infoModal .mcard{max-width:none;max-height:calc(100dvh - 40px);border
 textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 .fbKind{margin-top:14px}
 
+.track-row .nx{display:none}
 /* ---- Pit Board style (Nov 2026): one huge signage-style countdown on a field in the series colour, no boxes, hairline rows, a monochrome pill bar.
    Built from: Apple's clarity/deference (content first, controls quiet), Rams (as little design as possible), Apple Sports and Flighty (big condensed numerals, one colour per team/state). ---- */
 :root[data-style="board"]{--font:"Barlow","Segoe UI",system-ui,sans-serif;--font-d:"Barlow Condensed","Arial Narrow",sans-serif;
@@ -1580,6 +1581,32 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 :root[data-style="board"] .ppsum .ppb{color:rgba(12,12,13,.72);font-family:var(--font-d);font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:14px}
 :root[data-style="board"] .ppNextBox{background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding-left:6px;padding-right:6px}
 :root[data-style="board"] .ppNextBox h4,:root[data-style="board"] .ppSecT{font-family:var(--font-d);font-weight:600;letter-spacing:.24em}
+/* Series tab: a departure board. Giant category names, a colour bar per category or series, the next race as a date on the right */
+:root[data-style="board"] #champList .track-row{position:relative;align-items:center;gap:14px;min-height:108px;padding:22px 6px 22px 22px}
+:root[data-style="board"] #champList .track-row::before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:6px;border-radius:3px;background:var(--rc,var(--ink))}
+:root[data-style="board"] #champList .track-row .tile.txt{display:none}
+:root[data-style="board"] #champList .track-row>div:not(.nx){flex:1;min-width:0}
+:root[data-style="board"] #champList .track-row h2{white-space:normal;overflow:visible;text-overflow:clip}
+:root[data-style="board"] #champList .track-row .mnext{display:none}
+:root[data-style="board"] #champList .track-row.cat h2{font-size:44px;line-height:.9;letter-spacing:0}
+:root[data-style="board"] #champList .track-row.series:not(.cat) h2{font-size:34px;line-height:.95}
+:root[data-style="board"] #champList .track-row .meta{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);margin-top:8px}
+:root[data-style="board"] #champList .track-row .mfull{display:none}
+:root[data-style="board"] #champList .track-row .chev{display:none}
+:root[data-style="board"] .track-row .nx{display:flex;flex-direction:column;align-items:flex-end;margin-left:auto;text-align:right;flex:none}
+:root[data-style="board"] .track-row .nx b{font-family:var(--font-d);font-weight:600;font-size:28px;line-height:.95;text-transform:uppercase;letter-spacing:0}
+:root[data-style="board"] .track-row .nx i{font-style:normal;font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin-top:5px}
+:root[data-style="board"] #serListTitle{font-size:34px}
+:root[data-style="board"] #champList .track-row[data-s="cat-openwheel"],:root[data-style="board"] #champList .track-row[data-s="f1"]{--rc:#FF4B3E}
+:root[data-style="board"] #champList .track-row[data-s="indycar"]{--rc:#31D58C}
+:root[data-style="board"] #champList .track-row[data-s="cat-endurance"],:root[data-style="board"] #champList .track-row[data-s="imsa"]{--rc:#F7B21B}
+:root[data-style="board"] #champList .track-row[data-s="wec"]{--rc:#5AA2FF}
+:root[data-style="board"] #champList .track-row[data-s="cat-gt"],:root[data-style="board"] #champList .track-row[data-s="gtwce"],:root[data-style="board"] #champList .track-row[data-s="igtc"]{--rc:#FF6B7B}
+:root[data-style="board"] #champList .track-row[data-s="gtwca"]{--rc:#8D9DFF}
+:root[data-style="board"] #champList .track-row[data-s="cat-onemake"]{--rc:#C58BFF}
+:root[data-style="board"] #champList .track-row[data-s="cat-historic"]{--rc:#CFC8B8}
+:root[data-style="board"] #champList .track-row[data-s="cat-stock"],:root[data-style="board"] #champList .track-row[data-s="nascar"]{--rc:#FFD23F}
+:root[data-style="board"] #champList .track-row[data-s="cat-moto"],:root[data-style="board"] #champList .track-row[data-s="motogp"]{--rc:#FF8A24}
 :root[data-style="board"] .scard{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding-left:16px}
 :root[data-style="board"] .hubCard{margin-bottom:0;padding-top:20px;padding-bottom:20px}
 :root[data-style="board"] .hubCard h4,:root[data-style="board"] .stCard h2{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}

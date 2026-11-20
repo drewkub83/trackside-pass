@@ -299,13 +299,15 @@ function serBar(name){ const t=document.getElementById("serListTitle"), b=docume
 let serCat=null;   /* the category open on the Series tab (null = the category list) */
 function openSerCat(id){ serCat=id; renderChampList(); const l=document.getElementById("champList"); if(l){ l.classList.remove("catIn"); void l.offsetWidth; l.classList.add("catIn"); } const sc=document.getElementById("seriesList"); if(sc) sc.scrollTop=0; window.scrollTo(0,0); }
 function champCat(c){ return CATS.some(x=>x.id===c.cat)?c.cat:"other"; }
+/* the next race on the right of a Series row (shown by the Pit Board style only) */
+function nxOf(p){ return p&&p.e&&p.t?`<span class="nx"><b>${fmt(p.e.d)}</b><i>${esc(p.t.short)}</i></span>`:""; }
 function renderChampList(){
   const el=document.getElementById("champList"); if(!el) return;
   const ordered=orderedChamps().filter(followed);
   const tlen=t=>{ const n=String(t).length; return n>=9?" xl":n>=6?" lg":""; };
   const row=c=>{ const mk=typeof seriesMark==="function"?seriesMark(c.id,60):"", n=c.showAll?TRACKS.length:orderOf(c).length+stopsOf(c).length, same=!mk&&String(c.tile).toLowerCase()===String(c.name).toLowerCase();
     return `<li><button class="track-row series${same?" same":""}" data-s="${c.id}" onclick="openSeries('${c.id}')"><span class="tile txt${mk?" mk":tlen(c.tile)}">${mk||c.tile}</span>
-      <div><h2>${c.name}</h2><div class="meta"><span class="mfull">${c.full}<span class="msep"> · </span></span>${n} venue${n===1?"":"s"}</div></div>
+      <div><h2>${c.name}</h2><div class="meta"><span class="mfull">${c.full}<span class="msep"> · </span></span>${n} venue${n===1?"":"s"}</div></div>${nxOf(orderOf(c)[0])}
       <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; };
   const cats=[...CATS.map(x=>x.id),"other"].filter(id=>ordered.some(c=>champCat(c)===id));
   /* five or more series across two or more categories: a list of categories, each opening its own series */
@@ -318,7 +320,7 @@ function renderChampList(){
       return; }
     el.innerHTML=cats.map(id=>{ const ct=CATS.find(x=>x.id===id)||{id:"other",name:"Other series",tile:"MORE"}, list=ordered.filter(c=>champCat(c)===id), nxt=list.map(c=>orderOf(c)[0]).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d))[0];
       return `<li><button class="track-row series cat" data-s="cat-${ct.id}" onclick="openSerCat('${ct.id}')"><span class="tile txt${tlen(ct.tile)}">${ct.tile}</span>
-        <div><h2>${ct.name}</h2><div class="meta">${list.length} series${nxt?" · next "+nxt.t.short+", "+fmt(nxt.e.d):""}</div></div>
+        <div><h2>${ct.name}</h2><div class="meta">${list.length} series${nxt?`<span class="mnext"> · next ${nxt.t.short}, ${fmt(nxt.e.d)}</span>`:""}</div></div>${nxOf(nxt)}
         <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></li>`; }).join("");
     return; }
   /* once the series you follow span more than one part of the world, group them under region headings (your own

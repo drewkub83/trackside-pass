@@ -1,7 +1,7 @@
 /* First-run walkthrough: a short full-screen tour for a new install (Welcome, what the app does, series you follow, a look, the
    at-the-track switches, an optional account). It appears once, only on a fresh install (index.html records `window.__fresh`
    before anything is saved), and can be replayed from Settings > About. It uses the app's own tokens, so it follows whichever
-   style (Classic, Race Control, Ticket Stubs, Editorial) and light/dark theme is on, and the choices it offers are the real
+   style (Classic, Race Control, Editorial, Pit Board) and light/dark theme is on, and the choices it offers are the real
    settings (toggleFollow, setStyle, toggleAuto, toggleAlerts, openAccount): nothing is stored twice. */
 let obStep = 0;
 const OB_ICON = {
@@ -21,7 +21,7 @@ function obSeriesRows() {
   return CHAMPS.filter(c => !c.viaSupport).map(c => `<div class="obRow"><div><b>${esc(c.name)}</b><small>${esc(c.full || "")}</small></div><button class="sw${followed(c) ? " on" : ""}" role="switch" aria-checked="${followed(c)}" aria-label="Follow ${esc(c.name)}" onclick="obFollow('${c.id}')"><i></i></button></div>`).join("");
 }
 function obLookRows() {
-  const p = stylePref(), note = { classic: "The original soft look.", race: "Bold condensed type, a black header and orange accents.", ticket: "Race weekends as paper tickets with a coloured date stub.", editorial: "A quiet black-on-white magazine look." };
+  const p = stylePref(), note = { classic: "The original soft look.", race: "Bold condensed type, a black header and orange accents.", board: "Open pages with one huge countdown on a field in the series colour.", editorial: "A quiet black-on-white magazine look." };
   return STYLES.map(([k, l]) => `<button class="obLook${k === p ? " on" : ""}" onclick="obLook('${k}')"><b>${l}</b><small>${note[k]}</small></button>`).join("");
 }
 function obHtml(name) {

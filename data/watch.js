@@ -1701,4 +1701,27 @@ const WATCH = [
       ] }
     ],
     note:"Sources: formula1.com ('FP1: Wet conditions limit running in first practice at Las Vegas Grand Prix', read Nov 20, 2026) for the session being washed out with no lap times, the weather, Antonelli's and Albon's radio messages, Leclerc's slide with no red flag, and the Beganovic/Hirakawa/Crawford driver changes. racingnews365.com ('Ferrari replace Lewis Hamilton for Las Vegas GP first practice') and planetf1.com ('Lewis Hamilton to miss Las Vegas Grand Prix FP1 as Ferrari junior steps in') for Beganovic's session being Ferrari's season-closing rookie-rule outing, confirmed as not performance-related, and his having already covered Barcelona, Austria and Brazil this year. gpblog.com ('Hamilton to sit out Las Vegas FP1 as Ferrari give Beganovic another chance') cross-checked for the same. No source checked today stated Aston Martin's specific reason for running Crawford over Alonso this weekend, so that is left open rather than guessed; formula1.com's own Japanese GP report confirms Aston Martin has used Crawford's rookie FP1 slot before in 2026. data/standings.js (automatic update from api.jolpi.ca) for the unchanged points (Antonelli 390 and champion; Verstappen 279, Russell 262, Hamilton 261, Leclerc 251, Norris 246) -- practice does not score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1academy", from:"2026-11-19", at:"2026-11-20T03:22:48Z",
+    asOf:"Current after F1 Academy's Free Practice at Las Vegas (Thursday Nov 19): Alisha Palmowski, already the 2026 champion, was fastest in a wet, red-flag-hit session, while Emma Felbermayr crashed early and goes into qualifying with almost no laps on the Strip circuit.",
+    groups:[
+      { h:"Practice, in brief", items:[
+        ["Alisha Palmowski (Campos Racing)", "Fastest in a rain-affected session that had two red flags, with a 2:24.509 -- 1.089s clear of Lisa Billard (ART Grand Prix). Doesn't change anything in the standings now that she's already champion, but it's a reminder she's still quick on a circuit new to the series this year."],
+        ["Emma Felbermayr (Audi Revolut F1 Team / Rodin Motorsport)", "Hit the barriers early, triggering one of the session's red flags, and was left with no recorded time -- the worst possible prep on an unfamiliar street circuit for a driver who needs every lap to close a 6-point gap on Gademan."],
+        ["Nina Gademan (MP Motorsport)", "Fourth at 2:26.519, miles ahead of Felbermayr's blank timesheet -- exactly the kind of gap that counts in the last head-to-head weekend of the year."]
+      ] },
+      { h:"Why it matters: this is the only practice of the weekend", items:[
+        ["No second chance before qualifying", "The Strip circuit gets just one F1 Academy practice session, so Felbermayr can't make up the laps she lost before Thursday night's qualifying sets Friday's Reverse Grid Race grid."]
+      ] },
+      { h:"Still the backdrop: the title's settled, 2nd place isn't", items:[
+        ["Alisha Palmowski", "Already the 2026 champion, clinched at Austin -- nothing left this weekend changes that."],
+        ["Nina Gademan", "Leads the fight for 2nd, 119 to 113 over Felbermayr, with the Reverse Grid Race and Feature Race left to settle it."],
+        ["Emma Felbermayr", "6 points back of Gademan, and now also short on practice running after the crash."]
+      ] },
+      { h:"Up next (Las Vegas local, PST)", items:[
+        ["Qualifying, Thursday Nov 19, 9:30pm", "Sets the grid for Friday's Reverse Grid Race -- Felbermayr goes in with barely any laps on this track."],
+        ["Reverse Grid Race, Friday Nov 20, 6:15pm", "Grid set by reversing qualifying's order; sets the grid for Saturday's Feature Race."],
+        ["Feature Race, Saturday Nov 21, 4:20pm", "The season's last race, and the only one that can still move the 2nd-place fight between Gademan and Felbermayr."]
+      ] }
+    ],
+    note:"Sources: web search summaries of Pit Debrief's Las Vegas free practice report and results page (pitdebrief.com, posted Nov 19-20, 2026; not reachable directly from this environment) for the session being wet with two red flags, Palmowski's 2:24.509 fastest time (1.089s clear of Billard), Gademan's 2:26.519 (4th), and Felbermayr's barrier crash and blank timesheet. motorsport.com ('Audi backs Emma Felbermayr for 2026 F1 Academy season with Rodin Motorsport') for Felbermayr's Audi Revolut F1 Team / Rodin Motorsport entry, and f1academy.com's driver pages for Billard's ART Grand Prix seat. data/standings.js for the unchanged points (Palmowski 172, champion; Gademan 119; Felbermayr 113) -- practice doesn't score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
 ];

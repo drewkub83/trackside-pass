@@ -1804,4 +1804,31 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of MotoGP.com ('Bezzecchi and Martin hand Aprilia 1-2 in FP1, Marc Marquez fourth fastest'), Crash.net ('2026 MotoGP Portugal - Friday Practice Results' and 'Marc Marquez previews Portugal MotoGP title shot') and GrandePremio ('Aprilia strikes first in Portugal as Bezzecchi and Martin beat Marquez in MotoGP FP1') for the FP1 times and gaps (none reachable directly from this environment, read via web search); Crash.net's 'Marc Marquez could match rare Valentino Rossi MotoGP record in Portugal' for the Saturday-clinch scenario (outscoring Martin by 2+ points in the Sprint), the Rossi 2002 comparison and the Agostini-equaling eighth title, cross-checked against this app's own data/standings.js totals (a 62-point swing to put the title out of Martin's reach matches the Sprint's 12 + the Grand Prix's 25 + Valencia's 37 points remaining); the same source and timeslive.co.za/the-race.com/autosport.com ('Bagnaia ruled out of Portimao, Ducati calls up Lecuona') for Bagnaia's foot fracture and Lecuona's call-up; grandepremio.com ('Yamaha ends MotoGP absence as four riders return in Portugal after Qatar boycott') for Yamaha's return, the Qatar boycott reason and Augusto Fernandez standing in for the injured Razgatlioglu; crash.net's 'Jorge Martin condition update for Portimao MotoGP' for Martin's wrist status and the 24-point target (checked against the 60-point gap and the 36 points Martin needs to stay within, which matches). data/standings.js for the 431/371/357 points, unchanged since Qatar (practice doesn't score). Session times from data/portimao.js." }
+  ,{ t:"portimao", d:"2026-11-20", s:"motogp", from:"2026-11-20", at:"2026-11-20T16:23:06Z",
+    asOf:"Current after all of Friday's running at Portimão (FP1 and the afternoon Practice): Alex Marquez topped the Practice session, Bezzecchi topped FP1, and both Marc Marquez and Jorge Martin were in the mix for Saturday's direct-to-Q2 cutoff -- the exact combined order wasn't settled in the reports checked.",
+    groups:[
+      { h:"Friday, in brief: a Marquez (Alex) tops Practice", items:[
+        ["Alex Marquez (BK8 Gresini Racing MotoGP)", "Fastest in the afternoon Practice session, a 1:37.350, ahead of Fabio Di Giannantonio (VR46 Racing Team)."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Fastest in the morning's FP1 (1:39.002); reporting checked today didn't give his final Practice time."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Fourth in FP1, sixth in the afternoon Practice -- solid rather than spectacular, but Friday pace isn't what decides his title shot; that's Saturday's Sprint."],
+        ["Jorge Martin (Aprilia Racing)", "Second in FP1 (0.142s off Bezzecchi); live updates during Practice had him shuffling between roughly 9th and 11th in the closing minutes, so whether he goes straight to Q2 or has to come through Q1 on Saturday isn't confirmed by the sources checked today -- check Saturday's qualifying for the settled list."]
+      ] },
+      { h:"The title fight: unchanged by Friday practice", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Still leads on 431 points, 60 clear of Martin -- practice doesn't score, so Saturday's Sprint remains his first chance to clinch (outscoring Martin by just 2 points there would do it outright, the first MotoGP title ever settled in a Sprint)."],
+        ["Jorge Martin (Aprilia Racing)", "Second on 371, needing a big Sprint-plus-Grand Prix swing just to keep the title alive into Valencia."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Third on 357, 74 back and mathematically on the edge of elimination."]
+      ] },
+      { h:"Yamaha's Qatar boycott: no sporting penalty, a financial one still being worked out", items:[
+        ["FIM president Jorge Viegas", "Said Yamaha will not face a sporting sanction (no points or grid penalty) for sitting out the Qatar round, since there is no rule covering a breach of the commercial contract between a team and the MotoGP Group."],
+        ["Financial penalty", "Reports say Yamaha will instead face a fine over that contract breach, with MotoGP's rules on this now under review -- the exact amount wasn't confirmed in sources checked today. Yamaha's four regular riders plus stand-in Augusto Fernandez are on track at Portimão as previously reported."]
+      ] },
+      { h:"Unchanged from the FP1 entry", items:[
+        ["Francesco Bagnaia (Ducati Lenovo Team) -- OUT", "Still missing the round with his fractured right foot; Iker Lecuona continues to stand in on the factory Ducati."]
+      ] },
+      { h:"Up next (Algarve International Circuit, Portimão -- local time, WET)", items:[
+        ["Saturday Nov 21", "Free Practice 2, 10:10am; Qualifying 1, 10:50am; Qualifying 2, 11:15am; the Sprint, 3:00pm -- Marquez's first chance to clinch."],
+        ["Sunday Nov 22", "Warm-Up, 9:00am; the Grand Prix, 1:00pm."]
+      ] }
+    ],
+    note:"Sources: web search summaries (none reachable directly from this environment) of a Crash.net Friday-practice live blog ('MotoGP Portugal LIVE: Friday practice reaction as Alex Marquez leads the way') for the Practice session's fastest times (Alex Marquez 1:37.350, Di Giannantonio second, Marc Marquez sixth) and for Martin's and Marc Marquez's unsettled late-session positions around the Q2 cutoff; Speedweek.com and GPOne.com's live FP1 coverage, consistent with the prior entry's FP1 times, for Bezzecchi's FP1 time; Crash.net's 'Yamaha returns for Portugal MotoGP as Qatar penalty fate still unclear' and 'Yamaha won't face sporting penalty for missing Qatar MotoGP, FIM president states' for the no-sporting-sanction/financial-penalty update (a Spanish-language motor16.com summary matched this: a fine with no points lost, rules under review, no amount given). data/standings.js for the unchanged 431/371/357 points (practice doesn't score). Session times from data/portimao.js." }
 ];

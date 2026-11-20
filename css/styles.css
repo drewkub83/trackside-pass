@@ -1653,30 +1653,6 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 :root[data-style="board"] .youTile small{color:var(--ink-2)}
 :root[data-style="board"] .acFriend{padding-top:14px;padding-bottom:14px}
 :root[data-style="board"] .acIn{border-radius:0;background:transparent;border:0;border-bottom:1px solid var(--ink);padding-left:0}
-/* Settings: the list is a numbered index; the pages are hairline rows with quiet controls */
-:root[data-style="board"] #settings{counter-reset:setrow}
-:root[data-style="board"] #settings .sgrp{counter-increment:setrow;margin:0 14px}
-:root[data-style="board"] #settings .sgh{min-height:96px;padding:20px 6px;align-items:center}
-:root[data-style="board"] #settings .sgh b{font-family:var(--font-d);font-weight:600;font-size:38px;line-height:.95;letter-spacing:.005em;text-transform:uppercase}
-:root[data-style="board"] #settings .sgh small{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);margin-top:8px}
-:root[data-style="board"] #settings .sgh svg{display:none}
-:root[data-style="board"] #settings .sgh::after{content:counter(setrow,decimal-leading-zero);font-family:var(--font-d);font-weight:600;font-size:30px;line-height:1;color:var(--ink-2);flex:none}
-:root[data-style="board"] .auto{background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;margin:0 14px;padding:18px 6px}
-:root[data-style="board"] .auto b{font-family:var(--font-d);font-weight:600;font-size:22px;text-transform:uppercase;letter-spacing:.01em}
-:root[data-style="board"] .sgb .auto,:root[data-style="board"] .sgb .appear{margin-bottom:0}
-:root[data-style="board"] .sgb .appear{margin-left:14px;margin-right:14px;padding-top:18px;padding-bottom:18px}
-:root[data-style="board"] .sw{background:var(--tint);border:1px solid var(--line)}
-:root[data-style="board"] .sw i{background:var(--ink-2);box-shadow:none}
-:root[data-style="board"] .sw.on{background:var(--ink);border-color:var(--ink)}
-:root[data-style="board"] .sw.on i{background:var(--paper)}
-:root[data-style="board"] .appear .seg{background:transparent;padding:0;gap:18px;border-radius:0;border-bottom:1px solid var(--line)}
-:root[data-style="board"] .appear .seg button{flex:none;border-radius:0;padding:12px 2px;font-family:var(--font-d);font-weight:600;font-size:15px;letter-spacing:.18em;text-transform:uppercase;background:transparent;box-shadow:none;border-bottom:3px solid transparent;margin-bottom:-1px;color:var(--ink-2)}
-:root[data-style="board"] .appear .seg button.on{color:var(--ink);border-bottom-color:var(--wk,var(--ink));background:transparent;box-shadow:none}
-:root[data-style="board"] .styleGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-:root[data-style="board"] .styleGrid button{border-radius:14px;background:transparent;border:2px solid var(--line)}
-:root[data-style="board"] .styleGrid button.on{border-color:var(--ink);background:transparent}
-:root[data-style="board"] .styleGrid button span{font-family:var(--font-d);font-weight:600;font-size:15px;letter-spacing:.14em;text-transform:uppercase}
-:root[data-style="board"] .sgsub{font-family:var(--font-d);font-weight:600;letter-spacing:.24em}
 :root[data-style="board"] .scard{background:transparent;border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);padding-left:16px}
 :root[data-style="board"] .hubCard{margin-bottom:0;padding-top:20px;padding-bottom:20px}
 :root[data-style="board"] .hubCard h4,:root[data-style="board"] .stCard h2{font-family:var(--font-d);font-weight:600;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}

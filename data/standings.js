@@ -78,7 +78,7 @@ const STANDINGS = [
   { s:"f2", asOf:"Current as of 2026-11-20, from www.fiaformula2.com (the series' own standings page).",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Rafael Câmara", pts:207 },
+        { pos:1, who:"Rafael Camara", pts:207 },
         { pos:2, who:"Nikola Tsolov", pts:200 },
         { pos:3, who:"Alexander Dunne", pts:189 },
         { pos:4, who:"Gabriele Mini", pts:163 },

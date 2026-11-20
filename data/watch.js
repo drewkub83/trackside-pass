@@ -1671,4 +1671,34 @@ const WATCH = [
       ] }
     ],
     note:"Sources: data/standings.js (automatic update from the MotoGP results service, read after the Qatar Grand Prix, Nov 8) for the 431/371/357 points, carried over unchanged from the prior entry for the next MotoGP round (Portimao) because no round has run since. Yamaha boycott and sanctions-threat status carried over, re-confirmed as still unresolved, from web search summaries of crash.net's, the-race.com's and aljazeera.com's Nov 1-2 coverage of the boycott and MotoGP's response (none reachable directly from this environment); no newer ruling was found in sources checked today (Nov 19). Circuit character, length and finale history from web search summaries of racingcircuits.info and boxrepsol.com's circuit profiles; the 2025 Valencia result (Bezzecchi's win, the race's return after the 2024 flood-related move) cross-checked across flashscore.com and fim-moto.com. Race distance/lap count from motogp.com's official Valencia race page (via web search summary). Session times from data/valencia.js." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1", from:"2026-11-19", at:"2026-11-20T02:22:07Z",
+    asOf:"Current after Thursday's Practice 1 at the Las Vegas Grand Prix (Nov 19): heavy rain washed the session out -- nobody set a timed lap -- so the only story from the Strip so far is three rookies filling in for their regular drivers.",
+    groups:[
+      { h:"FP1: a wash-out, not a lap time in sight", items:[
+        ["No times set", "Standing water built up on the Strip circuit under light-to-heavy drizzle (a 70% rain chance going in), and the session ended with no driver completing a flying lap -- most ran only installation or brief exploratory laps on full wet tyres."],
+        ["Kimi Antonelli (Mercedes)", "Radioed 'I'm aquaplaning everywhere' while exploring the circuit and came back to the pits early."],
+        ["Alex Albon (Williams)", "Summed up the conditions with a single radio message: 'whoa.'"],
+        ["Charles Leclerc (Ferrari)", "Had a slide in the wet, but there was no crash and no red flag for the session."]
+      ] },
+      { h:"Three rookies in the car instead", items:[
+        ["Dino Beganovic (Ferrari, for Lewis Hamilton)", "Ferrari confirmed beforehand this was its FP1 rookie outing, not a performance call -- Beganovic's fourth and last mandatory rookie session for the team in 2026, after Barcelona, Austria and Brazil."],
+        ["Ryo Hirakawa (Haas, for Oliver Bearman)", "Haas's own mandatory rookie FP1 of the season."],
+        ["Jak Crawford (Aston Martin, for Fernando Alonso)", "Also in the car for FP1; sources checked today didn't say why, though Aston Martin has used Crawford's FP1 rookie slot earlier in 2026 (Japan) for the same reason."]
+      ] },
+      { h:"Still the backdrop: title long since decided, second place isn't", items:[
+        ["Kimi Antonelli (Mercedes)", "Already the 2026 champion, clinched at Mexico City three rounds early -- nothing on track this weekend changes that."],
+        ["Max Verstappen (Red Bull Racing)", "Second on 279 points -- leads the best fight left on the grid, for runner-up."],
+        ["George Russell (Mercedes)", "Third on 262."],
+        ["Lewis Hamilton (Ferrari)", "Fourth on 261, 1 point back of Russell -- sat out FP1 himself under the rookie rule, so his first laps of the weekend come in FP2."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 251."],
+        ["Lando Norris (McLaren)", "Sixth on 246, the most recent race winner (Interlagos) of this group."]
+      ] },
+      { h:"Up next (Las Vegas local, PST)", items:[
+        ["Practice 2, Thursday Nov 19, 8:00pm", "Drier conditions are expected -- the first real look at the Strip circuit for 2026, with Hamilton, Bearman and Alonso back in their own cars."],
+        ["Practice 3, Friday Nov 20, 4:30pm", "Final tuning before qualifying."],
+        ["Qualifying, Friday Nov 20, 8:00pm", "Pole matters here -- clean air and a tow down the long straights are both hard to find once the pack bunches up."],
+        ["Race, Saturday Nov 21, 8:00pm, 50 laps / 309.958 km", "The runner-up fight (Verstappen vs. Russell vs. Hamilton vs. Leclerc) and the constructors' battle for second (Ferrari vs. Red Bull) are both still genuinely in play."]
+      ] }
+    ],
+    note:"Sources: formula1.com ('FP1: Wet conditions limit running in first practice at Las Vegas Grand Prix', read Nov 20, 2026) for the session being washed out with no lap times, the weather, Antonelli's and Albon's radio messages, Leclerc's slide with no red flag, and the Beganovic/Hirakawa/Crawford driver changes. racingnews365.com ('Ferrari replace Lewis Hamilton for Las Vegas GP first practice') and planetf1.com ('Lewis Hamilton to miss Las Vegas Grand Prix FP1 as Ferrari junior steps in') for Beganovic's session being Ferrari's season-closing rookie-rule outing, confirmed as not performance-related, and his having already covered Barcelona, Austria and Brazil this year. gpblog.com ('Hamilton to sit out Las Vegas FP1 as Ferrari give Beganovic another chance') cross-checked for the same. No source checked today stated Aston Martin's specific reason for running Crawford over Alonso this weekend, so that is left open rather than guessed; formula1.com's own Japanese GP report confirms Aston Martin has used Crawford's rookie FP1 slot before in 2026. data/standings.js (automatic update from api.jolpi.ca) for the unchanged points (Antonelli 390 and champion; Verstappen 279, Russell 262, Hamilton 261, Leclerc 251, Norris 246) -- practice does not score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
 ];

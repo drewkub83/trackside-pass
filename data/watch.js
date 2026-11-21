@@ -1891,4 +1891,37 @@ const WATCH = [
       ] }
     ],
     note:"Sources: formula1.com ('2026 Las Vegas Grand Prix FP3 report and highlights: George Russell goes fastest from Kimi Antonelli and Lando Norris during final practice in Las Vegas', read Nov 21, 2026) for the full classification and gaps (Russell 1:34.041; Antonelli +0.911s; Norris +0.974s; Leclerc +1.150s; Colapinto +1.157s; Verstappen 6th), the dry/slicks conditions after two wet Thursday sessions, Verstappen's early pace, radioed steering problems and running wide, the Verstappen/Russell Turn 14 clash and his 'pushed me into the barrier' radio message, the Verstappen/Colapinto Turn 16 incident, the Hadjar/Albon Turn 17 incident, and Sainz running qualifying simulations; a related formula1.com report on Red Bull working on Verstappen's Las Vegas handling balance, cross-checked for the same steering/handling theme. formula1.com's 'Exclusive: Sainz reflects on the journey to his 250th Grand Prix' and bvmsports.com (Nov 17, 2026) for Sainz's 250th-start milestone this weekend. No stewards verdict on any of the three incidents was available in sources checked at the time of writing. data/standings.js (automatic update from api.jolpi.ca) for the unchanged points (Antonelli 390 and champion; Verstappen 279, Russell 262, Hamilton 261, Leclerc 251, Norris 246) -- practice does not score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1", from:"2026-11-20", at:"2026-11-21T05:25:06Z",
+    asOf:"Current after Friday night's Qualifying at the Las Vegas Grand Prix (Nov 20 local / Nov 21 UTC): Kimi Antonelli set the outright fastest lap, but a grid penalty hands pole to Max Verstappen -- and both Ferraris were knocked out in Q2 for the first time since the 2024 Canadian Grand Prix.",
+    groups:[
+      { h:"Qualifying: Antonelli fastest, Verstappen inherits pole", items:[
+        ["Kimi Antonelli (Mercedes)", "Fastest in Q3, 1:33.893 -- but a 5-place grid penalty for exceeding his season's engine-component allocation drops him to 6th on the grid, handing pole to Verstappen."],
+        ["Max Verstappen (Red Bull Racing)", "0.258s off Antonelli's time on the sheet, but inherits pole once the penalty is applied -- a genuine lift for the runner-up fight."],
+        ["George Russell (Mercedes)", "Third fastest, starts 2nd on the grid alongside Verstappen."],
+        ["Lando Norris (McLaren)", "Fourth fastest, starts 3rd -- the strongest grid slot of anyone in the second-place points fight."],
+        ["Isack Hadjar (Red Bull Racing)", "Fifth fastest, starts 4th after the penalty reshuffle."],
+        ["Arvid Lindblad (Racing Bulls)", "Sixth fastest, starts 5th."]
+      ] },
+      { h:"Ferrari's worst qualifying in over two years", items:[
+        ["Charles Leclerc (Ferrari)", "Knocked out in Q2, 11th on the sheet (1:35.197) -- Ferrari's first double Q2 exit since the 2024 Canadian Grand Prix."],
+        ["Lewis Hamilton (Ferrari)", "Also out in Q2, 12th (1:35.253) -- the other half of that double exit, a real blow to his and the team's weekend."]
+      ] },
+      { h:"Friday's practice incidents: two resolved, one still open", items:[
+        ["Verstappen and Russell, Turn 14", "Stewards gave Verstappen a warning rather than a grid drop -- his change of direction under braking was judged unpredictable and below the standard expected, but not serious enough to punish further."],
+        ["Verstappen and Franco Colapinto, Turn 16", "No further action -- the stewards cited mitigating factors, including an engine issue on Verstappen's car and that neither driver was on a push lap."],
+        ["Isack Hadjar and Alex Albon, Turn 17", "No verdict found in the sources checked today; this one is left open rather than guessed at."]
+      ] },
+      { h:"Still the backdrop: title long since decided, second place isn't", items:[
+        ["Kimi Antonelli (Mercedes)", "Already the 2026 champion, clinched at Mexico City three rounds early -- Friday's fastest lap and Saturday's grid penalty are both beside the point now."],
+        ["Max Verstappen (Red Bull Racing)", "Second on 279 points -- pole for Saturday's race is real help in the fight for runner-up."],
+        ["George Russell (Mercedes)", "Third on 262 -- starts alongside Verstappen after the strongest practice-into-qualifying form of anyone in the fight."],
+        ["Lewis Hamilton (Ferrari)", "Fourth on 261, 1 point back of Russell -- but starts 12th after Ferrari's rough Saturday."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 251 -- starts 11th."],
+        ["Lando Norris (McLaren)", "Sixth on 246, the most recent race winner (Interlagos) of this group -- starts 3rd, by far the best grid slot of the six."]
+      ] },
+      { h:"Up next (Las Vegas local, PST)", items:[
+        ["Race, Saturday Nov 21, 8:00pm, 50 laps / 309.958 km", "Verstappen starts from pole with Russell and Norris right behind him; both Ferraris start mid-pack after their Q2 exits, a real complication for Hamilton's and Leclerc's chances in the runner-up fight and for Ferrari's battle with Red Bull for second in the constructors' championship."]
+      ] }
+    ],
+    note:"Sources: formula1.com's results page for the race (read Nov 21, 2026) for Antonelli's pole-time lap (1:33.893) and Verstappen's gap to it (+0.258s). Web search summaries of RaceFans ('2026 Las Vegas Grand Prix grid'), Pit Debrief ('2026 F1 Las Vegas GP' qualifying results), Sky Sports ('Las Vegas GP: Kimi Antonelli to serve grid penalty along with Oscar Piastri, Carlos Sainz, Lance Stroll, Oliver Bearman') and Yahoo Sports (none reachable directly from this environment, read via web search) for the 5-place engine-allocation grid penalty and the resulting top-6 starting grid (Verstappen, Russell, Norris, Hadjar, Lindblad, Antonelli 6th); Motorsport Week's report of a 10-place penalty dropping Antonelli to 11th conflicts with the other sources checked and was treated as the outlier. Web search summaries of PlanetF1 ('Kimi Antonelli tops Las Vegas GP qualifying but Max Verstappen on pole amid double Ferrari Q2 exit'), GPblog and Yahoo Sports for Leclerc's (1:35.197) and Hamilton's (1:35.253) Q2 elimination and the Canada-2024 comparison for Ferrari's last double Q2 exit. Web search summaries of PlanetF1/The Race ('Why Verstappen escaped grid drop for Russell practice clash') and Crash.net ('Max Verstappen warned for George Russell incident in final Las Vegas F1 practice') for the Turn 14 warning verdict and the Turn 16 Colapinto no-further-action verdict; no verdict was found in sources checked today for the Hadjar/Albon Turn 17 incident, so it is left open rather than guessed. data/standings.js (automatic update from api.jolpi.ca) for the unchanged points (Antonelli 390 and champion; Verstappen 279, Russell 262, Hamilton 261, Leclerc 251, Norris 246) -- qualifying does not score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
 ];

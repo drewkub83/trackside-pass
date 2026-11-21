@@ -14,19 +14,19 @@ const STANDINGS = [
     classes:[
       { h:"Riders", rows:[
         { pos:1, who:"Marc Marquez (Ducati Lenovo Team)", pts:431 },
-        { pos:2, who:"Jorge Martin (Aprilia Racing)", pts:371 },
-        { pos:3, who:"Marco Bezzecchi (Aprilia Racing)", pts:357 },
-        { pos:4, who:"Pedro Acosta (Red Bull KTM Factory Racing)", pts:309 },
-        { pos:5, who:"Ai Ogura (SuperFile Trackhouse MotoGP Team)", pts:294 },
-        { pos:6, who:"Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", pts:282 },
-        { pos:7, who:"Raul Fernandez (SuperFile Trackhouse MotoGP Team)", pts:258 },
-        { pos:8, who:"Alex Marquez (BK8 Gresini Racing MotoGP)", pts:197 },
+        { pos:2, who:"Jorge Martin (Aprilia Racing)", pts:376 },
+        { pos:3, who:"Marco Bezzecchi (Aprilia Racing)", pts:369 },
+        { pos:4, who:"Pedro Acosta (Red Bull KTM Factory Racing)", pts:315 },
+        { pos:5, who:"Ai Ogura (SuperFile Trackhouse MotoGP Team)", pts:298 },
+        { pos:6, who:"Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", pts:285 },
+        { pos:7, who:"Raul Fernandez (SuperFile Trackhouse MotoGP Team)", pts:267 },
+        { pos:8, who:"Alex Marquez (BK8 Gresini Racing MotoGP)", pts:204 },
         { pos:9, who:"Francesco Bagnaia (Ducati Lenovo Team)", pts:173 },
         { pos:10, who:"Enea Bastianini (Red Bull KTM Tech3)", pts:147 },
         { pos:11, who:"Fermin Aldeguer (BK8 Gresini Racing MotoGP)", pts:129 },
         { pos:12, who:"Brad Binder (Red Bull KTM Factory Racing)", pts:118 },
         { pos:13, who:"Luca Marini (Honda HRC Castrol)", pts:117 },
-        { pos:14, who:"Fabio Quartararo (Monster Energy Yamaha MotoGP Team)", pts:79 },
+        { pos:14, who:"Fabio Quartararo (Monster Energy Yamaha MotoGP Team)", pts:81 },
         { pos:15, who:"Diogo Moreira (Pro Honda LCR)", pts:78 }
       ] }
     ],

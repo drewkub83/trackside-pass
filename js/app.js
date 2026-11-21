@@ -268,7 +268,9 @@ function renderSeason(){
 const STORY_DAYS=7;
 function storylineWeekends(){
   if(typeof WATCH==="undefined") return []; const today=localToday(), mine=new Set(followedGameSeries()), by={};
-  WATCH.forEach(x=>{ const n=daysBetween(today,x.d); if(n<1||n>STORY_DAYS||(x.from&&x.from>today)||!mine.has(x.s)) return;
+  /* a preview is written before the weekend that comes first, so while an earlier weekend of the same series is still to be run (or running) its facts are out of date: hide it until that weekend is over and the preview has been rewritten */
+  const stale=x=>{ const ch=(typeof CHAMPS!=="undefined")&&CHAMPS.find(c=>c.id===x.s); return !!ch&&TRACKS.some(t=>(t.events||[]).some(e=>e.d<x.d&&eventEnd(e)>=today&&inChamp(ch,e))); };
+  WATCH.forEach(x=>{ const n=daysBetween(today,x.d); if(n<1||n>STORY_DAYS||(x.from&&x.from>today)||!mine.has(x.s)||stale(x)) return;
     const k=x.t+"|"+x.d, key=x.s; (by[k]=by[k]||{t:x.t,d:x.d,best:{}}); const b=by[k].best; if(!b[key]||(x.from||"")>=(b[key].from||"")) b[key]=x; });
   return Object.values(by).sort((a,b)=>a.d.localeCompare(b.d));
 }
@@ -1573,7 +1575,8 @@ function hubTodayStrip(c){
   /* today at a glance: every session today as a small strip, so overlapping series (a common-round weekend
      like Barber or Road Atlanta) are visible without opening the schedule. Tapping it opens the schedule,
      same as the session card above. */
-  const today=ss.filter(s=>s.d===localToday());
+  const trackDay=(()=>{ try{ return new Date(now).toLocaleDateString("en-CA",{timeZone:cur.tz}); }catch(e){ return localToday(); } })();   /* "today" at the track, not on the phone: an ocean away they can be different days */
+  const today=ss.filter(s=>s.d===trackDay);
   let stripHtml="";
   if(today.length){
     const doneCount=today.filter(s=>s.end<=now).length;
@@ -1739,7 +1742,7 @@ function hubGridCard(c){
   if(!q.length||!r.length||q.some(x=>x.end>c.now)) return "";   /* every qualifying session of the series is over ... */
   const gp=r[r.length-1]; if(gp.end<=c.now) return "";         /* ... and its last race (the one the grid is for) is not */
   sessWant[sr.sess+"|"+gp.d]={sr,date:gp.d,name:gp.n,track:cur.id};
-  const d=sessGet(sr,gp.d); if(!d||!d.qualifying) return "";
+  const d=sessGet(sr,gp.d); if(!d||!d.qualifying) return `<div class="hubCard"><h4>Qualifying order</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="hubSessionSub">Qualifying is over. The series has not published the order to our results feed yet; it appears here by itself when it does.</div></div>`;
   return `<div class="hubCard hubTap" role="button" onclick="openSessSheet('${sr.sess}|${gp.d}','q')"><div class="hubCardRow"><div><h4>Qualifying order</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${c.chev}</div><p class="asof hubAsof">${esc(d.race)} · tap for every driver</p>${sessGroupsHtml(d.qualifying,"Qualifying",sessByClass(d.qualifying).length>1?3:5)}</div>`;
 }
 function sessUnofficialCard(sr,date,d,chev){

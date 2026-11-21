@@ -29,4 +29,4 @@ Play Console > Create app: name "Trackside Pass", English (US), **App**, **Free*
 - After the link exists, add a "Join the Android beta" button to `welcome/index.html` next to the iPhone one (the opt-in link needs a Google account).
 
 ## 6. Status (Nov 19 2026)
-Build is ready (see above). Waiting on Google's 'verify access to an Android device' step, which needs a physical Android phone for about 10 minutes (borrow or buy one). Until then Android users use the web app in Chrome.
+Build is ready (see above). Closed test live (Nov 21 2026): opt-in link https://play.google.com/apps/testing/com.tracksidepass.app works for accounts on the "Beta Testers" list; the landing page offers a mailto request for access.

@@ -1831,4 +1831,37 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries (none reachable directly from this environment) of a Crash.net Friday-practice live blog ('MotoGP Portugal LIVE: Friday practice reaction as Alex Marquez leads the way') for the Practice session's fastest times (Alex Marquez 1:37.350, Di Giannantonio second, Marc Marquez sixth) and for Martin's and Marc Marquez's unsettled late-session positions around the Q2 cutoff; Speedweek.com and GPOne.com's live FP1 coverage, consistent with the prior entry's FP1 times, for Bezzecchi's FP1 time; Crash.net's 'Yamaha returns for Portugal MotoGP as Qatar penalty fate still unclear' and 'Yamaha won't face sporting penalty for missing Qatar MotoGP, FIM president states' for the no-sporting-sanction/financial-penalty update (a Spanish-language motor16.com summary matched this: a fine with no points lost, rules under review, no amount given). data/standings.js for the unchanged 431/371/357 points (practice doesn't score). Session times from data/portimao.js." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1", from:"2026-11-20", at:"2026-11-21T02:23:13Z",
+    asOf:"Current after Friday's Practice 3 at the Las Vegas Grand Prix (Nov 20): the weekend's first dry, slicks session, and George Russell topped it ahead of Mercedes teammate Kimi Antonelli -- with three separate incidents still before the stewards heading into qualifying.",
+    groups:[
+      { h:"FP3: Mercedes 1-2 on the first dry running of the weekend", items:[
+        ["George Russell (Mercedes)", "Fastest, 1:34.041, improving late from an earlier 1:34.805 -- the first representative dry lap times of the weekend after two wet practice sessions on Thursday."],
+        ["Kimi Antonelli (Mercedes)", "Second, 0.911s back -- a Mercedes 1-2 in the only dry practice before qualifying."],
+        ["Lando Norris (McLaren)", "Third, 0.974s back."],
+        ["Charles Leclerc (Ferrari)", "Fourth, 1.150s back."],
+        ["Franco Colapinto (Alpine)", "Fifth, 1.157s back."],
+        ["Max Verstappen (Red Bull Racing)", "Led the early running on softs and looked promising, but slipped to 6th by the end after reporting steering problems on the radio and running wide at one point; a related report says Red Bull is still working to fix his handling balance on the Strip circuit."]
+      ] },
+      { h:"Three incidents still before the stewards", items:[
+        ["Verstappen and Russell, Turn 14", "A wheel-to-wheel moment that Verstappen described on the radio as Russell pushing him into the barrier -- under investigation, with a decision expected before qualifying."],
+        ["Verstappen and Franco Colapinto, Turn 16", "Alleged erratic driving earlier in the session, also referred to the stewards."],
+        ["Isack Hadjar and Alex Albon, Turn 17", "Hadjar was held up by the slower Albon; this incident is being looked at too."]
+      ] },
+      { h:"Also at Vegas", items:[
+        ["Carlos Sainz (Williams)", "Making his 250th Grand Prix start this weekend, just over 11 years after his first -- he spent FP3 running qualifying simulations rather than chasing a lap time."]
+      ] },
+      { h:"Still the backdrop: title long since decided, second place isn't", items:[
+        ["Kimi Antonelli (Mercedes)", "Already the 2026 champion, clinched at Mexico City three rounds early -- nothing on track this weekend changes that."],
+        ["Max Verstappen (Red Bull Racing)", "Second on 279 points -- leads the runner-up fight, but FP3's handling trouble is an unwelcome sign going into qualifying."],
+        ["George Russell (Mercedes)", "Third on 262 -- fastest in both Thursday's FP2 and Friday's FP3, the clearest practice form of anyone in the fight."],
+        ["Lewis Hamilton (Ferrari)", "Fourth on 261, 1 point back of Russell."],
+        ["Charles Leclerc (Ferrari)", "Fifth on 251 -- 4th in FP3."],
+        ["Lando Norris (McLaren)", "Sixth on 246, the most recent race winner (Interlagos) of this group -- 3rd in FP3."]
+      ] },
+      { h:"Up next (Las Vegas local, PST)", items:[
+        ["Qualifying, Friday Nov 20, 8:00pm", "Pole matters here -- clean air and a tow down the long straights are both hard to find once the pack bunches up; Mercedes' practice pace makes Russell and Antonelli the ones to watch, but the stewards' rulings could still shuffle the grid."],
+        ["Race, Saturday Nov 21, 8:00pm, 50 laps / 309.958 km", "The runner-up fight (Verstappen vs. Russell vs. Hamilton vs. Leclerc) and the constructors' battle for second (Ferrari vs. Red Bull) are both still genuinely in play."]
+      ] }
+    ],
+    note:"Sources: formula1.com ('2026 Las Vegas Grand Prix FP3 report and highlights: George Russell goes fastest from Kimi Antonelli and Lando Norris during final practice in Las Vegas', read Nov 21, 2026) for the full classification and gaps (Russell 1:34.041; Antonelli +0.911s; Norris +0.974s; Leclerc +1.150s; Colapinto +1.157s; Verstappen 6th), the dry/slicks conditions after two wet Thursday sessions, Verstappen's early pace, radioed steering problems and running wide, the Verstappen/Russell Turn 14 clash and his 'pushed me into the barrier' radio message, the Verstappen/Colapinto Turn 16 incident, the Hadjar/Albon Turn 17 incident, and Sainz running qualifying simulations; a related formula1.com report on Red Bull working on Verstappen's Las Vegas handling balance, cross-checked for the same steering/handling theme. formula1.com's 'Exclusive: Sainz reflects on the journey to his 250th Grand Prix' and bvmsports.com (Nov 17, 2026) for Sainz's 250th-start milestone this weekend. No stewards verdict on any of the three incidents was available in sources checked at the time of writing. data/standings.js (automatic update from api.jolpi.ca) for the unchanged points (Antonelli 390 and champion; Verstappen 279, Russell 262, Hamilton 261, Leclerc 251, Norris 246) -- practice does not score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
 ];

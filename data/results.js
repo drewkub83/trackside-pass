@@ -787,4 +787,28 @@ const RESULTS = [
       ] }
     ],
     note:"(automatic update) Source: NASCAR race data (cf.nascar.com, the files nascar.com race pages use), full classification of the race, race day 2026-11-06." },
+  { t:"las-vegas", d:"2026-11-19", s:"f1academy", race:"Reverse Grid Race - F1 Academy", event:"F1 Academy: Reverse Grid Race (Las Vegas Grand Prix)",
+    groups:[
+      { h:"Race", order:[
+        "1. #12 Alba Larsen (MP Motorsport)",
+        "2. #21 Alisha Palmowski (Campos Racing)",
+        "3. #4 Megan Bruce (Campos Racing)",
+        "4. #95 Jade Jacquet (ART Grand Prix)",
+        "5. #28 Ella Stevens (Rodin Motorsport)",
+        "6. #18 Rafaela Ferreira (Campos Racing)",
+        "7. #9 Payton Westcott (PREMA Racing)",
+        "8. #19 Natalia Granada (PREMA Racing)",
+        "9. #32 Esmee Kosterman (MP Motorsport)",
+        "10. #20 Ella Lloyd (Rodin Motorsport)",
+        "11. #10 Luna Fluxa Cross (Hitech)",
+        "12. #55 Ava Dobson (Hitech)",
+        "13. #91 Kaylee Countryman (ART Grand Prix)",
+        "14. #3 Nina Gademan (MP Motorsport) (DNF)",
+        "15. #56 Rachel Robertson (Hitech) (DNF)",
+        "16. #5 Emma Felbermayr (Rodin Motorsport) (DNF)",
+        "17. #14 Lisa Billard (ART Grand Prix) (DNF)",
+        "18. #8 Mathilda Paatz (PREMA Racing) (DNF)"
+      ] }
+    ],
+    note:"Sources: f1academy.com report \"Reverse Grid Race: Larsen charges from ninth to claim second victory of 2026 in Las Vegas\" (positions 1-8 and race detail), motorsport.com full F1 Academy Las Vegas 2026 Reverse Grid Race classification (car numbers, teams and positions 9-18; Granada classified 8th after a 5-second penalty)." },
 ];

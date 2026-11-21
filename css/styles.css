@@ -1492,7 +1492,8 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 :root[data-style="board"] #playBody .plTotal small{color:rgba(12,12,13,.72);display:block;margin-top:10px}
 :root[data-style="board"] .plRules{font-size:14px;margin-top:22px}
 :root[data-style="board"] .plRules a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
-:root[data-style="board"] .plCard{position:relative;margin:0;padding:22px 6px 22px 22px}
+:root[data-style="board"] .plCard{position:relative;margin:0}
+:root[data-style="board"] .plCard.plCard{padding:22px 6px 22px 24px}
 :root[data-style="board"] .plCard::before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:6px;border-radius:3px;background:var(--rc,var(--ink))}
 :root[data-style="board"] .plCard .plGo{position:absolute;right:6px;top:24px;float:none;margin:0;width:auto}
 :root[data-style="board"] .plCard b{padding-right:64px}

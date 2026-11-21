@@ -1778,6 +1778,33 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of Pit Debrief's and Motorsport Week's Las Vegas qualifying reports/results pages (pitdebrief.com and motorsportweek.com, both posted Nov 20, 2026; not reachable directly from this environment), cross-checked across several search passes, for Palmowski's pole, the wet-to-drying conditions with two red flags (one reportedly from a Countryman spin), and the top five (Palmowski, Felbermayr, Larsen, Megan Bruce, Gademan). Dive-Bomb's coverage agreed on the pole and top three but gave different intermediate lap times, so Palmowski's 2:09.915 (the figure most searches returned, credited to Pit Debrief) is given with that caveat rather than as settled official timing. Felbermayr's three-place grid penalty was reported by Pit Debrief in multiple passes but not mentioned by Dive-Bomb, so it is flagged here as reported rather than confirmed; the official F1 Academy timing/penalty sheet was not reachable to verify it directly. data/standings.js for the unchanged points (Palmowski 172, champion; Gademan 119; Felbermayr 113) -- qualifying doesn't score points, so these are carried over from the prior entry for this event. Session times from data/las-vegas.js." }
+  ,{ t:"las-vegas", d:"2026-11-19", s:"f1academy", from:"2026-11-20", at:"2026-11-21T03:23:13Z",
+    asOf:"Current after F1 Academy's Reverse Grid Race at Las Vegas (Friday Nov 20, night local time): Alba Larsen won from 9th on the grid through a chaotic, twice-Safety-Car race, beating Alisha Palmowski and Megan Bruce -- while Nina Gademan pitted with front-wing damage and Emma Felbermayr didn't finish, leaving the 2nd-place championship fight between them unsettled going into Saturday's season-closing Feature Race.",
+    groups:[
+      { h:"Reverse Grid Race, in brief", items:[
+        ["Alba Larsen (ART Grand Prix)", "Won from 9th on the grid -- her second win of the season after Austin -- holding off Palmowski at the finish despite a couple of late braking lock-ups of her own."],
+        ["Alisha Palmowski (Campos Racing)", "Second, and set the race's fastest lap (2:07.917, lap 13) for the bonus point. Already champion, so neither result adds to the title she clinched at Austin."],
+        ["Megan Bruce", "Completed the podium in third."]
+      ] },
+      { h:"Why it matters: the 2nd-place fight went backwards for both", items:[
+        ["Nina Gademan (MP Motorsport)", "Shown a black-and-orange flag for front-wing damage after an early incident and had to pit for repairs. Reports checked didn't give her final finishing position, but losing that pit stop makes a top-8, points-scoring finish unlikely."],
+        ["Emma Felbermayr (Audi Revolut F1 Team / Rodin Motorsport)", "Did not finish -- out of the race during one of the two Safety Car periods, alongside Lisa Billard."],
+        ["What that leaves open", "Going in, Gademan led Felbermayr 119 to 113. If neither scored points on Friday, that gap carries into Saturday unchanged, but the reports checked didn't confirm either driver's exact finish, so treat 119-113 as the last confirmed gap rather than Saturday morning's actual one."]
+      ] },
+      { h:"How the race played out", items:[
+        ["Pole starter out early", "Mathilda Paatz started on reverse-grid pole but fell out of contention early, triggering the first of two Safety Cars; sources checked differ on whether it was a puncture from contact or a clash involving Natalia Granada and Gademan."],
+        ["Granada's spell in front, then a penalty", "Natalia Granada led after Paatz's exit before locking up and losing the place to Larsen; Granada was later given a penalty, though the reports checked didn't specify what for."],
+        ["Second Safety Car", "A later Safety Car period coincided with Felbermayr's and Billard's retirements."]
+      ] },
+      { h:"Still the backdrop: title settled, 2nd place isn't", items:[
+        ["Alisha Palmowski", "Already the 2026 champion, clinched at Austin -- Friday's podium and fastest lap don't change that."],
+        ["Nina Gademan vs. Emma Felbermayr", "Last confirmed 119-113 for Gademan heading into Friday's race; data/standings.js still shows the pre-Las Vegas table, and this weekend's Feature Race is the only session left that can move it."]
+      ] },
+      { h:"Up next (Las Vegas local, PST)", items:[
+        ["Feature Race, Saturday Nov 21, 4:20pm", "The 2026 season's last race, and the only session left that can settle the Gademan-Felbermayr fight for 2nd in the championship."]
+      ] }
+    ],
+    note:"Sources: web search summaries of Motorsport Week's ('Alba Larsen claims F1A victory in Las Vegas Reverse race' and its results page) and Dive-Bomb's ('Larsen wins from ninth in Las Vegas after incident-filled F1 Academy reverse grid race') reports, plus Pit Debrief's report and results pages, all posted Nov 21, 2026 (motorsportweek.com, dive-bomb.com and pitdebrief.com were not reachable directly from this environment; read via web search summaries only), cross-checked across several search passes, for Larsen's win from 9th, the Palmowski/Bruce podium, Palmowski's fastest lap, the two Safety Cars, Paatz's and Granada's incidents, Gademan's front-wing flag and pit stop, and Felbermayr's/Billard's retirements. The full classification below the podium, Granada's exact penalty, and Gademan's and Felbermayr's precise finishing positions and points were not found in the sources checked, so they are left out rather than guessed; data/standings.js (asOf Austin) for the last-confirmed points (Palmowski 172, champion; Gademan 119; Felbermayr 113). Session times from data/las-vegas.js, converted to Las Vegas local time (PST, UTC-8)." }
   ,{ t:"portimao", d:"2026-11-20", s:"motogp", from:"2026-11-19", at:"2026-11-20T13:25:23Z",
     asOf:"Current after Friday's Free Practice 1 at Portimão: Marco Bezzecchi and Jorge Martin gave Aprilia a 1-2, with Marc Marquez fourth as he closes in on the title.",
     groups:[

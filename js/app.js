@@ -266,18 +266,31 @@ function renderSeason(){
 /* "Storylines for the week": the "What to watch" previews of the next race weekends, all in one card on Home. It shows from a week
    before a weekend starts until the first day of it (then the weekend's own hub carries What to watch), only for series you follow. */
 const STORY_DAYS=7;
+/* the Monday of the week that contains day d (Sunday belongs to the week that is ending) */
+function weekStartOf(d){ const dt=new Date(d+"T12:00:00Z"); return new Date(dt.getTime()-((dt.getUTCDay()+6)%7)*864e5).toISOString().slice(0,10); }
+/* races that finished this week (Monday to now) for series you follow: shown on Home in place of the next race's storylines until Monday */
+function recentResults(){
+  if(typeof RESULTS==="undefined") return []; const today=localToday(), mon=weekStartOf(today), mine=new Set(followedGameSeries()), out=[];
+  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ const end=eventEnd(e); if(end>today||end<mon) return;
+    RESULTS.filter(r=>r.t===t.id&&r.d>=e.d&&r.d<=end&&mine.has(r.s)).forEach(r=>out.push({t,r,end})); }));
+  return out.sort((a,b)=>b.end.localeCompare(a.end));
+}
 function storylineWeekends(){
-  if(typeof WATCH==="undefined") return []; const today=localToday(), mine=new Set(followedGameSeries()), by={};
+  if(typeof WATCH==="undefined") return []; const today=localToday(), mine=new Set(followedGameSeries()), by={}, weekMon=weekStartOf(today);
   /* a preview is written before the weekend that comes first, so while an earlier weekend of the same series is still to be run (or running) its facts are out of date: hide it until that weekend is over and the preview has been rewritten */
-  const stale=x=>{ const ch=(typeof CHAMPS!=="undefined")&&CHAMPS.find(c=>c.id===x.s); return !!ch&&TRACKS.some(t=>(t.events||[]).some(e=>e.d<x.d&&eventEnd(e)>=today&&inChamp(ch,e))); };
+  const stale=x=>{ const ch=(typeof CHAMPS!=="undefined")&&CHAMPS.find(c=>c.id===x.s); return !!ch&&TRACKS.some(t=>(t.events||[]).some(e=>e.d<x.d&&eventEnd(e)>=weekMon&&inChamp(ch,e))); };
   WATCH.forEach(x=>{ const n=daysBetween(today,x.d); if(n<1||n>STORY_DAYS||(x.from&&x.from>today)||!mine.has(x.s)||stale(x)) return;
     const k=x.t+"|"+x.d, key=x.s; (by[k]=by[k]||{t:x.t,d:x.d,best:{}}); const b=by[k].best; if(!b[key]||(x.from||"")>=(b[key].from||"")) b[key]=x; });
   return Object.values(by).sort((a,b)=>a.d.localeCompare(b.d));
 }
 function renderStorylines(){
   const el=document.getElementById("storylines"); if(!el) return; const wk=storylineWeekends();
-  if(!wk.length){ el.innerHTML=""; return; }
-  el.innerHTML=`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
+  const rr=recentResults(), resHtml=rr.length?`<div class="sect">Results this week</div>`+rr.map(({t,r})=>{
+    const g=(r.groups||[])[0]||{}, top=(g.order||[]).slice(0,3).map(x=>String(x).replace(/\s*\(.*$/,"").replace(/ — .*$/,""));
+    const win=top.length?top:[g.winner].filter(Boolean);
+    return `<button class="stCard" onclick="openTrack('${t.id}','home')"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div><span class="stGo">Open the weekend &rsaquo;</span></button>`; }).join(""):"";
+  if(!wk.length){ el.innerHTML=resHtml; return; }
+  el.innerHTML=resHtml+`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
     const series=Object.values(w.best).map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"…":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);
       return `<div class="stSeries"><b>${esc(watchSeriesName(x)||"Race weekend")}</b>${items.map(i=>`<p><span>${esc(i.n)}</span> ${esc(i.why)}</p>`).join("")}</div>`; }).join("");
     return `<button class="stCard" onclick="openTrack('${tr.id}','home')"><div class="stHead"><b>${esc(tr.short)}</b><span>${ev?esc(fmtRange(ev)):esc(w.d)} · ${n===1?"starts tomorrow":"in "+n+" days"}</span></div>${series}<span class="stGo">Open the weekend &rsaquo;</span></button>`; }).join("");

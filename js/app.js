@@ -296,7 +296,7 @@ function renderStorylines(){
   const rr=recentResults(); homeRes=rr; const resHtml=rr.length?`<div class="sect">Results this week</div>`+rr.map(({t,e,r,sc=recapGames(t,e,r.s)},i)=>{
     const g=(r.groups||[])[0]||{}, top=(g.order||[]).slice(0,3).map(x=>String(x).replace(/\s*\(.*$/,"").replace(/ — .*$/,""));
     const win=top.length?top:[g.winner].filter(Boolean);
-    return `<button class="stCard" onclick="openHomeRes(${i})"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div>${sc.length?`<p class="stPicks">Your podium picks: <b>${sc.reduce((n,x)=>n+x.sc.pts,0)} pts</b></p>`:homeNoPicks(t,e,r)}<span class="stGo">Full results &rsaquo;</span></button>`; }).join(""):"";
+    return `<button class="stCard" onclick="openTrack('${t.id}','home')"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div><span class="stGo">Open the recap &rsaquo;</span></button>`; }).join(""):"";
   if(!wk.length){ el.innerHTML=resHtml; return; }
   el.innerHTML=resHtml+`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
     const series=Object.values(w.best).map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"…":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);
@@ -512,7 +512,7 @@ function openTrackNow(id,from){
   window.scrollTo(0,0);
   wx=null; wxToast=null; renderWx(); loadWeather();
   limits=null; view=fitted=fitView(); applyView(); { const w=document.getElementById("mapWrap"); lastSize=w.clientWidth+"x"+w.clientHeight; }
-  hubEditing=false; { const eb=document.getElementById("hubEditBtn"); if(eb){ eb.classList.remove("on"); eb.setAttribute("aria-pressed","false"); } } hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); { const hv=document.getElementById("hubView"); if(hv) hv.scrollTop=0; } if(isWide()) setWideRight("events"); checkRaceWeek();
+  hubFullFor=null; hubEditing=false; { const eb=document.getElementById("hubEditBtn"); if(eb){ eb.classList.remove("on"); eb.setAttribute("aria-pressed","false"); } } hubDismissed=false; hubReturn=false; hubMode=false; document.getElementById("pMap").classList.remove("hub-mode"); enterHub(); { const hv=document.getElementById("hubView"); if(hv) hv.scrollTop=0; } if(isWide()) setWideRight("events"); checkRaceWeek();
   /* resume live GPS automatically if it's already been allowed before, same consent-respecting check the
      hub and race-week banner use -- never asks cold, only picks back up for someone who already said yes.
      A web page can't keep watchPosition running once the OS fully closes the tab/PWA (no background
@@ -1908,6 +1908,37 @@ function hubEditToggle(on){ hubEditing=on===undefined?!hubEditing:!!on; const b=
 })();
 function hubHide(id,on){ const l=hubLayout(); hubLayoutSave({order:l.order,hidden:on?[...new Set(l.hidden.concat(id))]:l.hidden.filter(x=>x!==id)}); }
 function hubReset(){ if(confirm("Put the Race Day cards back in their original order and show them all?")) hubLayoutSave({order:[],hidden:[]}); }
+/* ---- Postrace hub (Nov 2026): once every race of the weekend is over and the results are in, the Race Day hub turns into a recap:
+   race recap video first, then per series the headlines and finishing order (and how your podium picks did), the standings, and the leftovers.
+   No sessions, live timing, weather or What to watch. It stays up to POST_DAYS after the weekend, unless the next event here is within 7 days,
+   and "Show the full weekend hub" at the bottom switches it off for this visit (hubFullFor). ---- */
+const POST_DAYS=14; let hubFullFor=null;
+function hubPostState(c){
+  if(hubFullFor===cur.id||typeof RESULTS==="undefined") return null;
+  const today=localToday(), evs=(cur.events||[]).filter(e=>e.d<=today&&!/test/i.test(e.s||"")).sort((a,b)=>b.d.localeCompare(a.d)), ev=evs[0]; if(!ev) return null;
+  const end=eventEnd(ev); if(daysBetween(end,today)>POST_DAYS) return null;
+  const nx=(cur.events||[]).filter(e=>e.d>today).sort((a,b)=>a.d.localeCompare(b.d))[0]; if(nx&&daysBetween(today,nx.d)<=7) return null;
+  const races=sessionsOf(cur).filter(s=>s.d>=ev.d&&s.d<=end&&kindOf(s.n)==="race"); if(!races.length||races.some(s=>s.end>c.now)) return null;
+  const res=RESULTS.filter(r=>r.t===cur.id&&r.d>=ev.d&&r.d<=end); if(!res.length) return null;
+  return {ev,res,races};
+}
+function hubPostHtml(c,post){
+  const {ev,res,races}=post, mainIds=new Set(CHAMPS.filter(x=>!x.viaSupport).map(x=>x.guide||x.id));
+  const rank=r=>(r.s===c.sid?0:mainIds.has(r.s)?1:2);
+  const list=res.slice().sort((a,b)=>rank(a)-rank(b)||a.d.localeCompare(b.d));
+  fullRes=[]; const seen=new Set(); let videos="", recaps="", supRecaps="";
+  list.forEach(r=>{
+    const sr=SERIES.find(x=>x.id===r.s); if(!sr) return;
+    if(!seen.has(sr.id)){ seen.add(sr.id); const rd=races.filter(s=>(seriesFor(s.n)||{}).id===sr.id).map(s=>s.d).sort().pop()||ev.d; { const v=hubVideoCard(sr,rd); if(rank(r)<2) videos+=v; else supRecaps+=v; } }
+    const idx=fullRes.push(r)-1, hl=headlinesInner(r), more=r.groups.some(g=>(g.order&&g.order.length>(r.groups.length>1?5:10))||(g.podium&&g.podium.length>2));
+    const picks=recapPicksHtml({t:cur,e:ev,r});
+    (rank(r)<2?(x=>{recaps+=x}):(x=>{supRecaps+=x}))(`<div class="hubCard"><h4>Recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="postEvent">${esc(r.race||r.event||ev.e)}</div>${hl?`<div class="postSub">What happened</div>${hl}`:""}<div class="postSub">Finishing order</div>${r.groups.map(g=>resultGroupHtml(g,r.groups.length>1?5:10)).join("")}${more?`<button class="btn quiet postFull" onclick="openFullRes(${idx})">Full results &rsaquo;</button>`:""}${picks}</div>`);
+  });
+  const standings=hubStandingsCard(c), friends=hubFriendsCard(), wk=hubRecapCard({...c}), actions=hubActionTiles(), {lastHereHtml}=hubBeforeWeekend(c);
+  const nx=(cur.events||[]).filter(e=>e.d>localToday()).sort((a,b)=>a.d.localeCompare(b.d))[0];
+  const next=nx?`<div class="hubCard"><h4>Next here</h4><div class="hubSeries">${esc(nx.e)}</div><div class="postEvent">${esc(fmtRange(nx))}</div></div>`:"";
+  return videos+recaps+standings+supRecaps+wk+friends+next+actions+`<div class="hubCard postEnd"><button class="btn quiet" onclick="hubFullFor=cur.id;renderHub()">Show the full weekend hub</button></div>`;
+}
 function renderHub(){
   if(!hubMode||hubDragging) return;
   const nameEl=document.getElementById("hubTrackName"); if(nameEl) nameEl.textContent=cur.short;
@@ -1918,6 +1949,7 @@ function renderHub(){
   const ctx={ss,now,live,next,chev,liveAll:ss.filter(x=>x.start<=now&&now<x.end&&x.end-now>10*60000)}; sessWant={};
   const sessionHtml=hubSessionCard(ctx), stripHtml=hubTodayStrip(ctx), wxHtml=hubWeatherCard(), actionsHtml=hubActionTiles();
   const fs=hubFocusSeries(ctx); ctx.sid=fs.sid; ctx.fav=fs.fav; document.documentElement.dataset.wk=fs.sid||"";
+  const post=hubPostState(ctx); if(post){ updateHubLive(null); body.innerHTML=hubPostHtml(ctx,post); sessEnsure(); return; }
   const watchHtml=hubWatchCard(ctx), standingsHtml=hubStandingsCard(ctx);
   const recapHtml2=hubRecapCard(ctx), resultsHtml=hubResultsCard(ctx); ctx.resultsHtml=resultsHtml; const gridHtml=hubGridCard(ctx);
   const liveStreamHtml=hubLiveStream(ctx), liveTimingHtml=hubTimingCard(ctx);

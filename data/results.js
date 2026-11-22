@@ -15,6 +15,30 @@
    "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
    (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
+  { t:"portimao", d:"2026-11-20", s:"motogp", event:"Grand Prix of Portugal",
+    groups:[
+      { h:"Race", order:[
+        "1. #72 Marco Bezzecchi (Aprilia Racing)",
+        "2. #89 Jorge Martin (Aprilia Racing)",
+        "3. #25 Raul Fernandez (SuperFile Trackhouse MotoGP Team)",
+        "4. #49 Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)",
+        "5. #79 Ai Ogura (SuperFile Trackhouse MotoGP Team)",
+        "6. #54 Fermin Aldeguer (BK8 Gresini Racing MotoGP)",
+        "7. #33 Brad Binder (Red Bull KTM Factory Racing)",
+        "8. #93 Marc Marquez (Ducati Lenovo Team)",
+        "9. #10 Luca Marini (Honda HRC Castrol)",
+        "10. #27 Iker Lecuona (Ducati Lenovo Team)",
+        "11. #23 Enea Bastianini (Red Bull KTM Tech3)",
+        "12. #20 Fabio Quartararo (Monster Energy Yamaha MotoGP Team)",
+        "13. #43 Jack Miller (Prima Pramac Yamaha MotoGP)",
+        "14. #42 Alex Rins (Monster Energy Yamaha MotoGP Team)",
+        "15. #21 Franco Morbidelli (Pertamina Enduro VR46 Racing Team)",
+        "16. #44 Pol Espargaro (Red Bull KTM Tech3)",
+        "17. #96 Jake Dixon (Honda HRC Castrol)",
+        "18. #47 Augusto Fernandez (Prima Pramac Yamaha MotoGP)"
+      ] }
+    ],
+    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), full classification of the Sunday Grand Prix, race day 2026-11-22." },
   { t:"las-vegas", d:"2026-11-19", s:"f1", event:"Las Vegas Grand Prix",
     groups:[
       { h:"Race", order:[

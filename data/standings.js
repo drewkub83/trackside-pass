@@ -10,23 +10,23 @@
    the driver, not the car), so naming a fixed car number for someone who's since switched would be wrong --
    name the team/manufacturer instead and say so in `gap` if it's known (e.g. Laurin Heinrich below). */
 const STANDINGS = [
-  { s:"motogp", asOf:"Current after the Qatar Airways Grand Prix of Qatar (2026-11-08).",
+  { s:"motogp", asOf:"Current after the Repsol Grand Prix of Portugal (2026-11-22).",
     classes:[
       { h:"Riders", rows:[
-        { pos:1, who:"Marc Marquez (Ducati Lenovo Team)", pts:431 },
-        { pos:2, who:"Jorge Martin (Aprilia Racing)", pts:376 },
-        { pos:3, who:"Marco Bezzecchi (Aprilia Racing)", pts:369 },
+        { pos:1, who:"Marc Marquez (Ducati Lenovo Team)", pts:439 },
+        { pos:2, who:"Jorge Martin (Aprilia Racing)", pts:396 },
+        { pos:3, who:"Marco Bezzecchi (Aprilia Racing)", pts:394 },
         { pos:4, who:"Pedro Acosta (Red Bull KTM Factory Racing)", pts:315 },
-        { pos:5, who:"Ai Ogura (SuperFile Trackhouse MotoGP Team)", pts:298 },
-        { pos:6, who:"Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", pts:285 },
-        { pos:7, who:"Raul Fernandez (SuperFile Trackhouse MotoGP Team)", pts:267 },
+        { pos:5, who:"Ai Ogura (SuperFile Trackhouse MotoGP Team)", pts:309 },
+        { pos:6, who:"Fabio Di Giannantonio (Pertamina Enduro VR46 Racing Team)", pts:298 },
+        { pos:7, who:"Raul Fernandez (SuperFile Trackhouse MotoGP Team)", pts:283 },
         { pos:8, who:"Alex Marquez (BK8 Gresini Racing MotoGP)", pts:204 },
         { pos:9, who:"Francesco Bagnaia (Ducati Lenovo Team)", pts:173 },
-        { pos:10, who:"Enea Bastianini (Red Bull KTM Tech3)", pts:147 },
-        { pos:11, who:"Fermin Aldeguer (BK8 Gresini Racing MotoGP)", pts:129 },
-        { pos:12, who:"Brad Binder (Red Bull KTM Factory Racing)", pts:118 },
-        { pos:13, who:"Luca Marini (Honda HRC Castrol)", pts:117 },
-        { pos:14, who:"Fabio Quartararo (Monster Energy Yamaha MotoGP Team)", pts:81 },
+        { pos:10, who:"Enea Bastianini (Red Bull KTM Tech3)", pts:152 },
+        { pos:11, who:"Fermin Aldeguer (BK8 Gresini Racing MotoGP)", pts:139 },
+        { pos:12, who:"Brad Binder (Red Bull KTM Factory Racing)", pts:127 },
+        { pos:13, who:"Luca Marini (Honda HRC Castrol)", pts:124 },
+        { pos:14, who:"Fabio Quartararo (Monster Energy Yamaha MotoGP Team)", pts:85 },
         { pos:15, who:"Diogo Moreira (Pro Honda LCR)", pts:78 }
       ] }
     ],
@@ -78,7 +78,7 @@ const STANDINGS = [
   { s:"f2", asOf:"Current as of 2026-11-22, from www.fiaformula2.com (the series' own standings page).",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Rafael Câmara", pts:207 },
+        { pos:1, who:"Rafael Camara", pts:207 },
         { pos:2, who:"Nikola Tsolov", pts:200 },
         { pos:3, who:"Alexander Dunne", pts:189 },
         { pos:4, who:"Gabriele Mini", pts:163 },

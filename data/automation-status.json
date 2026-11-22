@@ -3,7 +3,7 @@
  "sources": {
   "indycar": "ok",
   "gtwca": "ok",
-  "gtwce": "unreachable: The read operation timed out",
+  "gtwce": "ok",
   "f1": "ok",
   "nascar": "ok",
   "motogp": "ok"

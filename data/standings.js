@@ -75,10 +75,10 @@ const STANDINGS = [
       ] }
     ],
     note:"(automatic update) Source: www.fiaformula3.com drivers' standings, top ten, read 2026-10-26. The page lists no team per driver. Check the site for the current round count." },
-  { s:"f2", asOf:"Current as of 2026-11-20, from www.fiaformula2.com (the series' own standings page).",
+  { s:"f2", asOf:"Current as of 2026-11-22, from www.fiaformula2.com (the series' own standings page).",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Rafael Camara", pts:207 },
+        { pos:1, who:"Rafael Câmara", pts:207 },
         { pos:2, who:"Nikola Tsolov", pts:200 },
         { pos:3, who:"Alexander Dunne", pts:189 },
         { pos:4, who:"Gabriele Mini", pts:163 },
@@ -90,7 +90,7 @@ const STANDINGS = [
         { pos:10, who:"Laurens van Hoepen", pts:90 }
       ] }
     ],
-    note:"(automatic update) Source: www.fiaformula2.com drivers' standings, top ten, read 2026-11-20. The page lists no team per driver. Check the site for the current round count." },
+    note:"(automatic update) Source: www.fiaformula2.com drivers' standings, top ten, read 2026-11-22. The page lists no team per driver. Check the site for the current round count." },
   { s:"weathertech", asOf:"Final 2026 standings after Motul Petit Le Mans (Oct 3); the season is complete.",
     classes:[
       { h:"GTP", rows:[
@@ -264,27 +264,27 @@ const STANDINGS = [
       ] }
     ],
     note:"Driver standings by class, top 6 positions of each table; drivers who share a position share the same points (listed together). A team is named only where the series' team table or a race report confirms it. Source: gt-world-challenge-america.com standings (Drivers and Teams 2026, Pro / Pro-Am / Am), read Oct 16, 2026." },
-  { s:"f1", asOf:"Current after the Brazilian Grand Prix (Nov 8, 2026): 20 races are done and 3 remain.",
+  { s:"f1", asOf:"Current after the Las Vegas Grand Prix (Nov 22, 2026): 21 races are done and 2 remain.",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Kimi Antonelli (Mercedes)", pts:390 },
-        { pos:2, who:"Max Verstappen (Red Bull Racing)", pts:279 },
-        { pos:3, who:"George Russell (Mercedes)", pts:262 },
-        { pos:4, who:"Lewis Hamilton (Ferrari)", pts:261 },
-        { pos:5, who:"Charles Leclerc (Ferrari)", pts:251 },
-        { pos:6, who:"Lando Norris (McLaren)", pts:246 },
-        { pos:7, who:"Oscar Piastri (McLaren)", pts:152 },
+        { pos:1, who:"Kimi Antonelli (Mercedes)", pts:402 },
+        { pos:2, who:"Max Verstappen (Red Bull Racing)", pts:304 },
+        { pos:3, who:"Lewis Hamilton (Ferrari)", pts:267 },
+        { pos:4, who:"George Russell (Mercedes)", pts:264 },
+        { pos:5, who:"Lando Norris (McLaren)", pts:264 },
+        { pos:6, who:"Charles Leclerc (Ferrari)", pts:250 },
+        { pos:7, who:"Oscar Piastri (McLaren)", pts:167 },
         { pos:8, who:"Isack Hadjar (Red Bull Racing)", pts:122 },
-        { pos:9, who:"Liam Lawson (Racing Bulls)", pts:87 },
-        { pos:10, who:"Pierre Gasly (Alpine)", pts:42 },
+        { pos:9, who:"Liam Lawson (Racing Bulls)", pts:89 },
+        { pos:10, who:"Pierre Gasly (Alpine)", pts:52 },
         { pos:11, who:"Arvid Lindblad (Racing Bulls)", pts:38 },
-        { pos:12, who:"Franco Colapinto (Alpine)", pts:27 },
+        { pos:12, who:"Franco Colapinto (Alpine)", pts:35 },
         { pos:13, who:"Oliver Bearman (Haas)", pts:23 },
         { pos:14, who:"Gabriel Bortoleto (Audi)", pts:14 },
         { pos:15, who:"Nico Hülkenberg (Audi)", pts:14 },
-        { pos:16, who:"Esteban Ocon (Haas)", pts:7 },
-        { pos:17, who:"Fernando Alonso (Aston Martin)", pts:7 },
-        { pos:18, who:"Carlos Sainz (Williams)", pts:7 },
+        { pos:16, who:"Carlos Sainz (Williams)", pts:11 },
+        { pos:17, who:"Esteban Ocon (Haas)", pts:7 },
+        { pos:18, who:"Fernando Alonso (Aston Martin)", pts:7 },
         { pos:19, who:"Alexander Albon (Williams)", pts:5 },
         { pos:20, who:"Yuki Tsunoda (Racing Bulls)", pts:1 },
         { pos:21, who:"Ryo Hirakawa (Haas)", pts:1 },
@@ -294,20 +294,20 @@ const STANDINGS = [
         { pos:25, who:"Rafael Camara (Haas)", pts:0 }
       ] },
       { h:"Constructors", rows:[
-        { pos:1, who:"Mercedes", pts:652 },
-        { pos:2, who:"Ferrari", pts:512 },
-        { pos:3, who:"Red Bull Racing", pts:415 },
-        { pos:4, who:"McLaren", pts:398 },
-        { pos:5, who:"Racing Bulls", pts:112 },
-        { pos:6, who:"Alpine", pts:69 },
+        { pos:1, who:"Mercedes", pts:666 },
+        { pos:2, who:"Ferrari", pts:517 },
+        { pos:3, who:"Red Bull Racing", pts:440 },
+        { pos:4, who:"McLaren", pts:431 },
+        { pos:5, who:"Racing Bulls", pts:114 },
+        { pos:6, who:"Alpine", pts:87 },
         { pos:7, who:"Haas", pts:31 },
         { pos:8, who:"Audi", pts:28 },
-        { pos:9, who:"Williams", pts:12 },
+        { pos:9, who:"Williams", pts:16 },
         { pos:10, who:"Aston Martin", pts:7 },
         { pos:11, who:"Cadillac", pts:0 }
       ] }
     ],
-    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA championship tables), read 2026-11-08. Drivers on the same points share a position only if the table shows it." },
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA championship tables), read 2026-11-22. Drivers on the same points share a position only if the table shows it." },
   { s:"f1academy", asOf:"Current after Austin (Oct 23-25, 2026); Palmowski clinched the title there with the Las Vegas round (Nov 19-21) still to run.",
     classes:[
       { h:"Drivers", rows:[

@@ -15,6 +15,34 @@
    "Pro-Am (overall winner)"; (2) give the top THREE of every class whenever the report names them, one line each with the car number as "#NN" ("1. #24 BMW M Team WRT ...");
    (3) a weekend with two races: write one entry per race with `race` = the race session's name; the game scores the first one. Places the report does not name stay out. */
 const RESULTS = [
+  { t:"las-vegas", d:"2026-11-19", s:"f1", event:"Las Vegas Grand Prix",
+    groups:[
+      { h:"Race", order:[
+        "1. #3 Max Verstappen (Red Bull Racing)",
+        "2. #1 Lando Norris (McLaren)",
+        "3. #81 Oscar Piastri (McLaren)",
+        "4. #12 Kimi Antonelli (Mercedes)",
+        "5. #10 Pierre Gasly (Alpine)",
+        "6. #43 Franco Colapinto (Alpine)",
+        "7. #44 Lewis Hamilton (Ferrari)",
+        "8. #55 Carlos Sainz (Williams)",
+        "9. #63 George Russell (Mercedes)",
+        "10. #16 Charles Leclerc (Ferrari)",
+        "11. #27 Nico Hülkenberg (Audi)",
+        "12. #5 Gabriel Bortoleto (Audi)",
+        "13. #87 Oliver Bearman (Haas)",
+        "14. #30 Liam Lawson (Racing Bulls)",
+        "15. #6 Isack Hadjar (Red Bull Racing)",
+        "16. #51 Rafael Camara (Haas)",
+        "17. #18 Lance Stroll (Aston Martin)",
+        "18. #77 Valtteri Bottas (Cadillac)",
+        "19. #14 Fernando Alonso (Aston Martin)",
+        "20. #41 Arvid Lindblad (Racing Bulls)",
+        "21. #11 Sergio Pérez (Cadillac)",
+        "22. #23 Alexander Albon (Williams)"
+      ] }
+    ],
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), full classification of the Grand Prix on 2026-11-22. Sprint results are not included." },
   { t:"cota", d:"2026-10-23", s:"f1academy", race:"Feature Race - F1 Academy", event:"F1 Academy: Feature Race (United States Grand Prix)",
     groups:[
       { h:"Race", order:[

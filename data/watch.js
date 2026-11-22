@@ -2019,4 +2019,43 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries (none reachable directly from this environment) of Sky Sport Italy's 'MotoGP, GP Portogallo 2026: Aldeguer 1 nel warm up, 9 Bez, 11 Martin. Marquez non rischia', Speedweek's 'Portimão warm-up: Aldeguer sets fastest time, caution among the MotoGP elite', Racesport.nl's 'Fermin Aldeguer snelste in natte MotoGP warm-up op Portimao', Motorsport-Magazin.com's live ticker and Corsedimoto's warm-up report, for Aldeguer's 1:51.898 fastest time on the still-damp track, Augusto Fernandez second (+0.329s, standing in for Razgatlioglu) and Jack Miller third (+0.852s), the reduced field of riders who set a time (13 per Corsedimoto, 14 per Speedweek), Marquez doing only an out-lap and coming back unscathed, Martin 11th around five seconds off the pace, and Bezzecchi 9th about four seconds back; Crash.net's results page ('2026 MotoGP Portugal - Warm-up Results') cross-checked the Bezzecchi gap. The title-clinch scenario (ninth or better clinches outright regardless of Martin or Bezzecchi; Martin winning pushes the bar to Marquez needing 10th or lower) from web search summaries of Yahoo Sports' 'How Marc Marquez can clinch the MotoGP title on Sunday at Portimao' and 'How Marc Marquez can be crowned MotoGP champion in Portuguese GP sprint', GPblog's 'How Marquez can clinch the MotoGP title on Sunday in Portugal', The Race's 'How Marc Marquez can seal MotoGP title in the Portuguese GP' and GrandePremio's 'Marc Marquez needs just ninth place to win MotoGP title after dramatic Portugal sprint crash', which agreed on the ninth-place rule across all five outlets even where they differed on the finer lower-finish scenarios. data/standings.js for the unchanged 431-376 points entering the race (the Sprint's points, already applied). Bagnaia/Lecuona and the Yamaha boycott fine carried over, unchanged, from the Sprint-day entry for this event. Session times from data/portimao.js. The Grand Prix itself had not started at the time of writing; no race result is included here." }
+  ,{ t:"lusail", d:"2026-11-27", s:"f1", from:"2026-11-22", at:"2026-11-22T12:23:45Z",
+    asOf:"Current after the Las Vegas Grand Prix (Nov 21, 2026), the most recently completed round.",
+    groups:[
+      { h:"Both titles are already settled", items:[
+        ["Kimi Antonelli (Mercedes)", "Clinched the 2026 Drivers' title at the Mexico City Grand Prix (Nov 1), F1's youngest-ever world champion. He leads on 402 points with this Qatar round and Abu Dhabi left -- nothing left for him to decide."],
+        ["Mercedes", "Clinched the Constructors' title at the Brazilian Grand Prix, the team's ninth, its first since 2021."]
+      ] },
+      { h:"Las Vegas, in brief: Verstappen wins a wild one", items:[
+        ["Max Verstappen (Red Bull Racing)", "Won from pole after a race with repeated lead changes -- he was passed and retook the lead several times, mostly by George Russell and Isack Hadjar, in what he called 'something that I've never seen before in Formula 1 myself.' Beat Norris to the flag by 0.639s."],
+        ["Lando Norris (McLaren)", "Second, 0.639s back. Oscar Piastri completed the podium in third."],
+        ["Kimi Antonelli (Mercedes)", "Started 6th after a 5-place grid penalty for a power-unit change, ran at the front for a spell, then appeared to hit an issue in the closing laps and dropped from podium contention to 4th."],
+        ["George Russell (Mercedes)", "A genuine threat to Verstappen for the lead until he locked up on lap 48, ran into the barriers and fell back; recovered to finish 9th. An incident between Russell and Hadjar was still under investigation after the race."],
+        ["Lewis Hamilton (Ferrari) and Charles Leclerc (Ferrari)", "Made contact fighting each other -- Hamilton also took a 10-second penalty for leaving the track and gaining an advantage over Norris (he stayed out rather than pit, to keep a Safety Car double-stack clean) and was classified 7th; Leclerc was penalised 10 seconds for the contact and was classified 10th."],
+        ["Safety Car", "Triggered by a collision between Sergio Pérez and Rafael Camara at Turns 14/15; Pérez retired. Hadjar damaged his front wing in a separate incident and dropped to the back before recovering to 15th."]
+      ] },
+      { h:"What's still live: the runner-up fight, reshuffled by Vegas", items:[
+        ["Max Verstappen (Red Bull Racing)", "The win moves him to 304, now 37 clear of third -- the best of this group's results, and the closest anyone has come to pulling away from the pack in the runner-up fight."],
+        ["Lewis Hamilton (Ferrari)", "Jumped to third on 267 despite the penalty, ahead of both Mercedes drivers."],
+        ["George Russell (Mercedes)", "Fourth on 264 -- his barrier contact cost him ground he can't get back."],
+        ["Lando Norris (McLaren)", "Fifth, also on 264 after his podium finish -- the biggest climber of the group this round."],
+        ["Charles Leclerc (Ferrari)", "Sixth on 250, 14 back after his penalty-affected weekend."]
+      ] },
+      { h:"Constructors: Ferrari's grip on second, but McLaren is closing on third", items:[
+        ["Ferrari", "517 points, second, 77 clear of Red Bull with two rounds left to hand out points."],
+        ["Red Bull Racing", "440, third after Verstappen's win."],
+        ["McLaren", "431, fourth -- just 9 points behind Red Bull for third, the tightest fight left on the grid outside the very front."]
+      ] },
+      { h:"The circuit: Lusail under the floodlights", items:[
+        ["A night race on a 5.419 km layout", "57 laps, roughly 309 km, run after dark under the circuit's floodlights -- one of the more visually distinctive rounds on the calendar."],
+        ["Where the passing happens", "Turn 1, at the end of the long pit straight, is the circuit's main overtaking point."],
+        ["Penultimate round", "The second-to-last weekend of the season before the finale at Abu Dhabi."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Friday Nov 27", "Practice 1, 4:30pm; Practice 2, 8:00pm."],
+        ["Saturday Nov 28", "Practice 3, 5:30pm; Qualifying, 9:00pm."],
+        ["Sunday Nov 29", "Race, 7:00pm."]
+      ] }
+    ],
+    note:"Sources: data/results.js (automatic update from api.jolpi.ca, read 2026-11-22) for the full Las Vegas Grand Prix classification (Verstappen, Norris, Piastri, Antonelli, Gasly, Colapinto, Hamilton, Sainz, Russell, Leclerc as the top 10). data/standings.js (automatic update from api.jolpi.ca, read 2026-11-22) for the post-Vegas points: Drivers (Antonelli 402, Verstappen 304, Hamilton 267, Russell 264, Norris 264, Leclerc 250) and Constructors (Ferrari 517, Red Bull Racing 440, McLaren 431). Web search summary of formula1.com's race report 'Verstappen wins exhilarating Las Vegas Grand Prix from Norris and Piastri' (not reachable directly from this environment) for the race narrative: the repeated lead changes with Russell and Hadjar, Verstappen's quote, the 0.639s margin, Antonelli's grid penalty and late-race issue, Russell's lap-48 lock-up and barrier contact, Hamilton's 10-second penalty and the Ferrari clash with Leclerc (also penalised), and the Safety Car from the Pérez/Camara incident. Circuit facts (night-race length/lap count, Turn 1 overtaking, penultimate-round status) carried over unchanged from the prior entry for this event, sourced there to formula1.com's Qatar Grand Prix article and racingnews365.com's Qatar race page. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3), unchanged from the prior entry." }
 ];

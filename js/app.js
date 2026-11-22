@@ -284,13 +284,19 @@ function storylineWeekends(){
   return Object.values(by).sort((a,b)=>a.d.localeCompare(b.d));
 }
 let homeRes=[];
+/* a race that had a Pick your podium game but nothing to score on this phone: say which of the two it is instead of showing nothing */
+function homeNoPicks(t,e,r){
+  if(typeof ENTRIES==="undefined") return ""; const gs=ENTRIES.filter(g=>g.t===t.id&&g.d>=e.d&&g.d<=eventEnd(e)&&g.s===r.s); if(!gs.length) return "";
+  const picked=gs.some(g=>Object.values(picksOf(g)).some(a=>a&&a.length));
+  return `<p class="stPicks mute">${picked?"Your podium picks are being scored.":"No podium picks on this phone for this race."}</p>`;
+}
 function openHomeRes(i){ const x=homeRes[i]; if(!x) return; fullRes=[x.r]; openFullRes(0,recapPicksHtml({t:x.t,e:x.e,r:x.r})); }
 function renderStorylines(){
   const el=document.getElementById("storylines"); if(!el) return; const wk=storylineWeekends();
   const rr=recentResults(); homeRes=rr; const resHtml=rr.length?`<div class="sect">Results this week</div>`+rr.map(({t,e,r,sc=recapGames(t,e,r.s)},i)=>{
     const g=(r.groups||[])[0]||{}, top=(g.order||[]).slice(0,3).map(x=>String(x).replace(/\s*\(.*$/,"").replace(/ — .*$/,""));
     const win=top.length?top:[g.winner].filter(Boolean);
-    return `<button class="stCard" onclick="openHomeRes(${i})"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div>${sc.length?`<p class="stPicks">Your podium picks: <b>${sc.reduce((n,x)=>n+x.sc.pts,0)} pts</b></p>`:""}<span class="stGo">Full results &rsaquo;</span></button>`; }).join(""):"";
+    return `<button class="stCard" onclick="openHomeRes(${i})"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div>${sc.length?`<p class="stPicks">Your podium picks: <b>${sc.reduce((n,x)=>n+x.sc.pts,0)} pts</b></p>`:homeNoPicks(t,e,r)}<span class="stGo">Full results &rsaquo;</span></button>`; }).join(""):"";
   if(!wk.length){ el.innerHTML=resHtml; return; }
   el.innerHTML=resHtml+`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
     const series=Object.values(w.best).map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"…":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);

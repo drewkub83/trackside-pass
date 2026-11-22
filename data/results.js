@@ -4,10 +4,12 @@
    weekend), event = the race's name, groups = [{h: class, ...}]. Shown in place of the pre-race "cars to
    watch" list (Info tab) and as a "How it finished" card in the Race Day hub right after that series' race
    ends. Facts are only what published race reports said -- never guessed or inferred from standings.
-   Optional `headlines:["...", "..."]` (1-4 short lines, 15-200 characters each): what the published race report says mattered (how the race was won, the
-     margin, a crash or penalty that decided it, the championship picture). Only facts the report states; no opinion, no guessing, no quotes longer than a few
-     words. The Race Day hub shows them under "How it finished" and the Home results popup above the full order. The Results routine adds them to the EXISTING
-     entry after the race (tools/due_updates.js, reason "headlines"); an entry without them simply shows none.
+   HEADLINES (the second array at the bottom of this file): 1-4 short lines per race saying what the published race report says mattered (how the race
+     was won, the margin, a crash or penalty that decided it, the championship picture). Kept apart from RESULTS on purpose: the automatic readers
+     (tools/*_update.py) rebuild their own RESULTS entries every 30 minutes and would wipe anything added to an entry. One row per race:
+     ["<t>|<d>|<s>|<race, or empty>", ["line", ...], "Site names"] -- the key is the same t, d, s and race as the RESULTS entry. Each line 15-200 characters,
+     only facts the report states, paraphrased, no opinion. The Race Day hub shows them under "How it finished" and the Home results popup above the
+     full order. The Results routine appends rows (tools/due_updates.js, reason "headlines"); a race without a row shows none.
    Each group is EITHER:
      - order: the finishing order, one string per position ("1. #24 BMW M Team WRT — van der Linde/Vanthoor"),
        as many places as the source actually gives (the Race Day hub shows the first 5, the Info tab all of
@@ -891,4 +893,19 @@ const RESULTS = [
       ] }
     ],
     note:"Sources: motorsport.com full F1 Academy Las Vegas 2026 Feature Race (RACE2) classification, cross-checked against autosport.com's identical RACE2 classification; Pit Debrief race report \"F1 Academy 2026 Las Vegas GP Feature Race Report\" (confirms Palmowski/Larsen/Gademan podium, retirements and the Ferreira/Countryman 5-second penalties)." },
+];
+
+const HEADLINES = [
+  ["portimao|2026-11-20|motogp|", [
+    "Bezzecchi dropped to fifth on the opening lap, then passed Fernandez and Martin for the lead on lap 15.",
+    "Aprilia swept the podium: Bezzecchi beat Martin by 3.8 seconds and Fernandez by 5.7 seconds.",
+    "Marc Marquez needed only a top-nine finish to clinch the title and brought his bike home eighth.",
+    "It is Marquez's eighth premier-class title, level with Giacomo Agostini for the most ever, and his tenth world championship overall."
+  ], "Autosport"],
+  ["las-vegas|2026-11-19|f1|", [
+    "Max Verstappen won from pole, beating Lando Norris by just 0.639 seconds with Oscar Piastri third.",
+    "A safety car came out after Sergio Perez spun Rafael Camara, damaging his suspension.",
+    "Lewis Hamilton and Charles Leclerc each took a 10-second penalty, Hamilton for leaving the track in a move on Norris and Leclerc for colliding with Hamilton; they finished 7th and 10th.",
+    "George Russell locked up and hit the wall late while attacking for a higher spot, dropping him to 9th at the flag."
+  ], "Autosport"],
 ];

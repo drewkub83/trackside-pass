@@ -14,8 +14,8 @@
    The last race of an event is not "due" for What to watch: results, standings and the podium game come from elsewhere.
      "entries"     a series with `gameManual` in data/series.js (IMSA) whose weekend starts within --ahead days and has no entry in data/entries.js yet: the routine
                    writes the "Pick your podium" entry list from the published entry list, then runs tools/game_odds.py for the chances
-     "headlines"   a race whose result is in data/results.js without `headlines`, 2 to 72 hours after the series' last race of the weekend: the routine adds
-                   2-3 short lines from a published race report to the EXISTING entry (listed with --results, like "results")
+     "headlines"   a race whose result is in data/results.js without a row in HEADLINES (data/results.js), 2 to 72 hours after the series' last race of the weekend:
+                   the routine appends a row of 2-4 short lines from a published race report (listed with --results, like "results")
      "refresh"     the series' NEXT event already has a preview entry, but the series raced somewhere else after that entry was written (e.g. the
                    Mexico City preview was written before the Austin race) and the race's results are in data/results.js and it ended 6 hours to 7 days
                    ago: the entry still talks about the old standings and stories, so write a NEW preview for the next event (see the routine's prompt)
@@ -30,7 +30,7 @@ const HL_WAIT_H = 2, HL_HOURS = 72;
 const RESULTS_ONLY = process.argv.includes("--results");
 const NOW = new Date(arg("--now", new Date().toISOString())), HOURS = +arg("--hours", 48), AHEAD = +arg("--ahead", 8);
 const load = (f, name, pre = "") => new Function(pre + fs.readFileSync(path.join(ROOT, f), "utf8") + `;return ${name}`)();
-const SERIES = load("data/series.js", "SERIES"), WATCH = load("data/watch.js", "WATCH"), RESULTS = load("data/results.js", "RESULTS");
+const SERIES = load("data/series.js", "SERIES"), WATCH = load("data/watch.js", "WATCH"), RESULTS = load("data/results.js", "RESULTS"), HEADLINES = load("data/results.js", "HEADLINES");
 const CHAMPS = load("data/champs.js", "CHAMPS"), MAIN = new Set(CHAMPS.filter(c => !c.viaSupport).map(c => c.guide || c.id));   // main series only get headlines (support series would cost usage for little)
 const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js"];
 const tracks = fs.readdirSync(path.join(ROOT, "data")).filter(f => f.endsWith(".js") && !NON.includes(f)).map(f => { const T = []; new Function("TRACKS", fs.readFileSync(path.join(ROOT, "data", f), "utf8"))(T); return T[0]; });
@@ -69,8 +69,8 @@ for (const t of tracks) {
       /* headlines: the race's result is in data/results.js but has no `headlines` yet (2 to 72 hours after the last race of the series that weekend, so the race reports are out) */
       { const rEnds = list.filter(x => x.kind === "race").map(x => +x.end), lastEnd = rEnds.length ? Math.max(...rEnds) : 0;
         if (MAIN.has(sr.id) && lastEnd && NOW - lastEnd >= HL_WAIT_H * 3600e3 && NOW - lastEnd <= HL_HOURS * 3600e3) {
-          const need = RESULTS.filter(r => r.t === t.id && r.s === sr.id && r.d >= ev.d && r.d <= end && !(r.headlines && r.headlines.length));
-          if (need.length) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "headlines", sessions: need.map(r => ({ n: r.race || r.event, entry: { d: r.d, race: r.race || null }, ended: new Date(lastEnd).toISOString() })) });
+          const need = RESULTS.filter(r => r.t === t.id && r.s === sr.id && r.d >= ev.d && r.d <= end && !HEADLINES.some(h => h[0] === [r.t, r.d, r.s, r.race || ""].join("|")));
+          if (need.length) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "headlines", sessions: need.map(r => ({ n: r.race || r.event, entry: { d: r.d, race: r.race || null }, key: [r.t, r.d, r.s, r.race || ""].join("|"), ended: new Date(lastEnd).toISOString() })) });
         } }
       /* "Pick your podium" entry list for a series whose list cannot be read by a script (sr.gameManual): due from 8 days before until the race starts */
       const firstRace0 = list.find(x => x.kind === "race"), gk = t.id + "|" + sr.id + "|" + (firstRace0 ? firstRace0.start.toISOString() : "");   // overlapping events at a track (Daytona lists two) share one entry

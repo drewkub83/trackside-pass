@@ -57,7 +57,8 @@ for (const t of Object.values(tracks)) {
 /* 4. cross references between data files */
 const seriesIds = new Set(SERIES.map((s) => s.id));
 for (const w of WATCH) { if (!tracks[w.t]) err(`watch: unknown track "${w.t}"`); if (!seriesIds.has(w.s)) err(`watch: unknown series "${w.s}" (${w.t} ${w.d})`); if (!w.asOf || !w.groups || !w.groups.length) err(`watch: incomplete entry ${w.t} ${w.d} ${w.s}`); }
-for (const r of RESULTS) if (r.headlines !== undefined && !(Array.isArray(r.headlines) && r.headlines.length <= 4 && r.headlines.every(h => typeof h === "string" && h.length >= 15 && h.length <= 200))) err(`results: headlines must be 1-4 strings of 15-200 characters (${r.t} ${r.d} ${r.s})`);
+const HEADLINES = loadGlobal("data/results.js", "HEADLINES", "const SERIES=[];") || [];
+for (const h of HEADLINES) { const [k, lines] = h; if (!RESULTS.some(r => [r.t, r.d, r.s, r.race || ""].join("|") === k)) err(`headlines: no result entry for key "${k}"`); if (!(Array.isArray(lines) && lines.length >= 1 && lines.length <= 4 && lines.every(x => typeof x === "string" && x.length >= 15 && x.length <= 200))) err(`headlines: "${k}" needs 1-4 lines of 15-200 characters`); }
 for (const r of RESULTS) { if (!tracks[r.t]) err(`results: unknown track "${r.t}"`); if (!seriesIds.has(r.s)) err(`results: unknown series "${r.s}" (${r.t} ${r.d})`); if (!r.groups || !r.groups.length) err(`results: empty entry ${r.t} ${r.d} ${r.s}`); }
 for (const s of STANDINGS) { if (!seriesIds.has(s.s)) err(`standings: unknown series "${s.s}"`); if (!s.asOf || !s.classes || !s.classes.length) err(`standings: incomplete entry for ${s.s}`); }
 for (const e of ENTRIES) {

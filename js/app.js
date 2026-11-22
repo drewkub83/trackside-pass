@@ -1690,8 +1690,8 @@ function hubStandingsCard(c){
 }
 /* the series' own highlights video, offered under "How it finished": /api/recap finds it on the series' YouTube channel (data/series.js `rc`, else `yt`);
    until it exists (they post an hour or two after the flag) the card is simply absent. Remembered per race for the session; the hub rebuilds every 30 s. */
-/* "Headlines": 2-4 short lines from a published race report, written into the result's `headlines` field by the Results routine (tools/due_updates.js "headlines") */
-function headlinesList(res){ return res&&Array.isArray(res.headlines)?res.headlines.filter(x=>typeof x==="string"&&x.trim()).slice(0,4):[]; }
+/* "Headlines": 2-4 short lines from a published race report, stored in HEADLINES (data/results.js) by the Results routine (tools/due_updates.js "headlines") */
+function headlinesList(res){ if(!res||typeof HEADLINES==="undefined") return []; const k=[res.t,res.d,res.s,res.race||""].join("|"), row=HEADLINES.find(h=>h[0]===k); return row&&Array.isArray(row[1])?row[1].filter(x=>typeof x==="string"&&x.trim()).slice(0,4):[]; }
 function headlinesInner(res){ const h=headlinesList(res); return h.length?`<ul class="hlList">${h.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""; }
 function hubHeadlinesCard(res){ const h=headlinesInner(res); return h?`<div class="hubCard"><h4>Headlines</h4>${h}<div class="hlSrc">From the published race report</div></div>`:""; }
 const RECAPV={};

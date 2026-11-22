@@ -222,7 +222,37 @@ function champsAt(t,e){ const last=eventEnd(e); return CHAMPS.filter(c=>{ if(c.o
 
 /* the weekend the big Home tile shows (also used to keep it out of "Your series, next up") */
 function heroPick(){ const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(); return c?{t:c.t,e:c.e}:null; }
+/* Once a weekend is over (every race run, results in) the big Home tile gives way to that weekend's race recaps until Monday, unless you are at that track
+   (then the tile stays: the weekend is still "happening" for you). Recaps are for the main series you follow; a tile opens the Postrace hub. */
+const AT_TRACK={};
+function homeAtTrack(t){   /* true only if location is already allowed and you are within the hub radius; never asks for permission */
+  let atGeo=null; try{ atGeo=atTrackNow; }catch(e){}   /* atTrackNow is declared further down the file and does not exist yet on the first render */
+  if((atGeo&&atGeo.id===t.id)||AT_TRACK[t.id]===true) return true; if(t.id in AT_TRACK) return false; AT_TRACK[t.id]=false;
+  if(!navigator.geolocation||!t.geo||!navigator.permissions||!navigator.permissions.query) return false;
+  navigator.permissions.query({name:"geolocation"}).then(p=>{ if(p.state!=="granted") return;
+    navigator.geolocation.getCurrentPosition(pos=>{ const km=haversine(pos.coords.latitude,pos.coords.longitude,(t.geo.n+t.geo.s)/2,(t.geo.w+t.geo.e)/2); if(km<=HUB_RADIUS_KM){ AT_TRACK[t.id]=true; renderHero(); } },()=>{},{maximumAge:600000,timeout:8000}); }).catch(()=>{});
+  return false;
+}
+function recapWeekends(){
+  if(typeof RESULTS==="undefined") return []; const today=localToday(), mon=weekStartOf(today), now=new Date(), mine=new Set(followedGameSeries()), out=[];
+  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ const end=eventEnd(e); if(e.d>today||end<mon||/test/i.test(e.s||"")) return;
+    const races=sessionsOf(t).filter(x=>x.d>=e.d&&x.d<=end&&kindOf(x.n)==="race"); if(!races.length||races.some(x=>x.end>now)) return;
+    const res=RESULTS.filter(r=>r.t===t.id&&r.d>=e.d&&r.d<=end&&mine.has(r.s)); if(res.length) out.push({t,e,res}); }));
+  return out.sort((a,b)=>b.e.d.localeCompare(a.e.d));
+}
+function resWinner(r){ const g=(r.groups||[])[0]||{}, l=(g.order&&g.order[0])||g.winner||""; return String(l).replace(/^\d+\.\s*/,"").replace(/^#\S+\s+/,"").replace(/\s*\(.*$/,"").replace(/ — .*$/,""); }
+function renderRecapTiles(wk){
+  const el=document.getElementById("hero"); document.documentElement.dataset.wk=wk[0].res[0].s;
+  el.innerHTML=wk.flatMap(({t,e,res})=>res.map(r=>{ const hl=headlinesList(r)[0], w=resWinner(r), nm=watchSeriesName({s:r.s})||r.s;
+    return `<button class="hero heroRecap" data-s="${esc(r.s)}" onclick="openTrack('${t.id}','home')">
+      <svg class="art" viewBox="${trackBox(t).join(" ")}" aria-hidden="true"><path d="${t.path}" fill="none" stroke="var(--ink)" stroke-width="${(trackBox(t)[2]*0.024).toFixed(1)}" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span class="kick">Race recap · ${esc(nm)}</span>
+      <div class="name">${esc(e.e)}</div><div class="sub">${esc(t.short)} · ${esc(fmtRange(e))}</div>
+      ${w?`<div class="rcWin"><small>Winner</small>${esc(w)}</div>`:""}${hl?`<p class="rcHl">${esc(hl)}</p>`:""}
+      <span class="stGo">Open the recap &rsaquo;</span></button>`; })).join("");
+}
 function renderHero(){
+  const wkr=recapWeekends().filter(x=>!homeAtTrack(x.t)); if(wkr.length){ renderRecapTiles(wkr); return; }
   const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(), el=document.getElementById("hero"); if(!c){ el.innerHTML=""; return; }
   const {t,e}=c, today=localToday(), on=e.d<=today, n=daysBetween(today,e.d), day=Math.min(e.t||1,daysBetween(e.d,today)+1), who=champsAt(t,e).map(x=>x.name).join(" + ")||e.s;
   document.documentElement.dataset.wk=(champsAt(t,e)[0]||{}).id||"";   /* the series colour of the weekend on screen (Pit Board style) */

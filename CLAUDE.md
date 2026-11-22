@@ -54,6 +54,9 @@ The big Home tile (`renderHero`, `heroPick()`) is the weekend you marked "I'm go
 ## Postrace hub (Nov 22 2026)
 Once every race of the weekend at the track is over and `data/results.js` has results for it, the Race Day hub becomes a recap (`hubPostState`, `hubPostHtml` in `js/app.js`): race recap video(s) of the main series first, then per MAIN series "Recap" (headlines from `HEADLINES`, finishing order, how your podium picks did; support series are deliberately left out, and a weekend with results only for support series keeps the normal hub), the standings, the weekend recap share card, friends here, next event, the action tiles, and a "Show the full weekend hub" button (`hubFullFor`, reset whenever a track is opened). No sessions, live timing, weather, grid, game card or What to watch. It lasts `POST_DAYS` (14) after the weekend, unless the next event here starts within 7 days. Home's "Results this week" cards open this hub (the Final results popup is still used by "Full results").
 
+## Home after a weekend (Nov 22 2026)
+When a weekend is over (every race run, results in `data/results.js` for a main series you follow) and it ended this week (Monday to Sunday), the big Home tile is replaced by one "Race recap" tile per race (`recapWeekends`, `renderRecapTiles`: winner and the first headline, opens the Postrace hub), until Monday brings the normal tile back (next race). If your phone is at that track (the same hub radius, only when location is already allowed: `homeAtTrack`) the normal tile stays. The old Home "Results this week" cards and "Weekend recap" card are gone.
+
 ## Race Day hub is the landing page
 Opening any track lands on the Hub tab (`enterHub()` in `openTrackNow`); Map is the second tab, then Events and Info. The back arrow and swipe-back step Map/Events/Info -> Hub -> track list (`goHome`). Off-season the hub's top card shows the next event and its date.
 

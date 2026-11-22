@@ -3,10 +3,10 @@
  "sources": {
   "indycar": "ok",
   "gtwca": "ok",
-  "gtwce": "ok",
+  "gtwce": "unreachable: The read operation timed out",
   "f1": "ok",
   "nascar": "ok",
   "motogp": "ok"
  },
- "firstSeen": "2026-10-29"
+ "firstSeen": "2026-11-22"
 }

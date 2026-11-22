@@ -272,7 +272,7 @@ function weekStartOf(d){ const dt=new Date(d+"T12:00:00Z"); return new Date(dt.g
 function recentResults(){
   if(typeof RESULTS==="undefined") return []; const today=localToday(), mon=weekStartOf(today), mine=new Set(followedGameSeries()), out=[];
   TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ const end=eventEnd(e); if(end>today||end<mon) return;
-    RESULTS.filter(r=>r.t===t.id&&r.d>=e.d&&r.d<=end&&mine.has(r.s)).forEach(r=>out.push({t,r,end})); }));
+    RESULTS.filter(r=>r.t===t.id&&r.d>=e.d&&r.d<=end&&mine.has(r.s)).forEach(r=>out.push({t,e,r,end})); }));
   return out.sort((a,b)=>b.end.localeCompare(a.end));
 }
 function storylineWeekends(){
@@ -284,13 +284,13 @@ function storylineWeekends(){
   return Object.values(by).sort((a,b)=>a.d.localeCompare(b.d));
 }
 let homeRes=[];
-function openHomeRes(i){ if(!homeRes[i]) return; fullRes=[homeRes[i]]; openFullRes(0); }
+function openHomeRes(i){ const x=homeRes[i]; if(!x) return; fullRes=[x.r]; openFullRes(0,recapPicksHtml({t:x.t,e:x.e,r:x.r})); }
 function renderStorylines(){
   const el=document.getElementById("storylines"); if(!el) return; const wk=storylineWeekends();
-  const rr=recentResults(); homeRes=rr.map(x=>x.r); const resHtml=rr.length?`<div class="sect">Results this week</div>`+rr.map(({t,r},i)=>{
+  const rr=recentResults(); homeRes=rr; const resHtml=rr.length?`<div class="sect">Results this week</div>`+rr.map(({t,e,r,sc=recapGames(t,e,r.s)},i)=>{
     const g=(r.groups||[])[0]||{}, top=(g.order||[]).slice(0,3).map(x=>String(x).replace(/\s*\(.*$/,"").replace(/ — .*$/,""));
     const win=top.length?top:[g.winner].filter(Boolean);
-    return `<button class="stCard" onclick="openHomeRes(${i})"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div><span class="stGo">Full results &rsaquo;</span></button>`; }).join(""):"";
+    return `<button class="stCard" onclick="openHomeRes(${i})"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div>${sc.length?`<p class="stPicks">Your podium picks: <b>${sc.reduce((n,x)=>n+x.sc.pts,0)} pts</b></p>`:""}<span class="stGo">Full results &rsaquo;</span></button>`; }).join(""):"";
   if(!wk.length){ el.innerHTML=resHtml; return; }
   el.innerHTML=resHtml+`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
     const series=Object.values(w.best).map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"…":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);
@@ -697,9 +697,9 @@ function watchSeriesName(x){ const sr=SERIES.find(r=>r.id===x.s); return sr?sr.n
    the two never drift out of sync. */
 /* the results the hub card shows the top 5 of; a tap opens the whole classification (fullRes is rebuilt on every hub draw) */
 let fullRes=[];
-function openFullRes(i){
+function openFullRes(i,extra){
   const res=fullRes[i]; if(!res) return;
-  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${res.groups.map(g=>resultGroupHtml(g)).join("")}${res.note?`<p class="wnote">${esc(res.note)}</p>`:""}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${extra||""}${res.groups.map(g=>resultGroupHtml(g)).join("")}${res.note?`<p class="wnote">${esc(res.note)}</p>`:""}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
 function resultGroupHtml(g,cap){

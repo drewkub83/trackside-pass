@@ -26,7 +26,7 @@
    GR Cup North America, GT America) since they share one event and one timing feed. Checked directly, Oct 5. */
 const SERIES = [
   {
-    id:"weathertech", gameManual:true, match:/WeatherTech Championship|Petit Le Mans|Rolex 24|Twelve Hours/i, timing:"https://www.imsa.com/scoring/",
+    id:"weathertech", rc:"UC58em84jwiyM20qR-iqBDZw", gameManual:true, match:/WeatherTech Championship|Petit Le Mans|Rolex 24|Twelve Hours/i, timing:"https://www.imsa.com/scoring/",
     name:"IMSA WeatherTech SportsCar Championship", tag:"4 classes on track at once",
     blurb:"IMSA's top series and the headline act. Four classes of cars race together on the same track at the same time, so faster cars are always lapping slower ones. Each class has its own winner, so pick a class to follow instead of only watching who is first overall.",
     cars:[
@@ -127,7 +127,7 @@ const SERIES = [
     watch:{ race:"Same car for everyone, with four driver classes racing in one field. Each class has its own winner." }
   }
   ,{
-    id:"indycar", sess:"indycar", autoResults:true, match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
+    id:"indycar", rc:"UCy1F61QvUUQXAXi2Voa_fUw", sess:"indycar", autoResults:true, match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
     name:"NTT INDYCAR SERIES", tag:"One car, three kinds of track",
     blurb:"North America's top open-wheel series. Every team runs the same Dallara chassis with the same aero kit, powered by a Chevrolet or Honda engine, so results come down to drivers, teams and strategy. The season mixes street circuits, permanent road courses and ovals, and it builds to the Indianapolis 500.",
     cars:[
@@ -248,7 +248,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see GTAmerica.us."
 }
   ,{
-    id:"f1", autoResults:true, sess:"f1", match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
+    id:"f1", rc:"UCB_qr75-ydFVKSF9Dmo6izg", autoResults:true, sess:"f1", match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
     name:"Formula 1", tag:"The top of single-seater racing",
     blurb:"The FIA Formula One World Championship, the highest level of single-seater racing. Eleven teams run two cars each at Grands Prix on circuits around the world, and every team designs and builds its own car, so the pace of the car matters as much as the driver. There are two titles: drivers and constructors (teams). 2026 brought a new generation of cars and two new teams, Audi and Cadillac.",
     cars:[
@@ -268,7 +268,7 @@ const SERIES = [
     fine:"A spectator summary based on Formula 1's published rules. For official details, see formula1.com."
   },
   {
-    id:"wec", sess:"wec", autoResults:true, match:/FIA WEC|World Endurance/i,
+    id:"wec", rc:"UCwU7U7PiarcJKLjDJTnANjw", sess:"wec", autoResults:true, match:/FIA WEC|World Endurance/i,
     name:"FIA World Endurance Championship", tag:"Hypercars and GT cars racing for hours",
     blurb:"The FIA World Endurance Championship (WEC) races long-distance sports cars around the world, with the 24 Hours of Le Mans as its centrepiece. Two classes share the track: Hypercars at the front and LMGT3 production-based GT cars behind them, and each class has its own result. Most rounds are six hours long.",
     cars:[
@@ -288,7 +288,7 @@ const SERIES = [
     fine:"A spectator summary from fiawec.com and the Monza provisional entry list (version 1, Oct 20, 2026). For official details, see fiawec.com."
   },
   {
-    id:"motogp", autoResults:true, match:/MotoGP/i, timing:"https://www.motogp.com/en/live",
+    id:"motogp", rc:"UC8pYaQzbBBXg9GIOHRvTmDQ", autoResults:true, match:/MotoGP/i, timing:"https://www.motogp.com/en/live",
     name:"MotoGP", tag:"Motorcycle road racing's top class",
     blurb:"MotoGP is the world championship of motorcycle road racing: purpose-built prototype bikes (nothing you can buy) ridden by about 22 of the fastest riders on earth, on permanent road circuits and a few street tracks. Every weekend has two races, a short Sprint on Saturday and the full-distance Grand Prix on Sunday, and both score championship points. Moto2 and Moto3, the two smaller classes, race at the same events.",
     cars:[
@@ -305,7 +305,7 @@ const SERIES = [
     fine:"A spectator summary from motogp.com (what a race weekend looks like, the Sprint and points explainers, the 2027 regulations announcement) and the series' own results service (the five manufacturers and the Sprint and race points). For official details, see motogp.com."
   },
   {
-    id:"nascar", autoResults:true, match:/NASCAR/i, timing:"https://www.nascar.com/followlive/",
+    id:"nascar", rc:"UCuN9hYw2RpoAW8rZ3VK3isA", autoResults:true, match:/NASCAR/i, timing:"https://www.nascar.com/followlive/",
     name:"NASCAR Cup Series", tag:"Stock cars, ovals and a few road courses",
     blurb:"The NASCAR Cup Series is American stock car racing's top series: up to 40 identical-looking cars racing wheel to wheel, mostly on oval tracks from short bullrings to the huge Daytona and Talladega superspeedways, plus a few road courses. The 2027 season has 36 points races from the Daytona 500 in February to the Championship at Homestead-Miami in November, with the non-points Clash and All-Star Race on top.",
     cars:[

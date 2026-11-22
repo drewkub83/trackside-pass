@@ -15,8 +15,9 @@ import ytlive from "../netlify/functions/ytlive.mjs";
 import gtwce from "../netlify/functions/gtwce.mjs";
 import weather from "../netlify/functions/weather.mjs";
 import session from "../netlify/functions/session.mjs";
+import recap from "../netlify/functions/recap.mjs";
 
-const TTL = { "/api/session": 25, "/api/gtwce": 30 };
+const TTL = { "/api/session": 25, "/api/gtwce": 30, "/api/recap": 300 };
 
 /* Cache API wrapper: only 200 answers are kept; a failed answer is never shared. */
 async function edgeCached(request, ctx, ttl, run) {
@@ -65,6 +66,7 @@ export default {
     }
     if (p === "/api/gtwce") return edgeCached(request, ctx, TTL[p], () => gtwce(request, env));
     if (p === "/api/weather") return weather(request, env);
+    if (p === "/api/recap") return edgeCached(request, ctx, TTL[p], () => recap(request, env));
     if (p === "/api/session") return edgeCached(request, ctx, TTL[p], () => session(request, env));
     return env.ASSETS.fetch(request);
   },

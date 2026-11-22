@@ -1688,6 +1688,24 @@ function hubStandingsCard(c){
   }
   return standingsHtml;
 }
+/* the series' own highlights video, offered under "How it finished": /api/recap finds it on the series' YouTube channel (data/series.js `rc`, else `yt`);
+   until it exists (they post an hour or two after the flag) the card is simply absent. Remembered per race for the session; the hub rebuilds every 30 s. */
+const RECAPV={};
+function hubVideoCard(sr,day){
+  const ch=sr.rc||sr.yt; if(!ch||!navigator.onLine) return ""; const k=ch+"|"+day, v=RECAPV[k];
+  if(v===undefined||(v&&v.retry&&Date.now()>v.retry)){
+    RECAPV[k]=v&&v.id?v:{id:null,loading:1};
+    fetch(fnUrl("recap")+"?ch="+encodeURIComponent(ch)+"&since="+day).then(r=>r.ok?r.json():{}).then(j=>{ RECAPV[k]=j&&j.id?{id:j.id,title:j.title}:{id:null,retry:Date.now()+10*60000}; if(j&&j.id&&typeof renderHub==="function"&&cur) renderHub(); }).catch(()=>{ RECAPV[k]={id:null,retry:Date.now()+10*60000}; });
+    return "";
+  }
+  if(!v||!v.id) return "";
+  return `<div class="hubCard hubTap recapCard" role="button" tabindex="0" onclick="openRecapVideo('${k.replace(/'/g,"")}')" onkeydown="if(event.key==='Enter')openRecapVideo('${k.replace(/'/g,"")}')"><h4>Race recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="recapThumb"><img src="https://i.ytimg.com/vi/${esc(v.id)}/hqdefault.jpg" alt="" loading="lazy"><span class="recapPlay" aria-hidden="true"></span></div><div class="recapTitle">${esc(v.title||"Highlights")}</div></div>`;
+}
+function openRecapVideo(k){
+  const v=RECAPV[k]; if(!v||!v.id) return;
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Race recap</div><h3 id="infoTitle">${esc(v.title||"Highlights")}</h3><div class="liveWrap"><iframe src="https://www.youtube.com/embed/${esc(v.id)}?autoplay=1&playsinline=1&rel=0" title="Race recap" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><div class="rcpBtns"><a class="btn quiet" href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">Watch on YouTube</a><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+  const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
+}
 function hubResultsCard(c){
   const {now}=c;
   /* "how it finished": the most recently completed race (any series, within the last 6 hours) gets its own
@@ -1723,7 +1741,7 @@ function hubResultsCard(c){
     const wait=sr.noWatch&&!sr.autoResults?"The race just ended. Official results for this series are not added to the app; see the series' own pages.":sr.autoResults?"The race just ended. The official result usually shows here within the hour.":"The race just ended. The official result is added here from the race report, usually within an hour or two.";
     const waitHtml=`<div class="hubSessionSub">${wait}</div>${tl?`<button class="btn quiet" style="margin-top:10px" onclick="openLiveTiming('${tl.url}')">Final order on the live timing &rsaquo;</button>`:""}`;
     if(res){ const idx=fullRes.push(res)-1, more=res.groups.some(g=>(g.order&&g.order.length>5)||(g.podium&&g.podium.length>2));
-      return `<div class="hubCard${more?" hubTap":""}"${more?` role="button" tabindex="0" onclick="openFullRes(${idx})" onkeydown="if(event.key==='Enter')openFullRes(${idx})"`:""}><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res.groups.map(g=>resultGroupHtml(g,5)).join("")}${more?`<div class="fullResLink">Full results &rsaquo;</div>`:""}</div>`; }
+      return `<div class="hubCard${more?" hubTap":""}"${more?` role="button" tabindex="0" onclick="openFullRes(${idx})" onkeydown="if(event.key==='Enter')openFullRes(${idx})"`:""}><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res.groups.map(g=>resultGroupHtml(g,5)).join("")}${more?`<div class="fullResLink">Full results &rsaquo;</div>`:""}</div>`+hubVideoCard(sr,jr.d); }
     return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${waitHtml}</div>`;
   }).join("");
   if(waitingRes) refreshResults();

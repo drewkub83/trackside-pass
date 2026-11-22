@@ -13,5 +13,7 @@
   "durable_objects": { "bindings": [{ "name": "YT_LIVE", "class_name": "YtLiveCache" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["YtLiveCache"] }],
   // the YT_API_KEY secret is set in the dashboard (Settings > Variables and Secrets); keep it across deploys
+  // every 30 minutes Thu-Mon (UTC) the Worker asks GitHub to run the race-weekend data workflow (scheduled() in worker/index.js; needs the GH_DISPATCH_TOKEN secret)
+  "triggers": { "crons": ["*/30 * * * THU,FRI,SAT,SUN,MON"] },
   "keep_vars": true
 }

@@ -68,4 +68,16 @@ export default {
     if (p === "/api/session") return edgeCached(request, ctx, TTL[p], () => session(request, env));
     return env.ASSETS.fetch(request);
   },
+  /* Cloudflare Cron Trigger (wrangler.jsonc "triggers"): GitHub's own schedule runs "every 30 minutes" only every 5-9 hours in practice,
+     so on race weekends this asks GitHub to run the data workflow now (workflow_dispatch). GH_DISPATCH_TOKEN is a fine-grained GitHub token
+     (this repo only, Actions: read and write) kept as a secret in the Worker's settings; without it nothing happens. */
+  async scheduled(event, env, ctx) {
+    if (!env.GH_DISPATCH_TOKEN) return;
+    const r = await fetch("https://api.github.com/repos/drewkub83/trackside-pass/actions/workflows/race-weekend.yml/dispatches", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + env.GH_DISPATCH_TOKEN, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "trackside-pass-cron" },
+      body: JSON.stringify({ ref: "main" }),
+    });
+    if (r.status !== 204) console.log("dispatch failed", r.status, (await r.text()).slice(0, 200));
+  },
 };

@@ -268,13 +268,6 @@ function renderSeason(){
 const STORY_DAYS=7;
 /* the Monday of the week that contains day d (Sunday belongs to the week that is ending) */
 function weekStartOf(d){ const dt=new Date(d+"T12:00:00Z"); return new Date(dt.getTime()-((dt.getUTCDay()+6)%7)*864e5).toISOString().slice(0,10); }
-/* races that finished this week (Monday to now) for series you follow: shown on Home in place of the next race's storylines until Monday */
-function recentResults(){
-  if(typeof RESULTS==="undefined") return []; const today=localToday(), mon=weekStartOf(today), mine=new Set(followedGameSeries()), out=[];
-  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ const end=eventEnd(e); if(end>today||end<mon) return;
-    RESULTS.filter(r=>r.t===t.id&&r.d>=e.d&&r.d<=end&&mine.has(r.s)).forEach(r=>out.push({t,e,r,end})); }));
-  return out.sort((a,b)=>b.end.localeCompare(a.end));
-}
 function storylineWeekends(){
   if(typeof WATCH==="undefined") return []; const today=localToday(), mine=new Set(followedGameSeries()), by={}, weekMon=weekStartOf(today);
   /* a preview is written before the weekend that comes first, so while an earlier weekend of the same series is still to be run (or running) its facts are out of date: hide it until that weekend is over and the preview has been rewritten */
@@ -283,27 +276,15 @@ function storylineWeekends(){
     const k=x.t+"|"+x.d, key=x.s; (by[k]=by[k]||{t:x.t,d:x.d,best:{}}); const b=by[k].best; if(!b[key]||(x.from||"")>=(b[key].from||"")) b[key]=x; });
   return Object.values(by).sort((a,b)=>a.d.localeCompare(b.d));
 }
-let homeRes=[];
-/* a race that had a Pick your podium game but nothing to score on this phone: say which of the two it is instead of showing nothing */
-function homeNoPicks(t,e,r){
-  if(typeof ENTRIES==="undefined") return ""; const gs=ENTRIES.filter(g=>g.t===t.id&&g.d>=e.d&&g.d<=eventEnd(e)&&g.s===r.s); if(!gs.length) return "";
-  const picked=gs.some(g=>Object.values(picksOf(g)).some(a=>a&&a.length));
-  return `<p class="stPicks mute">${picked?"Your podium picks are being scored.":"No podium picks on this phone for this race."}</p>`;
-}
-function openHomeRes(i){ const x=homeRes[i]; if(!x) return; fullRes=[x.r]; openFullRes(0,recapPicksHtml({t:x.t,e:x.e,r:x.r})); }
 function renderStorylines(){
   const el=document.getElementById("storylines"); if(!el) return; const wk=storylineWeekends();
-  const rr=recentResults(); homeRes=rr; const resHtml=rr.length?`<div class="sect">Results this week</div>`+rr.map(({t,e,r,sc=recapGames(t,e,r.s)},i)=>{
-    const g=(r.groups||[])[0]||{}, top=(g.order||[]).slice(0,3).map(x=>String(x).replace(/\s*\(.*$/,"").replace(/ — .*$/,""));
-    const win=top.length?top:[g.winner].filter(Boolean);
-    return `<button class="stCard" onclick="openTrack('${t.id}','home')"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div><span class="stGo">Open the recap &rsaquo;</span></button>`; }).join(""):"";
-  if(!wk.length){ el.innerHTML=resHtml; return; }
-  el.innerHTML=resHtml+`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
+  if(!wk.length){ el.innerHTML=""; return; }
+  el.innerHTML=`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
     const series=Object.values(w.best).map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"…":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);
       return `<div class="stSeries"><b>${esc(watchSeriesName(x)||"Race weekend")}</b>${items.map(i=>`<p><span>${esc(i.n)}</span> ${esc(i.why)}</p>`).join("")}</div>`; }).join("");
     return `<button class="stCard" onclick="openTrack('${tr.id}','home')"><div class="stHead"><b>${esc(tr.short)}</b><span>${ev?esc(fmtRange(ev)):esc(w.d)} · ${n===1?"starts tomorrow":"in "+n+" days"}</span></div>${series}<span class="stGo">Open the weekend &rsaquo;</span></button>`; }).join("");
 }
-function renderHome(){ renderHero(); renderStorylines(); renderSeason(); renderRecapHome(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
+function renderHome(){ renderHero(); renderStorylines(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
 function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e.d,s&&s.d].filter(Boolean).sort()[0]||"9999-99-99"; }
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort
@@ -1696,17 +1677,17 @@ function headlinesInner(res){ const h=headlinesList(res); return h.length?`<ul c
 function hubHeadlinesCard(res){ const h=headlinesInner(res); return h?`<div class="hubCard"><h4>Headlines</h4>${h}<div class="hlSrc">From the published race report</div></div>`:""; }
 const RECAPV={};
 function hubVideoCard(sr,day){
-  const ch=sr.rc||sr.yt; if(!ch||!navigator.onLine) return ""; const k=ch+"|"+day, v=RECAPV[k];
+  const ch=sr.rc||sr.yt; if(!ch||!navigator.onLine) return ""; const k=ch+"|"+day+"|"+(sr.rq||""), v=RECAPV[k];
   if(v===undefined||(v&&v.retry&&Date.now()>v.retry)){
     RECAPV[k]=v&&v.id?v:{id:null,loading:1};
-    fetch(fnUrl("recap")+"?ch="+encodeURIComponent(ch)+"&since="+day).then(r=>r.ok?r.json():{}).then(j=>{ RECAPV[k]=j&&j.id?{id:j.id,title:j.title}:{id:null,retry:Date.now()+10*60000}; if(j&&j.id&&typeof renderHub==="function"&&cur) renderHub(); }).catch(()=>{ RECAPV[k]={id:null,retry:Date.now()+10*60000}; });
+    fetch(fnUrl("recap")+"?ch="+encodeURIComponent(ch)+"&since="+day+(sr.rq?"&q="+encodeURIComponent(sr.rq):"")).then(r=>r.ok?r.json():{}).then(j=>{ RECAPV[k]=j&&j.id?{id:j.id,title:j.title}:{id:null,retry:Date.now()+10*60000}; if(j&&j.id&&typeof renderHub==="function"&&cur) renderHub(); }).catch(()=>{ RECAPV[k]={id:null,retry:Date.now()+10*60000}; });
     return "";
   }
   if(!v||!v.id) return "";
-  return `<div class="hubCard hubTap recapCard" role="button" tabindex="0" onclick="openRecapVideo('${k.replace(/'/g,"")}')" onkeydown="if(event.key==='Enter')openRecapVideo('${k.replace(/'/g,"")}')"><h4>Race recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="recapThumb"><img src="https://i.ytimg.com/vi/${esc(v.id)}/hqdefault.jpg" alt="" loading="lazy"><span class="recapPlay" aria-hidden="true"></span></div><div class="recapTitle">${esc(v.title||"Highlights")}</div></div>`;
+  return `<div class="hubCard hubTap recapCard" role="button" tabindex="0" onclick="openRecapVideo('${encodeURIComponent(k).replace(/'/g,"%27")}')" onkeydown="if(event.key==='Enter')openRecapVideo('${encodeURIComponent(k).replace(/'/g,"%27")}')"><h4>Race recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="recapThumb"><img src="https://i.ytimg.com/vi/${esc(v.id)}/hqdefault.jpg" alt="" loading="lazy"><span class="recapPlay" aria-hidden="true"></span></div><div class="recapTitle">${esc(v.title||"Highlights")}</div></div>`;
 }
 function openRecapVideo(k){
-  const v=RECAPV[k]; if(!v||!v.id) return;
+  const v=RECAPV[decodeURIComponent(k)]; if(!v||!v.id) return;
   document.getElementById("infoBody").innerHTML=`<div class="mkick">Race recap</div><h3 id="infoTitle">${esc(v.title||"Highlights")}</h3><div class="liveWrap"><iframe src="https://www.youtube.com/embed/${esc(v.id)}?autoplay=1&playsinline=1&rel=0" title="Race recap" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><div class="rcpBtns"><a class="btn quiet" href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank" rel="noopener">Watch on YouTube</a><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }

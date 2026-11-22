@@ -705,7 +705,7 @@ function watchSeriesName(x){ const sr=SERIES.find(r=>r.id===x.s); return sr?sr.n
 let fullRes=[];
 function openFullRes(i,extra){
   const res=fullRes[i]; if(!res) return;
-  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${extra||""}${res.groups.map(g=>resultGroupHtml(g)).join("")}${res.note?`<p class="wnote">${esc(res.note)}</p>`:""}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${extra||""}${headlinesList(res).length?`<div class="wgroup"><h4>Headlines</h4>${headlinesInner(res)}</div>`:""}${res.groups.map(g=>resultGroupHtml(g)).join("")}${res.note?`<p class="wnote">${esc(res.note)}</p>`:""}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
 function resultGroupHtml(g,cap){
@@ -1690,6 +1690,10 @@ function hubStandingsCard(c){
 }
 /* the series' own highlights video, offered under "How it finished": /api/recap finds it on the series' YouTube channel (data/series.js `rc`, else `yt`);
    until it exists (they post an hour or two after the flag) the card is simply absent. Remembered per race for the session; the hub rebuilds every 30 s. */
+/* "Headlines": 2-4 short lines from a published race report, written into the result's `headlines` field by the Results routine (tools/due_updates.js "headlines") */
+function headlinesList(res){ return res&&Array.isArray(res.headlines)?res.headlines.filter(x=>typeof x==="string"&&x.trim()).slice(0,4):[]; }
+function headlinesInner(res){ const h=headlinesList(res); return h.length?`<ul class="hlList">${h.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""; }
+function hubHeadlinesCard(res){ const h=headlinesInner(res); return h?`<div class="hubCard"><h4>Headlines</h4>${h}<div class="hlSrc">From the published race report</div></div>`:""; }
 const RECAPV={};
 function hubVideoCard(sr,day){
   const ch=sr.rc||sr.yt; if(!ch||!navigator.onLine) return ""; const k=ch+"|"+day, v=RECAPV[k];
@@ -1741,7 +1745,7 @@ function hubResultsCard(c){
     const wait=sr.noWatch&&!sr.autoResults?"The race just ended. Official results for this series are not added to the app; see the series' own pages.":sr.autoResults?"The race just ended. The official result usually shows here within the hour.":"The race just ended. The official result is added here from the race report, usually within an hour or two.";
     const waitHtml=`<div class="hubSessionSub">${wait}</div>${tl?`<button class="btn quiet" style="margin-top:10px" onclick="openLiveTiming('${tl.url}')">Final order on the live timing &rsaquo;</button>`:""}`;
     if(res){ const idx=fullRes.push(res)-1, more=res.groups.some(g=>(g.order&&g.order.length>5)||(g.podium&&g.podium.length>2));
-      return `<div class="hubCard${more?" hubTap":""}"${more?` role="button" tabindex="0" onclick="openFullRes(${idx})" onkeydown="if(event.key==='Enter')openFullRes(${idx})"`:""}><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res.groups.map(g=>resultGroupHtml(g,5)).join("")}${more?`<div class="fullResLink">Full results &rsaquo;</div>`:""}</div>`+hubVideoCard(sr,jr.d); }
+      return `<div class="hubCard${more?" hubTap":""}"${more?` role="button" tabindex="0" onclick="openFullRes(${idx})" onkeydown="if(event.key==='Enter')openFullRes(${idx})"`:""}><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${res.groups.map(g=>resultGroupHtml(g,5)).join("")}${more?`<div class="fullResLink">Full results &rsaquo;</div>`:""}</div>`+hubHeadlinesCard(res)+hubVideoCard(sr,jr.d); }
     return `<div class="hubCard"><h4>How it finished</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div>${waitHtml}</div>`;
   }).join("");
   if(waitingRes) refreshResults();

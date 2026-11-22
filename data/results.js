@@ -4,6 +4,10 @@
    weekend), event = the race's name, groups = [{h: class, ...}]. Shown in place of the pre-race "cars to
    watch" list (Info tab) and as a "How it finished" card in the Race Day hub right after that series' race
    ends. Facts are only what published race reports said -- never guessed or inferred from standings.
+   Optional `headlines:["...", "..."]` (1-4 short lines, 15-200 characters each): what the published race report says mattered (how the race was won, the
+     margin, a crash or penalty that decided it, the championship picture). Only facts the report states; no opinion, no guessing, no quotes longer than a few
+     words. The Race Day hub shows them under "How it finished" and the Home results popup above the full order. The Results routine adds them to the EXISTING
+     entry after the race (tools/due_updates.js, reason "headlines"); an entry without them simply shows none.
    Each group is EITHER:
      - order: the finishing order, one string per position ("1. #24 BMW M Team WRT — van der Linde/Vanthoor"),
        as many places as the source actually gives (the Race Day hub shows the first 5, the Info tab all of

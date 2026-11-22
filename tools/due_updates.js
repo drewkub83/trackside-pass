@@ -14,6 +14,8 @@
    The last race of an event is not "due" for What to watch: results, standings and the podium game come from elsewhere.
      "entries"     a series with `gameManual` in data/series.js (IMSA) whose weekend starts within --ahead days and has no entry in data/entries.js yet: the routine
                    writes the "Pick your podium" entry list from the published entry list, then runs tools/game_odds.py for the chances
+     "headlines"   a race whose result is in data/results.js without `headlines`, 2 to 72 hours after the series' last race of the weekend: the routine adds
+                   2-3 short lines from a published race report to the EXISTING entry (listed with --results, like "results")
      "refresh"     the series' NEXT event already has a preview entry, but the series raced somewhere else after that entry was written (e.g. the
                    Mexico City preview was written before the Austin race) and the race's results are in data/results.js and it ended 6 hours to 7 days
                    ago: the entry still talks about the old standings and stories, so write a NEW preview for the next event (see the routine's prompt)
@@ -24,6 +26,7 @@
 const fs = require("fs"), path = require("path");
 const ROOT = path.join(__dirname, "..");
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : d; };
+const HL_WAIT_H = 2, HL_HOURS = 72;
 const RESULTS_ONLY = process.argv.includes("--results");
 const NOW = new Date(arg("--now", new Date().toISOString())), HOURS = +arg("--hours", 48), AHEAD = +arg("--ahead", 8);
 const load = (f, name, pre = "") => new Function(pre + fs.readFileSync(path.join(ROOT, f), "utf8") + `;return ${name}`)();
@@ -62,6 +65,12 @@ for (const t of tracks) {
           !res.some(r => r.race ? r.race === x.n : i === races.length - 1));
         if (missing.length) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "results", sessions: missing.map(x => ({ n: x.n, kind: x.kind, ended: x.end.toISOString() })) });
       }
+      /* headlines: the race's result is in data/results.js but has no `headlines` yet (2 to 72 hours after the last race of the series that weekend, so the race reports are out) */
+      { const rEnds = list.filter(x => x.kind === "race").map(x => +x.end), lastEnd = rEnds.length ? Math.max(...rEnds) : 0;
+        if (lastEnd && NOW - lastEnd >= HL_WAIT_H * 3600e3 && NOW - lastEnd <= HL_HOURS * 3600e3) {
+          const need = RESULTS.filter(r => r.t === t.id && r.s === sr.id && r.d >= ev.d && r.d <= end && !(r.headlines && r.headlines.length));
+          if (need.length) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "headlines", sessions: need.map(r => ({ n: r.race || r.event, entry: { d: r.d, race: r.race || null }, ended: new Date(lastEnd).toISOString() })) });
+        } }
       /* "Pick your podium" entry list for a series whose list cannot be read by a script (sr.gameManual): due from 8 days before until the race starts */
       const firstRace0 = list.find(x => x.kind === "race"), gk = t.id + "|" + sr.id + "|" + (firstRace0 ? firstRace0.start.toISOString() : "");   // overlapping events at a track (Daytona lists two) share one entry
       if (sr.gameManual && firstRace0 && !gameSeen.has(gk) && !ENTRIES.some(x => x.t === t.id && x.s === sr.id && x.d >= ev.d && x.d <= end)) {
@@ -83,7 +92,7 @@ for (const t of tracks) {
     }
   }
 }
-{ const keep = due.filter(x => (x.why === "results") === RESULTS_ONLY); due.length = 0; due.push(...keep); }
+{ const keep = due.filter(x => (x.why === "results" || x.why === "headlines") === RESULTS_ONLY); due.length = 0; due.push(...keep); }
 due.sort((a, b) => a.d.localeCompare(b.d) || a.s.localeCompare(b.s));
 if (process.argv.includes("--text")) { console.log(`now ${NOW.toISOString()}: ${due.length} due`); for (const x of due) console.log(`- ${x.t} ${x.d} ${x.s} (${x.why}): ${x.sessions.map(s => s.n).join("; ")}`); }
 else console.log(JSON.stringify({ now: NOW.toISOString(), due }, null, 1));

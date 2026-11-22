@@ -42,7 +42,13 @@ const RESULTS = [
         "18. #47 Augusto Fernandez (Prima Pramac Yamaha MotoGP)"
       ] }
     ],
-    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), full classification of the Sunday Grand Prix, race day 2026-11-22." },
+    headlines:[
+      "Bezzecchi dropped to fifth on the opening lap, then passed Fernandez and Martin for the lead on lap 15.",
+      "Aprilia swept the podium: Bezzecchi beat Martin by 3.8 seconds and Fernandez by 5.7 seconds.",
+      "Marc Marquez needed only a top-nine finish to clinch the title and brought his bike home eighth.",
+      "It is Marquez's eighth premier-class title, level with Giacomo Agostini for the most ever, and his tenth world championship overall."
+    ],
+    note:"(automatic update) Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com is drawn from), full classification of the Sunday Grand Prix, race day 2026-11-22. Headlines: Autosport." },
   { t:"las-vegas", d:"2026-11-19", s:"f1", event:"Las Vegas Grand Prix",
     groups:[
       { h:"Race", order:[
@@ -70,7 +76,13 @@ const RESULTS = [
         "22. #23 Alexander Albon (Williams)"
       ] }
     ],
-    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), full classification of the Grand Prix on 2026-11-22. Sprint results are not included." },
+    headlines:[
+      "Max Verstappen won from pole, beating Lando Norris by just 0.639 seconds with Oscar Piastri third.",
+      "A safety car came out after Sergio Perez spun Rafael Camara, damaging his suspension.",
+      "Lewis Hamilton and Charles Leclerc each took 10-second penalties after clashing while fighting for position; Hamilton recovered to 7th, Leclerc finished 10th.",
+      "George Russell locked up and hit the wall late while attacking for a higher spot, dropping him to 9th at the flag."
+    ],
+    note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA race classification), full classification of the Grand Prix on 2026-11-22. Sprint results are not included. Headlines: Autosport." },
   { t:"cota", d:"2026-10-23", s:"f1academy", race:"Feature Race - F1 Academy", event:"F1 Academy: Feature Race (United States Grand Prix)",
     groups:[
       { h:"Race", order:[

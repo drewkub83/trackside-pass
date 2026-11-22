@@ -5,7 +5,7 @@
    which of them may be played outside YouTube (videos.list, 1 unit) and answers with the newest. Needs the YT_API_KEY secret; without it: no video.
    Only the series' official channels are ever listed (data/series.js `rc` / `yt`); the app embeds the video with YouTube's own player. */
 const json = (o, status, head) => new Response(JSON.stringify(o), { status, headers: head });
-const WANT = /highlights|recap|race review|race report|race summary|as it happened|race in \d|extended (cut|highlights)/i;
+const WANT = /highlights|best (motogp )?moments|recap|race review|race report|race summary|as it happened|race in \d|extended (cut|highlights)/i;
 const SKIP = /\b(live|preview|reaction|press conference|onboard|practice|qualifying|sprint|fp[123]|warm.?up|trailer|shorts?|best radio|top \d+)\b/i;
 const OTHER_LANG = /\b(espa[nñ]ol|italiano|deutsch|fran[cç]ais|portugu[eê]s|nederlands|polski|t[uü]rk[cç]e)\b/i;
 

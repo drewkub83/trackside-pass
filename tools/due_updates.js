@@ -31,6 +31,7 @@ const RESULTS_ONLY = process.argv.includes("--results");
 const NOW = new Date(arg("--now", new Date().toISOString())), HOURS = +arg("--hours", 48), AHEAD = +arg("--ahead", 8);
 const load = (f, name, pre = "") => new Function(pre + fs.readFileSync(path.join(ROOT, f), "utf8") + `;return ${name}`)();
 const SERIES = load("data/series.js", "SERIES"), WATCH = load("data/watch.js", "WATCH"), RESULTS = load("data/results.js", "RESULTS");
+const CHAMPS = load("data/champs.js", "CHAMPS"), MAIN = new Set(CHAMPS.filter(c => !c.viaSupport).map(c => c.guide || c.id));   // main series only get headlines (support series would cost usage for little)
 const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js"];
 const tracks = fs.readdirSync(path.join(ROOT, "data")).filter(f => f.endsWith(".js") && !NON.includes(f)).map(f => { const T = []; new Function("TRACKS", fs.readFileSync(path.join(ROOT, "data", f), "utf8"))(T); return T[0]; });
 const kindOf = n => /qualifying/i.test(n) ? "qualifying" : /practice/i.test(n) ? "practice" : "race";
@@ -67,7 +68,7 @@ for (const t of tracks) {
       }
       /* headlines: the race's result is in data/results.js but has no `headlines` yet (2 to 72 hours after the last race of the series that weekend, so the race reports are out) */
       { const rEnds = list.filter(x => x.kind === "race").map(x => +x.end), lastEnd = rEnds.length ? Math.max(...rEnds) : 0;
-        if (lastEnd && NOW - lastEnd >= HL_WAIT_H * 3600e3 && NOW - lastEnd <= HL_HOURS * 3600e3) {
+        if (MAIN.has(sr.id) && lastEnd && NOW - lastEnd >= HL_WAIT_H * 3600e3 && NOW - lastEnd <= HL_HOURS * 3600e3) {
           const need = RESULTS.filter(r => r.t === t.id && r.s === sr.id && r.d >= ev.d && r.d <= end && !(r.headlines && r.headlines.length));
           if (need.length) due.push({ t: t.id, d: ev.d, event: ev.e, s: sr.id, series: sr.name, why: "headlines", sessions: need.map(r => ({ n: r.race || r.event, entry: { d: r.d, race: r.race || null }, ended: new Date(lastEnd).toISOString() })) });
         } }

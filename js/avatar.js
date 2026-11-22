@@ -86,8 +86,8 @@ async function avPhoto(file) {
   const msg = document.getElementById("avMsg"); if (!file) return; if (msg) msg.textContent = "Saving your photo…";
   try {
     const bmp = await (window.createImageBitmap ? createImageBitmap(file, { imageOrientation: "from-image" }) : new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = URL.createObjectURL(file); }));
-    const w = bmp.width || bmp.naturalWidth, h = bmp.height || bmp.naturalHeight, s = Math.min(w, h), cv = document.createElement("canvas"); cv.width = cv.height = 192;
-    cv.getContext("2d").drawImage(bmp, (w - s) / 2, (h - s) / 2, s, s, 0, 0, 192, 192);
+    const w = bmp.width || bmp.naturalWidth, h = bmp.height || bmp.naturalHeight, s = Math.min(w, h), cv = document.createElement("canvas"); cv.width = cv.height = 512;
+    cv.getContext("2d").drawImage(bmp, (w - s) / 2, (h - s) / 2, s, s, 0, 0, 512, 512);
     const blob = await new Promise(ok => cv.toBlob(ok, "image/jpeg", 0.85)); if (!blob) throw new Error("That photo could not be read.");
     const t = await sbToken(), uid = sbSession().uid;
     const r = await fetch(`${SB.url}/storage/v1/object/avatars/${uid}.jpg`, { method: "POST", headers: { apikey: SB.key, Authorization: "Bearer " + t, "Content-Type": "image/jpeg", "x-upsert": "true", "cache-control": "3600" }, body: blob });
@@ -101,3 +101,15 @@ async function avRemovePhoto() {
   catch (e) { avErr(e); }
 }
 async function avDeleteMine() { try { const t = await sbToken(); await fetch(`${SB.url}/storage/v1/object/avatars/${sbSession().uid}.jpg`, { method: "DELETE", headers: { apikey: SB.key, Authorization: "Bearer " + t } }); } catch (e) {} }
+
+/* tap someone's photo (not a colour scheme or letter) to see it bigger; your own picture button on the Account tab still opens the picker */
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest(".av"), im = a && a.querySelector("img");
+  if (!im || a.closest(".avBtn, .avBig, .avGrid, #avLight")) return;
+  e.stopPropagation(); e.preventDefault();
+  const o = document.createElement("div"); o.id = "avLight"; o.setAttribute("role", "dialog"); o.setAttribute("aria-label", "Profile picture");
+  const nm = a.dataset.n || "";
+  o.innerHTML = `<img src="${avEsc(im.src)}" alt="${avEsc(nm)}">${nm ? `<p>${avEsc(nm)}</p>` : ""}`;
+  const close = () => { o.remove(); document.removeEventListener("keydown", key); }, key = ev => { if (ev.key === "Escape") close(); };
+  o.onclick = close; document.addEventListener("keydown", key); document.body.appendChild(o);
+}, true);

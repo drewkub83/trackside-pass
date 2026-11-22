@@ -283,12 +283,14 @@ function storylineWeekends(){
     const k=x.t+"|"+x.d, key=x.s; (by[k]=by[k]||{t:x.t,d:x.d,best:{}}); const b=by[k].best; if(!b[key]||(x.from||"")>=(b[key].from||"")) b[key]=x; });
   return Object.values(by).sort((a,b)=>a.d.localeCompare(b.d));
 }
+let homeRes=[];
+function openHomeRes(i){ if(!homeRes[i]) return; fullRes=[homeRes[i]]; openFullRes(0); }
 function renderStorylines(){
   const el=document.getElementById("storylines"); if(!el) return; const wk=storylineWeekends();
-  const rr=recentResults(), resHtml=rr.length?`<div class="sect">Results this week</div>`+rr.map(({t,r})=>{
+  const rr=recentResults(); homeRes=rr.map(x=>x.r); const resHtml=rr.length?`<div class="sect">Results this week</div>`+rr.map(({t,r},i)=>{
     const g=(r.groups||[])[0]||{}, top=(g.order||[]).slice(0,3).map(x=>String(x).replace(/\s*\(.*$/,"").replace(/ — .*$/,""));
     const win=top.length?top:[g.winner].filter(Boolean);
-    return `<button class="stCard" onclick="openTrack('${t.id}','home')"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div><span class="stGo">Open the weekend &rsaquo;</span></button>`; }).join(""):"";
+    return `<button class="stCard" onclick="openHomeRes(${i})"><div class="stHead"><b>${esc(t.short)}</b><span>${esc(r.event||"")}</span></div><div class="stSeries"><b>${esc(watchSeriesName({s:r.s})||r.s)}${g.h&&g.h!=="Race"?" · "+esc(g.h):""}</b>${win.map(w=>`<p>${esc(w)}</p>`).join("")}</div><span class="stGo">Full results &rsaquo;</span></button>`; }).join(""):"";
   if(!wk.length){ el.innerHTML=resHtml; return; }
   el.innerHTML=resHtml+`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
     const series=Object.values(w.best).map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"…":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);

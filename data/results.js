@@ -811,4 +811,28 @@ const RESULTS = [
       ] }
     ],
     note:"Sources: f1academy.com report \"Reverse Grid Race: Larsen charges from ninth to claim second victory of 2026 in Las Vegas\" (positions 1-8 and race detail), motorsport.com full F1 Academy Las Vegas 2026 Reverse Grid Race classification (car numbers, teams and positions 9-18; Granada classified 8th after a 5-second penalty)." },
+  { t:"las-vegas", d:"2026-11-19", s:"f1academy", race:"Feature Race - F1 Academy", event:"F1 Academy: Feature Race (Las Vegas Grand Prix)",
+    groups:[
+      { h:"Race", order:[
+        "1. #21 Alisha Palmowski (Campos Racing)",
+        "2. #12 Alba Larsen (MP Motorsport)",
+        "3. #3 Nina Gademan (MP Motorsport)",
+        "4. #4 Megan Bruce (Campos Racing)",
+        "5. #5 Emma Felbermayr (Rodin Motorsport)",
+        "6. #10 Luna Fluxa Cross (Hitech)",
+        "7. #95 Jade Jacquet (ART Grand Prix)",
+        "8. #55 Ava Dobson (Hitech)",
+        "9. #9 Payton Westcott (PREMA Racing)",
+        "10. #8 Mathilda Paatz (PREMA Racing)",
+        "11. #28 Ella Stevens (Rodin Motorsport)",
+        "12. #18 Rafaela Ferreira (Campos Racing) (5s penalty)",
+        "13. #56 Rachel Robertson (Hitech)",
+        "14. #91 Kaylee Countryman (ART Grand Prix) (5s penalty)",
+        "15. #32 Esmee Kosterman (MP Motorsport) (+1 lap)",
+        "16. #14 Lisa Billard (ART Grand Prix) (DNF)",
+        "17. #20 Ella Lloyd (Rodin Motorsport) (DNF)",
+        "18. #19 Natalia Granada (PREMA Racing) (DNF)"
+      ] }
+    ],
+    note:"Sources: motorsport.com full F1 Academy Las Vegas 2026 Feature Race (RACE2) classification, cross-checked against autosport.com's identical RACE2 classification; Pit Debrief race report \"F1 Academy 2026 Las Vegas GP Feature Race Report\" (confirms Palmowski/Larsen/Gademan podium, retirements and the Ferreira/Countryman 5-second penalties)." },
 ];

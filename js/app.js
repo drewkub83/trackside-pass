@@ -1900,25 +1900,25 @@ function hubPostState(c){
   const end=eventEnd(ev); if(daysBetween(end,today)>POST_DAYS) return null;
   const nx=(cur.events||[]).filter(e=>e.d>today).sort((a,b)=>a.d.localeCompare(b.d))[0]; if(nx&&daysBetween(today,nx.d)<=7) return null;
   const races=sessionsOf(cur).filter(s=>s.d>=ev.d&&s.d<=end&&kindOf(s.n)==="race"); if(!races.length||races.some(s=>s.end>c.now)) return null;
-  const res=RESULTS.filter(r=>r.t===cur.id&&r.d>=ev.d&&r.d<=end); if(!res.length) return null;
+  const mainIds=new Set(CHAMPS.filter(x=>!x.viaSupport).map(x=>x.guide||x.id)), res=RESULTS.filter(r=>r.t===cur.id&&r.d>=ev.d&&r.d<=end&&mainIds.has(r.s)); if(!res.length) return null;   /* the recap is for the main series only; support series are left out */
   return {ev,res,races};
 }
 function hubPostHtml(c,post){
-  const {ev,res,races}=post, mainIds=new Set(CHAMPS.filter(x=>!x.viaSupport).map(x=>x.guide||x.id));
-  const rank=r=>(r.s===c.sid?0:mainIds.has(r.s)?1:2);
+  const {ev,res,races}=post;
+  const rank=r=>(r.s===c.sid?0:1);
   const list=res.slice().sort((a,b)=>rank(a)-rank(b)||a.d.localeCompare(b.d));
-  fullRes=[]; const seen=new Set(); let videos="", recaps="", supRecaps="";
+  fullRes=[]; const seen=new Set(); let videos="", recaps="";
   list.forEach(r=>{
     const sr=SERIES.find(x=>x.id===r.s); if(!sr) return;
-    if(!seen.has(sr.id)){ seen.add(sr.id); const rd=races.filter(s=>(seriesFor(s.n)||{}).id===sr.id).map(s=>s.d).sort().pop()||ev.d; { const v=hubVideoCard(sr,rd); if(rank(r)<2) videos+=v; else supRecaps+=v; } }
+    if(!seen.has(sr.id)){ seen.add(sr.id); const rd=races.filter(s=>(seriesFor(s.n)||{}).id===sr.id).map(s=>s.d).sort().pop()||ev.d; videos+=hubVideoCard(sr,rd); }
     const idx=fullRes.push(r)-1, hl=headlinesInner(r), more=r.groups.some(g=>(g.order&&g.order.length>(r.groups.length>1?5:10))||(g.podium&&g.podium.length>2));
     const picks=recapPicksHtml({t:cur,e:ev,r});
-    (rank(r)<2?(x=>{recaps+=x}):(x=>{supRecaps+=x}))(`<div class="hubCard"><h4>Recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="postEvent">${esc(r.race||r.event||ev.e)}</div>${hl?`<div class="postSub">What happened</div>${hl}`:""}<div class="postSub">Finishing order</div>${r.groups.map(g=>resultGroupHtml(g,r.groups.length>1?5:10)).join("")}${more?`<button class="btn quiet postFull" onclick="openFullRes(${idx})">Full results &rsaquo;</button>`:""}${picks}</div>`);
+    recaps+=(`<div class="hubCard"><h4>Recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="postEvent">${esc(r.race||r.event||ev.e)}</div>${hl?`<div class="postSub">What happened</div>${hl}`:""}<div class="postSub">Finishing order</div>${r.groups.map(g=>resultGroupHtml(g,r.groups.length>1?5:10)).join("")}${more?`<button class="btn quiet postFull" onclick="openFullRes(${idx})">Full results &rsaquo;</button>`:""}${picks}</div>`);
   });
   const standings=hubStandingsCard(c), friends=hubFriendsCard(), wk=hubRecapCard({...c}), actions=hubActionTiles(), {lastHereHtml}=hubBeforeWeekend(c);
   const nx=(cur.events||[]).filter(e=>e.d>localToday()).sort((a,b)=>a.d.localeCompare(b.d))[0];
   const next=nx?`<div class="hubCard"><h4>Next here</h4><div class="hubSeries">${esc(nx.e)}</div><div class="postEvent">${esc(fmtRange(nx))}</div></div>`:"";
-  return videos+recaps+standings+supRecaps+wk+friends+next+actions+`<div class="hubCard postEnd"><button class="btn quiet" onclick="hubFullFor=cur.id;renderHub()">Show the full weekend hub</button></div>`;
+  return videos+recaps+standings+wk+friends+next+actions+`<div class="hubCard postEnd"><button class="btn quiet" onclick="hubFullFor=cur.id;renderHub()">Show the full weekend hub</button></div>`;
 }
 function renderHub(){
   if(!hubMode||hubDragging) return;

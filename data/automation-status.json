@@ -4,7 +4,7 @@
   "indycar": "ok",
   "gtwca": "ok",
   "gtwce": "ok",
-  "f1": "ok",
+  "f1": "unreachable: The read operation timed out",
   "nascar": "ok",
   "motogp": "ok"
  },

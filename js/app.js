@@ -714,9 +714,9 @@ function watchSeriesName(x){ const sr=SERIES.find(r=>r.id===x.s); return sr?sr.n
    the two never drift out of sync. */
 /* the results the hub card shows the top 5 of; a tap opens the whole classification (fullRes is rebuilt on every hub draw) */
 let fullRes=[];
-function openFullRes(i,extra){
+function openFullRes(i,extra,noHeadlines){
   const res=fullRes[i]; if(!res) return;
-  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${extra||""}${headlinesList(res).length?`<div class="wgroup"><h4>Headlines</h4>${headlinesInner(res)}</div>`:""}${res.groups.map(g=>resultGroupHtml(g)).join("")}${res.note?`<p class="wnote">${esc(res.note)}</p>`:""}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${extra||""}${!noHeadlines&&headlinesList(res).length?`<div class="wgroup"><h4>Headlines</h4>${headlinesInner(res)}</div>`:""}${res.groups.map(g=>resultGroupHtml(g)).join("")}${res.note?`<p class="wnote">${esc(res.note)}</p>`:""}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
 function resultGroupHtml(g,cap){
@@ -1933,17 +1933,19 @@ function hubPostState(c){
   const mainIds=new Set(CHAMPS.filter(x=>!x.viaSupport).map(x=>x.guide||x.id)), res=RESULTS.filter(r=>r.t===cur.id&&r.d>=ev.d&&r.d<=end&&mainIds.has(r.s)); if(!res.length) return null;   /* the recap is for the main series only; support series are left out */
   return {ev,res,races};
 }
+let postPicks=[];
+function openPostRes(i){ openFullRes(i,postPicks[i],true); }   /* the card already tells the story; the popup is the finishing order */
 function hubPostHtml(c,post){
   const {ev,res,races}=post;
   const rank=r=>(r.s===c.sid?0:1);
   const list=res.slice().sort((a,b)=>rank(a)-rank(b)||a.d.localeCompare(b.d));
-  fullRes=[]; const seen=new Set(); let videos="", recaps="";
+  fullRes=[]; postPicks=[]; const seen=new Set(); let videos="", recaps="";
   list.forEach(r=>{
     const sr=SERIES.find(x=>x.id===r.s); if(!sr) return;
     if(!seen.has(sr.id)){ seen.add(sr.id); const rd=races.filter(s=>(seriesFor(s.n)||{}).id===sr.id).map(s=>s.d).sort().pop()||ev.d; videos+=hubVideoCard(sr,rd); }
-    const idx=fullRes.push(r)-1, hl=headlinesInner(r), more=r.groups.some(g=>(g.order&&g.order.length>(r.groups.length>1?5:10))||(g.podium&&g.podium.length>2));
-    const picks=recapPicksHtml({t:cur,e:ev,r});
-    recaps+=(`<div class="hubCard"><h4>Recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div><div class="postEvent">${esc(r.race||r.event||ev.e)}</div>${hl?`<div class="postSub">What happened</div>${hl}`:""}<div class="postSub">Finishing order</div>${r.groups.map(g=>resultGroupHtml(g,r.groups.length>1?5:10)).join("")}${more?`<button class="btn quiet postFull" onclick="openFullRes(${idx})">Full results &rsaquo;</button>`:""}${picks}</div>`);
+    const idx=fullRes.push(r)-1, hl=headlinesInner(r); postPicks[idx]=recapPicksHtml({t:cur,e:ev,r});
+    const g0=r.groups[0]||{}, top=(g0.order||[]).slice(0,3).map(l=>String(l).replace(/\s*\(.*$/,""));
+    recaps+=`<div class="hubCard hubTap" role="button" tabindex="0" onclick="openPostRes(${idx})" onkeydown="if(event.key==='Enter')openPostRes(${idx})"><div class="hubCardRow"><div><h4>Recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${c.chev}</div><div class="postEvent">${esc(r.race||r.event||ev.e)}</div>${hl?`<div class="postSub">What happened</div>${hl}`:top.length?`<div class="postSub">Top three</div>${top.map(x=>`<p class="postTop">${esc(x)}</p>`).join("")}`:""}<div class="fullResLink">Finishing order &rsaquo;</div></div>`;
   });
   const standings=hubStandingsCard(c), friends=hubFriendsCard(), wk=hubRecapCard({...c}), actions=hubActionTiles(), {lastHereHtml}=hubBeforeWeekend(c);
   const nx=(cur.events||[]).filter(e=>e.d>localToday()).sort((a,b)=>a.d.localeCompare(b.d))[0];

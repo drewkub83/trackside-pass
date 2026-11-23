@@ -308,15 +308,17 @@ const STANDINGS = [
       ] }
     ],
     note:"(automatic update) Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA championship tables), read 2026-11-22. Drivers on the same points share a position only if the table shows it." },
-  { s:"f1academy", asOf:"Current after Austin (Oct 23-25, 2026); Palmowski clinched the title there with the Las Vegas round (Nov 19-21) still to run.",
+  { s:"f1academy", asOf:"Final 2026 standings after the Las Vegas Grand Prix (Nov 19-21); the season is complete.",
     classes:[
       { h:"Drivers", rows:[
-        { pos:1, who:"Alisha Palmowski (Campos Racing)", pts:172, gap:"2026 champion, clinched at Austin with three races still to run." },
-        { pos:2, who:"Nina Gademan (MP Motorsport)", pts:119, gap:"Passed Felbermayr for 2nd by winning Austin's Feature Race." },
-        { pos:3, who:"Emma Felbermayr", pts:113 }
+        { pos:1, who:"Alisha Palmowski (Campos Racing)", pts:209, gap:"2026 champion, clinched at Austin with three races still to run." },
+        { pos:2, who:"Nina Gademan (MP Motorsport)", pts:134, gap:"2026 vice-champion, settled in Las Vegas." },
+        { pos:3, who:"Emma Felbermayr (Rodin Motorsport)", pts:125 },
+        { pos:4, who:"Alba Larsen (MP Motorsport)", pts:104 },
+        { pos:5, who:"Payton Westcott (PREMA Racing)", pts:82 }
       ] }
     ],
-    note:"(no automatic reader) Source: motorsport.com's F1 Academy standings page, cross-checked against OneRacing's reporting of Palmowski's point total (both read Oct 26-Nov 1, 2026, via web search; direct fetch was blocked in this environment). Places below 3rd were not confirmed in the sources found after Austin, so they are left out." },
+    note:"(no automatic reader) Source: f1academy.com's own drivers' standings page and Pit Debrief's final-standings report, both read Nov 23, 2026 and in exact agreement on points through 5th place. Campos Racing won the teams' title." },
   { s:"gt4a", asOf:"Final 2026 standings after the Indianapolis finale (Oct 10-11); the season is complete.",
     classes:[
       { h:"Silver", rows:[

@@ -1,6 +1,6 @@
 /* The series' own race-highlights video for a finished race, so the Race Day hub can offer it after the flag.
    GET /api/recap?ch=UC…&since=YYYY-MM-DD   (ch = the series' YouTube channel, since = the race day)
-   Looks at the channel's 50 newest uploads (playlistItems, 1 quota unit), keeps videos published from the race day on (up to 9 days later) whose
+   Looks at the channel's uploads, newest first, paging back to the race day (playlistItems, 1 quota unit per 50, at most 4 pages), keeps videos published from the race day on (up to 9 days later) whose
    title says highlights / recap / race review, drops sprint, qualifying, practice, live, preview and reaction videos, then asks YouTube
    which of them may be played outside YouTube (videos.list, 1 unit) and answers with the newest. Needs the YT_API_KEY secret; without it: no video.
    Optional v = comma-separated venue words (first letters of the track and event names) that prefer this weekend's titles over the next race's.
@@ -21,9 +21,16 @@ export default async (req, env) => {
   const yearOk = (t) => { const m = /\b(19|20)\d\d\b/.exec(t); return !m || m[0] === since.slice(0, 4); };   // a throwback ("Extended Highlights | 2008 Brazilian Grand Prix") names another year
   const api = "https://www.googleapis.com/youtube/v3/", from = Date.parse(since + "T00:00:00Z"), to = from + 7 * 864e5;
   try {
-    const pl = await fetch(`${api}playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=UU${ch.slice(2)}&key=${key}`);
-    if (!pl.ok) return json({ id: null, why: "youtube api answered " + pl.status }, 200, head);
-    const cand = ((await pl.json()).items || []).map((i) => ({ id: i.contentDetails && i.contentDetails.videoId, title: (i.snippet && i.snippet.title) || "", at: Date.parse((i.contentDetails && i.contentDetails.videoPublishedAt) || (i.snippet && i.snippet.publishedAt) || "") }))
+    /* the channel's uploads, newest first, 50 a page (1 quota unit each): keep paging until a page reaches back before the race day (at most 4 pages, so a very busy channel like NASCAR's still reaches a race two weeks ago) */
+    let items = [], token = "";
+    for (let page = 0; page < 4; page++) {
+      const pl = await fetch(`${api}playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=UU${ch.slice(2)}${token ? "&pageToken=" + token : ""}&key=${key}`);
+      if (!pl.ok) { if (!page) return json({ id: null, why: "youtube api answered " + pl.status }, 200, head); break; }
+      const pj = await pl.json(); const got = pj.items || []; items = items.concat(got); token = pj.nextPageToken || "";
+      const oldest = got.length ? Math.min(...got.map((i) => Date.parse((i.contentDetails && i.contentDetails.videoPublishedAt) || (i.snippet && i.snippet.publishedAt) || "") || Infinity)) : 0;
+      if (!token || oldest < from) break;
+    }
+    const cand = items.map((i) => ({ id: i.contentDetails && i.contentDetails.videoId, title: (i.snippet && i.snippet.title) || "", at: Date.parse((i.contentDetails && i.contentDetails.videoPublishedAt) || (i.snippet && i.snippet.publishedAt) || "") }))
       .filter((x) => x.id && x.at >= from && x.at <= to && WANT.test(x.title) && !SKIP.test(x.title) && !OTHER_LANG.test(x.title) && yearOk(x.title) && (!must || must.test(x.title)));
     /* weekly series post a highlights video every week, and the next race's can land inside the window: when some titles name this venue (v= tokens: the first letters of the track and event words), only those count */
     const norm = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();

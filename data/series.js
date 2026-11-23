@@ -147,7 +147,7 @@ const SERIES = [
     fine:"A spectator summary based on INDYCAR's published car facts. For official details, see INDYCAR.com."
   }
   ,{
-    id:"gtwca", rq:"GT World Challenge America", autoResults:true, match:/GT World Challenge America|Texas 8 Hour/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
+    id:"gtwca", rq:"GT World Challenge America|GTWC America|Indy 8 Hour|Indianapolis 8 Hour|Texas 8 Hour", autoResults:true, match:/GT World Challenge America|Texas 8 Hour/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
     name:"GT World Challenge America Powered by AWS", tag:"GT3 supercars, sprint racing",
     blurb:"North America's home for GT3 racing, run by SRO Motorsports Group. The cars are race versions of well-known sports cars, built to the same FIA GT3 rules used at the Spa 24 Hours and around the world, so many makes race on equal terms. Weekends are short sprint races instead of endurance events, with one exception in 2027: the Texas 8 Hour.",
     cars:[
@@ -166,7 +166,7 @@ const SERIES = [
     fine:"A spectator summary of GT3 racing and GT World Challenge America. For official details, see GT-World-Challenge-America.com."
   },
   {
-    id:"igtc", noWatch:true, match:/Intercontinental GT Challenge/i, timing:"https://www.intercontinentalgtchallenge.com/watch-live#live-timing",
+    id:"igtc", rc:"UC-yHapH6mW1ceZ_5PDUf1_g", rq:"IGTC|Intercontinental GT|Bathurst 12|N[uü]rburgring 24|24 Hours of Spa|Suzuka 1000|Texas 8 Hour", match:/Intercontinental GT Challenge/i, timing:"https://www.intercontinentalgtchallenge.com/watch-live#live-timing",
     name:"Intercontinental GT Challenge", tag:"Five GT3 endurance races on four continents",
     blurb:"SRO Motorsports Group's global GT3 series: five long endurance races in five countries. The 2027 season opens with the Bathurst 12 Hour in Australia, then the Texas 8 Hour at Circuit of the Americas (new for 2027, replacing the Indianapolis 8 Hour), the Nürburgring 24 Hours in Germany, the CrowdStrike 24 Hours of Spa in Belgium and the Suzuka 1000 km in Japan. Several rounds are also part of GT World Challenge Europe or America, so the same race can count in two championships.",
     cars:[
@@ -181,7 +181,7 @@ const SERIES = [
     fine:"A spectator summary based on SRO's 2027 calendar announcement (June 2026) and the 2026 entry lists. For official details, see the series' own site."
   },
   {
-    id:"gtwce", rq:"GT World Challenge (Europe )?pwd by AWS|GT World Challenge Europe", autoResults:true, match:/GT World Challenge Europe|24 Hours of Spa/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-europe.com/watch-live#live-timing",
+    id:"gtwce", rq:"GT World Challenge (Europe )?pwd by AWS|GT World Challenge Europe|24 Hours of Spa|Spa 24", autoResults:true, match:/GT World Challenge Europe|24 Hours of Spa/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-europe.com/watch-live#live-timing",
     name:"GT World Challenge Europe Powered by AWS", tag:"GT3 supercars, Sprint and Endurance Cups",
     blurb:"Europe's top GT3 championship, run by SRO Motorsports Group. It is open to cars built to the FIA GT3 rules and balanced by SRO's Balance of Performance, the same rules used at GT World Challenge America. The season has ten rounds, split evenly between the Sprint Cup and the Endurance Cup, and it includes the CrowdStrike 24 Hours of Spa, the biggest GT race in the world.",
     cars:[

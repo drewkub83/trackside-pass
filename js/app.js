@@ -2046,7 +2046,8 @@ function showSeriesInfo(id){
     <p class="mfine">${sr.fine||"A spectator summary. For official details, see the series website."}</p>`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0; m.querySelector(".sclose").focus();
 }
-function closeInfo(){ document.getElementById("infoModal").hidden=true; document.body.style.overflow=""; }
+function closeInfo(){ document.querySelectorAll("#infoBody iframe").forEach(f=>{ try{ f.src="about:blank"; }catch(e){} f.remove(); });   /* a recap video keeps playing (audio too) behind a hidden popup unless its player is destroyed */
+  document.getElementById("infoModal").hidden=true; document.body.style.overflow=""; }
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeInfo(); });
 
 /* pull down to dismiss any panel that pops up from the bottom of the screen (the POI/GPS/directions/weather

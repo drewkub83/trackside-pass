@@ -27,7 +27,7 @@ export default async (req, env) => {
     if (!cand.length) return json({ id: null, why: "no recap video yet" }, 200, head);
     const v = await fetch(`${api}videos?part=status&id=${cand.slice(0, 50).map((x) => x.id).join(",")}&key=${key}`);
     const ok = new Set(v.ok ? ((await v.json()).items || []).filter((x) => x.status && x.status.embeddable !== false && x.status.privacyStatus === "public").map((x) => x.id) : cand.map((x) => x.id));
-    const best = cand.filter((x) => ok.has(x.id)).sort((a, b) => (/race highlights/i.test(b.title) - /race highlights/i.test(a.title)) || b.at - a.at)[0];
+    const best = cand.filter((x) => ok.has(x.id)).sort((a, b) => (/race( \d)? highlights/i.test(b.title) - /race( \d)? highlights/i.test(a.title)) || (/^extended/i.test(a.title) - /^extended/i.test(b.title)) || b.at - a.at)[0];   // the normal race highlights first (not the extended cut), then the newest (a doubleheader's second race)
     return json(best ? { id: best.id, title: best.title, at: new Date(best.at).toISOString() } : { id: null, why: "recap videos cannot be embedded" }, 200, head);
   } catch (e) { return json({ id: null, why: "could not reach YouTube" }, 502, head); }
 };

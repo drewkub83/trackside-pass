@@ -268,7 +268,7 @@ const SERIES = [
     fine:"A spectator summary based on Formula 1's published rules. For official details, see formula1.com."
   },
   {
-    id:"wec", rc:"UCwU7U7PiarcJKLjDJTnANjw", sess:"wec", autoResults:true, match:/FIA WEC|World Endurance/i,
+    id:"wec", rc:"UCwU7U7PiarcJKLjDJTnANjw", sess:"wec", autoResults:true, timing:"https://www.fiawec.com/en/page/live-fiawec", match:/FIA WEC|World Endurance/i,
     name:"FIA World Endurance Championship", tag:"Hypercars and GT cars racing for hours",
     blurb:"The FIA World Endurance Championship (WEC) races long-distance sports cars around the world, with the 24 Hours of Le Mans as its centrepiece. Two classes share the track: Hypercars at the front and LMGT3 production-based GT cars behind them, and each class has its own result. Most rounds are six hours long.",
     cars:[
@@ -959,7 +959,7 @@ const TIMING_LINKS = [
   { match:/NASCAR/i, name:"NASCAR", url:"https://www.nascar.com/followlive/" },
   { match:/Carrera Cup/i, name:"Porsche Carrera Cup North America", url:"https://racing.porsche.com/en-US/live-timing/carrera-cup-north-america" },
   { match:/IMSA|WeatherTech|Pilot Challenge|VP Racing|MX-5|Super Trofeo/i, name:"IMSA", url:"https://www.imsa.com/scoring/" },
-  { match:/FIA WEC|World Endurance|Hypercar|LMGT3/i, name:"FIA WEC live page (free)", url:"https://www.fiawec.com/en/page/live-fiawec" },
+  { match:/FIA WEC|World Endurance|Hypercar|LMGT3/i, name:"FIA WEC live page", url:"https://www.fiawec.com/en/page/live-fiawec" },
   { match:/GT World Challenge Europe|24 Hours of Spa/i, name:"GT World Challenge Europe", url:"https://www.gt-world-challenge-europe.com/watch-live#live-timing" },
   { match:/Intercontinental GT/i, name:"Intercontinental GT Challenge", url:"https://www.intercontinentalgtchallenge.com/watch-live#live-timing" },
   { match:/GT World Challenge America|GT America|GT4 America|TC America|Toyota GR Cup/i, name:"GT World Challenge America", url:"https://www.gt-world-challenge-america.com/watch-live#live-timing" },

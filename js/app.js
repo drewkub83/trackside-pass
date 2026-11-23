@@ -1706,11 +1706,14 @@ function headlinesList(res){ if(!res||typeof HEADLINES==="undefined") return [];
 function headlinesInner(res){ const h=headlinesList(res); return h.length?`<ul class="hlList">${h.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""; }
 function hubHeadlinesCard(res){ const h=headlinesInner(res); return h?`<div class="hubCard"><h4>Headlines</h4>${h}<div class="hlSrc">From the published race report</div></div>`:""; }
 const RECAPV={};
+/* words that tell this weekend's highlights title from the next race's: the first letters of the track and event names, minus generic racing words */
+const VT_SKIP=/^(grand|prix|championship|race|series|speedway|raceway|motor|motorsports?|international|circuit|world|challenge|great|nascar|motogp|formula|cup|weekend|endurance|hours?|round)$/;
+function venueTokens(ev){ const words=((cur&&cur.short||"")+" "+(cur&&cur.name||"")+" "+(ev&&ev.e||"")).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().split(/[^a-z]+/).filter(w=>w.length>=5&&!VT_SKIP.test(w)); return [...new Set(words.map(w=>w.slice(0,6)))].slice(0,8).join(","); }
 function hubVideoCard(sr,day){
-  const ch=sr.rc||sr.yt; if(!ch||!navigator.onLine) return ""; const k=ch+"|"+day+"|"+(sr.rq||""), v=RECAPV[k];
+  const ch=sr.rc||sr.yt; if(!ch||!navigator.onLine) return ""; const ev0=(cur.events||[]).filter(e=>e.d<=day).sort((a,b)=>b.d.localeCompare(a.d))[0], vt=venueTokens(ev0), k=ch+"|"+day+"|"+(sr.rq||"")+"|"+vt, v=RECAPV[k];
   if(v===undefined||(v&&v.retry&&Date.now()>v.retry)){
     RECAPV[k]=v&&v.id?v:{id:null,loading:1};
-    fetch(fnUrl("recap")+"?ch="+encodeURIComponent(ch)+"&since="+day+(sr.rq?"&q="+encodeURIComponent(sr.rq):"")).then(r=>r.ok?r.json():{}).then(j=>{ RECAPV[k]=j&&j.id?{id:j.id,title:j.title,noEmbed:!!sr.noEmbed}:{id:null,retry:Date.now()+10*60000}; if(j&&j.id&&typeof renderHub==="function"&&cur) renderHub(); }).catch(()=>{ RECAPV[k]={id:null,retry:Date.now()+10*60000}; });
+    fetch(fnUrl("recap")+"?ch="+encodeURIComponent(ch)+"&since="+day+(sr.rq?"&q="+encodeURIComponent(sr.rq):"")+(vt?"&v="+encodeURIComponent(vt):"")).then(r=>r.ok?r.json():{}).then(j=>{ RECAPV[k]=j&&j.id?{id:j.id,title:j.title,noEmbed:!!sr.noEmbed}:{id:null,retry:Date.now()+10*60000}; if(j&&j.id&&typeof renderHub==="function"&&cur) renderHub(); }).catch(()=>{ RECAPV[k]={id:null,retry:Date.now()+10*60000}; });
     return "";
   }
   if(!v||!v.id) return "";

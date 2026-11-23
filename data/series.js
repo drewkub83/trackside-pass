@@ -127,7 +127,7 @@ const SERIES = [
     watch:{ race:"Same car for everyone, with four driver classes racing in one field. Each class has its own winner." }
   }
   ,{
-    id:"indycar", rc:"UCy1F61QvUUQXAXi2Voa_fUw", sess:"indycar", autoResults:true, match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
+    id:"indycar", rq:"^(?!.*NXT)", rc:"UCy1F61QvUUQXAXi2Voa_fUw", sess:"indycar", autoResults:true, match:/INDYCAR|IndyCar/i, timing:"https://racecontrol.indycar.com/",
     name:"NTT INDYCAR SERIES", tag:"One car, three kinds of track",
     blurb:"North America's top open-wheel series. Every team runs the same Dallara chassis with the same aero kit, powered by a Chevrolet or Honda engine, so results come down to drivers, teams and strategy. The season mixes street circuits, permanent road courses and ovals, and it builds to the Indianapolis 500.",
     cars:[
@@ -248,7 +248,7 @@ const SERIES = [
   fine:"A short spectator summary of the series. For official details, see GTAmerica.us."
 }
   ,{
-    id:"f1", noEmbed:true, rc:"UCB_qr75-ydFVKSF9Dmo6izg", autoResults:true, sess:"f1", match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
+    id:"f1", rq:"^(?!.*(Formula 2|Formula 3|F2|F3|Academy))", noEmbed:true, rc:"UCB_qr75-ydFVKSF9Dmo6izg", autoResults:true, sess:"f1", match:/Formula 1/i, timing:"https://www.formula1.com/en/timing/f1-live-lite",
     name:"Formula 1", tag:"The top of single-seater racing",
     blurb:"The FIA Formula One World Championship, the highest level of single-seater racing. Eleven teams run two cars each at Grands Prix on circuits around the world, and every team designs and builds its own car, so the pace of the car matters as much as the driver. There are two titles: drivers and constructors (teams). 2026 brought a new generation of cars and two new teams, Audi and Cadillac.",
     cars:[
@@ -288,7 +288,7 @@ const SERIES = [
     fine:"A spectator summary from fiawec.com and the Monza provisional entry list (version 1, Oct 20, 2026). For official details, see fiawec.com."
   },
   {
-    id:"motogp", rc:"UC8pYaQzbBBXg9GIOHRvTmDQ", autoResults:true, match:/MotoGP/i, timing:"https://www.motogp.com/en/live",
+    id:"motogp", rq:"^(?!.*Moto[23]\\b)", rc:"UC8pYaQzbBBXg9GIOHRvTmDQ", autoResults:true, match:/MotoGP/i, timing:"https://www.motogp.com/en/live",
     name:"MotoGP", tag:"Motorcycle road racing's top class",
     blurb:"MotoGP is the world championship of motorcycle road racing: purpose-built prototype bikes (nothing you can buy) ridden by about 22 of the fastest riders on earth, on permanent road circuits and a few street tracks. Every weekend has two races, a short Sprint on Saturday and the full-distance Grand Prix on Sunday, and both score championship points. Moto2 and Moto3, the two smaller classes, race at the same events.",
     cars:[

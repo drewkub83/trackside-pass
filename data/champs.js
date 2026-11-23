@@ -25,7 +25,7 @@ const CATS = [
   { id:"stock", name:"Stock car", tile:"STOCK" },
   { id:"moto", name:"Motorcycles", tile:"MOTO" }
 ];
-const REGIONS = { na:"North America", eu:"Europe", world:"Worldwide" };   /* add a key here (and region:"…" on its series) when a new part of the world is added */
+const REGIONS = { na:"North America", eu:"Europe", asia:"Asia", au:"Australia", world:"Worldwide" };   /* add a key here (and region:"…" on its series) when a new part of the world is added */
 const CHAMPS = [
   { id:"imsa", cat:"endurance", region:"na", name:"IMSA", tile:"IMSA", full:"WeatherTech SportsCar Championship", match:/IMSA/i, skip:/test/i, guide:"weathertech",
     note:"Every venue on the 2027 IMSA WeatherTech schedule, including the Long Beach and Detroit street circuits and Canadian Tire Motorsport Park (Mid-Ohio and Lime Rock are Pilot Challenge weekends only)." },
@@ -59,6 +59,19 @@ const CHAMPS = [
       { id:"zandvoort",           short:"Zandvoort",         place:"Zandvoort, Netherlands",        kind:"Road course", e:"GT World Challenge Europe: Zandvoort (Sprint Cup)",          d:"2027-09-17", t:3 },
       { id:"hungaroring",         short:"Hungaroring",       place:"Budapest, Hungary",             kind:"Road course", e:"GT World Challenge Europe: Budapest (Sprint Cup)",           d:"2027-10-01", t:3 },
       { id:"barcelona-catalunya", short:"Barcelona",         place:"Montmeló, Spain",               kind:"Road course", e:"GT World Challenge Europe: Barcelona (Endurance Cup)",       d:"2027-10-22", t:3 }
+    ] },
+  { id:"gtwcasia", cat:"gt", region:"asia", name:"GT World Asia", tile:"GTWAS", full:"GT World Challenge Asia Powered by AWS", match:/GT World Challenge Asia/i, guide:"gtwcasia",
+    note:"The 2027 calendar is six events, each with two one-hour races: Sepang, Chang (Buriram), Suzuka, Fuji, Beijing and Shanghai. Dates are the three-day event windows on gt-world-challenge-asia.com (checked Nov 23, 2026; the races fall on the Saturday and Sunday of each window, and SRO calls the calendar provisional). The 2026 season ended at Macau (Nov 19-22). Beijing shows Map coming soon until its street circuit is mapped.",
+    stops:[
+      { id:"beijing", short:"Beijing", place:"Beijing, China", kind:"Street circuit", e:"GT World Challenge Asia: Beijing (Rounds 9 & 10)", d:"2027-10-01", t:3 }
+    ] },
+  { id:"gtwcau", cat:"gt", region:"au", name:"GT World Australia", tile:"GTWAU", full:"GT World Challenge Australia Powered by AWS", match:/GT World Challenge Australia/i, guide:"gtwcau",
+    note:"The 2026 season finishes at the Adelaide Grand Final (Nov 26-29). The 2027 calendar is six three-day race weekends, each with two races: Phillip Island, The Bend, Sydney Motorsport Park, Queensland Raceway, Bathurst and the Adelaide Grand Final. Dates are from gt-world-challenge-australia.com (checked Nov 23, 2026). Phillip Island, The Bend, Sydney Motorsport Park and Queensland Raceway show Map coming soon until their maps are added.",
+    stops:[
+      { id:"phillip-island",        short:"Phillip Island",       place:"Phillip Island, Victoria",        kind:"Road course", e:"GT Festival Phillip Island (GT World Challenge Australia)", d:"2027-04-16", t:3 },
+      { id:"the-bend",              short:"The Bend",             place:"Tailem Bend, South Australia",    kind:"Road course", e:"GT Festival The Bend (GT World Challenge Australia)",       d:"2027-05-28", t:3 },
+      { id:"sydney-motorsport-park",short:"Sydney Motorsport Park",place:"Eastern Creek, New South Wales", kind:"Road course", e:"GT Festival Sydney (GT World Challenge Australia)",         d:"2027-07-23", t:3 },
+      { id:"queensland-raceway",    short:"Queensland Raceway",   place:"Willowbank, Queensland",          kind:"Road course", e:"GT Festival Queensland (GT World Challenge Australia)",     d:"2027-09-24", t:3 }
     ] },  { id:"igtc", cat:"gt", region:"world", name:"Intercontinental GT", tile:"IGTC", full:"Intercontinental GT Challenge", match:/Intercontinental GT Challenge/i, guide:"igtc",
     note:"Five endurance races on four continents: the Bathurst 12 Hour, the Texas 8 Hour at COTA (new for 2027, replacing the Indianapolis 8 Hour), the Nürburgring 24 Hours, the CrowdStrike 24 Hours of Spa and the Suzuka 1000 km. Dates are from SRO's 2027 calendar announcement (June 2026); a few sources differ by a day, and the Nürburgring weekend here starts on the Thursday of race week. Bathurst and the Nürburgring (the combined Nordschleife and Grand Prix layout of the 24 Hours) are both mapped.",
     stops:[

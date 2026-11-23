@@ -199,7 +199,42 @@ const SERIES = [
     ],
     fine:"A spectator summary of GT3 racing and GT World Challenge Europe, based on the series' own published information. For official details, see GT-World-Challenge-Europe.com."
   }
+
 ,{
+  id:"gtwcasia", rc:"UC-yHapH6mW1ceZ_5PDUf1_g", rq:"GT World Challenge Asia|GTWC Asia", match:/GT World Challenge Asia/i, timing:"https://www.gt-world-challenge-asia.com/watch-live#live-timing",
+  name:"GT World Challenge Asia Powered by AWS", tag:"GT3 sprint racing across Asia",
+  blurb:"The Asian leg of SRO Motorsports Group's worldwide GT3 sprint racing, open to GT3 cars only since 2024. Every event has two one-hour races. A car has at most two drivers: each qualifies for and starts one of the weekend's two races, and they swap during a mandatory 10-minute pit-stop window. The 2027 season is six events: Sepang, Chang, Suzuka, Fuji, Beijing and Shanghai.",
+  cars:[
+    {n:"GT3", full:"FIA GT3 race cars", type:"Race versions of supercars", c:"#1F8A70", fg:"#FFFFFF", pace:"Fast",
+     text:"Race versions of road cars from well-known makes, all built to the same FIA GT3 rules. SRO's Balance of Performance keeps the makes close, so drivers, pit stops and strategy decide the result.",
+     spot:"Looks like a road car with a big rear wing and race stripes. Team liveries and numbers are what stand out."}
+  ],
+  rule:"Four driver classes race together on track, each with its own winner as well as the overall result: Pro-Am (a professional with an amateur), Silver Cup (two drivers rated no higher than Silver), Silver-Am (a Silver with a Bronze) and Am Cup (two Bronze drivers). Pro-Am, Silver Cup and Silver-Am crews must include at least one Asian driver. To keep any crew from running away with it, the top three finishers of the previous race add 15, 10 and 5 seconds to their mandatory pit stop.",
+  watch:{
+    qualifying:"Each driver sets a qualifying time for the race he or she starts, so the weekend's two races have their own starting grids.",
+    race:"Each race is about an hour. The pit-stop window is where races are won: the driver change has to happen inside it, and the top finishers of the last race carry a time penalty there."
+  },
+  fine:"A spectator summary of GT World Challenge Asia, based on the series' own published information. For official details, see GT-World-Challenge-Asia.com."
+}
+,{
+  id:"gtwcau", rc:"UC-yHapH6mW1ceZ_5PDUf1_g", rq:"GT World Challenge Australia|GTWC Australia", match:/GT World Challenge Australia/i, timing:"https://www.gt-world-challenge-australia.com/watch-live#live-timing",
+  name:"GT World Challenge Australia Powered by AWS", tag:"Australia's premier GT3 series",
+  blurb:"The premier GT racing series in Australia, racing at the country's best-known circuits as part of the Shannons SpeedSeries and ending at the Adelaide Grand Final. A season is six three-day race weekends with 60-minute double-header races. It is one quarter of SRO Motorsports Group's global GT World Challenge platform, alongside Europe, Asia and America, where manufacturers measure their customer racing programmes. In Australia the races are shown live on Kayo and Fox Sports, and streamed worldwide on the GT World YouTube channel.",
+  cars:[
+    {n:"GT3", full:"FIA GT3 race cars", type:"Race versions of supercars", c:"#D99A1E", fg:"#241800", pace:"Fast",
+     text:"Race versions of road cars from well-known makes, all built to the same FIA GT3 rules and balanced by SRO. The entry lists carry cars such as the Ferrari 296 GT3, Mercedes-AMG GT3, Lamborghini Huracan GT3, Audi R8 LMS, McLaren 720S GT3, Aston Martin Vantage and Porsche 911 GT3 R.",
+     spot:"Looks like a road car with a big rear wing and race stripes. Team liveries and numbers are what stand out."}
+  ],
+  rule:"Every car is a GT3 car, so they look alike in shape and speed. Race results are given overall and by class, and drivers in different rating categories share the same races. For the current class list, see the series website.",
+  watch:{
+    qualifying:"Cars set their fastest laps to decide the starting grid for the races.",
+    race:"Each weekend has two 60-minute races, so there is a second chance if the first goes wrong. Pit stops and driver changes are where races are won."
+  },
+  specials:[
+    {match:/Adelaide Grand Final/i, title:"Adelaide Grand Final", text:"The season finale, run on the Adelaide street circuit. The 2026 season ends there on Nov 26-29."}
+  ],
+  fine:"A spectator summary of GT World Challenge Australia, based on the series' own published information. For official details, see GT-World-Challenge-Australia.com."
+},{
   id:"gt4a", rq:"GT4 America", match:/GT4 America/i, yt:"UC-yHapH6mW1ceZ_5PDUf1_g", timing:"https://www.gt-world-challenge-america.com/watch-live#live-timing",
   name:"Pirelli GT4 America", tag:"Production-based GT4 cars",
   blurb:"SRO America’s GT4 series. The cars are race versions of road-going sports cars such as the Ford Mustang, Aston Martin Vantage, BMW M4, Porsche Cayman and Toyota GR Supra, built to GT4 rules, with less power and less aero than the GT3 cars of GT World Challenge America.",
@@ -962,6 +997,8 @@ const TIMING_LINKS = [
   { match:/FIA WEC|World Endurance|Hypercar|LMGT3/i, name:"FIA WEC live page", url:"https://www.fiawec.com/en/page/live-fiawec" },
   { match:/GT World Challenge Europe|24 Hours of Spa/i, name:"GT World Challenge Europe", url:"https://www.gt-world-challenge-europe.com/watch-live#live-timing" },
   { match:/Intercontinental GT/i, name:"Intercontinental GT Challenge", url:"https://www.intercontinentalgtchallenge.com/watch-live#live-timing" },
+  { match:/GT World Challenge Asia/i, name:"GT World Challenge Asia", url:"https://www.gt-world-challenge-asia.com/watch-live#live-timing" },
+  { match:/GT World Challenge Australia/i, name:"GT World Challenge Australia", url:"https://www.gt-world-challenge-australia.com/watch-live#live-timing" },
   { match:/GT World Challenge America|GT America|GT4 America|TC America|Toyota GR Cup/i, name:"GT World Challenge America", url:"https://www.gt-world-challenge-america.com/watch-live#live-timing" },
   { match:/INDYCAR|IndyCar/i, name:"INDYCAR", url:"https://racecontrol.indycar.com/" }
 ];

@@ -1,0 +1,452 @@
+TRACKS.push({
+  "id": "sydney-motorsport-park",
+  "name": "Sydney Motorsport Park",
+  "short": "Sydney Motorsport Park",
+  "place": "Eastern Creek, New South Wales, Australia",
+  "length": "3.93 km (2.442 mi)",
+  "opened": null,
+  "blurb": "Sydney Motorsport Park, a 3.93 km circuit (the Gardner Grand Prix Circuit) with 11 turns at Eastern Creek, New South Wales, Australia. GT World Challenge Australia visits for its Sydney round in 2027 (July 23-25).",
+  "facts": {
+    "Signature sections": null,
+    "Venue data": "Circuit, pit lane, roads, buildings and lots from OpenStreetMap. Fan facilities (grandstands, food, restrooms) are not on the map yet: they need the circuit's official fan map."
+  },
+  "vb": [
+    0,
+    0,
+    800,
+    771
+  ],
+  "geo": {
+    "n": -33.782357,
+    "s": -33.822603,
+    "w": 150.845602,
+    "e": 150.895666
+  },
+  "path": "M382.6,447.3 L385.6,448.1 L387.4,449.0 L389.6,450.8 L391.2,453.0 L392.5,455.5 L393.4,458.2 L393.7,461.4 L393.0,465.3 L387.0,482.8 L386.5,485.7 L387.0,488.2 L388.3,490.8 L390.8,493.3 L394.7,495.3 L442.7,507.0 L445.0,506.8 L446.5,505.8 L448.0,503.0 L449.3,498.2 L449.6,479.0 L450.9,466.7 L450.7,463.4 L449.3,459.2 L447.0,456.0 L445.1,454.1 L442.5,452.1 L439.6,450.7 L436.9,449.9 L413.7,447.3 L410.9,446.7 L409.0,445.7 L407.5,443.9 L406.8,441.3 L407.3,438.8 L408.5,437.0 L412.4,434.9 L453.6,433.9 L465.8,434.1 L470.1,435.1 L474.1,437.0 L477.2,439.3 L481.2,443.6 L484.7,449.1 L486.5,450.5 L489.0,451.0 L501.2,448.1 L503.2,447.4 L504.9,445.8 L505.9,444.1 L506.8,441.6 L506.8,438.8 L506.5,436.6 L505.2,434.2 L503.3,432.0 L501.2,430.5 L499.1,429.5 L495.8,428.5 L466.2,423.0 L382.9,405.8 L365.8,402.5 L358.4,401.5 L355.1,401.8 L349.2,402.7 L339.7,406.9 L336.3,409.5 L333.6,412.1 L328.8,418.4 L326.9,421.8 L324.9,427.4 L312.4,470.8 L312.2,473.2 L312.7,475.3 L314.2,476.8 L316.8,478.6 L318.9,479.4 L322.1,479.0 L324.3,477.7 L326.1,475.4 L326.8,472.9 L325.5,466.5 L325.2,462.1 L325.6,458.7 L326.5,455.6 L328.1,452.6 L330.5,449.8 L333.6,447.4 L336.1,446.2 L338.8,445.3 L341.4,445.1 L346.0,445.2 L382.6,447.3",
+  "labels": [],
+  "sf": [
+    382,
+    406
+  ],
+  "pit": "M454.5,420.4 L446.0,421.0 L436.8,419.8 L365.8,405.3 L361.6,405.0 L353.1,405.6 L348.4,406.5 L343.5,408.2 L339.1,410.6 L336.2,412.8 L331.2,418.4 L323.6,432.4",
+  "pois": [
+    {
+      "k": "camp",
+      "n": "Bungarribee Creek Reserve Oval",
+      "x": 590,
+      "y": 57,
+      "d": "Camping",
+      "id": "bungarribee-creek-reserve-oval"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 399,
+      "y": 392,
+      "id": "restrooms"
+    },
+    {
+      "k": "camp",
+      "n": "Bristol Circuit Reserve",
+      "x": 781,
+      "y": 82,
+      "d": "Camping",
+      "id": "bristol-circuit-reserve"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 495,
+      "y": 409,
+      "id": "restrooms-2"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 481,
+      "y": 489,
+      "id": "restrooms-3"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 422,
+      "y": 523,
+      "id": "restrooms-4"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 360,
+      "y": 96,
+      "id": "restrooms-5"
+    },
+    {
+      "k": "camp",
+      "n": "Cor Brouwer Reserve",
+      "x": 88,
+      "y": 79,
+      "d": "Camping",
+      "id": "cor-brouwer-reserve"
+    },
+    {
+      "k": "food",
+      "n": "Lion Deck Cafe",
+      "x": 319,
+      "y": 112,
+      "d": "Food and drink",
+      "id": "lion-deck-cafe"
+    },
+    {
+      "k": "food",
+      "n": "Tiger Pool Cafe",
+      "x": 326,
+      "y": 121,
+      "d": "Food and drink",
+      "id": "tiger-pool-cafe"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 389,
+      "y": 47,
+      "id": "restrooms-6"
+    },
+    {
+      "k": "camp",
+      "n": "Dog Kennel Reserve",
+      "x": 611,
+      "y": 263,
+      "d": "Camping",
+      "id": "dog-kennel-reserve"
+    },
+    {
+      "k": "camp",
+      "n": "Our Lady of Consolation Aged Care & Services",
+      "x": 19,
+      "y": 19,
+      "d": "Camping",
+      "id": "our-lady-of-consolation-aged-care-services"
+    },
+    {
+      "k": "camp",
+      "n": "TRS Service",
+      "x": 528,
+      "y": 263,
+      "d": "Camping",
+      "id": "trs-service"
+    },
+    {
+      "k": "camp",
+      "n": "Harvey's Social",
+      "x": 416,
+      "y": 63,
+      "d": "Camping",
+      "id": "harvey-s-social"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 40,
+      "y": 136,
+      "id": "restrooms-7"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 316,
+      "y": 111,
+      "id": "restrooms-8"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 329,
+      "y": 121,
+      "id": "restrooms-9"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 341,
+      "y": 108,
+      "id": "restrooms-10"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 348,
+      "y": 138,
+      "id": "restrooms-11"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 150,
+      "y": 102,
+      "id": "restrooms-12"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 661,
+      "y": 367,
+      "id": "restrooms-13"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 585,
+      "y": 387,
+      "id": "restrooms-14"
+    },
+    {
+      "k": "rest",
+      "n": "Restrooms",
+      "x": 72,
+      "y": 554,
+      "id": "restrooms-15"
+    },
+    {
+      "k": "park",
+      "n": "Parking 1",
+      "x": 385,
+      "y": 548,
+      "d": "Parking",
+      "c": "#EC407A",
+      "id": "parking-1"
+    },
+    {
+      "k": "park",
+      "n": "Parking 2",
+      "x": 285,
+      "y": 263,
+      "d": "Parking",
+      "c": "#F28C28",
+      "id": "parking-2"
+    },
+    {
+      "k": "park",
+      "n": "Parking 3",
+      "x": 375,
+      "y": 667,
+      "d": "Parking",
+      "c": "#29B6F6",
+      "id": "parking-3"
+    },
+    {
+      "k": "park",
+      "n": "Parking 4",
+      "x": 355,
+      "y": 643,
+      "d": "Parking",
+      "c": "#66BB6A",
+      "id": "parking-4"
+    },
+    {
+      "k": "park",
+      "n": "Parking 5",
+      "x": 374,
+      "y": 574,
+      "d": "Parking",
+      "c": "#AB47BC",
+      "id": "parking-5"
+    },
+    {
+      "k": "park",
+      "n": "Parking 6",
+      "x": 365,
+      "y": 594,
+      "d": "Parking",
+      "c": "#8D6E63",
+      "id": "parking-6"
+    },
+    {
+      "k": "park",
+      "n": "Parking 7",
+      "x": 333,
+      "y": 198,
+      "d": "Parking",
+      "c": "#26A69A",
+      "id": "parking-7"
+    },
+    {
+      "k": "park",
+      "n": "Parking 8",
+      "x": 132,
+      "y": 47,
+      "d": "Parking",
+      "c": "#F2C300",
+      "id": "parking-8"
+    },
+    {
+      "k": "park",
+      "n": "Parking 9",
+      "x": 312,
+      "y": 142,
+      "d": "Parking",
+      "c": "#7CB342",
+      "id": "parking-9"
+    },
+    {
+      "k": "park",
+      "n": "Truck Parking",
+      "x": 61,
+      "y": 569,
+      "d": "Parking",
+      "c": "#5C6BC0",
+      "id": "truck-parking"
+    },
+    {
+      "k": "park",
+      "n": "Paddock Area",
+      "x": 376,
+      "y": 415,
+      "d": "Parking",
+      "c": "#E2574C",
+      "id": "paddock-area"
+    },
+    {
+      "k": "park",
+      "n": "Dummy Grid",
+      "x": 356,
+      "y": 412,
+      "d": "Parking",
+      "c": "#FF7043",
+      "id": "dummy-grid"
+    },
+    {
+      "k": "cross",
+      "n": "Tunnel under the track",
+      "x": 400,
+      "y": 409,
+      "d": "Walkway under the circuit. Position from OpenStreetMap.",
+      "id": "tunnel-under-the-track"
+    },
+    {
+      "k": "stand",
+      "n": "Stand Corporate Box",
+      "x": 362,
+      "y": 691,
+      "d": "Grandstand from OpenStreetMap. OpenStreetMap does not say which ticket opens it, whether it is covered or how many seats it has: check your ticket.",
+      "id": "stand-corporate-box"
+    }
+  ],
+  "events": [
+    {
+      "d": "2027-07-23",
+      "e": "GT Festival Sydney (GT World Challenge Australia)",
+      "s": "GT World Challenge Australia",
+      "t": 3
+    }
+  ],
+  "osm": true,
+  "sfArrow": [
+    381.7,
+    405.5,
+    -169
+  ],
+  "lots": [
+    {
+      "n": "Parking 1",
+      "c": "#EC407A",
+      "d": "M363.6,533.3 L404.2,540.3 L402.4,551.2 L400.6,556.8 L395.1,555.9 L394.0,561.4 L359.8,555.4 L363.6,533.3 Z",
+      "x": 385,
+      "y": 548,
+      "r": 25
+    },
+    {
+      "n": "Parking 2",
+      "c": "#F28C28",
+      "d": "M289.6,231.3 L290.6,231.5 L290.8,230.5 L294.6,231.1 L291.8,250.7 L292.6,253.0 L291.0,264.0 L288.1,263.6 L287.5,267.7 L288.4,267.9 L287.8,272.2 L286.8,272.1 L286.0,277.7 L286.9,277.8 L285.4,288.3 L282.5,287.6 L283.2,282.9 L284.1,282.9 L281.9,282.9 L281.1,277.3 L282.0,277.1 L281.1,276.9 L281.8,272.2 L282.8,272.0 L281.8,271.9 L281.2,272.8 L281.3,271.8 L279.9,271.6 L280.3,268.6 L279.4,268.5 L280.8,259.3 L281.7,259.4 L282.5,256.0 L283.7,256.1 L283.6,257.1 L285.0,257.3 L284.0,257.1 L284.7,252.4 L285.6,252.5 L286.0,251.0 L287.6,251.3 L286.7,250.9 L289.6,231.3 Z",
+      "x": 285,
+      "y": 263,
+      "r": 25
+    },
+    {
+      "n": "Parking 3",
+      "c": "#29B6F6",
+      "d": "M362.8,671.8 L363.3,669.4 L364.5,669.7 L365.1,666.4 L363.8,666.1 L364.7,663.5 L370.7,659.4 L372.7,659.6 L375.9,662.6 L380.0,663.6 L380.5,664.9 L379.8,668.7 L382.5,669.2 L384.2,660.1 L385.0,659.0 L387.0,658.3 L391.1,659.1 L392.7,660.6 L389.3,679.4 L376.5,677.0 L371.3,677.9 L367.0,680.2 L361.4,679.2 L362.8,671.8 Z",
+      "x": 375,
+      "y": 667,
+      "r": 25
+    },
+    {
+      "n": "Parking 4",
+      "c": "#66BB6A",
+      "d": "M374.3,645.3 L362.2,656.4 L358.2,656.8 L355.9,655.6 L333.3,631.8 L335.2,630.3 L342.2,637.4 L345.9,638.6 L348.6,639.1 L365.9,639.0 L368.2,639.6 L374.3,645.3 Z",
+      "x": 355,
+      "y": 643,
+      "r": 25
+    },
+    {
+      "n": "Parking 5",
+      "c": "#AB47BC",
+      "d": "M389.8,564.0 L363.2,561.6 L361.5,562.0 L359.6,564.4 L356.4,577.9 L356.7,580.5 L357.9,582.0 L359.9,583.0 L384.7,589.2 L387.0,588.8 L388.8,586.3 L393.1,568.2 L392.4,565.2 L389.8,564.0 Z",
+      "x": 374,
+      "y": 574,
+      "r": 25
+    },
+    {
+      "n": "Parking 6",
+      "c": "#8D6E63",
+      "d": "M380.9,590.4 L380.3,593.8 L386.4,595.2 L385.3,599.5 L383.8,600.8 L375.3,603.0 L372.1,603.2 L369.1,602.2 L361.5,597.6 L354.7,594.8 L334.2,590.6 L332.4,588.8 L331.5,582.9 L347.5,585.2 L357.9,585.2 L380.9,590.4 Z",
+      "x": 365,
+      "y": 594,
+      "r": 25
+    },
+    {
+      "n": "Parking 7",
+      "c": "#26A69A",
+      "d": "M334.9,190.4 L332.0,210.3 L328.9,210.3 L331.9,190.0 L334.9,190.4 Z",
+      "x": 333,
+      "y": 198,
+      "r": 25
+    },
+    {
+      "n": "Parking 8",
+      "c": "#F2C300",
+      "d": "M118.2,48.6 L119.0,50.6 L120.3,50.1 L120.0,49.2 L120.9,48.9 L120.1,49.4 L122.5,56.1 L129.5,53.6 L132.0,60.4 L138.8,58.0 L138.4,56.9 L139.3,56.6 L137.4,51.0 L136.5,51.1 L141.2,49.4 L140.5,49.8 L141.5,52.6 L143.1,54.1 L144.9,54.6 L146.1,52.9 L146.7,49.5 L143.8,41.4 L142.9,41.8 L142.1,39.7 L143.1,39.4 L140.0,31.0 L138.9,31.5 L135.1,31.1 L132.0,32.0 L129.9,36.1 L129.0,36.0 L127.7,43.8 L128.7,44.0 L128.5,45.0 L123.3,46.8 L123.0,45.9 L121.0,46.6 L118.2,47.7 L118.2,48.6 Z",
+      "x": 132,
+      "y": 47,
+      "r": 25
+    },
+    {
+      "n": "Parking 9",
+      "c": "#7CB342",
+      "d": "M296.9,132.5 L302.1,143.2 L304.3,144.1 L303.9,146.3 L325.6,151.6 L326.6,145.8 L324.6,141.6 L324.7,139.0 L296.9,132.5 Z",
+      "x": 312,
+      "y": 142,
+      "r": 25
+    },
+    {
+      "n": "Truck Parking",
+      "c": "#5C6BC0",
+      "d": "M50.9,566.3 L72.8,564.7 L73.3,568.8 L72.5,570.0 L62.9,571.7 L56.0,572.2 L52.1,571.0 L50.9,566.3 Z",
+      "x": 61,
+      "y": 569,
+      "r": 25
+    },
+    {
+      "n": "Paddock Area",
+      "c": "#E2574C",
+      "d": "M361.7,410.1 L361.0,414.0 L397.5,421.1 L398.0,417.5 L361.7,410.1 Z",
+      "x": 376,
+      "y": 415,
+      "r": 25
+    },
+    {
+      "n": "Dummy Grid",
+      "c": "#FF7043",
+      "d": "M354.7,409.3 L360.6,408.2 L358.8,416.5 L353.3,415.3 L354.7,409.3 Z",
+      "x": 356,
+      "y": 412,
+      "r": 25
+    }
+  ],
+  "tz": "Australia/Sydney",
+  "eventName": "GT Festival Sydney (GT World Challenge Australia)",
+  "nturns": 11,
+  "turns": [],
+  "rev": 1
+});

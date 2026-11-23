@@ -5,6 +5,26 @@ import json, math, os, re, sys
 HERE=os.path.dirname(os.path.abspath(__file__)); PERM=os.path.join(HERE,"..","street-circuits","permanent")+"/"; OSM=os.path.join(HERE,"..","street-circuits","osm")+"/"
 ENDURANCE="GT World Challenge Europe Powered by AWS, Endurance Cup"
 SPECS=[
+ dict(id="sydney-motorsport-park", name="Sydney Motorsport Park", short="Sydney Motorsport Park", place="Eastern Creek, New South Wales, Australia", tz="Australia/Sydney", center=[-33.8033, 150.8713],
+  circuit=[5204646, 414186086, 414186090, 414186089, 414186087, 414186088], pit=5204653, official="3.93 km", length="3.93 km (2.442 mi)", opened=None, nturns=11, lap=None,
+  rename={},
+  blurb="Sydney Motorsport Park, a 3.93 km circuit (the Gardner Grand Prix Circuit) with 11 turns at Eastern Creek, New South Wales, Australia. GT World Challenge Australia visits for its Sydney round in 2027 (July 23-25).",
+  sig=None,
+  events=[dict(d="2027-07-23",e="GT Festival Sydney (GT World Challenge Australia)",s="GT World Challenge Australia",t=3)]),
+ dict(id="queensland-raceway", name="Queensland Raceway", short="Queensland Raceway", place="Willowbank, Queensland, Australia", tz="Australia/Brisbane", center=[-27.6954, 152.6637],
+  circuit="@queensland-raceway-lap.json", pit=499418949, official="3.126 km", length="3.126 km (1.942 mi)", opened=None, nturns=6, lap=None,
+  rename={},
+  blurb="Queensland Raceway, a 3.126 km circuit with 6 turns at Willowbank, Queensland, Australia. GT World Challenge Australia visits for its Queensland round in 2027 (September 24-26).",
+  sig=None,
+  events=[dict(d="2027-09-24",e="GT Festival Queensland (GT World Challenge Australia)",s="GT World Challenge Australia",t=3)]),
+
+ dict(id="phillip-island", name="Phillip Island Grand Prix Circuit", short="Phillip Island", place="Phillip Island, Victoria, Australia", tz="Australia/Melbourne", center=[-38.5, 145.231],
+  circuit=[43598473], pit=1436851709, official="4.445 km", length="4.445 km (2.762 mi)", opened=None, nturns=12, lap=None,
+  rename={},
+  blurb="Phillip Island Grand Prix Circuit, a 4.445 km circuit with 12 turns on the coast of Victoria, Australia. GT World Challenge Australia opens its 2027 season here (April 16-18).",
+  sig=None,
+  events=[dict(d="2027-04-16",e="GT Festival Phillip Island (GT World Challenge Australia)",s="GT World Challenge Australia",t=3)]),
+
  dict(id="nurburgring-nordschleife", name="Nürburgring Nordschleife and Grand Prix circuit", short="Nordschleife", place="Nürburg, Germany", tz="Europe/Berlin", center=[50.3550,6.9650],
   circuit="@nurburgring-nordschleife-lap.json",
   pit="@nurburgring-nordschleife-pit.json", labels_file="nurburgring-nordschleife-labels.json", official="25.378 km", length="25.378 km (15.769 mi)", opened=1927, nturns="170", lap=None,

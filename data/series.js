@@ -103,7 +103,7 @@ const SERIES = [
     watch:{ race:"Every car is identical, so watch the draft. Packs of cars swap places on the straights, and the finish is often decided in the last corner." }
   },
   {
-    id:"carrera", sess:"carrera", match:/Carrera Cup(?! Brazil)/i, yt:"UCch613iK0dXuGLlvFSePzwA", timing:"https://racing.porsche.com/en-US/live-timing/carrera-cup-north-america",
+    id:"carrera", sess:"carrera", match:/Carrera Cup(?! Brazil| Australia)/i, yt:"UCch613iK0dXuGLlvFSePzwA", timing:"https://racing.porsche.com/en-US/live-timing/carrera-cup-north-america",
     name:"Porsche Carrera Cup North America", tag:"One car, driver classes",
     blurb:"Every car is a Porsche 911 GT3 Cup, so it is the driver that makes the difference. The classes are for drivers, not cars, so Pro, Pro-Am and Masters drivers race in the same pack.",
     cars:[

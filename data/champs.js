@@ -77,7 +77,7 @@ const CHAMPS = [
     stops:[
     ] },
 
-  { id:"carreracup", cat:"onemake", region:"na", name:"Porsche Carrera Cup", tile:"CARR", full:"Porsche Carrera Cup North America", match:/Porsche Carrera Cup/i, viaSupport:true, optIn:true, parent:"imsa", guide:"carrera",
+  { id:"carreracup", cat:"onemake", region:"na", name:"Porsche Carrera Cup", tile:"CARR", full:"Porsche Carrera Cup North America", match:/Porsche Carrera Cup/i, skip:/Australia|Brazil/i, viaSupport:true, optIn:true, parent:"imsa", guide:"carrera",
     note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },
   { id:"pilotchallenge", cat:"onemake", region:"na", name:"Pilot Challenge", tile:"PILOT", full:"Michelin Pilot Challenge", match:/Michelin Pilot Challenge/i, viaSupport:true, optIn:true, parent:"imsa", guide:"pilot",
     note:"Races as a support series at IMSA WeatherTech weekends. Its own dates and venues follow that weekend's schedule." },

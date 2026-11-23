@@ -1598,3 +1598,4 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 .heroRecap{margin-top:12px}.heroRecap .rcWin{position:relative;margin-top:14px;font-size:26px;font-weight:500;letter-spacing:-.4px}.heroRecap .rcWin small{display:block;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-bottom:2px}.heroRecap .rcHl{position:relative;margin:10px 0 0;font-size:14px;line-height:1.45;color:var(--ink-2)}.heroRecap .stGo{position:relative;margin-top:12px}
 .postTop{margin:3px 0;font-size:14px;color:var(--ink)}
 .recapExt{color:var(--accent);font-weight:700;white-space:nowrap}.recapBlocked{margin-top:10px;padding:18px;border-radius:14px;background:var(--tint);text-align:center}.recapBlocked p{margin:0 0 12px;color:var(--ink-2);font-size:14px}
+.postClass{margin:6px 0 2px;font-size:12px;font-weight:700;color:var(--ink-2)}

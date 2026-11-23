@@ -1950,8 +1950,9 @@ function hubPostHtml(c,post){
     const sr=SERIES.find(x=>x.id===r.s); if(!sr) return;
     if(!seen.has(sr.id)){ seen.add(sr.id); const rd=races.filter(s=>(seriesFor(s.n)||{}).id===sr.id).map(s=>s.d).sort().pop()||ev.d; videos+=hubVideoCard(sr,rd); }
     const idx=fullRes.push(r)-1, hl=headlinesInner(r); postPicks[idx]=recapPicksHtml({t:cur,e:ev,r});
-    const g0=r.groups[0]||{}, top=(g0.order||[]).slice(0,3).map(l=>String(l).replace(/\s*\(.*$/,""));
-    recaps+=`<div class="hubCard hubTap" role="button" tabindex="0" onclick="openPostRes(${idx})" onkeydown="if(event.key==='Enter')openPostRes(${idx})"><div class="hubCardRow"><div><h4>Recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${c.chev}</div><div class="postEvent">${esc(r.race||r.event||ev.e)}</div>${hl?`<div class="postSub">What happened</div>${hl}`:top.length?`<div class="postSub">Top three</div>${top.map(x=>`<p class="postTop">${esc(x)}</p>`).join("")}`:""}<div class="fullResLink">Finishing order &rsaquo;</div></div>`;
+    const many=r.groups.length>1, topOf=(g,n)=>(g.order&&g.order.length?g.order.slice(0,n):[g.winner,...(g.podium||[])].filter(Boolean).slice(0,n)).map(l=>String(l).replace(/\s*\(.*$/,"")),
+      top=r.groups.map(g=>`${many?`<div class="postClass">${esc(g.h)}</div>`:""}${topOf(g,many?3:5).map(x=>`<p class="postTop">${esc(x)}</p>`).join("")}`).join("");
+    recaps+=`<div class="hubCard hubTap" role="button" tabindex="0" onclick="openPostRes(${idx})" onkeydown="if(event.key==='Enter')openPostRes(${idx})"><div class="hubCardRow"><div><h4>Recap</h4><div class="hubSeries">${seriesMark(sr.id,24)}${esc(sr.name)}</div></div>${c.chev}</div><div class="postEvent">${esc(r.race||r.event||ev.e)}</div>${hl?`<div class="postSub">What happened</div>${hl}`:""}<div class="postSub">${many?"Top three per class":"Top five"}</div>${top}<div class="fullResLink">Finishing order &rsaquo;</div></div>`;
   });
   const standings=hubStandingsCard(c), friends=hubFriendsCard(), wk=hubRecapCard({...c}), actions=hubActionTiles(), {lastHereHtml}=hubBeforeWeekend(c);
   const nx=(cur.events||[]).filter(e=>e.d>localToday()).sort((a,b)=>a.d.localeCompare(b.d))[0];

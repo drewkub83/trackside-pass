@@ -212,7 +212,7 @@ track = { "id" => id, "name" => C[:name], "short" => C[:short], "place" => C[:pl
   "path" => pathd.(path_units), "labels" => corner_labels, "sf" => [sf[0].round, sf[1].round], "pit" => pathd.(pit_units),
   "pois" => poi_out, "events" => C[:events], "osm" => true, "base" => { "polys" => polys, "lines" => lines, "labels" => labels },
   "sfArrow" => [sf[0].round(1), sf[1].round(1), sf_ang.round], "lots" => lots,
-  "tz" => C[:tz], "eventName" => C[:events].first["e"], "nturns" => C[:nturns], "turns" => [], "rev" => rev }
+  "tz" => C[:tz], "eventName" => (C[:events].first || {})["e"], "nturns" => C[:nturns], "turns" => [], "rev" => rev }
 track["tw"] = C[:tw] if C[:tw]
 File.write(outfile, "TRACKS.push({\n" + track.map { |k, v| "  #{k.to_json}:#{v.to_json}" }.join(",\n") + "\n});\n")
 puts "wrote #{outfile} (%d KB): %d badges, %d lots; badges: %s"%[File.size(outfile) / 1000, poi_out.size, lots.size, poi_out.map { |q| q["k"] }.group_by { |k| k }.map { |k, v| "#{k}=#{v.size}" }.join(", ")]

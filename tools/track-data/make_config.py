@@ -18,6 +18,12 @@ SPECS=[
   sig=None,
   events=[dict(d="2027-09-24",e="GT Festival Queensland (GT World Challenge Australia)",s="GT World Challenge Australia",t=3)]),
 
+ dict(id="the-bend", name="The Bend Motorsport Park (International Circuit)", short="The Bend", place="Tailem Bend, South Australia, Australia", tz="Australia/Adelaide", center=[-35.3045, 139.5130],
+  circuit="@the-bend-lap.json", pit=849390381, official="4.95 km", length="4.95 km (3.08 mi)", opened=None, nturns=18, lap=None,
+  rename={},
+  blurb="The Bend Motorsport Park, the 4.95 km International Circuit with 18 turns at Tailem Bend, South Australia, Australia. GT World Challenge Australia visits in 2027 (May 28-30).",
+  sig=None,
+  events=[dict(d="2027-05-28",e="GT Festival The Bend (GT World Challenge Australia)",s="GT World Challenge Australia",t=3)]),
  dict(id="phillip-island", name="Phillip Island Grand Prix Circuit", short="Phillip Island", place="Phillip Island, Victoria, Australia", tz="Australia/Melbourne", center=[-38.5, 145.231],
   circuit=[43598473], pit=1436851709, official="4.445 km", length="4.445 km (2.762 mi)", opened=None, nturns=12, lap=None,
   rename={},

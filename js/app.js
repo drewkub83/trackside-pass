@@ -306,15 +306,42 @@ function storylineWeekends(){
     const k=x.t+"|"+x.d, key=x.s; (by[k]=by[k]||{t:x.t,d:x.d,best:{}}); const b=by[k].best; if(!b[key]||(x.from||"")>=(b[key].from||"")) b[key]=x; });
   return Object.values(by).sort((a,b)=>a.d.localeCompare(b.d));
 }
+/* a read-only card in the shared info popup. Opening "Sources" from inside it swaps the card, and Back restores it. */
+let infoPrev="", srcStash=[], homeStories=[], hubStories=[];
+function setInfo(html,keepPrev){
+  const b=document.getElementById("infoBody"); infoPrev=keepPrev?b.innerHTML:"";
+  b.innerHTML=html; const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
+}
+function restoreInfo(){ if(!infoPrev) return closeInfo(); const b=document.getElementById("infoBody"); b.innerHTML=infoPrev; infoPrev=""; document.getElementById("infoModal").querySelector(".mcard").scrollTop=0; }
+/* the long "note: sources" text under What to watch and results, behind one small "Sources" link */
+function sourcesLink(note){ if(!note) return ""; srcStash.push(String(note)); if(srcStash.length>200) srcStash.shift(); return `<button class="srcLink" onclick="openSources(${srcStash.length-1})">Sources</button>`; }
+function openSources(i){ const t=srcStash[i]; if(t==null) return;
+  setInfo(`<div class="mkick">Where this came from</div><h3 id="infoTitle">Sources</h3><p class="wnote srcText">${esc(t)}</p><div class="rcpBtns"><button class="btn quiet" onclick="restoreInfo()">Back</button></div>`,true); }
+/* one series' storylines in full: its groups, every item, and the Sources link */
+function storyBlock(x,head){
+  return `<div class="stSeries">${head?`<b>${esc(watchSeriesName(x)||"Race weekend")}</b>`:""}${x.asOf?`<p class="asof">${esc(x.asOf)}</p>`:""}${x.groups.map(g=>`<div class="wgroup">${g.h?`<h4>${esc(g.h)}</h4>`:""}${g.items.map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}${sourcesLink(x.note)}</div>`;
+}
+function openWeekStory(i){ const w=homeStories[i]; if(!w) return;
+  setInfo(`<div class="mkick">Storylines for the week</div><h3 id="infoTitle">${esc(w.title)}</h3><p class="asof">${esc(w.sub)}</p>${w.list.map(x=>storyBlock(x,true)).join("")}<div class="rcpBtns"><button class="btn" onclick="closeInfo();openTrack('${w.id}','home')">Open the weekend</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>`); }
+function openHubStory(i){ const x=hubStories[i]; if(!x) return;
+  setInfo(`<div class="mkick">Storylines</div><h3 id="infoTitle">${esc(watchSeriesName(x)||"Race weekend")}</h3>${storyBlock(x,false)}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`); }
 function renderStorylines(){
   const el=document.getElementById("storylines"); if(!el) return; const wk=storylineWeekends();
+  homeStories=[];
   if(!wk.length){ el.innerHTML=""; return; }
   el.innerHTML=`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
-    const series=Object.values(w.best).map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"…":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);
+    const list=Object.values(w.best), sub=(ev?fmtRange(ev):w.d)+" · "+(n===1?"starts tomorrow":"in "+n+" days"); homeStories.push({id:tr.id,title:tr.short,sub,list});
+    const series=list.map(x=>{ const brief=s=>{ s=String(s||""); const m=/^.{30,}?[.!?](\s|$)/.exec(s), c=m?m[0].trim():s; return c.length>125?c.slice(0,120).replace(/\s+\S*$/,"")+"\u2026":c; }, items=x.groups.flatMap(g=>g.items.map(i=>({h:x.groups.length>1?g.h:"",n:i[0],why:brief(i[1])}))).slice(0,3);
       return `<div class="stSeries"><b>${esc(watchSeriesName(x)||"Race weekend")}</b>${items.map(i=>`<p><span>${esc(i.n)}</span> ${esc(i.why)}</p>`).join("")}</div>`; }).join("");
-    return `<button class="stCard" onclick="openTrack('${tr.id}','home')"><div class="stHead"><b>${esc(tr.short)}</b><span>${ev?esc(fmtRange(ev)):esc(w.d)} · ${n===1?"starts tomorrow":"in "+n+" days"}</span></div>${series}<span class="stGo">Open the weekend &rsaquo;</span></button>`; }).join("");
+    return `<button class="stCard" onclick="openWeekStory(${homeStories.length-1})"><div class="stHead"><b>${esc(tr.short)}</b><span>${esc(ev?fmtRange(ev):w.d)} · ${n===1?"starts tomorrow":"in "+n+" days"}</span></div>${series}<span class="stGo">Read the storylines &rsaquo;</span></button>`; }).join("");
 }
-function renderHome(){ renderHero(); renderStorylines(); renderSeason(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
+/* Monday to Wednesday the week opens with the storylines; from Thursday the series racing this week move to the top */
+function homeOrder(){
+  const st=document.getElementById("storylines"), se=document.getElementById("season"); if(!st||!se||!st.parentNode) return;
+  const dow=new Date(localToday()+"T12:00:00Z").getUTCDay(), seriesFirst=dow===4||dow===5||dow===6||dow===0;
+  if(seriesFirst) st.parentNode.insertBefore(se,st); else st.parentNode.insertBefore(se,st.nextSibling);
+}
+function renderHome(){ renderHero(); renderStorylines(); renderSeason(); homeOrder(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }
 /* the soonest unfinished race date for a series, so the home screen list can read "ordered by next race" just like each series' own track list does */
 function champSoonest(c){ const o=orderOf(c)[0], s=stopsOf(c)[0]; return [o&&o.e.d,s&&s.d].filter(Boolean).sort()[0]||"9999-99-99"; }
 /* series order: a fan-set arrangement (dragged in Settings) that overrides the "soonest race" default sort
@@ -716,7 +743,7 @@ function watchSeriesName(x){ const sr=SERIES.find(r=>r.id===x.s); return sr?sr.n
 let fullRes=[];
 function openFullRes(i,extra,noHeadlines){
   const res=fullRes[i]; if(!res) return;
-  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${extra||""}${!noHeadlines&&headlinesList(res).length?`<div class="wgroup"><h4>Headlines</h4>${headlinesInner(res)}</div>`:""}${res.groups.map(g=>resultGroupHtml(g)).join("")}${res.note?`<p class="wnote">${esc(res.note)}</p>`:""}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Final results</div><h3 id="infoTitle">${esc(res.event)}</h3>${extra||""}${!noHeadlines&&headlinesList(res).length?`<div class="wgroup"><h4>Headlines</h4>${headlinesInner(res)}</div>`:""}${res.groups.map(g=>resultGroupHtml(g)).join("")}${sourcesLink(res.note)}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`;
   const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
 }
 function resultGroupHtml(g,cap){
@@ -792,22 +819,6 @@ async function openRadar(){
 /* the series you've starred in the Race Day hub, when more than one shares a weekend -- global, not per track */
 function favSeries(){ try{ return localStorage.getItem(K.favSeries)||null; }catch(e){ return null; } }
 function toggleFavSeries(id){ try{ localStorage.setItem(K.favSeries,favSeries()===id?"":id); }catch(e){} renderHub(); }
-function renderWatch(){
-  const sec=document.getElementById("watchSection"); if(!sec) return; const fo=focusAt(cur), title=document.getElementById("watchTitle");
-  const w=watchNow();
-  if(w.length){
-    sec.hidden=false; if(title) title.textContent="Cars and drivers to watch";
-    document.getElementById("watchList").innerHTML=w.map(x=>(w.length>1?`<h4 class="wseries">${esc(watchSeriesName(x))}</h4>`:"")+`<p class="asof">${esc(x.asOf)}</p>`+x.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4>${g.items.map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")+(x.note?`<p class="wnote">${esc(x.note)}</p>`:"")).join("");
-    return;
-  }
-  /* no upcoming preview due -- show how the last race here actually finished, once results are in */
-  const lastDone=(cur.events||[]).filter(e=>eventDone(cur,e)).sort((a,b)=>b.d.localeCompare(a.d))[0];
-  const results=lastDone&&typeof RESULTS!=="undefined"?RESULTS.filter(x=>x.t===cur.id&&x.d===lastDone.d):[];
-  if(!results.length){ sec.hidden=true; return; }
-  sec.hidden=false; if(title) title.textContent=results.length>1?`How ${lastDone.e} finished`:`How ${results[0].event} finished`;
-  document.getElementById("watchList").innerHTML=results.map(res=>(results.length>1?`<h4 class="wseries">${esc(res.event)}</h4>`:"")+res.groups.map(g=>resultGroupHtml(g)).join("")
-    +(res.note?`<p class="wnote">${esc(res.note)}</p>`:"")).join("");
-}
 let evRows=[];
 function renderEvents(){
   const today=localToday(), all=[...cur.events];
@@ -1675,11 +1686,11 @@ function hubFocusSeries(c){
 }
 function hubWatchCard(c){
   const {sid,fav}=c;
-  const wAll=watchNow();
+  const wAll=watchNow(); hubStories=[];
   let watchHtml="";
   if(wAll.length){
-    const x=wAll.find(e=>e.s===sid)||wAll[0], isFav=fav===x.s, star=wAll.length>1?`<button class="hubStar${isFav?" on":""}" aria-label="${isFav?"Unstar":"Star"} ${esc(watchSeriesName(x))}" onclick="toggleFavSeries('${x.s}')"><svg viewBox="0 0 24 24"><path d="M12 3l2.9 6.2 6.6.8-5 4.6 1.4 6.6L12 18l-5.9 3.2L7.5 14.6l-5-4.6 6.6-.8z"/></svg></button>`:"";
-    watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${seriesMark(x.s,24)}${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}</div>`;
+    const x=wAll.find(e=>e.s===sid)||wAll[0], others=wAll.filter(e=>e!==x), isFav=fav===x.s, star=wAll.length>1?`<button class="hubStar${isFav?" on":""}" aria-label="${isFav?"Unstar":"Star"} ${esc(watchSeriesName(x))}" onclick="toggleFavSeries('${x.s}')"><svg viewBox="0 0 24 24"><path d="M12 3l2.9 6.2 6.6.8-5 4.6 1.4 6.6L12 18l-5.9 3.2L7.5 14.6l-5-4.6 6.6-.8z"/></svg></button>`:"";
+    watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${seriesMark(x.s,24)}${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}${others.map(o=>{ hubStories.push(o); return `<button class="hubMore" onclick="openHubStory(${hubStories.length-1})"><span>${esc(watchSeriesName(o)||"Race weekend")} storylines</span><i aria-hidden="true">&rsaquo;</i></button>`; }).join("")}</div>`;
   }
   return watchHtml;
 }
@@ -1991,7 +2002,6 @@ function renderHub(){
 }
 function renderSchedule(){
   tzNote();
-  renderWatch();
   const sec=document.getElementById("schedSection"); const ss=sessionsResolved(), fo=focusAt(cur);
   if(!fo){ sec.hidden=true; return; }
   document.getElementById("schedTools").innerHTML="";
@@ -2098,7 +2108,7 @@ function showNowSession(){
   document.querySelector(".tabs button[data-p=pEvents]").click(); renderSchedule();
   requestAnimationFrame(()=>{ const l=document.getElementById("schedList"), el=l&&(l.querySelector(".sess.live")||l.querySelector(".sess:not(.past)")); if(el) el.scrollIntoView({block:"center"}); });
 }
-setInterval(()=>{ if(document.getElementById("home").classList.contains("on")) renderHero(); if(cur){ renderNow(); if(hubMode&&atTrackNow&&cur.id===atTrackNow.id&&Date.now()-liveActAt>60000){ liveActAt=Date.now(); liveActivitySync(cur); } if(hubMode) renderHub(); if(document.getElementById("pEvents").classList.contains("on")){ renderSchedule(); renderEvents(); } else if(document.getElementById("pInfo").classList.contains("on")) renderWatch(); } },30000);
+setInterval(()=>{ if(document.getElementById("home").classList.contains("on")) renderHero(); if(cur){ renderNow(); if(hubMode&&atTrackNow&&cur.id===atTrackNow.id&&Date.now()-liveActAt>60000){ liveActAt=Date.now(); liveActivitySync(cur); } if(hubMode) renderHub(); if(document.getElementById("pEvents").classList.contains("on")){ renderSchedule(); renderEvents(); } } },30000);
 /* origin for walk times and nearest */
 function walkOrigin(){ if(userPos&&userPos.inside) return {x:userPos.x,y:userPos.y,l:"you"}; const s=getSpot(); if(s) return {x:s.x,y:s.y,l:"your spot"}; return null; }
 function distField(sx,sy){
@@ -3115,7 +3125,7 @@ function followed(c){
   return !h.includes(c.id)||h.length>=mainCount;
 }
 const segHtml=(now,opts,fn)=>opts.map(([k,l])=>`<button class="${String(k)===String(now)?"on":""}" onclick="${fn}('${k}')">${l}</button>`).join("");
-function setGoDays(v){ LSset(K.goDays,v); renderSettingsMore(); renderHero(); if(cur) renderWatch(); }
+function setGoDays(v){ LSset(K.goDays,v); renderSettingsMore(); renderHero(); }
 function setTimes(v){ LSset(K.times,v); renderSettingsMore(); if(cur){ renderNow(); renderSchedule(); } }
 /* game series ids (data/entries.js `s`) of the series you follow: the Thursday pick reminder, on the phone and on the server, only covers these */
 function followedGameSeries(){ return [...new Set(CHAMPS.filter(followed).map(c=>c.guide||c.id))]; }

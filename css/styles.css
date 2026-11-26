@@ -1599,3 +1599,14 @@ textarea.acIn{min-height:110px;resize:vertical;line-height:1.4}
 .postTop{margin:3px 0;font-size:14px;color:var(--ink)}
 .recapExt{color:var(--accent);font-weight:700;white-space:nowrap}.recapBlocked{margin-top:10px;padding:18px;border-radius:14px;background:var(--tint);text-align:center}.recapBlocked p{margin:0 0 12px;color:var(--ink-2);font-size:14px}
 .postClass{margin:6px 0 2px;font-size:12px;font-weight:700;color:var(--ink-2)}
+
+/* Sources link, storyline rows in the hub, and a smaller Pit Board Home tile (Nov 26 2026) */
+.srcLink{display:inline-block;margin:8px 0 0;padding:0;background:none;border:0;font:inherit;font-size:13px;font-weight:600;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.srcText{white-space:pre-line;font-size:13.5px;line-height:1.5}
+.hubMore{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:8px;padding:11px 2px 3px;border:0;border-top:1px solid var(--line);background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink);text-align:left;cursor:pointer}
+.hubMore i{font-style:normal;font-size:20px;color:var(--accent)}
+:root[data-style="board"] .hero{min-height:min(40svh,340px);padding:22px 20px 24px}
+:root[data-style="board"] .hero .num{font-size:min(52vw,190px);margin-top:12px}
+:root[data-style="board"] .hero .num .dw{font-size:22px}
+:root[data-style="board"] .hero .num small{font-size:15px;margin-top:8px}
+:root[data-style="board"] .hero .name{font-size:26px;margin-top:14px}

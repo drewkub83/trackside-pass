@@ -55,6 +55,7 @@ const K={
   pushOff:"paddock:pushOff",       /* set when you switched phone notifications off */
   pushAsked:"paddock:pushAsked",   /* the one-time offer to turn notifications on was shown */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
+  locOffer:"paddock:locOffer",       /* the "turn on location" offer after I'm going: 1 once answered, so it is never repeated */
   followSub:"paddock:followSub",     /* support series you chose to follow */
   onboarded:"paddock:onboarded",   /* the first-run walkthrough has been shown (js/onboard.js) */
   unfollow:"paddock:unfollow",      /* series you switched off */
@@ -142,7 +143,7 @@ const GO_KEY=K.going;
 function goingList(){ try{ return JSON.parse(localStorage.getItem(GO_KEY)||"[]"); }catch(e){ return []; } }
 const goKey=(t,e)=>t.id+"|"+e.d+"|"+e.e;
 function isGoing(t,e){ return goingList().includes(goKey(t,e)); }
-function setGoing(t,e,on){ if(on&&typeof uTrack==="function") uTrack("going",t.id); let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>{ scheduleGoingReminders(on); scheduleRecapPush(false); if(on) offlineEnsure("going",t); },0); }
+function setGoing(t,e,on){ if(on&&typeof uTrack==="function") uTrack("going",t.id); let l=goingList().filter(k=>k!==goKey(t,e)); if(on) l.push(goKey(t,e)); try{ localStorage.setItem(GO_KEY,JSON.stringify(l)); }catch(x){} setTimeout(()=>{ scheduleGoingReminders(on); scheduleRecapPush(false); if(on) offlineEnsure("going",t); },0); if(on) setTimeout(()=>offerLocation(t),700); }
 /* Starred sessions: tap the star on a session to get an alert 10 minutes before it (works anywhere, not just at the track,
    because you picked that session yourself). The star list is on this phone; alerts are the iPhone app's own notifications. */
 const STAR_KEY=K.stars, STAR_ID_BASE=2000, PICK_ID_BASE=3000;   /* notification ids: sessions 1-60, going 1000+, stars 2000-2999, pick reminders 3000-3099 */
@@ -402,6 +403,19 @@ function renderChampList(){
   el.innerHTML=regions.length<2?ordered.map(row).join(""):regions.map(r=>`<li class="regionHead">${REGIONS[r]||r}</li>`+ordered.filter(c=>(c.region||"na")===r).map(row).join("")).join("");
 }
 let curChamp=null, serRows=[];
+/* After "I'm going" the app offers location once, in plain words: with it, the weekend you are at is always the big Home tile. Only when location has never been asked
+   (or the browser cannot say), never again once answered, and the phone's own permission prompt appears only after the person taps the button. */
+function offerLocation(t){
+  if(LSget(K.locOffer,"")==="1"||!navigator.geolocation) return;
+  const ask=()=>{ if(document.getElementById("infoModal").hidden===false) return;
+    setInfo(`<div class="mkick">Going to ${esc(t.short)}</div><h3 id="infoTitle">Put this weekend first when you arrive?</h3><p>With location on, Trackside Pass knows when you are at the track and makes that weekend the first thing you see, whatever else you follow. Your exact position never leaves your phone: the app only works out whether you are at an event.</p><div class="rcpBtns"><button class="btn" onclick="enableLocationOffer()">Turn on location</button><button class="btn quiet" onclick="LSset(K.locOffer,'1');closeInfo()">Not now</button></div>`); };
+  if(navigator.permissions&&navigator.permissions.query) navigator.permissions.query({name:"geolocation"}).then(p=>{ if(p.state==="prompt") ask(); }).catch(()=>ask()); else ask();
+}
+function enableLocationOffer(){
+  LSset(K.locOffer,"1"); closeInfo();
+  navigator.geolocation.getCurrentPosition(()=>{ Object.keys(AT_TRACK).forEach(k=>delete AT_TRACK[k]); renderHero(); toast("Location is on. The weekend you're at will lead Home."); },
+    ()=>toast("Location is off. You can allow it in your phone's settings for this app."),{timeout:12000,maximumAge:600000});
+}
 function toggleGoingSeries(i){ const r=serRows[i]; if(!r) return; const on=!isGoing(r.t,r.e); setGoing(r.t,r.e,on); renderSeries(); renderHero(); toast(on?`You're going: ${r.t.short}`:"Removed from your races"); }
 function renderSeries(){
   const c=curChamp; if(!c) return; const today=localToday(), order=allOrderOf(c);

@@ -217,7 +217,7 @@ const SERIES = [
   fine:"A spectator summary of GT World Challenge Asia, based on the series' own published information. For official details, see GT-World-Challenge-Asia.com."
 }
 ,{
-  id:"gtwcau", rc:"UC-yHapH6mW1ceZ_5PDUf1_g", rq:"GT World Challenge Australia|GTWC Australia", match:/GT World Challenge Australia/i, timing:"https://www.gt-world-challenge-australia.com/watch-live#live-timing",
+  id:"gtwcau", gameManual:true, rc:"UC-yHapH6mW1ceZ_5PDUf1_g", rq:"GT World Challenge Australia|GTWC Australia", match:/GT World Challenge Australia/i, timing:"https://www.gt-world-challenge-australia.com/watch-live#live-timing",
   name:"GT World Challenge Australia Powered by AWS", tag:"Australia's premier GT3 series",
   blurb:"The premier GT racing series in Australia, racing at the country's best-known circuits as part of the Shannons SpeedSeries and ending at the Adelaide Grand Final. A season is six three-day race weekends with 60-minute double-header races. It is one quarter of SRO Motorsports Group's global GT World Challenge platform, alongside Europe, Asia and America, where manufacturers measure their customer racing programmes. In Australia the races are shown live on Kayo and Fox Sports, and streamed worldwide on the GT World YouTube channel.",
   cars:[

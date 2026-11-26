@@ -227,8 +227,8 @@ function champsAt(t,e){ const last=eventEnd(e); return CHAMPS.filter(c=>{ if(c.o
 /* the weekend the big Home tile shows (also used to keep it out of "Your series, next up") */
 /* Being at an event outranks everything else (Settings order, "I'm going", date): if your phone is at a track (location already allowed) while a weekend there is on, that weekend is the big tile */
 function atTrackPick(){
-  const today=localToday();
-  for(const t of TRACKS){ const e=(t.events||[]).find(e=>e.d<=today&&eventEnd(e)>=today&&!eventDone(t,e)&&champsAt(t,e).length); if(e&&homeAtTrack(t)) return {t,e}; }
+  const today=localToday();   /* any event at the track counts (support-only weekends too), from the day before it starts (people arrive and camp) until it is over */
+  for(const t of TRACKS){ const e=(t.events||[]).filter(e=>daysBetween(today,e.d)<=1&&eventEnd(e)>=today&&!eventDone(t,e)).sort((a,b)=>a.d.localeCompare(b.d))[0]; if(e&&homeAtTrack(t)) return {t,e}; }
   return null;
 }
 function heroPick(){ const at=atTrackPick(); if(at) return at; const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(); return c?{t:c.t,e:c.e}:null; }

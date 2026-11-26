@@ -24,5 +24,6 @@ TRACKS.push({
   "nturns":21,
   "turns":[],
   "rev":1,
-  "links":[[310.7,501.3,312.9,503.6]]
+  "links":[[310.7,501.3,312.9,503.6]],
+  "radio":{"fm":"106.5","n":"Trackside commentary, listed on the circuit's site for portable radios.","src":"https://www.spa-francorchamps.be/en/search?q=devices","asOf":"2026-11"}
 });

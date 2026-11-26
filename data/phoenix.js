@@ -25,5 +25,6 @@ TRACKS.push({
   "turns":[],
   "rev":10,
   "tw":4.2,
-  "lw":0.59
+  "lw":0.59,
+  "radio":{"fm":"88.5","n":"The track's public address system, simulcast.","src":"https://www.phoenixraceway.com/faqs/","asOf":"2026-11"}
 });

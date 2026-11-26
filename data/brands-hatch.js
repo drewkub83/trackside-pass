@@ -26,5 +26,6 @@ TRACKS.push({
   "rev":1,
   "tw":3.3,
   "lw":0.48,
-  "links":[[119.4,275.5,114.7,273.1]]
+  "links":[[119.4,275.5,114.7,273.1]],
+  "radio":{"fm":"88.3","n":"Radio Brands: live commentary, interviews and spectator information at every race meeting.","src":"https://www.brandshatch.co.uk/about/radios","asOf":"2026-11"}
 });

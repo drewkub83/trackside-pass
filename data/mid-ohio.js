@@ -23,5 +23,6 @@ TRACKS.push({
   "eventName":"Mid-Ohio Sports Car Challenge",
   "nturns":13,
   "turns":[[-133,60,"1"],[-151,332,"2"],[-179,103,"3"],[-98,-110,"4"],[-35,-96,"5"],[-15,-177,"6"],[33,-180,"7"],[79,-223,"8"],[137,-225,"9"],[144,-81,"10"],[112,-27,"11"],[136,21,"12"],[127,76,"13"]],
-  "links":[]
+  "links":[],
+  "radio":{"fm":"90.3","n":"Carries the track's public address audio during spectator events.","src":"https://midohio.com/info-m","asOf":"2026-11"}
 });

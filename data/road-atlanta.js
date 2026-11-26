@@ -26,5 +26,6 @@ TRACKS.push({
   "nturns":12,
   "turns":[[162,-157,"1"],[146,-110,"2"],[105,-48,"3"],[66,-22,"4"],[41,41,"5"],[-36,153,"6"],[-68,294,"7"],[-95,96,"8"],[-101,-76,"9"],[-76,-167,"10a"],[-91,-183,"10b"],[-68,-235,"11"],[-8,-265,"12"]],
   "mvb":[-225,-421,448,761],
-  "rev":3
+  "rev":3,
+  "radio":{"fm":"98.1","n":"The track's own station: the racing action and updated track information during spectator events.","src":"https://roadatlanta.com/fan-guide/plan-your-trip/spectator-info","asOf":"2026-11"}
 });

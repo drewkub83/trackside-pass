@@ -1457,7 +1457,10 @@ async function recapCardBlob(sun){
     const lines=[]; if(games.length){ anyPicks=true;
       const one=games.length===1&&games[0].g.classes.filter(c=>(picksOf(games[0].g)[c.h]||[]).length).length===1;
       if(one){ const {g:gm,sc}=games[0], c=gm.classes.find(c=>(picksOf(gm)[c.h]||[]).length), pk=picksOf(gm)[c.h]||[];
-        pk.forEach((n,i)=>{ const car=c.cars.find(r=>String(r[0])===String(n)), m=(sc.per[c.h]||[])[i], got=(sc.per[c.h+"#"]||[])[i]||0; lines.push({t:`${nth[i]}  ${car?lastName(entryWho(car,gm.s).driver):"#"+n} · ${word[m]||m||""}${got>0?"  +"+got:""}`,hit:m==="hit"||m==="near"}); }); } }
+        pk.forEach((n,i)=>{ const car=c.cars.find(r=>String(r[0])===String(n)), m=(sc.per[c.h]||[])[i], got=(sc.per[c.h+"#"]||[])[i]||0; lines.push({t:`${nth[i]}  ${car?lastName(entryWho(car,gm.s).driver):"#"+n} · ${word[m]||m||""}${got>0?"  +"+got:""}`,hit:m==="hit"||m==="near"}); }); }
+      else{   /* several classes or games: just the best scoring pick of each class */
+        const best={}; games.forEach(({g:gm,sc})=>gm.classes.forEach(c=>{ const pk=picksOf(gm)[c.h]||[]; pk.forEach((n,i)=>{ const got=(sc.per[c.h+"#"]||[])[i]||0, m=(sc.per[c.h]||[])[i]; if(got>0&&(!best[c.h]||got>best[c.h].got)){ const car=c.cars.find(r=>String(r[0])===String(n)); best[c.h]={got,m,who:car?lastName(entryWho(car,gm.s).driver):"#"+n,h:c.h}; } }); }));
+        Object.values(best).slice(0,4).forEach(b=>lines.push({t:`${b.h}: ${b.who} · ${word[b.m]||b.m||""}  +${b.got}`,hit:true})); } }
     const need=74+(was?40:0)+top.length*46+(lead?46:0)+(games.length?54+lines.length*40:0)+22; if(y+need>maxY) break; shown++;
     if(P.open){ g.fillStyle=P.line; g.fillRect(70,y-44,W-140,2); } else { g.fillStyle=P.card; g.beginPath(); g.roundRect(60,y-44,W-120,need,30); g.fill(); g.strokeStyle=P.line; g.lineWidth=2; g.stroke(); }
     g.fillStyle=P.accent; g.font=`600 36px ${P.fontD}`; { const nm=fit((watchSeriesName(it.r)||it.r.event),W-380); g.fillText(P.open?nm.toUpperCase():nm,90,y+6); }
@@ -1465,7 +1468,7 @@ async function recapCardBlob(sun){
     let yy=y+54;
     if(was){ g.fillStyle=P.accent; g.font=`600 28px ${P.fontD}`; g.fillText("I WAS THERE",90,yy-6); yy+=34; }
     g.fillStyle=P.ink; top.forEach((l,i)=>{ g.font=`${i?400:600} 34px ${P.fontB}`; g.fillText(fit((i+1)+".  "+clean(l),W-200),90,yy); yy+=46; });
-    if(lead){ g.fillStyle=P.ink2; g.font=`400 29px ${P.fontB}`; g.fillText(fit(`${recapShort(lead.lead)} leads${lead.gap!==null?` by ${lead.gap} point${lead.gap===1?"":"s"}`:""}`,W-200),90,yy+2); yy+=46; }
+    if(lead){ g.fillStyle=P.ink2; g.font=`400 29px ${P.fontB}`; { const who=recapShort(lead.lead).replace(/^#\d+\s*/,""), parts=who.split(/\s*,\s*/), nm=parts.length>1?parts.map(x=>x.trim().split(" ").slice(-1)[0]).join(" / "):who; g.fillText(fit(`${nm} leads${lead.gap!==null?` by ${lead.gap} point${lead.gap===1?"":"s"}`:""}`,W-200),90,yy+2); } yy+=46; }
     if(games.length){ yy+=8; g.fillStyle=pts>0?P.accent:P.ink2; g.font=`600 32px ${P.fontD}`; g.fillText(`My picks: ${pts} of ${mx} points`,90,yy+6); yy+=48;
       lines.forEach(l=>{ g.fillStyle=l.hit?P.accent:P.ink2; g.font=`${l.hit?600:400} 28px ${P.fontB}`; g.fillText(fit(l.t,W-200),90,yy); yy+=40; }); }
     y+=need+22;

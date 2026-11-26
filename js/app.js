@@ -225,7 +225,13 @@ function nextAt(t){ return CHAMPS.map(c=>nextIn(c,t)).filter(Boolean).sort((a,b)
 function champsAt(t,e){ const last=eventEnd(e); return CHAMPS.filter(c=>{ if(c.optIn) return false; const n=nextIn(c,t); return n&&n.d<=last&&eventEnd(n)>=e.d; }); }   /* which series race at this venue that weekend -- support series never headline this */
 
 /* the weekend the big Home tile shows (also used to keep it out of "Your series, next up") */
-function heroPick(){ const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(); return c?{t:c.t,e:c.e}:null; }
+/* Being at an event outranks everything else (Settings order, "I'm going", date): if your phone is at a track (location already allowed) while a weekend there is on, that weekend is the big tile */
+function atTrackPick(){
+  const today=localToday();
+  for(const t of TRACKS){ const e=(t.events||[]).find(e=>e.d<=today&&eventEnd(e)>=today&&!eventDone(t,e)&&champsAt(t,e).length); if(e&&homeAtTrack(t)) return {t,e}; }
+  return null;
+}
+function heroPick(){ const at=atTrackPick(); if(at) return at; const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(); return c?{t:c.t,e:c.e}:null; }
 /* Once a weekend is over (every race run, results in) the big Home tile gives way to that weekend's race recaps until Monday, unless you are at that track
    (then the tile stays: the weekend is still "happening" for you). Recaps are for the main series you follow; a tile opens the Postrace hub. */
 const AT_TRACK={};
@@ -257,7 +263,7 @@ function renderRecapTiles(wk){
 }
 function renderHero(){
   const wkr=recapWeekends().filter(x=>!homeAtTrack(x.t)); if(wkr.length){ renderRecapTiles(wkr); return; }
-  const g=nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=gnear?g:nextAny(), el=document.getElementById("hero"); if(!c){ el.innerHTML=""; return; }
+  const at=atTrackPick(), g=at?null:nextGoing(), gnear=!!g&&daysBetween(localToday(),g.e.d)<=goDays(), c=at||(gnear?g:nextAny()), el=document.getElementById("hero"); if(!c){ el.innerHTML=""; return; }
   const {t,e}=c, today=localToday(), on=e.d<=today, n=daysBetween(today,e.d), day=Math.min(e.t||1,daysBetween(e.d,today)+1), who=champsAt(t,e).map(x=>x.name).join(" + ")||e.s;
   document.documentElement.dataset.wk=(champsAt(t,e)[0]||{}).id||"";   /* the series colour of the weekend on screen (Pit Board style) */
   el.innerHTML=`<button class="hero" data-s="${(champsAt(t,e)[0]||{}).id||""}" onclick="openTrack('${t.id}','home')">

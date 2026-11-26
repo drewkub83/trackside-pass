@@ -215,7 +215,11 @@ function stopsOf(c){ return (c.stops||[]).filter(s=>!TRACKS.some(t=>t.id===s.id)
 const imsaOrder=()=>orderOf(champ("imsa")), imsaCurrent=()=>imsaOrder()[0]||null;   /* IMSA: the race on now, or the next one */
 /* the soonest race at each venue across every championship (home hero, passport order, weather, sun times) */
 function anyOrder(){ const rk={}; orderedChamps().forEach((x,i)=>{ rk[x.id]=i; }); const rank=c=>c.id in rk?rk[c.id]:99;   /* weekends that start the same day: the series you arranged first leads */
-  return TRACKS.map(t=>{ const x=CHAMPS.filter(followed).map(c=>({c,e:nextIn(c,t)})).filter(z=>z.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)||rank(a.c)-rank(b.c))[0]; return x?{t,e:x.e,c:x.c}:null; }).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d)||rank(a.c)-rank(b.c)); }
+  const L=TRACKS.map(t=>{ const x=CHAMPS.filter(followed).map(c=>({c,e:nextIn(c,t)})).filter(z=>z.e).sort((a,b)=>a.e.d.localeCompare(b.e.d)||rank(a.c)-rank(b.c))[0]; return x?{t,e:x.e,c:x.c}:null; }).filter(Boolean).sort((a,b)=>a.e.d.localeCompare(b.e.d)||rank(a.c)-rank(b.c));
+  /* weekends that start within TIE_DAYS of the first one count as the same race week: the series you arranged first in Settings leads (a Thursday start and a Friday start are one week), the rest follow by date */
+  if(!L.length) return L; const d0=L[0].e.d, near=L.filter(x=>daysBetween(d0,x.e.d)<=TIE_DAYS).sort((a,b)=>rank(a.c)-rank(b.c)||a.e.d.localeCompare(b.e.d));
+  return near.concat(L.filter(x=>!near.includes(x))); }
+const TIE_DAYS=2;
 const nextAny=()=>anyOrder()[0]||null;
 function nextAt(t){ return CHAMPS.map(c=>nextIn(c,t)).filter(Boolean).sort((a,b)=>a.d.localeCompare(b.d))[0]||null; }
 function champsAt(t,e){ const last=eventEnd(e); return CHAMPS.filter(c=>{ if(c.optIn) return false; const n=nextIn(c,t); return n&&n.d<=last&&eventEnd(n)>=e.d; }); }   /* which series race at this venue that weekend -- support series never headline this */
@@ -325,8 +329,10 @@ function openWeekStory(i){ const w=homeStories[i]; if(!w) return;
   setInfo(`<div class="mkick">Storylines for the week</div><h3 id="infoTitle">${esc(w.title)}</h3><p class="asof">${esc(w.sub)}</p>${w.list.map(x=>storyBlock(x,true)).join("")}<div class="rcpBtns"><button class="btn" onclick="closeInfo();openTrack('${w.id}','home')">Open the weekend</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>`); }
 function openHubStory(i){ const x=hubStories[i]; if(!x) return;
   setInfo(`<div class="mkick">Storylines</div><h3 id="infoTitle">${esc(watchSeriesName(x)||"Race weekend")}</h3>${storyBlock(x,false)}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`); }
+/* Thursday to Sunday the series cards lead Home and the storylines step aside (they stay in the Race Day hub) */
+function seriesFirstDay(){ const dow=new Date(localToday()+"T12:00:00Z").getUTCDay(); return dow===4||dow===5||dow===6||dow===0; }
 function renderStorylines(){
-  const el=document.getElementById("storylines"); if(!el) return; const wk=storylineWeekends();
+  const el=document.getElementById("storylines"); if(!el) return; const wk=seriesFirstDay()?[]:storylineWeekends();
   homeStories=[];
   if(!wk.length){ el.innerHTML=""; return; }
   el.innerHTML=`<div class="sect">Storylines for the week</div>`+wk.map(w=>{ const tr=TRACKS.find(x=>x.id===w.t); if(!tr) return ""; const ev=tr.events.find(e=>e.d===w.d), n=daysBetween(localToday(),w.d);
@@ -338,7 +344,7 @@ function renderStorylines(){
 /* Monday to Wednesday the week opens with the storylines; from Thursday the series racing this week move to the top */
 function homeOrder(){
   const st=document.getElementById("storylines"), se=document.getElementById("season"); if(!st||!se||!st.parentNode) return;
-  const dow=new Date(localToday()+"T12:00:00Z").getUTCDay(), seriesFirst=dow===4||dow===5||dow===6||dow===0;
+  const seriesFirst=seriesFirstDay();
   if(seriesFirst) st.parentNode.insertBefore(se,st); else st.parentNode.insertBefore(se,st.nextSibling);
 }
 function renderHome(){ renderHero(); renderStorylines(); renderSeason(); homeOrder(); renderChampList(); if(curChamp) renderSeries(); if(typeof acctHomeRefresh==="function") acctHomeRefresh(); }

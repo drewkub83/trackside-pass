@@ -259,6 +259,7 @@
         <div class="ptitle"><span class="dot" id="pcDot"></span><strong id="pcName"></strong></div>
         <small id="pcDesc"></small>
         <div class="pmeta" id="pcMeta"></div>
+        <button class="srcLink" id="pcFix" onclick="openCorrection(true)">Something wrong here?</button>
         <div class="pgo" id="pcGo"><button class="btn primary" onclick="startDirections()">Directions</button></div>
         <div class="pgo two" id="pcMaps" hidden><button class="btn quiet" onclick="openPoiInMaps('apple')">Apple Maps</button><button class="btn quiet" onclick="openPoiInMaps('google')">Google Maps</button></div>
         <div class="pedit" id="pcEdit" hidden><input id="peName" maxlength="48" placeholder="Name"><select id="peKind" aria-label="Icon" onchange="syncShowerRow()"></select><label class="pechk" id="peShowerRow" hidden><input type="checkbox" id="peShower"> Has showers</label><textarea id="peDesc" maxlength="240" rows="3" placeholder="Description"></textarea><div class="peactions"><button class="btn primary" onclick="savePoiEdit()">Save</button><button class="btn quiet" onclick="revertPoiEdit()">Revert</button><button class="btn danger" onclick="deletePoi()">Delete badge</button></div></div>
@@ -361,6 +362,7 @@
     <div class="ivenue"><dl id="iVenue"></dl></div>
     <div class="section moreSect hideSect"><h3>More</h3></div>
     <dl id="iFacts" class="more"></dl>
+    <p style="font-size:13px"><button class="srcLink" onclick="openCorrection(false)">Something wrong or missing on this map? Tell us</button></p>
     <p style="font-size:13px">Circuit geometry © OpenStreetMap contributors, ODbL.</p>
   </div>
 

@@ -2389,6 +2389,7 @@ function selectPoi(i){
   const ed=document.getElementById("pcEdit"); const canEdit=editing&&i<cur.pois.length; ed.hidden=!canEdit; document.getElementById("pcGo").hidden=editing||!cur.route;
   document.getElementById("pcMaps").hidden=editing||!cur.geo||!(p.k==="gate"||p.k==="park");
   if(canEdit){ document.getElementById("peName").value=p.n; document.getElementById("peDesc").value=p.d||""; document.getElementById("peKind").value=p.k; document.getElementById("peShower").checked=hasShower(p); syncShowerRow(); }
+  document.getElementById("pcFix").hidden=editing||i>=cur.pois.length;   /* your own added stands are yours to fix */
   showSheet("shPoi"); updateHeading();
 }
 /* real-world driving directions to a gate or a parking lot, for the drive in -- separate from the in-app

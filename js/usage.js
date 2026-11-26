@@ -61,3 +61,34 @@ async function sendFeedback(){
     btn.disabled=false; btn.textContent="Send"; note.textContent=e.message==="too many"?"That's a lot of notes today. Try again tomorrow.":"Couldn't send that. Check your signal and try again. Your note is still here.";
   }
 }
+
+/* ---- Map corrections: "Something wrong here?" on a badge and "Tell us" in the Info tab. Same send_feedback() path as the feedback form (kind "problem"), with the track and badge
+   in the note's context so the daily email says exactly which badge. Nothing changes on the map until a person checks it. ---- */
+let fixKindSel="place", fixBadge=null;
+const FIX_BADGE=[["place","In the wrong place"],["gone","Not there, or closed"],["info","Wrong name or details"]], FIX_TRACK=[["missing","Something is missing"],["route","A walking route is wrong"],["other","Something else"]];
+function openCorrection(badge){
+  const p=badge&&typeof popPoi!=="undefined"?popPoi:null; fixBadge=p?{n:p.n,k:p.k,x:Math.round(p.x),y:Math.round(p.y)}:null;
+  const kinds=fixBadge?FIX_BADGE:FIX_TRACK; fixKindSel=kinds[0][0];
+  document.getElementById("infoBody").innerHTML=`<div class="mkick">Map correction · ${esc(cur.short)}</div><h3 id="infoTitle">${fixBadge?esc(fixBadge.n):"Tell us about this map"}</h3>
+    <p class="plRules">${fixBadge?"What is wrong with this one?":"What should we fix or add?"} A person checks every note before the map changes.</p>
+    <div class="seg fixKind">${kinds.map(([k,l])=>`<button class="${k===fixKindSel?"on":""}" onclick="fixKind('${k}')">${l}</button>`).join("")}</div>
+    <textarea class="acIn fbMsg" id="fixMsg" rows="4" maxlength="500" placeholder="${fixBadge?"Where it really is, what it is called now… (optional)":"What is missing or wrong, and where? (optional)"}"></textarea>
+    <input class="acIn" id="fixContact" maxlength="80" autocomplete="off" autocapitalize="none" placeholder="Email, if you want a reply (optional)">
+    <p class="plRules fine" id="fixNote">Sent with the track and badge. Nothing else.</p>
+    <div class="acRow"><button class="btn primary acBtn" id="fixSend" onclick="sendCorrection()">Send</button><button class="btn quiet acBtn" onclick="closeInfo()">Cancel</button></div>`;
+  const m=document.getElementById("infoModal"); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
+}
+function fixKind(k){ fixKindSel=k; const kinds=fixBadge?FIX_BADGE:FIX_TRACK; document.querySelectorAll(".fixKind button").forEach((b,i)=>b.classList.toggle("on",kinds[i][0]===k)); }
+async function sendCorrection(){
+  const kinds=fixBadge?FIX_BADGE:FIX_TRACK, label=(kinds.find(x=>x[0]===fixKindSel)||[])[1]||"", note=(document.getElementById("fixMsg").value||"").trim(), contact=(document.getElementById("fixContact").value||"").trim(), out=document.getElementById("fixNote"), btn=document.getElementById("fixSend");
+  const msg=`Map correction at ${cur.short}${fixBadge?` - ${fixBadge.n} (${fixBadge.k})`:""}: ${label}.${note?"\n"+note:""}`;
+  const ctx={screen:"map",track:cur.id,plat:uPlat(),badge:fixBadge?`${fixBadge.n} (${fixBadge.k}) at ${fixBadge.x},${fixBadge.y}`:null,fix:fixKindSel,at:new Date().toISOString()};
+  btn.disabled=true; btn.textContent="Sending…";
+  try{
+    const r=await fetch(SB.url+"/rest/v1/rpc/send_feedback",{method:"POST",headers:{apikey:SB.key,"Content-Type":"application/json"},body:JSON.stringify({p_did:uId()||"unknown00",p_kind:"problem",p_msg:msg,p_contact:contact||null,p_ctx:ctx})});
+    if(!r.ok){ let t=""; try{ t=(await r.json()).message||""; }catch(e){} throw new Error(/too many/i.test(t)?"too many":"failed"); }
+    closeInfo(); if(typeof toast==="function") toast("Thanks. We'll check it.");
+  }catch(e){
+    btn.disabled=false; btn.textContent="Send"; out.textContent=e.message==="too many"?"That's a lot of notes today. Try again tomorrow.":"Couldn't send that. Check your signal and try again. Your note is still here.";
+  }
+}

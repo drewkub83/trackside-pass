@@ -16,7 +16,7 @@ function build(rows, stats, weekly, range) {
     lines.push(`${rows.length} new note${rows.length === 1 ? "" : "s"}`, "");
     html.push(`<h2 style="margin:0 0 12px">${rows.length} new note${rows.length === 1 ? "" : "s"}</h2>`);
     for (const r of rows) {
-      const c = r.ctx || {}, where = [c.screen, c.track, c.plat].filter(Boolean).join(" · ");
+      const c = r.ctx || {}, where = [c.screen, c.track, c.badge, c.plat].filter(Boolean).join(" · ");
       lines.push(`[${KIND[r.kind] || r.kind}] ${r.at.slice(0, 16).replace("T", " ")} UTC${where ? " · " + where : ""}`, r.msg, r.contact ? `Reply to: ${r.contact}` : "(no contact left)", "");
       html.push(`<div style="margin:0 0 16px;padding:12px 14px;border-radius:10px;background:#f3f4f2"><div style="font-size:12px;color:#666;margin-bottom:6px"><b>${esc(KIND[r.kind] || r.kind)}</b> · ${esc(r.at.slice(0, 16).replace("T", " "))} UTC${where ? " · " + esc(where) : ""}</div><div style="white-space:pre-wrap">${esc(r.msg)}</div><div style="font-size:12px;color:#666;margin-top:6px">${r.contact ? "Reply to: " + esc(r.contact) : "No contact left"}</div></div>`);
     }

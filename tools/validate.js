@@ -38,7 +38,6 @@ for (const f of trackFiles) {
   if (t.id !== f.slice(0, -3)) err(`data/${f}: track id "${t.id}" does not match the file name`);
   for (const k of ["id", "short", "path", "tz"]) if (!t[k]) err(`${t.id}: missing "${k}"`);
   if (!Array.isArray(t.events) || !t.events.length) err(`${t.id}: no events`);
-  if (t.radio) { const r = t.radio; if (!/^\d{2,3}\.\d$/.test(String(r.fm || "")) || !r.n || !/^https:\/\//.test(r.src || "") || !/^20\d\d-\d\d$/.test(r.asOf || "")) err(`${t.id}: "radio" needs fm like 98.1, n, an https src and asOf like 2026-11`); }
   tracks[t.id] = t;
 }
 

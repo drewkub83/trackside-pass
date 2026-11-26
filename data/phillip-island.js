@@ -22,6 +22,5 @@ TRACKS.push({
   "eventName":"GT Festival Phillip Island (GT World Challenge Australia)",
   "nturns":12,
   "turns":[[174,1089,"1"],[100,1185,"2"],[235,1069,"3"],[218,959,"4"],[259,1004,"5"],[281,1029,"6"],[287,960,"7"],[257,881,"8"],[276,774,"9"],[197,748,"10"],[201,695,"11"],[64,718,"12"]],
-  "rev":1,
-  "radio":{"fm":"87.6","n":"On Track Radio: live commentary around the circuit. It is printed on the official circuit map.","src":"https://www.phillipislandcircuit.com.au/wp-content/uploads/2020/05/2022-Circuit-Map-Colour-No-Gridlines.pdf","asOf":"2026-11"}
+  "rev":1
 });

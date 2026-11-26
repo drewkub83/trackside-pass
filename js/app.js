@@ -887,7 +887,7 @@ function renderInfo(){
     ["Opened", cur.opened],
     ["Turns", cur.nturns],
     ["Signature section", sig]
-  ].concat(cur.radio?[["Track radio",`${cur.radio.fm} FM`]]:[]);
+  ];
   document.getElementById("iVenue").innerHTML = rows.map(([k,v])=>`<dt>${k}</dt>${v?`<dd>${esc(String(v))}</dd>`:`<dd class="tbd">Not added yet</dd>`}`).join("")
     + `<dt>Best views</dt>${views.length?`<dd>${views.map(p=>esc(p.n)).join("<br>")}<span class="lr-who">Marked on the map with an eye icon</span></dd>`:`<dd class="tbd">Not added yet</dd>`}`
     + `<dt>Lap record${Array.isArray(cur.lapRecord)?"s":""}</dt>${lapRecordHtml()}`;
@@ -1693,9 +1693,6 @@ function hubWeatherCard(){
   }
   return wxHtml;
 }
-/* "Radio": the track's own FM frequency for race-weekend commentary, only where the track publishes it (data/<track>.js "radio": {fm, n, src, asOf}). Frequencies change, so the card says to check on arrival and the source is one tap away. */
-function showRadio(){ const r=cur.radio; if(!r) return;
-  setInfo(`<div class="mkick">Track radio · ${esc(cur.short)}</div><h3 id="infoTitle">${esc(r.fm)} FM</h3><p>${esc(r.n)}</p><p class="plRules">You need your own FM radio or earpiece. Frequencies can change from one event to the next: check the signs or ask at the gate.</p>${sourcesLink(`${r.src}\nChecked ${r.asOf}.`)}<div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`); }
 function hubActionTiles(){
   const spot=getSpot();
   const hasKind=k=>cur.pois.some(p=>p.k===k&&!p.del);
@@ -1704,7 +1701,6 @@ function hubActionTiles(){
     <button onclick="leaveHub();toggleMode('rest')"><svg viewBox="0 0 24 24" class="wc"><circle cx="7" cy="4.5" r="2"/><path d="M4.5 8h5v6H8.4v6H5.6v-6H4.5z"/><circle cx="17" cy="4.5" r="2"/><path d="M15 8h4l2 6h-1.7l.3 6h-5.2l.3-6H13z"/><path d="M12 3v18" stroke-width="1"/></svg>Restrooms</button>
     ${tile("leaveHub();toggleMode('food')",'<path d="M4 11h16M5 11a7 7 0 0 1 14 0M3 15h18M6 15v3h12v-3"/>',"Food")}
     ${hasKind("merch")?tile("leaveHub();toggleMode('merch')",'<path d="M8.5 3L3 6l2 4.5 2.5-1V21h9V9.5l2.5 1L21 6l-5.5-3q-1.5 2-3.5 2T8.5 3z"/>',"Merch"):""}
-    ${cur.radio?tile("showRadio()",'<path d="M4 9h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1zM7 9l10-5M8 14.5h.01M12 14.5h6"/>',"Radio"):""}
     ${hasKind("view")?tile("leaveHub();toggleMode('view')",'<path d="M2 12c3.2-6 16.8-6 20 0-3.2 6-16.8 6-20 0z"/><circle cx="12" cy="12" r="3"/>',"Best views"):""}
     ${tile(spot?"leaveHub();routeToSpot()":"leaveHub();saveSpot()",'<path d="M6 21V4M6 5h11l-2.6 4 2.6 4H6"/>',spot?"My spot":"Save my spot")}
     ${tile("leaveHub()",'<path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4m0 0L9 7"/>',"Full map")}

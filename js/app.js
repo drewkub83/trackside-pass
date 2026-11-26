@@ -1374,6 +1374,9 @@ function recapFinish(g,cls,n){   /* where car #n finished in the class's publish
   if(grp.order){ const i=grp.order.findIndex(l=>gameNum(l)===n); return i>=0?{pos:i+1,of:grp.order.length}:{pos:null,of:grp.order.length}; }
   const w=gameNum(grp.winner); if(w===n) return {pos:1,of:0}; return (grp.podium||[]).map(gameNum).includes(n)?{pos:"podium",of:0}:null;
 }
+/* an entry row is [number, team, drivers, ...] for crew series but [number, driver, team, ...] for single-driver series (F1, MotoGP, NASCAR): who is the driver and who is the team */
+const SOLO_SERIES=/^(f1|f2|f3|f1academy|motogp|moto2|moto3|nascar|oreilly|trucks|indycar)$/;
+function entryWho(car,sid){ const solo=SOLO_SERIES.test(sid||"")&&!/ \/ /.test(String(car[2]||"")); return solo?{driver:car[1],team:car[2]}:{driver:car[2],team:car[1]}; }
 function recapPicksHtml(it){   /* your three picks per class, each on its own row: greyed when it scored nothing, highlighted with its points when it did */
   const games=recapGames(it.t,it.e,it.r.s); if(!games.length) return ""; const nth=["1st","2nd","3rd"];
   const names=r=>{ const d=String(r[2]||"").split(/\s*\/\s*/).filter(Boolean); return d.length<=2?d.join(" / "):d.map(x=>x.trim().split(" ").slice(-1)[0]).join(" / "); };
@@ -1383,7 +1386,7 @@ function recapPicksHtml(it){   /* your three picks per class, each on its own ro
       const pk=picksOf(g)[c.h]||[], gain=sc.per[c.h+"#"]||[], per=sc.per[c.h]||[];
       const rows=pk.map((n,i)=>{ const car=c.cars.find(r=>r[0]===n), got=gain[i]||0, open=per[i]==="open", f=recapFinish(sc,c.h,n),
           fin=f?(typeof f.pos==="number"?`finished ${f.pos}${["th","st","nd","rd"][(f.pos%100>10&&f.pos%100<14)?0:Math.min(f.pos%10,4)%4]}`:f.pos==="podium"?"finished on the podium":f.of?`outside the top ${f.of}`:""):"";
-        return `<div class="rcpPk ${got>0?"won":"none"}"><span class="rcpSlot">${nth[i]}</span><span class="rcpCar"><b>${car?esc(names(car)):"#"+esc(n)}</b><i>#${esc(n)}${car?" · "+esc(car[1]):""}${fin?` · <u>${fin}</u>`:""}</i></span><span class="rcpRes">${got>0?`<b>+${got}</b> pts`:open?"not settled":"0 pts"}</span></div>`; }).join("");
+        return `<div class="rcpPk ${got>0?"won":"none"}"><span class="rcpSlot">${nth[i]}</span><span class="rcpCar"><b>${car?esc(names([0,0,entryWho(car,g.s).driver])):"#"+esc(n)}</b><i>#${esc(n)}${car?" · "+esc(entryWho(car,g.s).team):""}${fin?` · <u>${fin}</u>`:""}</i></span><span class="rcpRes">${got>0?`<b>+${got}</b> pts`:open?"not settled":"0 pts"}</span></div>`; }).join("");
       return `<div class="rcpCls">${g.classes.length>1?`<i class="rcpClsH">${esc(c.h)}</i>`:""}${rows}</div>`; }).join("")}</div>`; }).join("");
 }
 function recapSection(it){
@@ -1421,32 +1424,55 @@ function shareRecap(sun){
   if(navigator.share){ navigator.share({title:"Weekend recap",text}).catch(()=>{}); return; }
   try{ navigator.clipboard.writeText(text).then(()=>toast("Recap copied")); }catch(x){ toast("Sharing is not available here"); }
 }
-/* a picture of the recap with the app icon, 1080x1350 (the portrait size Instagram posts and stories crop well): winners per series, and your picks' points */
+/* the card's look follows the person's chosen style (Classic, Race Control, Editorial, Pit Board): the same colours and fonts as the app, read from the page's CSS */
+function recapPalette(g){
+  const root=document.documentElement, cs=getComputedStyle(root), v=n=>cs.getPropertyValue(n).trim(), st=root.dataset.style||"classic";
+  const ok=(c,d)=>{ if(!c) return d; const old=g.fillStyle; g.fillStyle="#010203"; g.fillStyle=c; const good=g.fillStyle!==old||c==="#010203"; return good?c:d; };
+  const fontB=v("--font")||"Outfit, 'Helvetica Neue', Arial, sans-serif", fontD=st==="classic"?fontB:(v("--font-d")||fontB);
+  const accent=ok(st==="board"?(v("--wk")||v("--accent")):st==="race"?(v("--orange")||v("--accent")):v("--accent"),"#C2522C");
+  return {st, fontB, fontD, paper:ok(v("--paper"),"#F3F8F5"), ink:ok(v("--ink"),"#1d2a24"), ink2:ok(v("--ink-2"),"#52645b"), card:ok(v("--card"),"rgba(255,255,255,.72)"), line:ok(v("--line"),"rgba(0,0,0,.14)"), accent,
+    open:st==="board"||st==="editorial", band:st==="board"};
+}
+/* a picture of the recap with the app icon, 1080x1350 (the portrait size Instagram posts and stories crop well): winners per series, each of your picks and what it scored,
+   the championship line, the season total, and "I was there" when you checked in at that track */
 async function recapCardBlob(sun){
   const items=recapItems(sun,null); if(!items.length) return null;
   try{ await document.fonts.ready; }catch(x){}
-  const W=1080, H=1350, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g=cv.getContext("2d"), F="Outfit, 'Helvetica Neue', Arial, sans-serif";
-  const bg=g.createLinearGradient(0,0,W,H); bg.addColorStop(0,"#F3F8F5"); bg.addColorStop(.6,"#DCE9E1"); bg.addColorStop(1,"#C3D8CC"); g.fillStyle=bg; g.fillRect(0,0,W,H);
+  const W=1080, H=1350, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g=cv.getContext("2d"), P=recapPalette(g), nth=["1st","2nd","3rd"];
+  g.fillStyle=P.paper; g.fillRect(0,0,W,H); g.textBaseline="alphabetic";
+  const bandH=P.band?230:0; if(P.band){ g.fillStyle=P.accent; g.fillRect(0,0,W,bandH); }
+  const headInk=P.band?"#0C0C0D":P.ink, headSub=P.band?"rgba(12,12,13,.72)":P.ink2;
   const img=await new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ok(null); i.src="icons/icon-512.png"; });
-  if(img){ g.save(); g.beginPath(); g.roundRect(70,70,120,120,28); g.clip(); g.drawImage(img,70,70,120,120); g.restore(); }
-  g.fillStyle="#1d2a24"; g.textBaseline="alphabetic"; g.font=`600 54px ${F}`; g.fillText("Trackside Pass",215,128);
-  g.font=`400 34px ${F}`; g.fillStyle="#52645b"; g.fillText("Weekend recap · "+recapSpan(items),215,178);
+  if(img){ g.save(); g.beginPath(); g.roundRect(70,60,120,120,28); g.clip(); g.drawImage(img,70,60,120,120); g.restore(); }
+  g.fillStyle=headInk; g.font=`600 54px ${P.fontD}`; g.fillText(P.open?"TRACKSIDE PASS":"Trackside Pass",215,118);
+  g.font=`400 34px ${P.fontB}`; g.fillStyle=headSub; g.fillText("Weekend recap · "+recapSpan(items),215,168);
   const fit=(t,w)=>{ t=String(t); while(g.measureText(t).width>w&&t.length>4) t=t.slice(0,-2); return t; };
   const clean=l=>String(l).replace(/^Winner:\s*/,"").replace(/^\d+\.\s*/,"").replace(/\s*[—-]\s*.*$/,"").replace(/\s*\([^)]*\)\s*$/,"");
-  let y=270; const maxY=H-190; let shown=0;
+  const lastName=w=>{ const d=String(w||"").split(/\s*\/\s*/).filter(Boolean); return d.length<=2?d.join(" / "):d.map(x=>x.trim().split(" ").slice(-1)[0]).join(" / "); };
+  const word={hit:"right place",near:"on the podium",miss:"missed",open:"not settled"};
+  let y=(P.band?bandH:210)+70; const maxY=H-230; let shown=0, anyPicks=false;
   for(const it of items){
-    const grp=it.r.groups[0], top=recapTop(grp,items.length<=3?3:2), games=recapGames(it.t,it.e,it.r.s), pts=games.reduce((n,x)=>n+x.sc.pts,0);
-    const need=70+top.length*46+(games.length?50:0)+24; if(y+need>maxY) break; shown++;
-    g.fillStyle="rgba(255,255,255,.72)"; g.beginPath(); g.roundRect(60,y-40,W-120,need,30); g.fill();
-    g.fillStyle="#C2522C"; g.font=`600 36px ${F}`; g.fillText(fit((watchSeriesName(it.r)||it.r.event),W-380),90,y+8);
-    g.fillStyle="#52645b"; g.font=`400 30px ${F}`; g.textAlign="right"; g.fillText(it.t.short,W-90,y+8); g.textAlign="left";
-    let yy=y+56; g.fillStyle="#1d2a24";
-    top.forEach((l,i)=>{ g.font=`${i?400:600} 34px ${F}`; g.fillText(fit((i+1)+".  "+clean(l),W-200),90,yy); yy+=46; });
-    if(games.length){ g.fillStyle=pts>0?"#C2522C":"#8a978f"; g.font=`600 32px ${F}`; g.fillText(`My picks: ${pts} point${pts===1?"":"s"}`,90,yy+6); }
+    const grp=it.r.groups[0], top=recapTop(grp,items.length<=2?3:2), games=recapGames(it.t,it.e,it.r.s), pts=games.reduce((n,x)=>n+x.sc.pts,0), mx=games.reduce((n,x)=>n+x.sc.max,0);
+    const was=recapWas(it.t,it.e).stamped, story=recapStory(it), lead=story&&story.rows[0];
+    const lines=[]; if(games.length){ anyPicks=true;
+      const one=games.length===1&&games[0].g.classes.filter(c=>(picksOf(games[0].g)[c.h]||[]).length).length===1;
+      if(one){ const {g:gm,sc}=games[0], c=gm.classes.find(c=>(picksOf(gm)[c.h]||[]).length), pk=picksOf(gm)[c.h]||[];
+        pk.forEach((n,i)=>{ const car=c.cars.find(r=>String(r[0])===String(n)), m=(sc.per[c.h]||[])[i], got=(sc.per[c.h+"#"]||[])[i]||0; lines.push({t:`${nth[i]}  ${car?lastName(entryWho(car,gm.s).driver):"#"+n} · ${word[m]||m||""}${got>0?"  +"+got:""}`,hit:m==="hit"||m==="near"}); }); } }
+    const need=74+(was?40:0)+top.length*46+(lead?46:0)+(games.length?54+lines.length*40:0)+22; if(y+need>maxY) break; shown++;
+    if(P.open){ g.fillStyle=P.line; g.fillRect(70,y-44,W-140,2); } else { g.fillStyle=P.card; g.beginPath(); g.roundRect(60,y-44,W-120,need,30); g.fill(); g.strokeStyle=P.line; g.lineWidth=2; g.stroke(); }
+    g.fillStyle=P.accent; g.font=`600 36px ${P.fontD}`; { const nm=fit((watchSeriesName(it.r)||it.r.event),W-380); g.fillText(P.open?nm.toUpperCase():nm,90,y+6); }
+    g.fillStyle=P.ink2; g.font=`400 30px ${P.fontB}`; g.textAlign="right"; g.fillText(it.t.short,W-90,y+6); g.textAlign="left";
+    let yy=y+54;
+    if(was){ g.fillStyle=P.accent; g.font=`600 28px ${P.fontD}`; g.fillText("I WAS THERE",90,yy-6); yy+=34; }
+    g.fillStyle=P.ink; top.forEach((l,i)=>{ g.font=`${i?400:600} 34px ${P.fontB}`; g.fillText(fit((i+1)+".  "+clean(l),W-200),90,yy); yy+=46; });
+    if(lead){ g.fillStyle=P.ink2; g.font=`400 29px ${P.fontB}`; g.fillText(fit(`${recapShort(lead.lead)} leads${lead.gap!==null?` by ${lead.gap} point${lead.gap===1?"":"s"}`:""}`,W-200),90,yy+2); yy+=46; }
+    if(games.length){ yy+=8; g.fillStyle=pts>0?P.accent:P.ink2; g.font=`600 32px ${P.fontD}`; g.fillText(`My picks: ${pts} of ${mx} points`,90,yy+6); yy+=48;
+      lines.forEach(l=>{ g.fillStyle=l.hit?P.accent:P.ink2; g.font=`${l.hit?600:400} 28px ${P.fontB}`; g.fillText(fit(l.t,W-200),90,yy); yy+=40; }); }
     y+=need+22;
   }
-  if(shown<items.length){ g.fillStyle="#52645b"; g.font=`400 30px ${F}`; g.fillText(`+ ${items.length-shown} more in the app`,90,y+10); }
-  g.fillStyle="#52645b"; g.font=`500 32px ${F}`; g.textAlign="center"; g.fillText("tracksidepass.com",W/2,H-70); g.textAlign="left";
+  if(shown<items.length){ g.fillStyle=P.ink2; g.font=`400 30px ${P.fontB}`; g.fillText(`+ ${items.length-shown} more in the app`,90,y+10); }
+  if(anyPicks){ const yr=+sun.slice(0,4), st=gameSeason(yr); if(st.rows.length){ g.fillStyle=P.ink; g.font=`500 32px ${P.fontB}`; g.textAlign="center"; g.fillText(`My ${yr} picks: ${st.pts} point${st.pts===1?"":"s"} over ${st.rows.length} weekend${st.rows.length===1?"":"s"}`,W/2,H-125); g.textAlign="left"; } }
+  g.fillStyle=P.ink2; g.font=`500 32px ${P.fontB}`; g.textAlign="center"; g.fillText("tracksidepass.com",W/2,H-70); g.textAlign="left";
   return await new Promise(ok=>cv.toBlob(ok,"image/png"));
 }
 async function shareRecapCard(sun){

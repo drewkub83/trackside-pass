@@ -1570,6 +1570,16 @@ function maybeWeekendRecap(){
 }
 
 /* Breaking news (data/news.js): a pop-up the next time the app is opened, once per story, for 3 days, only for series you follow. It carries a link to a free story from a reliable source. Never a notification. */
+const NEWS_KEEP_DAYS=7;      /* the pop-up shows once, for 3 days; the story stays under What to watch on the Race Day hub for a week */
+function newsHtml(n,c){ return `<div class="mkick">Breaking news · ${esc(c.name)}</div><h3 id="infoTitle">${esc(n.h)}</h3><p>${esc(n.b)}</p><p class="fine"><a href="${esc(n.u)}" onclick="openLiveTiming(this.href);return false" rel="noopener">Read the full story on ${esc(n.src)}</a></p><div class="rcpBtns"><button class="btn" onclick="closeInfo()">Got it</button></div>`; }
+let hubNews=[];
+function openHubNews(i){ const n=hubNews[i]; if(!n) return; setInfo(newsHtml(n,CHAMPS.find(x=>x.id===n.s))); }
+/* stories of the last week for the series on this hub, as rows under What to watch (empty when none) */
+function hubNewsRows(sids){
+  hubNews=[]; if(typeof NEWS==="undefined") return ""; const now=Date.now();
+  const rows=NEWS.filter(n=>{ const c=CHAMPS.find(x=>x.id===n.s); return c&&followed(c)&&sids.includes(c.guide||c.id)&&now>=Date.parse(n.at)-36e5&&now-Date.parse(n.at)<NEWS_KEEP_DAYS*864e5; }).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at));
+  return rows.map(n=>{ hubNews.push(n); return `<button class="hubMore hubNews" onclick="openHubNews(${hubNews.length-1})"><span><b>Breaking:</b> ${esc(n.h)}</span><i aria-hidden="true">&rsaquo;</i></button>`; }).join("");
+}
 const NEWS_DAYS=3;
 function newsSeenList(){ try{ return JSON.parse(LSget(K.newsSeen,"[]")); }catch(e){ return []; } }
 function newsDue(){
@@ -1580,7 +1590,7 @@ function maybeNews(){
   const m=document.getElementById("infoModal"), rw=document.getElementById("raceWeekModal"); if(!m||!m.hidden||(rw&&!rw.hidden)||document.getElementById("obv")||!LSget(K.onboarded,"")) return;
   const n=newsDue(); if(!n) return; const c=CHAMPS.find(x=>x.id===n.s);
   try{ LSset(K.newsSeen,JSON.stringify(newsSeenList().concat(n.id).slice(-40))); }catch(e){}
-  setInfo(`<div class="mkick">Breaking news · ${esc(c.name)}</div><h3 id="infoTitle">${esc(n.h)}</h3><p>${esc(n.b)}</p><p class="fine"><a href="${esc(n.u)}" onclick="openLiveTiming(this.href);return false" rel="noopener">Read the full story on ${esc(n.src)}</a></p><div class="rcpBtns"><button class="btn" onclick="closeInfo()">Got it</button></div>`);
+  setInfo(newsHtml(n,c));
 }
 setTimeout(maybeNews,2500); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeout(maybeNews,1200); });
 function gameRecordHtml(){
@@ -1763,6 +1773,8 @@ function hubWatchCard(c){
     const x=wAll.find(e=>e.s===sid)||wAll[0], others=wAll.filter(e=>e!==x), isFav=fav===x.s, star=wAll.length>1?`<button class="hubStar${isFav?" on":""}" aria-label="${isFav?"Unstar":"Star"} ${esc(watchSeriesName(x))}" onclick="toggleFavSeries('${x.s}')"><svg viewBox="0 0 24 24"><path d="M12 3l2.9 6.2 6.6.8-5 4.6 1.4 6.6L12 18l-5.9 3.2L7.5 14.6l-5-4.6 6.6-.8z"/></svg></button>`:"";
     watchHtml=`<div class="hubCard"><h4>What to watch</h4><div class="hubSeriesRow"><div class="hubSeries">${seriesMark(x.s,24)}${esc(watchSeriesName(x))}</div>${star}</div><p class="asof hubAsof">${esc(x.asOf)}</p>${x.groups.map(g=>`<div class="wgroup"><h4>${esc(g.h)}</h4>${g.items.slice(0,2).map(([n,t])=>`<div class="witem"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join("")}</div>`).join("")}${others.map(o=>{ hubStories.push(o); return `<button class="hubMore" onclick="openHubStory(${hubStories.length-1})"><span>${esc(watchSeriesName(o)||"Race weekend")} storylines</span><i aria-hidden="true">&rsaquo;</i></button>`; }).join("")}</div>`;
   }
+  const nr=hubNewsRows([sid].concat(wAll.map(e=>e.s)).filter(Boolean));
+  if(nr) watchHtml=watchHtml?watchHtml.replace(/<\/div>$/,nr+"</div>"):`<div class="hubCard"><h4>News</h4>${nr}</div>`;
   return watchHtml;
 }
 /* friends who checked in at this track today (their passports, synced): shown only when there are some */

@@ -87,6 +87,8 @@ async function rlStampImages(list){
   mk(); await new Promise(r=>setTimeout(r,500));      /* the big pieces of art load on first use: ask once, wait, ask again */
   return await Promise.all(mk().map(svg=>new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ok(null); i.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg); })));
 }
+/* how the earned stamps sit on the photo: paper = the disc behind (0 for none), shadow, ring = a pale rim, ink = the stamp's own opacity, blend = how the ink mixes with what is under it */
+let rlStampLook={paper:.28,shadow:.3,ring:.65,ink:1,blend:"source-over"};      /* "frosted", chosen by the owner Nov 27 2026; the others tried were solid paper (.95, shadow .5), soft paper (.55, no shadow, ring .5) and ink on photo (paper .18, multiply)  */
 function rlShape(){ return LSget(K.rlShape,"feed")==="story"?1920:1350; }
 async function rlOverlay(r,W,H){
   try{ await document.fonts.ready; }catch(x){}
@@ -132,7 +134,11 @@ async function rlOverlay(r,W,H){
         let sep=1e9; placed.forEach(q=>{ sep=Math.min(sep,Math.hypot(cx-q.cx,cy-q.cy)-(size+q.size)*.34); });
         const score=Math.min(sep,300)+Math.min(gap,120)*.2; if(!best||score>best.score) best={cx,cy,score}; }
       if(!best) return; placed.push({cx:best.cx,cy:best.cy,size,rot:(rnd()-.5)*.9,im}); });
-    placed.forEach(q=>{ g.save(); g.translate(q.cx,q.cy); g.rotate(q.rot); g.shadowColor="rgba(0,0,0,.5)"; g.shadowBlur=16; g.shadowOffsetY=4; g.fillStyle="rgba(243,237,224,.95)"; g.beginPath(); g.arc(0,0,q.size/2,0,7); g.fill(); g.shadowColor="transparent"; g.drawImage(q.im,-q.size/2+q.size*.05,-q.size/2+q.size*.05,q.size*.9,q.size*.9); g.restore(); }); }
+    const L=rlStampLook;
+    placed.forEach(q=>{ g.save(); g.translate(q.cx,q.cy); g.rotate(q.rot);
+      if(L.paper>0){ if(L.shadow){ g.shadowColor=`rgba(0,0,0,${L.shadow})`; g.shadowBlur=14; g.shadowOffsetY=3; } g.fillStyle=`rgba(243,237,224,${L.paper})`; g.beginPath(); g.arc(0,0,q.size/2,0,7); g.fill(); g.shadowColor="transparent";
+        if(L.ring){ g.strokeStyle=`rgba(243,237,224,${L.ring})`; g.lineWidth=3; g.stroke(); } }
+      g.globalAlpha=L.ink; g.globalCompositeOperation=L.blend||"source-over"; g.drawImage(q.im,-q.size/2+q.size*.05,-q.size/2+q.size*.05,q.size*.9,q.size*.9); g.restore(); }); }
   return cv;
 }
 async function rlCardBlob(r,photo,H){

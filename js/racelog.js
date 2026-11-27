@@ -166,7 +166,12 @@ async function rlMakeVideo(){
   try{ if(ac&&ac.state==="suspended") await ac.resume(); rec.start(500); await v.play(); }catch(e){ say("This phone did not allow the clip to play. Tap again."); try{ rec.stop(); }catch(x){} return; }
   draw(); await done; try{ if(ac) ac.close(); }catch(e){} URL.revokeObjectURL(v.src);
   const blob=new Blob(chunks,{type:mime.split(";")[0]}); if(blob.size<20000){ say("The recording came out empty on this phone."); return; }
-  const ext=blob.type==="video/mp4"?"mp4":"webm", file=new File([blob],"trackside-pass-race."+ext,{type:blob.type}); say(`Done: ${(blob.size/1048576).toFixed(1)} MB. Sharing…`);
-  try{ if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:r.e.e}); return; } }catch(x){ if(x&&x.name==="AbortError") return; }
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=file.name; document.body.appendChild(a); a.click(); a.remove(); toast("Video saved");
+  const ext=blob.type==="video/mp4"?"mp4":"webm"; rlVid={blob,file:new File([blob],"trackside-pass-race."+ext,{type:blob.type}),title:r.e.e};
+  if(rlVidUrl) URL.revokeObjectURL(rlVidUrl); rlVidUrl=URL.createObjectURL(blob);
+  if(prog){ prog.hidden=false; prog.innerHTML=`<video class="rlVidPrev" src="${rlVidUrl}" controls playsinline loop></video><div class="rcpBtns"><button class="btn primary" onclick="rlShareVideo()">Share</button><button class="btn quiet" onclick="rlSaveVideo()">Save to my phone</button></div><small>${(blob.size/1048576).toFixed(1)} MB · ${ext.toUpperCase()}. Play it to check it before you share.</small>`; const v=prog.querySelector("video"); if(v) v.scrollIntoView({block:"center"}); }
 }
+let rlVid=null, rlVidUrl=null;
+async function rlShareVideo(){ if(!rlVid) return; const f=rlVid.file;
+  try{ if(navigator.canShare&&navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:rlVid.title}); return; } }catch(x){ if(x&&x.name==="AbortError") return; }
+  rlSaveVideo(); }
+function rlSaveVideo(){ if(!rlVid) return; const a=document.createElement("a"); a.href=rlVidUrl; a.download=rlVid.file.name; document.body.appendChild(a); a.click(); a.remove(); toast("Video saved"); }

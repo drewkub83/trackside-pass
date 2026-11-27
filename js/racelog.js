@@ -90,7 +90,7 @@ async function rlStampImages(list){
   return await Promise.all(mk().map(svg=>new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ok(null); i.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg); })));
 }
 /* how the earned stamps sit on the photo: paper = the disc behind (0 for none), shadow, ring = a pale rim, ink = the stamp's own opacity, blend = how the ink mixes with what is under it */
-let rlStampLook={paper:.28,shadow:.3,ring:.65,ink:1,blend:"source-over"};      /* "frosted", chosen by the owner Nov 27 2026; the others tried were solid paper (.95, shadow .5), soft paper (.55, no shadow, ring .5) and ink on photo (paper .18, multiply)  */
+let rlStampLook={paper:.95,shadow:.5,ring:.65,ink:1,blend:"source-over"};      /* solid paper again (Nov 27 2026: frosted .28/.3 was hard to see); tried: frosted (.28, shadow .3), soft paper (.55, no shadow, ring .5) and ink on photo (paper .18, multiply)  */
 function rlShape(){ return LSget(K.rlShape,"feed")==="story"?1920:1350; }
 async function rlOverlay(r,W,H){
   try{ await document.fonts.ready; }catch(x){}

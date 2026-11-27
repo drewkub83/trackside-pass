@@ -2177,4 +2177,36 @@ const WATCH = [
         ["Sunday Nov 29", "Race 2, 9:40am (one hour) -- the season finale; Vervisch/Schumacher start from pole."]] }
     ],
     note:"Sources: web search summaries (direct fetches of gt-world-challenge-australia.com and speedcafe.com were blocked in this environment) of Speedcafe's 'Title contenders split Adelaide GT World Challenge pole positions' (Vervisch's 1:17.4042 Qualifying Part 1 pole for Team MPC Audi #1, 0.17s over Jaxon Evans' Arise Racing Ferrari #26, Brendon Leitch's Tigani Mercedes-AMG third, that session setting the grid for 'the second race of the weekend'; Mark Rosser's #268 Team BRM Audi topping Qualifying Part 2 by 0.07s over Schumacher, denying a pole sweep; Schumacher's 14-point/52-points-available championship lead). Since only two qualifying sessions exist for the weekend's two races and the article states Qualifying Part 1 sets the second race's (Sunday's) grid, Qualifying Part 2 setting the first race's (Saturday's) grid is a direct logical consequence, not an independent report -- no source was found stating that half explicitly. The Trophy Cup and SRO GT Academy standings, the 18-car grid after the Lamborghini withdrawal, and the circuit/support-bill facts are carried over unchanged from the prior entry for this event (sourced there to Pit Debrief's Hidden Valley Round 4 standings recap and Speedcafe's Lamborghini-withdrawal report); no Adelaide-specific qualifying report for the Trophy Cup or Academy classes was found. Session times and the Race 1/Race 2 day split from data/adelaide-parklands.js's own sessions list." }
+  ,{ t:"valencia", d:"2026-11-27", s:"motogp", from:"2026-11-26",
+    at:"2026-11-27T11:24:13Z",
+    asOf:"Current after Free Practice 1 at the Valencia GP finale (Nov 27, 2026): Marc Marquez announced his retirement from MotoGP just before the session -- this weekend is his last race -- and then went out and ran second fastest, a tenth behind Marco Bezzecchi.",
+    groups:[
+      { h:"The headline: Marquez is retiring, effective this weekend", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Announced, in the Ducati garage shortly before FP1, that he is retiring from MotoGP -- making this Valencia round his final premier-class race. The announcement was confirmed on MotoGP's own site and by Ducati Lenovo's social media post. It comes five days after he clinched the 2026 title at Portimao (his eighth premier-class crown, a tenth world title overall), and follows years of serious arm and shoulder injuries dating back to his 2020 Jerez crash and multiple surgeries since; the exact medical reasoning behind the timing was not confirmed in sources checked today, so it is left out here."],
+        ["What it means for Ducati", "Marquez was reported to be under contract with Ducati through 2028, so his retirement leaves the factory team with an unexpected seat to fill for 2027; no replacement has been named yet."]
+      ] },
+      { h:"FP1 itself: Bezzecchi and Marquez a tenth apart", items:[
+        ["Marco Bezzecchi (Aprilia Racing)", "Fastest, a 1:30.681."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Second, just 0.010s back, minutes after his own retirement announcement."],
+        ["Raul Fernandez (SuperFile Trackhouse MotoGP Team)", "Third, with Fermin Aldeguer, Alex Marquez and Pedro Acosta rounding out the top six."]
+      ] },
+      { h:"Final standings entering Valencia (one round left, nothing left to decide at the top)", items:[
+        ["Marc Marquez (Ducati Lenovo Team) -- CHAMPION", "439 points, title already won at Portimao."],
+        ["Jorge Martin (Aprilia Racing)", "396, second -- 2 points ahead of his own team-mate for the runner-up spot, the one thing still open this weekend."],
+        ["Marco Bezzecchi (Aprilia Racing)", "394, third. Needs to outscore Martin by 3 or more here to finish second instead of third."]
+      ] },
+      { h:"Also worth watching", items:[
+        ["Francesco Bagnaia (Ducati Lenovo Team)", "Missed Portimao after surgery for a fractured right foot from his Qatar Sprint crash. Ducati has said it expects him back for this Valencia finale -- his send-off on the factory Ducati before moving to Aprilia for 2027 -- but whether he actually rode FP1 was not confirmed in sources checked today."]
+      ] },
+      { h:"The circuit: Circuit Ricardo Tormo, MotoGP's long-time finale", items:[
+        ["A tight, technical 4.005 km layout", "Near Cheste, outside Valencia -- a low-grip, stop-and-go track that rewards precise braking over outright power, and has hosted the season's final round in most years since the early 2000s."],
+        ["Last year here", "Marco Bezzecchi won the 2025 Valencia GP from the front, the circuit's first MotoGP race since 2023 after the 2024 finale was moved elsewhere because of flooding."]
+      ] },
+      { h:"Up next (Circuit Ricardo Tormo, local time CET)", items:[
+        ["Friday Nov 27", "Practice, 3:00pm."],
+        ["Saturday Nov 28", "Free Practice 2, 10:10am; Qualifying 1, 10:50am; Qualifying 2, 11:15am; the Sprint, 3:00pm."],
+        ["Sunday Nov 29", "Warm-Up, 9:40am; the Grand Prix, 2:00pm (27 laps, about 108 km) -- the season's last race, and Marc Marquez's last in MotoGP."]
+      ] }
+    ],
+    note:"Sources: web search summaries (motogp.com, crash.net, autosport.com and wtop.com/AP were not reachable directly from this environment) of motogp.com's 'Marc Marquez announces retirement from MotoGP', crash.net's 'Marc Marquez announces MotoGP retirement days after winning 2026 title' and the AP wire report (via wtop.com), all independently confirming the retirement and that Valencia is his final race; the announcement's timing (in the Ducati garage, shortly before FP1) and delivery (a Ducati Lenovo social post plus Marquez holding up cards for the TV cameras) from the same summaries. A single outlet's claim about the specific medical reason for the timing could not be cross-checked today, so it is left out per the accuracy rule. FP1 times (Bezzecchi 1:30.681, Marquez +0.010s, Fernandez third, Aldeguer/Alex Marquez/Acosta next) from web search summaries of oasport.it's and autosport.com's FP1 reports, which agree on the order. Marquez's eighth premier-class title and tenth overall carried over from the prior entry for this event (sourced there to motogp.com and cross-checked against data/standings.js). Martin/Bezzecchi points (396/394) and the still-open runner-up fight carried over unchanged from the prior entry; no points have changed since, as no race has run yet this weekend. Bagnaia's foot surgery and expected Valencia return, and his 2027 Aprilia move, from web search summaries of Autosport's and The Race's Bagnaia/Lecuona coverage and Flashscore's 'Francesco Bagnaia to leave Ducati at the end of the season'; whether he actually took part in FP1 was not found in any source checked today, so it is stated as unconfirmed rather than guessed. Circuit character, length and finale history, and the 2025 Valencia result, carried over unchanged from the prior entry (sourced there to racingcircuits.info, boxrepsol.com, flashscore.com and fim-moto.com via web search). Remaining session times from data/valencia.js." }
 ];

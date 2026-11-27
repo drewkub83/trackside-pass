@@ -34,7 +34,7 @@ async function rlRender(){
 let rlCur=null, rlCurUrl=null, rlCurVid=null;
 async function rlOpen(key){
   const r=rlEntries().find(x=>x.key===key); if(!r) return; rlCur=r; const log=rlLoad()[key]||{}, ph=await rlGetPhoto(key), vdWeb=await rlGetPhoto(key+"#v"), vid=log.vid||null, vd=vdWeb||(vid?{size:vid.bytes||0}:null);
-  if(rlCurUrl){ URL.revokeObjectURL(rlCurUrl); rlCurUrl=null; } if(rlCurVid){ URL.revokeObjectURL(rlCurVid); rlCurVid=null; } if(ph) rlCurUrl=URL.createObjectURL(ph); if(vd) rlCurVid=URL.createObjectURL(vd);
+  if(rlCurUrl){ URL.revokeObjectURL(rlCurUrl); rlCurUrl=null; } if(rlCurVid){ URL.revokeObjectURL(rlCurVid); rlCurVid=null; } if(ph) rlCurUrl=URL.createObjectURL(ph); if(vdWeb) rlCurVid=URL.createObjectURL(vdWeb);
   const sun=sunOf(eventEnd(r.e)), items=recapItems(sun,null).filter(i=>i.t.id===r.t.id), it=items[0], top=it?recapTop(it.r.groups[0],3):[];
   const games=it?recapGames(r.t,r.e,it.r.s):[], pts=games.reduce((n,x)=>n+x.sc.pts,0), mx=games.reduce((n,x)=>n+x.sc.max,0);
   setInfo(`<div class="mkick">${r.was?"I was there":"Marked going"}</div><h3 id="infoTitle">${esc(r.e.e)}</h3><p class="plRules">${esc(r.t.short)} · ${esc(fmtRange(r.e))}</p>

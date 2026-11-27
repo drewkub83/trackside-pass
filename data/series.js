@@ -201,7 +201,7 @@ const SERIES = [
   }
 
 ,{
-  id:"gtwcasia", rc:"UC-yHapH6mW1ceZ_5PDUf1_g", rq:"GT World Challenge Asia|GTWC Asia", match:/GT World Challenge Asia/i, timing:"https://www.gt-world-challenge-asia.com/watch-live#live-timing",
+  id:"gtwcasia", gameManual:true, rc:"UC-yHapH6mW1ceZ_5PDUf1_g", rq:"GT World Challenge Asia|GTWC Asia", match:/GT World Challenge Asia/i, timing:"https://www.gt-world-challenge-asia.com/watch-live#live-timing",
   name:"GT World Challenge Asia Powered by AWS", tag:"GT3 sprint racing across Asia",
   blurb:"The Asian leg of SRO Motorsports Group's worldwide GT3 sprint racing, open to GT3 cars only since 2024. Every event has two one-hour races. A car has at most two drivers: each qualifies for and starts one of the weekend's two races, and they swap during a mandatory 10-minute pit-stop window. The 2027 season is six events: Sepang, Chang, Suzuka, Fuji, Beijing and Shanghai.",
   cars:[

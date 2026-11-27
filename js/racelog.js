@@ -74,6 +74,24 @@ async function rlShare(){
 }
 /* the card: the photo full-bleed (a little above centre), a gradient at the top and a longer one at the bottom for the text, the stamp at the top right */
 /* the card's overlay (gradients, stamp and all the text) on a transparent canvas: the photo or each video frame is drawn under it. Story size (tall) keeps the text out of Instagram's top and bottom 250 px. */
+
+/* stamps and badges earned at this weekend: the track stamp (tier by how many weekends there so far) and every badge unlocked between the first day and the day after the last, drawn from the Passport's own SVG on a paper disc */
+function rlEarned(r){
+  if(typeof ppLoad!=="function"||typeof stampSvg!=="function") return [];
+  const p=ppLoad(), out=[]; if(!r.was) return out;
+  const evs=new Set(p.stamps.filter(x=>x.t===r.t.id&&x.ev<=r.e.d).map(x=>x.ev)); const n=Math.max(1,evs.size), tier=ppTier(n);
+  const tdef=ppTrackDefs().find(d=>d.track===r.t&&d.id.endsWith(":"+tier)); const stamp=p.stamps.filter(x=>x.t===r.t.id&&x.ev===r.e.d).reduce((m,x)=>Math.max(m,x.at||0),0);
+  if(tdef) out.push({d:tdef,at:stamp||undefined});
+  const t0=Date.parse(r.e.d+"T00:00:00"), t1=Date.parse(eventEnd(r.e)+"T23:59:59")+864e5, order={z:0,g:1,s:2,b:3,x:4};
+  PP_GLOBAL.filter(d=>{ const at=p.unlocked[d.id]; return at&&at>=t0&&at<=t1; }).sort((a,b)=>(order[a.tier]??5)-(order[b.tier]??5)).forEach(d=>out.push({d,at:p.unlocked[d.id]}));
+  return out;
+}
+async function rlStampImages(list){
+  /* the stamps are HTML-parsed inline SVG (some repeat an attribute, which a standalone SVG image refuses): parse as HTML and serialise as XML */
+  const mk=()=>list.map(x=>{ const d=document.createElement("div"); d.innerHTML=stampSvg(x.d,{date:x.at}); const el=d.querySelector("svg"); if(!el) return ""; el.setAttribute("xmlns","http://www.w3.org/2000/svg"); el.setAttribute("width","300"); el.setAttribute("height","300"); return new XMLSerializer().serializeToString(el); });
+  mk(); await new Promise(r=>setTimeout(r,500));      /* the big pieces of art load on first use: ask once, wait, ask again */
+  return await Promise.all(mk().map(svg=>new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ok(null); i.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg); })));
+}
 function rlShape(){ return LSget(K.rlShape,"feed")==="story"?1920:1350; }
 async function rlOverlay(r,W,H){
   try{ await document.fonts.ready; }catch(x){}
@@ -102,6 +120,11 @@ async function rlOverlay(r,W,H){
     while((g.measureText(l1).width>W-140||g.measureText(l2).width>W-140)&&fs>56){ fs-=6; g.font=`800 ${fs}px ${P.fontD}`; }
     g.fillStyle=light; if(l2){ g.fillText(l2,70,y); y-=fs*1.02; } g.fillText(l1,70,y); y-=fs+26; }
   g.fillStyle=acc; g.font=`700 28px ${P.fontB}`; g.fillText(r.was?"MY RACE WEEKEND":"RACE WEEKEND",70,y);
+  const allEarned=rlEarned(r), earned=allEarned.slice(0,4);
+  if(earned.length){ const imgs=await rlStampImages(earned), D=148, gap=18; y-=D+76; let x=70;
+    g.fillStyle=acc; g.font=`700 24px ${P.fontB}`; g.fillText(earned.length>1?"STAMPS EARNED":"STAMP EARNED",70,y-14);
+    imgs.forEach(im=>{ if(!im) return; g.save(); g.shadowColor="rgba(0,0,0,.45)"; g.shadowBlur=14; g.fillStyle="rgba(243,237,224,.96)"; g.beginPath(); g.arc(x+D/2,y+D/2+6,D/2,0,7); g.fill(); g.restore(); g.drawImage(im,x+9,y+15,D-18,D-18); x+=D+gap; });
+    if(allEarned.length>earned.length){ g.fillStyle="rgba(255,255,255,.85)"; g.font=`600 34px ${P.fontB}`; g.fillText("+"+(allEarned.length-earned.length)+" more",x+4,y+D/2+16); } }
   return cv;
 }
 async function rlCardBlob(r,photo,H){

@@ -120,11 +120,23 @@ async function rlOverlay(r,W,H){
     while((g.measureText(l1).width>W-140||g.measureText(l2).width>W-140)&&fs>56){ fs-=6; g.font=`800 ${fs}px ${P.fontD}`; }
     g.fillStyle=light; if(l2){ g.fillText(l2,70,y); y-=fs*1.02; } g.fillText(l1,70,y); y-=fs+26; }
   g.fillStyle=acc; g.font=`700 28px ${P.fontB}`; g.fillText(r.was?"MY RACE WEEKEND":"RACE WEEKEND",70,y);
-  const allEarned=rlEarned(r), earned=allEarned.slice(0,4);
-  if(earned.length){ const imgs=await rlStampImages(earned), D=148, gap=18; y-=D+76; let x=70;
-    g.fillStyle=acc; g.font=`700 24px ${P.fontB}`; g.fillText(earned.length>1?"STAMPS EARNED":"STAMP EARNED",70,y-14);
-    imgs.forEach(im=>{ if(!im) return; g.save(); g.shadowColor="rgba(0,0,0,.45)"; g.shadowBlur=14; g.fillStyle="rgba(243,237,224,.96)"; g.beginPath(); g.arc(x+D/2,y+D/2+6,D/2,0,7); g.fill(); g.restore(); g.drawImage(im,x+9,y+15,D-18,D-18); x+=D+gap; });
-    if(allEarned.length>earned.length){ g.fillStyle="rgba(255,255,255,.85)"; g.font=`600 34px ${P.fontB}`; g.fillText("+"+(allEarned.length-earned.length)+" more",x+4,y+D/2+16); } }
+  /* every stamp earned that weekend, scattered like a passport page: random angles, around the top and the sides of the photo, a little over the edge, never over the text or the I WAS THERE stamp. The layout is seeded by the race, so the card and the video always match. */
+  const earned=rlEarned(r).slice(0,12);
+  if(earned.length){ const imgs=await rlStampImages(earned), limit=y-70, avoid=r.was?{x:W-165,y:story?340:165,r:118}:null;
+    let sd=0; String(r.key).split("").forEach(ch=>{ sd=(sd*31+ch.charCodeAt(0))>>>0; }); const rnd=()=>{ sd=(sd+0x6D2B79F5)>>>0; let t=sd; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; };
+    const placed=[], base=earned.length>8?118:earned.length>5?136:154;
+    earned.forEach((e,i)=>{ const im=imgs[i]; if(!im) return; const size=Math.round(i===0?base*1.22:base*(0.9+rnd()*0.25)); let best=null;
+      const ymin=story?size*.5+250:size*.3, ymax=Math.max(ymin+10,limit-size*.4);
+      for(let k=0;k<120;k++){ const side=rnd(); let cx,cy;
+        if(side<.3){ cx=rnd()*W; cy=ymin+rnd()*Math.min(size*.9,ymax-ymin); }
+        else if(side<.65){ cx=size*(.02+rnd()*.38); cy=ymin+rnd()*(ymax-ymin); }
+        else { cx=W-size*(.02+rnd()*.38); cy=ymin+rnd()*(ymax-ymin); }
+        let gap=1e9;
+        if(avoid){ gap=Math.min(gap,Math.hypot(cx-avoid.x,cy-avoid.y)-(size/2+avoid.r)); }
+        placed.forEach(q=>{ gap=Math.min(gap,Math.hypot(cx-q.cx,cy-q.cy)-(size+q.size)*.34); });
+        if(!best||gap>best.gap) best={cx,cy,gap}; }
+      placed.push({cx:best.cx,cy:best.cy,size,rot:(rnd()-.5)*.9,im}); });
+    placed.forEach(q=>{ g.save(); g.translate(q.cx,q.cy); g.rotate(q.rot); g.shadowColor="rgba(0,0,0,.5)"; g.shadowBlur=16; g.shadowOffsetY=4; g.fillStyle="rgba(243,237,224,.95)"; g.beginPath(); g.arc(0,0,q.size/2,0,7); g.fill(); g.shadowColor="transparent"; g.drawImage(q.im,-q.size/2+q.size*.05,-q.size/2+q.size*.05,q.size*.9,q.size*.9); g.restore(); }); }
   return cv;
 }
 async function rlCardBlob(r,photo,H){

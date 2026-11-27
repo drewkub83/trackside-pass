@@ -2209,4 +2209,28 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries (motogp.com, crash.net, autosport.com and wtop.com/AP were not reachable directly from this environment) of motogp.com's 'Marc Marquez announces retirement from MotoGP', crash.net's 'Marc Marquez announces MotoGP retirement days after winning 2026 title' and the AP wire report (via wtop.com), all independently confirming the retirement and that Valencia is his final race; the announcement's timing (in the Ducati garage, shortly before FP1) and delivery (a Ducati Lenovo social post plus Marquez holding up cards for the TV cameras) from the same summaries. A single outlet's claim about the specific medical reason for the timing could not be cross-checked today, so it is left out per the accuracy rule. FP1 times (Bezzecchi 1:30.681, Marquez +0.010s, Fernandez third, Aldeguer/Alex Marquez/Acosta next) from web search summaries of oasport.it's and autosport.com's FP1 reports, which agree on the order. Marquez's eighth premier-class title and tenth overall carried over from the prior entry for this event (sourced there to motogp.com and cross-checked against data/standings.js). Martin/Bezzecchi points (396/394) and the still-open runner-up fight carried over unchanged from the prior entry; no points have changed since, as no race has run yet this weekend. Bagnaia's foot surgery and expected Valencia return, and his 2027 Aprilia move, from web search summaries of Autosport's and The Race's Bagnaia/Lecuona coverage and Flashscore's 'Francesco Bagnaia to leave Ducati at the end of the season'; whether he actually took part in FP1 was not found in any source checked today, so it is stated as unconfirmed rather than guessed. Circuit character, length and finale history, and the 2025 Valencia result, carried over unchanged from the prior entry (sourced there to racingcircuits.info, boxrepsol.com, flashscore.com and fim-moto.com via web search). Remaining session times from data/valencia.js." }
+  ,{ t:"lusail", d:"2026-11-27", s:"f2", from:"2026-11-26", at:"2026-11-27T14:25:00Z",
+    asOf:"Current after Friday's Formula 2 practice at Lusail (Nov 27) -- the title fight itself is unchanged, since no race has run yet this weekend.",
+    groups:[
+      { h:"Practice: a red flag cuts the session short", items:[
+        ["Martinius Stenshorne (Rodin Motorsport)", "Quickest in a practice interrupted by a red flag that was not resumed, so the session ended early -- team-mate to title contender Alex Dunne."],
+        ["John Bennett (Trident)", "Second-fastest, just behind Stenshorne."],
+        ["Dino Beganovic (DAMS Lucas Oil)", "Third, continuing the Sprint-winning form he showed at Baku -- the driver outside the title top four to watch most this weekend."]
+      ] },
+      { h:"The title fight: a 7-point lead with two rounds left", items:[
+        ["Rafael Câmara (Invicta Racing)", "Leads on 207 points coming into this weekend, after winning Baku's second Feature Race."],
+        ["Nikola Tsolov (Campos Racing)", "Second on 200, 7 points back."],
+        ["Alex Dunne (Rodin Motorsport)", "Third on 189, 18 back, after winning Baku's first Feature Race from pole -- still mathematically in it, and Stenshorne's team-mate."],
+        ["Gabriele Mini (MP Motorsport)", "Fourth on 163, 44 back -- a longer shot with two rounds (this one and Abu Dhabi) to go."]
+      ] },
+      { h:"Why the gap is still live", items:[
+        ["How many points are left", "A Feature Race winner can score up to 28 (25 for the win, 2 for pole, 1 for fastest lap) and a Sprint Race winner 10, so this round has roughly 38 points on offer -- more than enough to swing a 7-point gap, and still plenty for Dunne's 18-point gap."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Tonight, Friday Nov 27", "Qualifying, 6:00pm -- sets the Feature Race grid and, reversed inside the top 10, the Sprint Race grid."],
+        ["Saturday Nov 28", "Sprint Race, 7:40pm, under the lights."],
+        ["Sunday Nov 29", "Feature Race, 3:00pm, the weekend's main race and the one that moves the title fight most."]
+      ] }
+    ],
+    note:"Sources: web search summaries of fiaformula2.com's official practice report ('PRACTICE: Stenshorne quickest for Rodin in Lusail opener') and pitdebrief.com's practice results page, which agree on the top three (Stenshorne, Bennett, Beganovic) and that a red flag ended the session without a resumption; fiaformula2.com, pitdebrief.com and fia.com were not reachable directly from this environment, so these are as summarized by search results. The two sources gave slightly different times for Stenshorne's lap (1:38.030 vs 1:38.109), so no precise time is given here. John Bennett's team (Trident) confirmed via web search of tridentmotorsport.com's and pitdebrief.com's 2026 driver announcements. Championship points and team pairings carried over unchanged from the prior entry for this event (sourced there to data/standings.js, read 2026-10-26, and web search summaries of formula1.com/racer.com); no points have changed, since no race has run yet this weekend. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
 ];

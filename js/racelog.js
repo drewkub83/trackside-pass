@@ -96,6 +96,7 @@ function rlShape(){ return LSget(K.rlShape,"feed")==="story"?1920:1350; }
 async function rlOverlay(r,W,H){
   try{ await document.fonts.ready; }catch(x){}
   const story=H>1500, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g=cv.getContext("2d"), P=recapPalette(g); g.textBaseline="alphabetic";
+  let textMaxX=70, firstTextY=H; { const ft=g.fillText.bind(g); g.fillText=(t,x,yy,mw)=>{ if(x>=60&&x<=200){ textMaxX=Math.max(textMaxX,x+g.measureText(String(t)).width+(x>70?30:0)); firstTextY=Math.min(firstTextY,yy); } return ft(t,x,yy,mw); }; }
   let gr=g.createLinearGradient(0,0,0,H*.22); gr.addColorStop(0,"rgba(10,10,12,.55)"); gr.addColorStop(1,"rgba(10,10,12,0)"); g.fillStyle=gr; g.fillRect(0,0,W,H*.22);
   gr=g.createLinearGradient(0,H,0,H*(story?.5:.38)); gr.addColorStop(0,"rgba(10,10,12,.93)"); gr.addColorStop(.55,"rgba(10,10,12,.78)"); gr.addColorStop(1,"rgba(10,10,12,0)"); g.fillStyle=gr; g.fillRect(0,H*(story?.5:.38),W,H*(story?.5:.62));
   const acc="#F6A04D", light="#FFFFFF", fit=(t,wd)=>{ t=String(t); if(g.measureText(t).width<=wd) return t; while(g.measureText(t+"…").width>wd&&t.length>4) t=t.slice(0,-1); return t.trim()+"…"; };
@@ -124,18 +125,18 @@ async function rlOverlay(r,W,H){
   const earned=rlEarned(r).slice(0,12);
   if(earned.length){ const imgs=await rlStampImages(earned), limit=y-70, avoid=r.was?{x:W-165,y:story?340:165,r:118}:null;
     let sd=0; String(r.key).split("").forEach(ch=>{ sd=(sd*31+ch.charCodeAt(0))>>>0; }); const rnd=()=>{ sd=(sd+0x6D2B79F5)>>>0; let t=sd; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; };
-    const placed=[], base=earned.length>8?118:earned.length>5?136:154;
+    const placed=[], base=earned.length>8?118:earned.length>5?136:154, textTop=firstTextY-44, textBot=story?H-270+34:H, textRight=textMaxX+36;
+    /* a circle clear of the text block (a rectangle), the I WAS THERE stamp and the stamps already placed; only around the edges (top, sides, and the lower corners and bottom where there is room) */
+    const clearOfText=(cx,cy,sz)=>{ const nx=Math.max(30,Math.min(cx,textRight)), ny=Math.max(textTop,Math.min(cy,textBot)); return Math.hypot(cx-nx,cy-ny)-sz*.46; };
     earned.forEach((e,i)=>{ const im=imgs[i]; if(!im) return; const size=Math.round(i===0?base*1.22:base*(0.9+rnd()*0.25)); let best=null;
-      const ymin=story?size*.5+250:size*.3, ymax=Math.max(ymin+10,limit-size*.4);
-      for(let k=0;k<120;k++){ const side=rnd(); let cx,cy;
-        if(side<.3){ cx=rnd()*W; cy=ymin+rnd()*Math.min(size*.9,ymax-ymin); }
-        else if(side<.65){ cx=size*(.02+rnd()*.38); cy=ymin+rnd()*(ymax-ymin); }
-        else { cx=W-size*(.02+rnd()*.38); cy=ymin+rnd()*(ymax-ymin); }
-        let gap=1e9;
-        if(avoid){ gap=Math.min(gap,Math.hypot(cx-avoid.x,cy-avoid.y)-(size/2+avoid.r)); }
-        placed.forEach(q=>{ gap=Math.min(gap,Math.hypot(cx-q.cx,cy-q.cy)-(size+q.size)*.34); });
-        if(!best||gap>best.gap) best={cx,cy,gap}; }
-      placed.push({cx:best.cx,cy:best.cy,size,rot:(rnd()-.5)*.9,im}); });
+      const ymin=story?250+size*.42:size*.25, band=Math.min(250,W*.24);
+      for(let k=0;k<500;k++){ const cx=size*.3+rnd()*(W-size*.6), cy=ymin+rnd()*(H-ymin-size*.28);
+        const edge=Math.min(cx,W-cx)<band||cy<ymin+size*1.1||(story&&cy>H-250)||cy>H-size*.9;
+        if(!edge) continue; const tg=clearOfText(cx,cy,size); if(tg<0) continue;
+        let gap=tg+20; if(avoid) gap=Math.min(gap,Math.hypot(cx-avoid.x,cy-avoid.y)-(size/2+avoid.r)); if(gap<-10) continue;
+        let sep=1e9; placed.forEach(q=>{ sep=Math.min(sep,Math.hypot(cx-q.cx,cy-q.cy)-(size+q.size)*.34); });
+        const score=Math.min(sep,300)+Math.min(gap,120)*.2; if(!best||score>best.score) best={cx,cy,score}; }
+      if(!best) return; placed.push({cx:best.cx,cy:best.cy,size,rot:(rnd()-.5)*.9,im}); });
     placed.forEach(q=>{ g.save(); g.translate(q.cx,q.cy); g.rotate(q.rot); g.shadowColor="rgba(0,0,0,.5)"; g.shadowBlur=16; g.shadowOffsetY=4; g.fillStyle="rgba(243,237,224,.95)"; g.beginPath(); g.arc(0,0,q.size/2,0,7); g.fill(); g.shadowColor="transparent"; g.drawImage(q.im,-q.size/2+q.size*.05,-q.size/2+q.size*.05,q.size*.9,q.size*.9); g.restore(); }); }
   return cv;
 }

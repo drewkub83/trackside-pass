@@ -1,5 +1,7 @@
 # Where to watch: research (Nov 27 2026)
 
+**Status: NOT BUILDING (owner's decision Nov 27 2026).** Broadcast deals change every year and differ by country, so the app keeps only the existing hub "Watch here" YouTube live stream (`ytlive`, `yt` channels in `data/series.js`) and the Live timing links. This file is kept as research in case it is revisited.
+
 Purpose: data for a "Where to watch" card on the Race Day hub. Everything below comes from web searches on Nov 27 2026 (search summaries; the pages themselves were not all opened). **Nothing here is in the app yet.** Rights change every year and differ by country, so the app should say "as of <date>" and link out to each series' own broadcast page. US only so far; outside the US the series' own page is the safe answer.
 
 | Series (app id) | US 2026 | 2027 status | Official page to link | Confidence |

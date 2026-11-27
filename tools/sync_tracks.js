@@ -6,7 +6,7 @@
           node tools/sync_tracks.js --check    only report (exit 1 when they differ)
    build.sh runs it before validating, so a track file added without registering it still deploys correctly. */
 const fs = require("fs"), path = require("path");
-const ROOT = path.join(__dirname, ".."), NON_TRACK = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js"];
+const ROOT = path.join(__dirname, ".."), NON_TRACK = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js", "news.js"];
 const read = (f) => fs.readFileSync(path.join(ROOT, f), "utf8");
 const ids = fs.readdirSync(path.join(ROOT, "data")).filter((f) => f.endsWith(".js") && !NON_TRACK.includes(f)).map((f) => f.slice(0, -3));
 const html = read("index.html"), sw = read("sw.js");

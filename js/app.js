@@ -55,6 +55,7 @@ const K={
   pushOff:"paddock:pushOff",       /* set when you switched phone notifications off */
   pushAsked:"paddock:pushAsked",   /* the one-time offer to turn notifications on was shown */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
+  newsSeen:"paddock:newsSeen",       /* ids of the breaking-news pop-ups (data/news.js) already shown on this phone */
   locOffer:"paddock:locOffer",       /* the "turn on location" offer after I'm going: 1 once answered, so it is never repeated */
   followSub:"paddock:followSub",     /* support series you chose to follow */
   onboarded:"paddock:onboarded",   /* the first-run walkthrough has been shown (js/onboard.js) */
@@ -1567,6 +1568,21 @@ function maybeWeekendRecap(){
   document.getElementById("infoBody").innerHTML=weekendRecapHtml(rows); m.hidden=false; document.body.style.overflow="hidden"; m.querySelector(".mcard").scrollTop=0;
   setTimeout(()=>{ recapShowing=false; },1000);
 }
+
+/* Breaking news (data/news.js): a pop-up the next time the app is opened, once per story, for 3 days, only for series you follow. It carries a link to a free story from a reliable source. Never a notification. */
+const NEWS_DAYS=3;
+function newsSeenList(){ try{ return JSON.parse(LSget(K.newsSeen,"[]")); }catch(e){ return []; } }
+function newsDue(){
+  if(typeof NEWS==="undefined") return null; const seen=newsSeenList(), now=Date.now();
+  return NEWS.filter(n=>!seen.includes(n.id)&&now-Date.parse(n.at)<NEWS_DAYS*864e5&&now>=Date.parse(n.at)-36e5&&(c=>c&&followed(c))(CHAMPS.find(x=>x.id===n.s))).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at))[0]||null;
+}
+function maybeNews(){
+  const m=document.getElementById("infoModal"), rw=document.getElementById("raceWeekModal"); if(!m||!m.hidden||(rw&&!rw.hidden)||document.getElementById("obv")||!LSget(K.onboarded,"")) return;
+  const n=newsDue(); if(!n) return; const c=CHAMPS.find(x=>x.id===n.s);
+  try{ LSset(K.newsSeen,JSON.stringify(newsSeenList().concat(n.id).slice(-40))); }catch(e){}
+  setInfo(`<div class="mkick">Breaking news · ${esc(c.name)}</div><h3 id="infoTitle">${esc(n.h)}</h3><p>${esc(n.b)}</p><p class="fine"><a href="${esc(n.u)}" onclick="openLiveTiming(this.href);return false" rel="noopener">Read the full story on ${esc(n.src)}</a></p><div class="rcpBtns"><button class="btn" onclick="closeInfo()">Got it</button></div>`);
+}
+setTimeout(maybeNews,2500); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeout(maybeNews,1200); });
 function gameRecordHtml(){
   const y=new Date().getFullYear(), st=gameSeason(y); if(!st.rows.length) return "";
   return `<div class="gmRecs"><h4>Your ${y} season</h4>${st.rows.map(r=>`<div class="gmRec"><span>${esc(r.name)}</span><b>${r.sc.pts}/${r.sc.max}</b></div>`).join("")}<div class="gmRec tot"><span>Total · ${st.winners} class winner${st.winners===1?"":"s"} called</span><b>${st.pts}</b></div></div>`;

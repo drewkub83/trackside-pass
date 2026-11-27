@@ -18,7 +18,7 @@ for (const f of ["js/app.js", "js/passport.js", "js/native.js", "js/account.js",
 for (const f of ["gtwce", "ytlive", "session", "recap"]) { try { cp.execFileSync(process.execPath, ["--check", path.join(ROOT, `netlify/functions/${f}.mjs`)], { stdio: "pipe" }); } catch (e) { err(`netlify/functions/${f}.mjs: syntax error`); } }
 
 /* 2. data files load */
-const NON_TRACK = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js"];
+const NON_TRACK = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js", "news.js"];
 const loadGlobal = (file, name, prelude = "") => {
   try { return new Function(prelude + read(file) + `;return typeof ${name}!=="undefined"?${name}:undefined`)(); }
   catch (e) { err(`${file}: does not load: ${e.message}`); return undefined; }
@@ -61,6 +61,14 @@ const HEADLINES = loadGlobal("data/results.js", "HEADLINES", "const SERIES=[];")
 for (const h of HEADLINES) { const [k, lines] = h; if (!RESULTS.some(r => [r.t, r.d, r.s, r.race || ""].join("|") === k)) err(`headlines: no result entry for key "${k}"`); if (!(Array.isArray(lines) && lines.length >= 1 && lines.length <= 4 && lines.every(x => typeof x === "string" && x.length >= 15 && x.length <= 200))) err(`headlines: "${k}" needs 1-4 lines of 15-200 characters`); }
 for (const r of RESULTS) { if (!tracks[r.t]) err(`results: unknown track "${r.t}"`); if (!seriesIds.has(r.s)) err(`results: unknown series "${r.s}" (${r.t} ${r.d})`); if (!r.groups || !r.groups.length) err(`results: empty entry ${r.t} ${r.d} ${r.s}`); }
 for (const s of STANDINGS) { if (!seriesIds.has(s.s)) err(`standings: unknown series "${s.s}"`); if (!s.asOf || !s.classes || !s.classes.length) err(`standings: incomplete entry for ${s.s}`); }
+const NEWS = loadGlobal("data/news.js", "NEWS") || [];
+{ const champIds = new Set((loadGlobal("data/champs.js", "CHAMPS", "const SERIES=[];") || []).map((c) => c.id)), seen = new Set();
+  for (const n of NEWS) { const w = `news "${n.id}"`; if (!n.id || seen.has(n.id)) err(`${w}: missing or duplicate id`); seen.add(n.id);
+    if (!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(n.at || "")) err(`${w}: "at" must be an ISO UTC time`);
+    if (!champIds.has(n.s)) err(`${w}: unknown series "${n.s}"`);
+    if (!(n.h && n.h.length >= 10 && n.h.length <= 90)) err(`${w}: headline must be 10-90 characters`);
+    if (!(n.b && n.b.length >= 30 && n.b.length <= 240)) err(`${w}: text must be 30-240 characters`);
+    if (!/^https:\/\/[^ ]+$/.test(n.u || "")) err(`${w}: link must be an https URL`); if (!n.src) err(`${w}: missing source name`); } }
 for (const e of ENTRIES) {
   if (!tracks[e.t]) err(`entries: unknown track "${e.t}"`); if (!seriesIds.has(e.s)) err(`entries: unknown series "${e.s}"`);
   const nums = new Set();
@@ -85,7 +93,7 @@ for (const id of swSet) if (!tracks[id]) err(`sw.js: TRACKS lists "${id}" but da
 const shell = ((sw.match(/const SHELL = \[(.*?)\n\];/s) || [])[1] || "").match(/"([^"]+\.[a-z0-9]+)"/g) || [];
 for (const q of shell) { const f = q.slice(1, -1); if (!f.startsWith("data/\" +") && !exists(f)) err(`sw.js: SHELL lists "${f}" which does not exist`); }
 for (const m of html.matchAll(/<script src="([^"]+)"/g)) if (!exists(m[1])) err(`index.html: <script src="${m[1]}"> does not exist`);
-for (const m of ["data/entries.js", "data/standings.js", "data/results.js", "data/watch.js"]) if (!sw.includes(`"${m}"`)) err(`sw.js: SHELL does not cache ${m}`);
+for (const m of ["data/entries.js", "data/standings.js", "data/results.js", "data/watch.js", "data/news.js"]) if (!sw.includes(`"${m}"`)) err(`sw.js: SHELL does not cache ${m}`);
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]); const dup = ids.filter((x, i) => ids.indexOf(x) !== i);
 if (dup.length) err(`index.html: duplicate ids ${[...new Set(dup)].join(", ")}`);
 const fontLink = ((html.match(/href="(https:\/\/fonts\.googleapis\.com\/css2[^"]+)"/) || [])[1] || "").replace(/&amp;/g, "&");

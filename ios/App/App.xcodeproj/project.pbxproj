@@ -24,11 +24,11 @@
 		92D713939960792050D8AEAC /* TracksideLive.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1CE8891105A35E8C01302BE4 /* TracksideLive.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9582B6822FE993A50072D4E8 /* SceneDelegate.swift */; };
 		A5A96C38B368344C88BA0CA0 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D4C6E64F9485C6A5CD1626 /* MainViewController.swift */; };
+		B1C2D3E4F5061728394A5B6C /* VideoCardPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* VideoCardPlugin.swift */; };
 		BC903C3FEFB8CEAE899A4D79 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDEAB01369C465D266F6C8 /* Foundation.framework */; };
+		D1E2F30415263748596A7B8C /* VideoCardExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F405162738495A6B7C /* VideoCardExport.swift */; };
 		EEF3008548F034CBFE4E8C45 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 390CBA28BB17BC86AAE4F698 /* WidgetKit.framework */; };
 		F5057B292A7DD198889D0B57 /* LiveSessionPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CE031EA0BCB6E1D9879141 /* LiveSessionPlugin.swift */; };
-		B1C2D3E4F5061728394A5B6C /* VideoCardPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* VideoCardPlugin.swift */; };
-		D1E2F30415263748596A7B8C /* VideoCardExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F405162738495A6B7C /* VideoCardExport.swift */; };
 		FE16C351F5AF134E5B68AC3A /* LiveSessionAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022A5DA53093F5D249D0BCD5 /* LiveSessionAttributes.swift */; };
 /* End PBXBuildFile section */
 
@@ -58,8 +58,6 @@
 
 /* Begin PBXFileReference section */
 		01CE031EA0BCB6E1D9879141 /* LiveSessionPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveSessionPlugin.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60718293A4B5C /* VideoCardPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VideoCardPlugin.swift; sourceTree = "<group>"; };
-		C1D2E3F405162738495A6B7C /* VideoCardExport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VideoCardExport.swift; sourceTree = "<group>"; };
 		022A5DA53093F5D249D0BCD5 /* LiveSessionAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveSessionAttributes.swift; sourceTree = "<group>"; };
 		1CE8891105A35E8C01302BE4 /* TracksideLive.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TracksideLive.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
@@ -80,7 +78,9 @@
 		9582B6822FE993A50072D4E8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
 		9B6BD4036DB38103E057819F /* LiveSessionLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveSessionLiveActivity.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5C /* VideoCardPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VideoCardPlugin.swift; sourceTree = "<group>"; };
 		A8CDEAB01369C465D266F6C8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		C1D2E3F405162738495A6B7C /* VideoCardExport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VideoCardExport.swift; sourceTree = "<group>"; };
 		D72595291929E9E7E0253474 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -164,7 +164,6 @@
 				9B6BD4036DB38103E057819F /* LiveSessionLiveActivity.swift */,
 				D72595291929E9E7E0253474 /* Info.plist */,
 			);
-			name = TracksideLive;
 			path = TracksideLive;
 			sourceTree = "<group>";
 		};
@@ -345,7 +344,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 7L7SG5VT23;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TracksideLive/Info.plist;
@@ -494,7 +493,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 7L7SG5VT23;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
@@ -518,7 +517,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 7L7SG5VT23;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
@@ -540,7 +539,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = 7L7SG5VT23;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = TracksideLive/Info.plist;

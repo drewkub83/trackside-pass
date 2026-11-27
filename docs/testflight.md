@@ -32,3 +32,5 @@ The app loads the live site, so ordinary changes reach TestFlight testers the sa
 
 ## Public link (Nov 19 2026)
 https://testflight.apple.com/join/mgJnx3AH — on the landing page (`welcome/index.html`): hero button, the iPhone install card and the "Help me test it" box. If the link is ever replaced in App Store Connect, change all three.
+
+Build 9 (Nov 27 2026): the first build with the native video card plugin (`VideoCardPlugin.swift`, `VideoCardExport.swift`); CURRENT_PROJECT_VERSION is 9 for both targets. The next upload needs 10 or more.

@@ -163,6 +163,8 @@ function acctRender() {
          <div class="acRow">${acctBtn("Send them the app", "acctShare()", "quiet")}</div>
          <h4 class="ptH">Privacy</h4>
          <label class="acCheck"><input type="checkbox" ${p.show_global ? "checked" : ""} onchange="acctGlobal(this.checked)"> Public account: anyone can find me, see me on the Everyone leaderboard and open my passport</label>
+         <label class="acCheck"><input type="checkbox" ${p.allow_tags !== false ? "checked" : ""} onchange="acctAllowTags(this.checked)"> Friends can tag me in their Race Log</label>
+         <p class="plRules fine">A tag only appears in the app for you to add to your log or ignore. No notification is sent.</p>
          <p class="plRules fine">Switched off, only friends can find you, see your score and open your passport. Friends can also see your picks once a race has started, and that you are at a track on a race weekend. Nobody sees your email.</p>
          <h4 class="ptH">Your account</h4>
          ${acctBtn("Sign out", "acctOut()", "quiet")}
@@ -245,6 +247,7 @@ async function acctPoll(announce) {
 }
 function acctStartPolling() { if (acctPolling || !sbOn()) return; acctPolling = setInterval(acctPoll, 60000); document.addEventListener("visibilitychange", () => { if (!document.hidden) acctPoll(); }); }
 async function acctRemove(id) { if (!confirm("Remove this friend?")) return; try { await sbRpc("remove_friend", { p_friend: id }); acct.friends = await sbRpc("my_friends"); acct.msg = ""; } catch (e) { acct.msg = e.message; } acctRender(); }
+async function acctAllowTags(on) { try { await sbRpc("set_allow_tags", { p_on: !!on }); if (acct.profile) acct.profile.allow_tags = !!on; } catch (e) { acct.msg = e.message; acctRender(); } }
 async function acctGlobal(on) { try { const t = await sbToken(); await sbJson("/rest/v1/profiles?id=eq." + sbSession().uid, { method: "PATCH", headers: { apikey: SB.key, Authorization: "Bearer " + t, "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify({ show_global: !!on }) }); acct.profile.show_global = !!on; hintSet(acct.profile); acct.msg = on ? "Your account is public: anyone can find you, see you on the Everyone leaderboard and open your passport." : "Friends only: nobody else can find you or open your passport."; } catch (e) { acct.msg = e.message; } acctRender(); }
 function acctShare() {
   const nm = acct.profile && acct.profile.display_name, text = `Join me on Trackside Pass and pick the podium each race weekend. Search for "${nm}" to add me as a friend. https://tracksidepass.com`;

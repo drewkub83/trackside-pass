@@ -26,10 +26,10 @@ async function rlRender(){
   const el=document.getElementById("ppRaces"); if(!el) return; if(typeof ppView!=="undefined"&&ppView){ el.innerHTML=""; return; }
   rlUrls.forEach(u=>URL.revokeObjectURL(u)); rlUrls=[]; const rows=rlEntries(), log=rlLoad();
   const add=`<button class="btn quiet rlAdd" onclick="rlPicker()">Add a race I went to</button>`;
-  if(!rows.length){ el.innerHTML=`<p class="rlEmpty">Races you check in at, or mark "I'm going" to, appear here. Add a photo and a note to each, and turn the best into a share card. A race you went to before: add it yourself.</p>${add}`; return; }
+  if(!rows.length){ el.innerHTML=`<div id="rlInbox">${rlInboxHtml()}</div><p class="rlEmpty">Races you check in at, or mark "I'm going" to, appear here. Add a photo and a note to each, and turn the best into a share card. A race you went to before: add it yourself.</p>${add}`; return; }
   const html=[]; for(const r of rows){ const ph=await rlGetPhoto(r.key); let img=""; if(ph){ const u=URL.createObjectURL(ph); rlUrls.push(u); img=`<img src="${u}" alt="">`; }
     html.push(`<button class="rlRow" onclick="rlOpen('${r.key}')"><span class="rlThumb">${img||"<i></i>"}</span><span class="rlTxt"><b>${esc(r.e.e)}</b><small>${esc(r.t.short)} · ${esc(fmtRange(r.e))}</small><small>${r.was?"I was there":"Marked going"}${log[r.key]&&log[r.key].note?" · note":""}</small></span><i aria-hidden="true">&rsaquo;</i></button>`); }
-  el.innerHTML=html.join("")+add;
+  el.innerHTML=`<div id="rlInbox">${rlInboxHtml()}</div>`+html.join("")+add;
 }
 let rlCur=null, rlCurUrl=null, rlCurVid=null;
 async function rlOpen(key){
@@ -47,7 +47,8 @@ async function rlOpen(key){
     <div class="rlSeg" id="rlSeg">${rlSegHtml()}</div>${vd?`<div class="rlSeg" id="rlLen">${rlLenHtml()}</div>`:""}
     <div class="rcpBtns"><button class="btn ${vd?"quiet":"primary"}" onclick="rlShare()">${ph?"Share card":"Share recap card"}</button>${vd?`<button class="btn primary" onclick="rlMakeVideo()">Make video card</button>`:""}<button class="btn quiet" onclick="closeInfo()">Close</button></div>
     <div class="rlProg" id="rlProg" hidden></div>
-    <p class="fine">Your photos, videos and note stay on this phone. Nothing is uploaded.</p>`);
+    <p class="fine">Your photos, videos and note stay on this phone. Nothing is uploaded. Friends you tag see the tag in their app.</p>`);
+  rlTagState={}; rlRefreshTagState();
 }
 function rlSaveNote(){ if(!rlCur) return; const el=document.getElementById("rlNote"); if(!el) return; const o=rlLoad(), v=el.value.trim(); if(v) o[rlCur.key]=Object.assign({},o[rlCur.key],{note:v}); else if(o[rlCur.key]){ delete o[rlCur.key].note; } rlSave(o); }
 /* shrink to 1600 px on the long side and re-encode as JPEG, so a 12 MB photo becomes a few hundred KB */
@@ -156,16 +157,24 @@ function rlAdd(tid,d){ const t=TRACKS.find(x=>x.id===tid); if(!t) return; const 
 
 /* "With": people who went with you. Friends from your account (tap to add) and any name you type; kept only on this phone, nobody is told */
 function rlWithHtml(list){
-  const fr=(typeof acct!=="undefined"&&acct&&acct.friends)||[], has=n=>list.some(x=>x.n.toLowerCase()===String(n).toLowerCase());
-  const chips=list.map((x,i)=>`<button class="rlChip on" onclick="rlWithRemove(${i})" aria-label="Remove ${esc(x.n)}">${esc(x.n)} <i>&times;</i></button>`).join("");
+  const fr=((typeof acct!=="undefined"&&acct&&acct.friends)||[]).filter(f=>rlSignedIn()||true), has=n=>list.some(x=>x.n.toLowerCase()===String(n).toLowerCase());
+  const chips=list.map((x,i)=>{ const st=x.id&&rlTagState[x.id]; return `<button class="rlChip on" onclick="rlWithRemove(${i})" aria-label="Remove ${esc(x.n)}">${esc(x.n)}${st?` <em>${st==="joined"?"joined":"tag sent"}</em>`:""} <i>&times;</i></button>`; }).join("");
   const sug=fr.filter(f=>!has(f.display_name)).slice(0,12).map(f=>`<button class="rlChip" onclick="rlWithAddFriend('${esc(f.id)}','${esc(f.display_name).replace(/'/g,"&#39;")}')">+ ${esc(f.display_name)}</button>`).join("");
   return `<div class="rlChips">${chips}${sug}</div><div class="rlWithAdd"><input id="rlWithIn" class="rlSearch" type="text" maxlength="24" placeholder="Add a name (a friend, family, anyone)" onkeydown="if(event.key==='Enter'){event.preventDefault();rlWithAdd()}"><button class="btn quiet" onclick="rlWithAdd()">Add</button></div>`;
 }
 function rlWithSet(list){ if(!rlCur) return; const o=rlLoad(); o[rlCur.key]=Object.assign({},o[rlCur.key],{with:list}); if(!list.length) delete o[rlCur.key].with; rlSave(o); const el=document.getElementById("rlWith"); if(el) el.innerHTML=rlWithHtml(list); }
 function rlWithGet(){ return ((rlLoad()[rlCur&&rlCur.key]||{}).with||[]).slice(); }
 function rlWithAdd(){ const el=document.getElementById("rlWithIn"), v=el?el.value.trim():""; if(!v) return; const l=rlWithGet(); if(!l.some(x=>x.n.toLowerCase()===v.toLowerCase())&&l.length<8) l.push({n:v}); rlWithSet(l); }
-function rlWithAddFriend(id,name){ const l=rlWithGet(); name=String(name).replace(/&#39;/g,"'"); if(!l.some(x=>x.n.toLowerCase()===name.toLowerCase())&&l.length<8) l.push({id,n:name}); rlWithSet(l); }
-function rlWithRemove(i){ const l=rlWithGet(); l.splice(i,1); rlWithSet(l); }
+async function rlWithAddFriend(id,name){ const l=rlWithGet(); name=String(name).replace(/&#39;/g,"'"); if(!l.some(x=>x.n.toLowerCase()===name.toLowerCase())&&l.length<8) l.push({id,n:name}); rlWithSet(l); await rlTag(id,name); }
+/* a friend added from your friends list is also tagged on the server: they see "tagged you" in their Passport and can add the race to their own log (supabase/schema.sql, race_tags) */
+async function rlTag(id,name){
+  if(!rlSignedIn()||!rlCur) return;
+  try{ const r=await sbRpc("tag_friend",{p_to:id,p_track:rlCur.t.id,p_ev:rlCur.e.d,p_title:rlCur.e.e}); rlTagState[id]=r==="accepted"?"joined":"sent";
+    if(r==="off"){ delete rlTagState[id]; toast(name+" has tags switched off, so only your own list shows them."); } }
+  catch(e){ toast("Could not tag "+name+": "+String((e&&e.message)||e).slice(0,80)); }
+  const el=document.getElementById("rlWith"); if(el) el.innerHTML=rlWithHtml(rlWithGet());
+}
+function rlWithRemove(i){ const l=rlWithGet(), x=l[i]; l.splice(i,1); rlWithSet(l); if(x&&x.id&&rlSignedIn()&&rlCur){ delete rlTagState[x.id]; sbRpc("untag_friend",{p_to:x.id,p_track:rlCur.t.id,p_ev:rlCur.e.d}).catch(()=>{}); } }
 
 /* card size: feed post (4:5) or Story / Reel (tall 9:16) */
 function rlSegHtml(){ const st=rlShape()>1500; return `<span>Card size</span><button class="${st?"":"on"}" onclick="rlSetShape('feed')">Feed post</button><button class="${st?"on":""}" onclick="rlSetShape('story')">Story or Reel</button>`; }
@@ -255,3 +264,33 @@ async function rlMakeNative(r,vid,P,say){
 }
 function rlNativeShare(){ const P=rlNative(); if(P&&rlNativeOut) P.shareFile({path:rlNativeOut}).catch(()=>{}); }
 function rlNativePlay(){ const P=rlNative(); if(P&&rlNativeOut) P.previewVideo({path:rlNativeOut}).catch(()=>{}); }
+
+/* ---- tagging friends ---- */
+function rlSignedIn(){ try{ return typeof sbOn==="function"&&sbOn()&&!!sbSession(); }catch(e){ return false; } }
+let rlTagState={}, rlPending=[];
+async function rlRefreshTagState(){
+  if(!rlSignedIn()||!rlCur) return; const cur=rlCur;
+  try{ const rows=await sbRpc("race_with",{p_track:cur.t.id,p_ev:cur.e.d})||[]; if(rlCur!==cur) return; rlTagState={}; rows.forEach(x=>{ rlTagState[x.user_id]=x.state; });
+    const l=rlWithGet(); let ch=false; rows.forEach(x=>{ if(x.state==="joined"&&!l.some(y=>y.id===x.user_id||y.n.toLowerCase()===String(x.display_name).toLowerCase())&&l.length<8){ l.push({id:x.user_id,n:x.display_name}); ch=true; } });
+    if(ch) rlWithSet(l); else { const el=document.getElementById("rlWith"); if(el) el.innerHTML=rlWithHtml(l); } }catch(e){}
+}
+async function rlFetchTags(){
+  if(!rlSignedIn()){ rlPending=[]; } else { try{ rlPending=await sbRpc("my_tags")||[]; }catch(e){ rlPending=[]; } }
+  const el=document.getElementById("rlInbox"); if(el) el.innerHTML=rlInboxHtml(); try{ if(typeof renderPassportCard==="function") renderPassportCard(); }catch(e){}
+}
+function rlPendingLine(){ if(!rlPending.length) return ""; return rlPending.length===1?`${rlPending[0].from_name} tagged you in a race`:`${rlPending.length} friends tagged you in races`; }
+function rlInboxHtml(){
+  return rlPending.map(p=>{ const t=TRACKS.find(x=>x.id===p.track), e=t&&(t.events||[]).find(x=>x.d===p.ev), lab=e?`${esc(e.e)} · ${esc(t.short)} · ${esc(fmtRange(e))}`:esc(p.title||p.track);
+    return `<div class="rlTagCard"><b>${esc(p.from_name)} tagged you</b><span>${lab}</span><div class="rcpBtns"><button class="btn primary" onclick="rlTagAnswer(${p.id},true)">Add to my log</button><button class="btn quiet" onclick="rlTagAnswer(${p.id},false)">No thanks</button></div></div>`; }).join("");
+}
+async function rlTagAnswer(id,accept){
+  const p=rlPending.find(x=>x.id===id); if(!p) return;
+  try{ const r=await sbRpc("respond_tag",{p_id:id,p_accept:!!accept}); rlPending=rlPending.filter(x=>x.id!==id);
+    if(accept&&r){ const t=TRACKS.find(x=>x.id===p.track), e=t&&(t.events||[]).find(x=>x.d===p.ev);
+      if(e){ const o=rlLoad(), k=rlKey(t,e), w=((o[k]||{}).with||[]).slice(); if(!w.some(y=>y.id===p.from_user)&&w.length<8) w.push({id:p.from_user,n:p.from_name}); o[k]=Object.assign({},o[k],{added:true,with:w}); rlSave(o); toast("Added to your Race Log"); }
+      else toast("Accepted. Update the app to see this race in your log."); }
+    else if(!accept) toast("Tag declined"); }
+  catch(e){ toast("Could not answer that tag: "+String((e&&e.message)||e).slice(0,80)); }
+  rlRender(); const el=document.getElementById("rlInbox"); if(el) el.innerHTML=rlInboxHtml(); try{ if(typeof renderPassportCard==="function") renderPassportCard(); }catch(e){}
+}
+setTimeout(rlFetchTags,5000); setInterval(rlFetchTags,120000); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) setTimeout(rlFetchTags,1500); });

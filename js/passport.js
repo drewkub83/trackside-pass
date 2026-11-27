@@ -769,6 +769,7 @@ function ppTier(n){ return n>=3?3:n; }
 function renderPassportCard(){
   const m=document.getElementById("ppMeta"); if(!m) return; const p=ppLoad(), st=ppStats(p), n=Object.keys(p.unlocked).filter(k=>!k.startsWith("t:")).length;
   m.textContent=st.tracks?`${st.tracks} of ${st.total} tracks · ${n} badge${n===1?"":"s"}`:`Stamps and badges from race weekends`;
+  try{ const l=typeof rlPendingLine==="function"?rlPendingLine():""; if(l) m.textContent=l; }catch(e){}
 }
 /* ---- passport layout: tracks grouped by region or by series, badges grouped with a "next up" list ---- */
 const PP_GROUP_KEY=K.ppGroup;

@@ -2331,4 +2331,43 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of Motorsport Week's 'Ugo Ugochukwu storms to pole on F2 debut in thrilling Qatar qualifying' and lap-time table, RacingNews365's 2026 Qatar F2 qualifying results page, GPblog's 'Ugo Ugochukwu secures debut Pole Position in remarkable Qatar F2 Qualifying' and Dive-Bomb's 'Ugochukwu snatches famous pole position on F2 debut in Qatar', which agree on the top 10 (Ugochukwu, Mini, Dunne, Oliver Goethe, Noel Leon, John Bennett, Tsolov, Joshua Durksen, Freddie Slater, Stenshorne), Ugochukwu's 1:35.818 pole time and roughly 0.04s margin over Mini, and the two red flags (Montoya's loose right-rear wheel, then Villagomez's late stoppage that ended the session without a restart); none of these sites were reachable directly from this environment, so these are as summarized by search results. Rafael Camara's exact qualifying position was not found in any source checked today, so only 'outside the top 10' is stated, per the accuracy rule. Championship points and the Sprint reverse-grid mechanic carried over unchanged from the prior entry for this event (sourced there to data/standings.js, read 2026-10-26); no points have changed, since no race has run yet this weekend. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
+  ,{ t:"lusail", d:"2026-11-27", s:"f1", from:"2026-11-27",
+    at:"2026-11-27T18:23:40Z",
+    asOf:"Current after Practice 2 at the Qatar Grand Prix (Lusail, Nov 27, 2026) -- a session twice interrupted by red flags, with Mercedes' Kimi Antonelli fastest again under the lights.",
+    groups:[
+      { h:"Both titles are already settled", items:[
+        ["Kimi Antonelli (Mercedes)", "Clinched the 2026 Drivers' title at the Mexico City Grand Prix (Nov 1), F1's youngest-ever world champion. He leads on 402 points with this Qatar round and Abu Dhabi left -- nothing left for him to decide."],
+        ["Mercedes", "Clinched the Constructors' title at the Brazilian Grand Prix, the team's ninth, its first since 2021."]
+      ] },
+      { h:"FP2: Antonelli fastest again, in a session cut short twice", items:[
+        ["Kimi Antonelli (Mercedes)", "Fastest on a medium tyre, 1:23.077 -- quicker than his own FP1-topping time."],
+        ["George Russell (Mercedes)", "Second, 0.127s back (1:23.204) -- another Mercedes 1-2 under the Lusail floodlights."],
+        ["Lando Norris (McLaren)", "Third, 1:23.522."],
+        ["Max Verstappen and Isack Hadjar (Red Bull Racing)", "Reported fifth and sixth; sources checked today did not agree on whether this was the final order or a snapshot taken before the session ended, so treat it as provisional."],
+        ["Two red flags", "The first after Charles Leclerc spun and left gravel and debris through Turns 7/8; the second when Pierre Gasly went off and beached his car in the gravel at Turn 14. The session was extended by about 13 minutes to make up the lost time."],
+        ["Lewis Hamilton (Ferrari)", "Stopped on track late in the session with a reported engine problem, ending any chance of a late improvement."]
+      ] },
+      { h:"What's still live: the runner-up fight, reshuffled by Vegas", items:[
+        ["Max Verstappen (Red Bull Racing)", "304 points, 37 clear of third -- the best of this group's results, and the closest anyone has come to pulling away from the pack in the runner-up fight. Friday practice pace doesn't change that."],
+        ["Lewis Hamilton (Ferrari)", "Third on 267, ahead of both Mercedes drivers in the standings despite Mercedes' pace on this circuit so far."],
+        ["George Russell (Mercedes)", "Fourth on 264, but topped FP2's second-best time."],
+        ["Lando Norris (McLaren)", "Fifth, also on 264 -- third-fastest in FP2."],
+        ["Charles Leclerc (Ferrari)", "Sixth on 250, 14 back, and lost time to the first red flag he caused."]
+      ] },
+      { h:"Constructors: Ferrari's grip on second, but McLaren is closing on third", items:[
+        ["Ferrari", "517 points, second, 77 clear of Red Bull with two rounds left to hand out points."],
+        ["Red Bull Racing", "440, third after Verstappen's Las Vegas win."],
+        ["McLaren", "431, fourth -- just 9 points behind Red Bull for third, the tightest fight left on the grid outside the very front."]
+      ] },
+      { h:"The circuit: Lusail under the floodlights", items:[
+        ["A night race on a 5.419 km layout", "57 laps, roughly 309 km, run after dark under the circuit's floodlights -- one of the more visually distinctive rounds on the calendar."],
+        ["Where the passing happens", "Turn 1, at the end of the long pit straight, is the circuit's main overtaking point."],
+        ["Penultimate round", "The second-to-last weekend of the season before the finale at Abu Dhabi."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Saturday Nov 28", "Practice 3, 5:30pm-6:30pm; Qualifying, 9:00pm-10:00pm."],
+        ["Sunday Nov 29", "Race, 7:00pm-9:00pm."]
+      ] }
+    ],
+    note:"Sources: formula1.com's own Practice 2 results page had not posted a classification when checked directly shortly after the session ended, so this entry relies on web search summaries of planetf1.com's 'Qatar GP: FIA takes action after red flags as Antonelli tops FP2' report, pitdebrief.com's FP2 results page, grandprix247.com's FP2 report, and the live blogs of autosport.com, racingnews365.com and crash.net; none of these sites were reachable directly from this environment. Two independent summaries agree on the top three times (Antonelli 1:23.077, Russell 1:23.204, Norris 1:23.522) and on the two red flags (Leclerc's spin/gravel at Turns 7/8, then Gasly beached at Turn 14) and the roughly 13-minute extension; Hamilton's late on-track stop with an engine problem is from autosport.com's live-blog headline as summarized. Verstappen/Hadjar's fifth/sixth is from a snapshot one source flagged as taken before the session ended, so it is stated as provisional rather than final, per the accuracy rule. Championship points, both titles' clinching rounds and circuit facts carried over unchanged from the prior entry for this event (sourced there to data/results.js and data/standings.js, both read 2026-11-22); no points changed in FP2. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
 ];

@@ -261,7 +261,7 @@ async function rlMakeNative(r,vid,P,say){
 }
 /* the finished card plays right here as a demo (no separate play step); if the page cannot load the file, a tap opens the phone's own player */
 function rlNativeDemo(res){ const c=window.Capacitor, src=c&&c.convertFileSrc?c.convertFileSrc(res.path):"";
-  return `<div class="rlDemoW"><video class="rlVidPrev" ${src?`src="${src}"`:""} controls playsinline loop autoplay muted onerror="this.hidden=true;this.nextElementSibling.hidden=false"></video><button class="btn quiet" hidden onclick="rlNativePlay()">Play the video</button></div><div class="rcpBtns"><button class="btn quiet" onclick="rlNativeShare()">Share</button></div>`; }
+  return `<div class="rlDemoW"><video class="rlVidPrev" ${src?`src="${src}"`:""} controls playsinline loop autoplay muted onerror="this.hidden=true;this.nextElementSibling.hidden=false"></video><button class="btn quiet" hidden onclick="rlNativePlay()">Play the video</button></div><div class="rcpBtns"><button class="btn primary" onclick="rlNativeShare()">Share</button></div>`; }
 function rlNativeShare(){ const P=rlNative(); if(P&&rlNativeOut) P.shareFile({path:rlNativeOut}).catch(()=>{}); }
 function rlNativePlay(){ const P=rlNative(); if(P&&rlNativeOut) P.previewVideo({path:rlNativeOut}).catch(()=>{}); }
 

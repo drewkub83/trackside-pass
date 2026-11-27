@@ -182,11 +182,14 @@ async function rlMakeVideo(){
   try{ ac=new (window.AudioContext||window.webkitAudioContext)(); const src=ac.createMediaElementSource(v), dest=ac.createMediaStreamDestination(); src.connect(dest); dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t)); }catch(e){}
   const chunks=[]; let rec; try{ rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:6000000}); }catch(e){ say("This phone could not start recording."); return; }
   rec.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
-  const done=new Promise(ok=>{ rec.onstop=ok; }); let last=-1, stopped=false;
+  const done=new Promise(ok=>{ rec.onstop=ok; }); let last=-1, stopped=false, recording=false, startT=0;
+  /* the clip is already playing and the canvas already showing it before the recorder starts, so the video begins with moving picture, not black or a held frame */
   const draw=()=>{ const vw=v.videoWidth||W, vh=v.videoHeight||H, sc=Math.max(W/vw,H/vh), w=vw*sc, h=vh*sc; g.fillStyle="#000"; g.fillRect(0,0,W,H); g.drawImage(v,(W-w)/2,(H-h)/2,w,h); g.drawImage(ov,0,0);
-    const t=Math.floor(v.currentTime); if(t!==last){ last=t; say(`Making your video card… ${Math.min(t,Math.ceil(dur))} of ${Math.ceil(dur)} s. Keep the app open.`); }
-    if(!stopped&&(v.currentTime>=dur||v.ended)){ stopped=true; try{ v.pause(); }catch(e){} rec.stop(); return; } if(!stopped) requestAnimationFrame(draw); };
-  try{ if(ac&&ac.state==="suspended") await ac.resume(); rec.start(500); await v.play(); }catch(e){ say("This phone did not allow the clip to play. Tap again."); try{ rec.stop(); }catch(x){} return; }
+    if(!recording&&!stopped&&v.currentTime>0.12){ recording=true; startT=v.currentTime; rec.start(500); }
+    if(recording){ const t=Math.floor(v.currentTime-startT); if(t!==last){ last=t; say(`Making your video card… ${Math.min(t,Math.ceil(dur))} of ${Math.ceil(dur)} s. Keep the app open.`); }
+      if(!stopped&&(v.currentTime-startT>=dur||v.ended)){ stopped=true; try{ v.pause(); }catch(e){} rec.stop(); return; } }
+    if(!stopped) requestAnimationFrame(draw); };
+  try{ if(ac&&ac.state==="suspended") await ac.resume(); v.currentTime=0; await v.play(); }catch(e){ say("This phone did not allow the clip to play. Tap again."); return; }
   draw(); await done; try{ if(ac) ac.close(); }catch(e){} URL.revokeObjectURL(v.src);
   const blob=new Blob(chunks,{type:mime.split(";")[0]}); if(blob.size<20000){ say("The recording came out empty on this phone."); return; }
   const ext=blob.type==="video/mp4"?"mp4":"webm"; rlVid={blob,file:new File([blob],"trackside-pass-race."+ext,{type:blob.type}),title:r.e.e};

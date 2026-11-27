@@ -19,13 +19,13 @@ function ppStats(p){
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id), evs=new Set(by[id].map(s=>s.ev)); visits[id]=evs.size;
     evs.forEach(ev=>{ const e=t.events.find(x=>x.d===ev), n=e?(e.t||1):1; if(n>=2&&new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size>=n) full=true; }); });
   /* which series raced on the days you checked in, and how far you have travelled */
-  const series=new Set(); let bill=false, marathon=false, marDays=0, endu=false, h24=false, b2b=false; const endLong=new Set(); const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
+  const series=new Set(), head=new Set(); let bill=false, marathon=false, marDays=0, endu=false, h24=false, b2b=false; const endLong=new Set(); const zones=new Set(), zoneOf=tz=>/^Europe\//.test(tz)?"EU":/Los_Angeles/.test(tz)?"PT":/Phoenix|Denver/.test(tz)?"MT":/Chicago/.test(tz)?"CT":"ET";
   const cont=new Set(); let eu=0; const contOf=t=>{ const z=t.tz||""; return /^Europe\//.test(z)?"EU":/^Asia\//.test(z)?"AS":/^Australia\//.test(z)?"OC":/Sao_Paulo|Argentina/.test(z)?"SA":/^America\//.test(z)?"NA":"XX"; };
   Object.keys(by).forEach(id=>{ const yrs=new Set(by[id].map(s=>+String(s.day).slice(0,4))); yrs.forEach(y=>{ if(yrs.has(y+1)) b2b=true; }); });      /* the same track in two years running */
   Object.keys(by).forEach(id=>{ const t=TRACKS.find(x=>x.id===id); zones.add(zoneOf(t.tz||"")); cont.add(contOf(t)); if(contOf(t)==="EU") eu++;
     by[id].forEach(s=>{ const ids=new Set(); t.events.filter(e=>!/test/i.test(e.s||"")&&e.d<=s.day&&s.day<=eventEnd(e)).forEach(e=>{ CHAMPS.forEach(c=>{ if(inChamp(c,e)) ids.add(c.id); }); if(/NASCAR/i.test(e.s||"")) ids.add("nascar"); if(/Formula 1/i.test(e.s||"")) ids.add("f1"); if(ppIsEndu(e)) endu=true; if(ppIsEndu(e,10)) endLong.add(id); if(/\b24 Hours?\b|Rolex 24 At/i.test(e.e||"")&&!/Roar Before/i.test(e.e||"")) h24=true; });
-      const real=[...ids].filter(i=>i!=="igtc").length; if(ids.has("igtc")){ PP_IGTC_SERIES.forEach(i=>ids.add(i)); }   /* an Intercontinental GT Challenge round has the cars and drivers of every GT World Challenge series, so it counts for GT Fan (America) and GT Europe too, but not as a second series for Double Bill */
-      ids.forEach(i=>series.add(i)); if(real>=2) bill=true;      /* the Intercontinental GT Challenge runs inside GT World weekends, so it is not a second series on its own */ });
+      const real=[...ids].filter(i=>i!=="igtc").length, direct=new Set(ids); if(ids.has("igtc")){ PP_IGTC_SERIES.forEach(i=>ids.add(i)); }   /* an Intercontinental GT Challenge round has the cars and drivers of every GT World Challenge series, so it counts for GT Fan (America) and GT Europe too, but not as a second series for Double Bill */
+      ids.forEach(i=>{ series.add(i); if(!PP_IGTC_NO_HEAD.includes(i)||direct.has(i)) head.add(i); }); if(real>=2) bill=true;      /* the Intercontinental GT Challenge runs inside GT World weekends, so it is not a second series on its own */ });
     new Set(by[id].map(s=>s.ev)).forEach(ev=>{ const e=t.events.find(x=>x.d===ev); if(e&&(e.t||1)>=4){ const n=new Set(by[id].filter(s=>s.ev===ev).map(s=>s.day)).size; marDays=Math.max(marDays,Math.min(4,n)); if(n>=Math.min(4,e.t)) marathon=true; } }); });
   let called=false, perfect=false;      /* Pick your podium: the right winner, and a whole podium right (your own picks, so not for a friend's passport) */
   if(!(typeof ppView!=="undefined"&&ppView)&&typeof ENTRIES!=="undefined") try{ ENTRIES.forEach(g=>{ const sc=gameScore(g); if(!sc) return; Object.keys(sc.per).forEach(k=>{ if(k.slice(-1)==="#") return; const m=sc.per[k]; if(m[0]==="hit") called=true; if(m.length===3&&m.every(x=>x==="hit")) perfect=true; }); }); }catch(e){}
@@ -35,11 +35,13 @@ function ppStats(p){
     if(/Formula 1/i.test(e.s||"")&&!/Academy/i.test(e.s||"")){ f1v.add(id); try{ const end=eventEnd(e); if((typeof RESULTS!=="undefined"&&RESULTS.some(r=>r.t===id&&/\(Sprint\)/.test(r.event||"")&&r.d>=e.d&&r.d<=end))||(typeof ENTRIES!=="undefined"&&ENTRIES.some(g=>g.t===id&&g.label==="Sprint"&&g.d>=e.d&&g.d<=end))) sprint=true; }catch(x){} }
     if(/NASCAR/i.test(e.s||"")){ nv.add(id); const sup=(e.support||[]).join(" | "); if(/O'Reilly/i.test(sup)&&/Truck/i.test(sup)) threeSun=true;
       if(id==="daytona-oval"?/DAYTONA 500/i.test(e.e||""):id==="charlotte"?/Coca-Cola 600/i.test(e.e||""):(id==="darlington"||id==="indianapolis-oval")) crown.add(id); } }); }); });
-  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {f1v,nv,crown,sprint,threeSun,h24,b2b,called,perfect,by,visits,full,series,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
+  const imsa=TRACKS.filter(t=>t.events.some(e=>isImsa(e))); return {f1v,nv,crown,sprint,threeSun,h24,b2b,called,perfect,by,visits,full,series,head,bill,marathon,marDays,endu,endLong,cont,eu,zones:zones.size,zoneSet:zones,weekends:Object.values(visits).reduce((a,b)=>a+b,0),tracks:Object.keys(by).length,total:TRACKS.length,imsaTotal:imsa.length,imsaVisited:imsa.filter(t=>visits[t.id]>0).length};
 }
 const PP_VINTAGE=["hsr","legendsle","gt3revival","masters"];      /* any vintage / historic series earns the Historic Racing stamp */
-const PP_HEAD=["imsa","indycar","gtwca","gtwce","wec","f1","nascar","motogp"];      /* the headline series: any three of them earn the Series Trifecta */
-const ppHeadSeen=s=>PP_HEAD.filter(i=>s.series.has(i));
+const PP_HEAD=["imsa","indycar","gtwca","gtwce","gtwcau","gtwcasia","wec","f1","nascar","motogp"];      /* the headline series: any three of them earn the Series Trifecta */
+/* an Intercontinental GT Challenge round gives GT America and Europe credit toward the Trifecta (as before) but not Australia or Asia, or one round would earn it alone */
+const PP_IGTC_NO_HEAD=["gtwcau","gtwcasia"];
+const ppHeadSeen=s=>PP_HEAD.filter(i=>(s.head||s.series).has(i));
 const PP_GLOBAL=[
   {id:"first",name:"First Stamp",desc:"Check in at your first race weekend.",icon:"star",tier:"x",sty:"first",test:s=>s.tracks>=1},
   {id:"hopper",name:"Track Hopper",desc:"Visit 3 different tracks.",icon:"hop",tier:"b",sty:"hopper",test:s=>s.tracks>=3},
@@ -73,7 +75,7 @@ const PP_GLOBAL=[
   {id:"stock",name:"Stock Car",desc:"Check in at a NASCAR weekend.",icon:"stockcar",tier:"x",sty:"nascar",test:s=>s.series.has("nascar")},
   {id:"grandprix",name:"Grand Prix",desc:"Check in at a Formula 1 weekend.",icon:"flag",tier:"s",sty:"f1",test:s=>s.series.has("f1")},
   {id:"double",name:"Double Bill",desc:"Check in on a day when two series raced at the same track.",icon:"two",tier:"s",sty:"double",test:s=>s.bill},
-  {id:"trifecta",name:"Series Trifecta",desc:"Check in at weekends of three different headline series: IMSA, IndyCar, GT World America or Europe, NASCAR, Formula 1, WEC or MotoGP.",icon:"three",tier:"g",sty:"trifecta",test:s=>ppHeadSeen(s).length>=3},
+  {id:"trifecta",name:"Series Trifecta",desc:"Check in at weekends of three different headline series: IMSA, IndyCar, GT World America, Europe, Australia or Asia, NASCAR, Formula 1, WEC or MotoGP.",icon:"three",tier:"g",sty:"trifecta",test:s=>ppHeadSeen(s).length>=3},
   {id:"wec",name:"Endurance World",desc:"Check in at a FIA World Endurance Championship weekend.",icon:"globe",tier:"s",sty:"wec",test:s=>s.series.has("wec")},
   {id:"motogp",name:"MotoGP Fan",desc:"Check in at a MotoGP weekend.",icon:"flag",tier:"s",sty:"motogp",test:s=>s.series.has("motogp")},
   {id:"igtc",name:"Intercontinental",desc:"Check in at an Intercontinental GT Challenge weekend: Bathurst, Texas, the Nürburgring 24 Hours, Spa or Suzuka.",icon:"globe",tier:"s",sty:"igtc",test:s=>s.series.has("igtc")},
@@ -605,7 +607,7 @@ function seriesStamp(d,o){
           :`<circle cx="${f(cx)}" cy="${cy}" r="5" fill="none" stroke="${ink}" stroke-width="1.2" opacity=".6"/>`; }); }
       return s+(on?`<text x="80" y="111" font-size="6.8" font-weight="800" letter-spacing="2.2" text-anchor="middle" fill="${ink}">LIGHTS OUT</text>`:""); })()
             :sp.kind==="board"?(function(){ const f=n=>n.toFixed(1), seen=locked&&!st?[]:ppHeadSeen(st||ppStats(ppLoad())), got=o.order||seen;
-      const NAME={imsa:"IMSA",indycar:"INDYCAR",gtwca:"GT AMERICA",gtwce:"GT EUROPE",nascar:"NASCAR",f1:"FORMULA 1",wec:"WEC",motogp:"MOTOGP"};
+      const NAME={imsa:"IMSA",indycar:"INDYCAR",gtwca:"GT AMERICA",gtwce:"GT EUROPE",gtwcau:"GT AUS",gtwcasia:"GT ASIA",nascar:"NASCAR",f1:"FORMULA 1",wec:"WEC",motogp:"MOTOGP"};
       return [0,1,2].map(i=>{ const c=54+i*26, sid=got[i], on=!!sid, rk=locked&&!on?"#8E8670":sp.ink, k=on?1:.3;
         return `<g><rect x="31" y="${f(c-11)}" width="98" height="22" rx="11" fill="none" stroke="${rk}" stroke-width="1.5" opacity="${k}"${on?"":' stroke-dasharray="3 3"'}/><circle cx="42.5" cy="${f(c)}" r="7" fill="${on?sp.ink:"none"}" stroke="${rk}" stroke-width="1.3" opacity="${k}"/><text x="42.5" y="${f(c+3.4)}" font-size="9.4" font-weight="800" text-anchor="middle" fill="${on?"#F3EAD2":rk}" opacity="${on?1:.45}">${i+1}</text>${on?`<text x="88" y="${f(c+3.4)}" font-size="9.4" font-weight="800" letter-spacing="1.1" text-anchor="middle" fill="${rk}" opacity="${locked?.8:1}">${NAME[sid]||sid.toUpperCase()}</text>`:""}</g>`; }).join(""); })()
     :sp.kind==="img"?(function(){ const A=ppArt(sp.art); if(!A) return ""; const w=sp.w||98, h=A.vb[3]*w/A.vb[2], y=(sp.g||108)-h;

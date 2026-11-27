@@ -84,7 +84,8 @@ function rlEarned(r){
 async function rlStampImages(list){
   /* the stamps are HTML-parsed inline SVG (some repeat an attribute, which a standalone SVG image refuses): parse as HTML and serialise as XML */
   const mk=()=>list.map(x=>{ const d=document.createElement("div"); d.innerHTML=stampSvg(x.d,{date:x.at}); const el=d.querySelector("svg"); if(!el) return ""; el.setAttribute("xmlns","http://www.w3.org/2000/svg"); el.setAttribute("width","300"); el.setAttribute("height","300"); return new XMLSerializer().serializeToString(el); });
-  mk(); await new Promise(r=>setTimeout(r,500));      /* the big pieces of art load on first use: ask once, wait, ask again */
+  /* the big pieces of art load on first use: ask once, then wait until the stamps stop changing (a slow phone needs seconds, not half a second) */
+  let sig=mk().map(x=>x.length).join(","); for(let i=0;i<10;i++){ await new Promise(r=>setTimeout(r,400)); const n=mk().map(x=>x.length).join(","); if(n===sig&&i>=1) break; sig=n; }
   return await Promise.all(mk().map(svg=>new Promise(ok=>{ const i=new Image(); i.onload=()=>ok(i); i.onerror=()=>ok(null); i.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg); })));
 }
 /* how the earned stamps sit on the photo: paper = the disc behind (0 for none), shadow, ring = a pale rim, ink = the stamp's own opacity, blend = how the ink mixes with what is under it */

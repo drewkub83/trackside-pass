@@ -55,6 +55,7 @@ const K={
   pushOff:"paddock:pushOff",       /* set when you switched phone notifications off */
   pushAsked:"paddock:pushAsked",   /* the one-time offer to turn notifications on was shown */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
+  raceLog:"paddock:raceLog",         /* the Race Log notes by weekend (js/racelog.js); the photos are in IndexedDB, never uploaded */
   newsSeen:"paddock:newsSeen",       /* ids of the breaking-news pop-ups (data/news.js) already shown on this phone */
   locOffer:"paddock:locOffer",       /* the "turn on location" offer after I'm going: 1 once answered, so it is never repeated */
   followSub:"paddock:followSub",     /* support series you chose to follow */

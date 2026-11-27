@@ -856,7 +856,7 @@ function renderPassport(){
   const live=TRACKS.some(t=>activeEvent(t)), cb=document.getElementById("ppCheckBtn"); if(cb) cb.className="btn "+(live?"primary":"quiet");
   const mode=ppGroupMode(); document.getElementById("ppgRegion").classList.toggle("on",mode==="region"); document.getElementById("ppgSeries").classList.toggle("on",mode==="series");
   document.getElementById("ppTracks").innerHTML=ppEarnedHtml(p,st); document.getElementById("ppMore").innerHTML=ppMoreHtml(p,st);
-  const bp=ppBadgeParts(p,st); document.getElementById("ppNext").innerHTML=bp.next; document.getElementById("ppBadges").innerHTML=bp.earned; document.getElementById("ppLocked").innerHTML=bp.locked;
+  const bp=ppBadgeParts(p,st); if(typeof rlRender==="function") rlRender(); document.getElementById("ppNext").innerHTML=bp.next; document.getElementById("ppBadges").innerHTML=bp.earned; document.getElementById("ppLocked").innerHTML=bp.locked;
 }
 /* another player's passport (from the leaderboard or the friends list): d = {name, stamps, unlocked} from the server. Which badges they hold is worked out here
    from their stamps with today's rules, so a change to the badges needs no change to what was saved; the server only supplies the dates. */

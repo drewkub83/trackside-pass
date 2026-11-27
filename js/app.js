@@ -55,6 +55,7 @@ const K={
   pushOff:"paddock:pushOff",       /* set when you switched phone notifications off */
   pushAsked:"paddock:pushAsked",   /* the one-time offer to turn notifications on was shown */
   favSeries:"paddock:favSeries",     /* the series starred on the hub */
+  rlLen:"paddock:rlLen",             /* Race Log video card length in seconds: 6, 10 or 15 */
   rlShape:"paddock:rlShape",         /* Race Log share card size: feed (1080x1350) or story (1080x1920) */
   raceLog:"paddock:raceLog",         /* the Race Log notes by weekend (js/racelog.js); the photos are in IndexedDB, never uploaded */
   newsSeen:"paddock:newsSeen",       /* ids of the breaking-news pop-ups (data/news.js) already shown on this phone */

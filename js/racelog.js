@@ -44,7 +44,7 @@ async function rlOpen(key){
     <label class="f" for="rlNote">Your note</label><textarea id="rlNote" class="rlNote" rows="3" maxlength="500" placeholder="Where you sat, what you remember" onblur="rlSaveNote()">${esc(log.note||"")}</textarea>
     <label class="f">Who went with you</label><div id="rlWith">${rlWithHtml(log.with||[])}</div>
     ${top.length?`<div class="rcpStory"><h5>${esc(watchSeriesName(it.r)||it.r.event)}</h5>${top.map((l,i)=>`<p>${esc(String(l).replace(/^Winner:\s*/,"Winner: "))}</p>`).join("")}${games.length?`<p class="rcpAsOf">Your picks scored ${pts} of ${mx}.</p>`:""}</div>`:""}
-    <div class="rlSeg" id="rlSeg">${rlSegHtml()}</div>
+    <div class="rlSeg" id="rlSeg">${rlSegHtml()}</div>${vd?`<div class="rlSeg" id="rlLen">${rlLenHtml()}</div>`:""}
     <div class="rcpBtns"><button class="btn ${vd?"quiet":"primary"}" onclick="rlShare()">${ph?"Share card":"Share recap card"}</button>${vd?`<button class="btn primary" onclick="rlMakeVideo()">Make video card</button>`:""}<button class="btn quiet" onclick="closeInfo()">Close</button></div>
     <div class="rlProg" id="rlProg" hidden></div>
     <p class="fine">Your photos, videos and note stay on this phone. Nothing is uploaded.</p>`);
@@ -74,8 +74,10 @@ function rlEarned(r){
   const evs=new Set(p.stamps.filter(x=>x.t===r.t.id&&x.ev<=r.e.d).map(x=>x.ev)); const n=Math.max(1,evs.size), tier=ppTier(n);
   const tdef=ppTrackDefs().find(d=>d.track===r.t&&d.id.endsWith(":"+tier)); const stamp=p.stamps.filter(x=>x.t===r.t.id&&x.ev===r.e.d).reduce((m,x)=>Math.max(m,x.at||0),0);
   if(tdef) out.push({d:tdef,at:stamp||undefined});
-  const t0=Date.parse(r.e.d+"T00:00:00"), t1=Date.parse(eventEnd(r.e)+"T23:59:59")+864e5, order={z:0,g:1,s:2,b:3,x:4};
-  PP_GLOBAL.filter(d=>{ const at=p.unlocked[d.id]; return at&&at>=t0&&at<=t1; }).sort((a,b)=>(order[a.tier]??5)-(order[b.tier]??5)).forEach(d=>out.push({d,at:p.unlocked[d.id]}));
+  /* the badges this weekend earned: the ones your stamps up to and including this weekend satisfy that the stamps before it did not. Worked out from the stamps (not from the unlock date, which is later when a passport was rebuilt or restored). */
+  const mk=list=>({stamps:list,unlocked:{}}), after=ppStats(mk(p.stamps.filter(x=>x.ev<=r.e.d))), before=ppStats(mk(p.stamps.filter(x=>x.ev<r.e.d))), order={z:0,g:1,s:2,b:3,x:4};
+  const got=d=>{ try{ return !!d.test(after)&&!d.test(before); }catch(e){ return false; } };
+  PP_GLOBAL.filter(got).sort((a,b)=>(order[a.tier]??5)-(order[b.tier]??5)).forEach(d=>out.push({d,at:stamp||p.unlocked[d.id]||undefined}));
   return out;
 }
 async function rlStampImages(list){
@@ -178,7 +180,7 @@ async function rlMakeVideo(){
   say("Getting ready…"); const W=1080, H=1920, ov=await rlOverlay(r,W,H), cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g=cv.getContext("2d");
   const v=document.createElement("video"); v.playsInline=true; v.setAttribute("playsinline",""); v.preload="auto"; v.src=URL.createObjectURL(vb);
   try{ await new Promise((ok,no)=>{ v.onloadeddata=ok; v.onerror=()=>no(new Error("video")); setTimeout(()=>no(new Error("timeout")),15000); }); }catch(e){ say("This phone could not read that clip."); return; }
-  const dur=Math.min(15,isFinite(v.duration)?v.duration:15), stream=cv.captureStream(30); let ac=null;
+  const len=+LSget(K.rlLen,"6")||6, dur=Math.min(len,isFinite(v.duration)?v.duration:len), stream=cv.captureStream(30); let ac=null;
   try{ ac=new (window.AudioContext||window.webkitAudioContext)(); const src=ac.createMediaElementSource(v), dest=ac.createMediaStreamDestination(); src.connect(dest); dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t)); }catch(e){}
   const chunks=[]; let rec; try{ rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:6000000}); }catch(e){ say("This phone could not start recording."); return; }
   rec.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
@@ -219,3 +221,7 @@ async function rlPickMedia(inp){
   rlSaveNote(); await rlOpen(key); rlRender();
 }
 async function rlRemoveMedia(){ if(!rlCur) return; const key=rlCur.key; await rlDelPhoto(key); await rlDelPhoto(key+"#v"); await rlOpen(key); rlRender(); }
+
+/* video card length: it records in real time, so 6 s takes about 6 s to make; 10 and 15 are longer */
+function rlLenHtml(){ const c=+LSget(K.rlLen,"6")||6; return `<span>Video length</span>`+[6,10,15].map(n=>`<button class="${c===n?"on":""}" onclick="rlSetLen(${n})">${n} s</button>`).join(""); }
+function rlSetLen(n){ LSset(K.rlLen,String(n)); const el=document.getElementById("rlLen"); if(el) el.innerHTML=rlLenHtml(); }

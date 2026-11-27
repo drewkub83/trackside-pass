@@ -2233,4 +2233,75 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of fiaformula2.com's official practice report ('PRACTICE: Stenshorne quickest for Rodin in Lusail opener') and pitdebrief.com's practice results page, which agree on the top three (Stenshorne, Bennett, Beganovic) and that a red flag ended the session without a resumption; fiaformula2.com, pitdebrief.com and fia.com were not reachable directly from this environment, so these are as summarized by search results. The two sources gave slightly different times for Stenshorne's lap (1:38.030 vs 1:38.109), so no precise time is given here. John Bennett's team (Trident) confirmed via web search of tridentmotorsport.com's and pitdebrief.com's 2026 driver announcements. Championship points and team pairings carried over unchanged from the prior entry for this event (sourced there to data/standings.js, read 2026-10-26, and web search summaries of formula1.com/racer.com); no points have changed, since no race has run yet this weekend. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
+  ,{ t:"lusail", d:"2026-11-27", s:"f1", from:"2026-11-27",
+    at:"2026-11-27T15:23:52Z",
+    asOf:"Current after Free Practice 1 at the Qatar Grand Prix (Lusail, Nov 27, 2026) -- both titles are already decided, so this is about the runner-up and constructors fights, and Mercedes topped the only Friday-morning session.",
+    groups:[
+      { h:"Both titles are already settled", items:[
+        ["Kimi Antonelli (Mercedes)", "Clinched the 2026 Drivers' title at the Mexico City Grand Prix (Nov 1), F1's youngest-ever world champion. He leads on 402 points with this Qatar round and Abu Dhabi left -- nothing left for him to decide."],
+        ["Mercedes", "Clinched the Constructors' title at the Brazilian Grand Prix, the team's ninth, its first since 2021."]
+      ] },
+      { h:"FP1: Mercedes lock out the top two", items:[
+        ["Kimi Antonelli (Mercedes)", "Fastest, a 1:23.217."],
+        ["George Russell (Mercedes)", "Second, 0.507s back -- a Mercedes 1-2 in the weekend's only Friday-morning session."],
+        ["Isack Hadjar (Red Bull Racing)", "Third, +0.661s, ahead of both McLarens."],
+        ["Lando Norris and Oscar Piastri (McLaren)", "Fourth and fifth, +0.850s and +0.860s -- split by just a hundredth."],
+        ["Max Verstappen (Red Bull Racing)", "Sixth, +0.916s. No incidents or red flags were reported in the session."]
+      ] },
+      { h:"What's still live: the runner-up fight, reshuffled by Vegas", items:[
+        ["Max Verstappen (Red Bull Racing)", "304 points, 37 clear of third -- the best of this group's results, and the closest anyone has come to pulling away from the pack in the runner-up fight. FP1 pace doesn't change that."],
+        ["Lewis Hamilton (Ferrari)", "Third on 267, ahead of both Mercedes drivers in the standings despite Mercedes' FP1 pace here."],
+        ["George Russell (Mercedes)", "Fourth on 264, but topped FP1's second-best time."],
+        ["Lando Norris (McLaren)", "Fifth, also on 264 -- fourth-fastest in FP1."],
+        ["Charles Leclerc (Ferrari)", "Sixth on 250, 14 back, and only seventh in FP1, +1.256s off Antonelli."]
+      ] },
+      { h:"Constructors: Ferrari's grip on second, but McLaren is closing on third", items:[
+        ["Ferrari", "517 points, second, 77 clear of Red Bull with two rounds left to hand out points."],
+        ["Red Bull Racing", "440, third after Verstappen's Las Vegas win."],
+        ["McLaren", "431, fourth -- just 9 points behind Red Bull for third, the tightest fight left on the grid outside the very front."]
+      ] },
+      { h:"The circuit: Lusail under the floodlights", items:[
+        ["A night race on a 5.419 km layout", "57 laps, roughly 309 km, run after dark under the circuit's floodlights -- one of the more visually distinctive rounds on the calendar."],
+        ["Where the passing happens", "Turn 1, at the end of the long pit straight, is the circuit's main overtaking point."],
+        ["Penultimate round", "The second-to-last weekend of the season before the finale at Abu Dhabi."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Tonight, Friday Nov 27", "Practice 2, 8:00pm-9:00pm."],
+        ["Saturday Nov 28", "Practice 3, 5:30pm-6:30pm; Qualifying, 9:00pm-10:00pm."],
+        ["Sunday Nov 29", "Race, 7:00pm-9:00pm."]
+      ] }
+    ],
+    note:"Sources: formula1.com's own Practice 1 results page for the 2026 Qatar Grand Prix (fetched directly), for the FP1 classification: Antonelli 1:23.217 fastest, Russell +0.507s, Hadjar +0.661s, Norris +0.850s, Piastri +0.860s, Verstappen +0.916s, Leclerc +1.256s, with no incidents or penalties listed on the page. Championship points (Antonelli 402, Verstappen 304, Hamilton 267, Russell 264, Norris 264, Leclerc 250; Ferrari 517, Red Bull Racing 440, McLaren 431) and both titles' clinching rounds carried over unchanged from the prior entry for this event (sourced there to data/results.js and data/standings.js, both read 2026-11-22, plus a web search summary of formula1.com's Las Vegas race report); no points changed in FP1. Circuit facts (night-race length/lap count, Turn 1 overtaking, penultimate-round status) carried over unchanged from the prior entry. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
+  ,{ t:"valencia", d:"2026-11-27", s:"motogp", from:"2026-11-27",
+    at:"2026-11-27T15:23:52Z",
+    asOf:"Current after the afternoon Practice session at the Valencia finale (Nov 27, 2026): Marc Marquez, racing his announced-this-morning final weekend, went fastest with a new Valencia lap record.",
+    groups:[
+      { h:"The headline: Marquez is retiring, effective this weekend", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Announced in the Ducati garage shortly before FP1 that this Valencia round is his last in MotoGP. It comes five days after he clinched the 2026 title at Portimao (his eighth premier-class crown, a tenth world title overall)."]
+      ] },
+      { h:"Practice: Marquez goes fastest with a new lap record", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Topped the hour-long afternoon Practice session with a new Valencia lap record, a 1:28.483 -- minutes after the retirement news, and an improvement on his own FP1 pace (where he'd been 0.010s behind Bezzecchi)."],
+        ["Marco Bezzecchi (Aprilia Racing)", "Second, a 1:28.730, about 0.247s back."],
+        ["Ai Ogura", "Moved up to third late in the session."],
+        ["Pedro Acosta", "Fifth on the KTM despite a fall in the session."],
+        ["Jorge Martin (Aprilia Racing)", "Rounded out the top 10, taking the final spot that goes straight through to Q2 -- sparing him Q1."]
+      ] },
+      { h:"Final standings entering the weekend (one round left, nothing left to decide at the top)", items:[
+        ["Marc Marquez (Ducati Lenovo Team) -- CHAMPION", "439 points, title already won at Portimao."],
+        ["Jorge Martin (Aprilia Racing)", "396, second -- 2 points ahead of his own team-mate for the runner-up spot, the one thing still open this weekend."],
+        ["Marco Bezzecchi (Aprilia Racing)", "394, third. Needs to outscore Martin by 3 or more here to finish second instead of third."]
+      ] },
+      { h:"Also worth watching", items:[
+        ["Pol Espargaro (Red Bull KTM Tech3)", "Standing in again for Maverick Vinales, who hasn't raced since July because of the shoulder injury from his 2025 Sachsenring crash; Tech3 has used Espargaro as the fill-in rider for most of the second half of the season."]
+      ] },
+      { h:"The circuit: Circuit Ricardo Tormo, MotoGP's long-time finale", items:[
+        ["A tight, technical 4.005 km layout", "Near Cheste, outside Valencia -- a low-grip, stop-and-go track that rewards precise braking over outright power, and has hosted the season's final round in most years since the early 2000s."],
+        ["Last year here", "Marco Bezzecchi won the 2025 Valencia GP from the front, the circuit's first MotoGP race since 2023 after the 2024 finale was moved elsewhere because of flooding."]
+      ] },
+      { h:"Up next (Circuit Ricardo Tormo, local time CET)", items:[
+        ["Saturday Nov 28", "Free Practice 2, 10:10am; Qualifying 1, 10:50am; Qualifying 2, 11:15am; the Sprint, 3:00pm."],
+        ["Sunday Nov 29", "Warm-Up, 9:40am; the Grand Prix, 2:00pm (27 laps, about 108 km) -- the season's last race, and Marc Marquez's last in MotoGP."]
+      ] }
+    ],
+    note:"Sources: web search summaries (motogp.com, crash.net and autosport.com were not reachable directly from this environment) of crash.net's 'Retiring Marc Marquez leads Valencia MotoGP Practice with new lap record', cross-checked across two separate searches that agreed on the headline facts: Marquez's new lap record of 1:28.483, Bezzecchi second on 1:28.730 (0.247s back), Ogura up to third late, Acosta fifth despite a fall, and Martin taking the last automatic Q2 spot. The exact full top-10 order beyond third was not used here, since the sources checked disagreed with each other on it (a live-blog list and a separate results table gave different orders) -- only the cross-confirmed facts above are included, per the accuracy rule. Pol Espargaro continuing to stand in for an unwell Maverick Vinales at Tech3 (Vinales out since July 2026 with a shoulder injury from his 2025 Sachsenring crash, Espargaro filling in through most of the back half of the season) from a web search summary of Crash.net's and Speedweek's Vinales/Espargaro coverage; no Valencia-specific confirmation was found, so this is stated as a continuation of that ongoing arrangement rather than a new fact for this weekend. Marquez's retirement announcement, his eighth premier-class/tenth overall title, and the Portimao date carried over unchanged from the prior entry for this event. Circuit character, length and finale history, and the 2025 Valencia result, carried over unchanged from the prior entry. Remaining session times from data/valencia.js." }
 ];

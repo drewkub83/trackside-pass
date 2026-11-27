@@ -3,7 +3,36 @@
    data/results.js), cars: [[car number, team, drivers, car, estimated win chance %, basis, form (0-1, used to rebuild the chances from the live qualifying grid)], ...] }], live?:{round} (the series' round slug: switches on the live results card), note }. Copy the series' OWN published entry list --
    never guess. The last two fields are OUR estimate, written by tools/podium_odds.py from the series' standings (not betting odds). Scoring matches the picked car NUMBER against the "#NN" in data/results.js. */
 const ENTRIES = [
-  { t:"adelaide-parklands", d:"2026-11-26", s:"gtwcau", oddsAsOf:"Before the race: nearly equal chances inside each class, tilted a little by each car's finishes in the series' recent races (our own data). Not rebuilt from the grid: no qualifying order is read for this series.", asOf:"Entry list of 19 cars as published by Speedcafe on 2026-11-23 (the series' own list was not available to read). Late changes are possible.",
+  { t:"adelaide-parklands", d:"2026-11-26", s:"gtwcau", label:"Race 1", lockRace:"^Race 1 -", oddsAsOf:"Before the race: nearly equal chances inside each class, tilted a little by each car's finishes in the series' recent races (our own data). Not rebuilt from the grid: no qualifying order is read for this series.", asOf:"Entry list of 19 cars as published by Speedcafe on 2026-11-23 (the series' own list was not available to read). Late changes are possible.",
+    classes:[
+      { h:"Pro-Am", cars:[
+        ["1", "Melbourne Performance Centre", "Frederic Vervisch / Brad Schumacher", "Audi R8 LMS EVO II", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["2", "Melbourne Performance Centre", "Valentino Astuti / Darren Currie", "Audi R8 LMS EVO II", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["7", "Earl Bamber Motorsport", "Chris Van Der Drift / Graeme Dowsett", "Mercedes-AMG GT3", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["9", "Melbourne Performance Centre", "Nick McBride / Marc Cini", "Audi R8 LMS EVO II", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["23", "Zagame Autosport", "Josh Buchan / Cameron Campbell", "Ferrari 296 GT3", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["26", "Arise Racing GT", "Jaxon Evans / Elliot Schutte", "Ferrari 296 GT3", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["44", "Tigani Motorsport", "Brendon Leitch / Sergio Pires", "Mercedes-AMG GT3 EVO", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["56", "Tigani Motorsport", "Oscar Targett / Shane Smollen", "Mercedes-AMG GT3 EVO", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["66", "Tigani Motorsport", "Scott Andrews / Paul Lucchitti", "Mercedes-AMG GT3 EVO", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["92", "Earl Bamber Motorsport", "Laurin Heinrich / Yasser Shahin", "Porsche 992 GT3R EVO", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["93", "Wall Racing", "Antonio D'Alberto / Adrian Deitz", "Lamborghini Huracan GT3 EVO II", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["181", "OnlyFans Racing", "William Davison / Renee Gracie", "Ferrari 296 GT3", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["268", "Team BRM", "Alex Peroni / Mark Rosser", "Audi R8 LMS EVO II", 7.1, "no earlier result in the data: counted as average", 0.3],
+        ["666", "Team BRM", "Garnet Patterson / John-Paul Drake", "Audi R8 LMS EVO II", 7.1, "no earlier result in the data: counted as average", 0.3]
+      ] },
+      { h:"Am", cars:[
+        ["45", "RAM Motorsport / GWR Australia", "Michael Sheargold / Brett Hobson", "Mercedes-AMG GT3 EVO", 50.0, "no earlier result in the data: counted as average", 0.3],
+        ["47", "Tigani Motorsport", "James Koundouris / Theo Koundouris", "Mercedes-AMG GT3 EVO", 50.0, "no earlier result in the data: counted as average", 0.3]
+      ] },
+      { h:"Trophy", cars:[
+        ["24", "Melbourne Performance Centre", "Hamish Fitzsimmons / Paul Stokell", "Audi R8 LMS EVO II", 33.3, "no earlier result in the data: counted as average", 0.3],
+        ["62", "Wallis Motorsport", "Jack Wallis / Adam Wallis", "Porsche 911 GT3R (991.2)", 33.3, "no earlier result in the data: counted as average", 0.3],
+        ["71", "Tigani Motorsport", "Luke Youlden / Nathan Halstead", "Porsche 911 GT3R (991.2)", 33.3, "no earlier result in the data: counted as average", 0.3]
+      ] }
+    ],
+    note:"Entry list from the series' published entry list (read by hand). Win chances are our own estimate, not betting odds. (automatic update)" },
+  { t:"adelaide-parklands", d:"2026-11-29", s:"gtwcau", label:"Race 2", lockRace:"^Race 2 -", oddsAsOf:"Before the race: nearly equal chances inside each class, tilted a little by each car's finishes in the series' recent races (our own data). Not rebuilt from the grid: no qualifying order is read for this series.", asOf:"Entry list of 19 cars as published by Speedcafe on 2026-11-23 (the series' own list was not available to read). Late changes are possible.",
     classes:[
       { h:"Pro-Am", cars:[
         ["1", "Melbourne Performance Centre", "Frederic Vervisch / Brad Schumacher", "Audi R8 LMS EVO II", 7.1, "no earlier result in the data: counted as average", 0.3],

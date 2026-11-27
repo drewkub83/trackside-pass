@@ -16,19 +16,20 @@ function rlSave(o){ try{ LSset(K.raceLog,JSON.stringify(o)); }catch(e){} }
 const rlKey=(t,e)=>t.id+"|"+e.d;
 /* the weekends in the log: checked in (stamp) or marked going, started already, newest first */
 function rlEntries(){
-  const today=localToday(), stamps=(typeof ppLoad==="function"?ppLoad().stamps:[]), out=[];
+  const today=localToday(), stamps=(typeof ppLoad==="function"?ppLoad().stamps:[]), out=[], log=rlLoad();
   TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(/test/i.test(e.s||"")||e.d>today) return;
-    const was=stamps.some(s=>s.t===t.id&&s.ev===e.d), going=isGoing(t,e); if(was||going) out.push({t,e,key:rlKey(t,e),was}); }));
+    const key=rlKey(t,e), added=!!(log[key]&&log[key].added), was=stamps.some(s=>s.t===t.id&&s.ev===e.d)||added, going=isGoing(t,e); if(was||going) out.push({t,e,key,was,added}); }));
   return out.sort((a,b)=>b.e.d.localeCompare(a.e.d));
 }
 let rlUrls=[];
 async function rlRender(){
   const el=document.getElementById("ppRaces"); if(!el) return; if(typeof ppView!=="undefined"&&ppView){ el.innerHTML=""; return; }
   rlUrls.forEach(u=>URL.revokeObjectURL(u)); rlUrls=[]; const rows=rlEntries(), log=rlLoad();
-  if(!rows.length){ el.innerHTML=`<p class="rlEmpty">Races you check in at, or mark "I'm going" to, appear here. Add a photo and a note to each, and turn the best into a share card.</p>`; return; }
+  const add=`<button class="btn quiet rlAdd" onclick="rlPicker()">Add a race I went to</button>`;
+  if(!rows.length){ el.innerHTML=`<p class="rlEmpty">Races you check in at, or mark "I'm going" to, appear here. Add a photo and a note to each, and turn the best into a share card. A race you went to before: add it yourself.</p>${add}`; return; }
   const html=[]; for(const r of rows){ const ph=await rlGetPhoto(r.key); let img=""; if(ph){ const u=URL.createObjectURL(ph); rlUrls.push(u); img=`<img src="${u}" alt="">`; }
     html.push(`<button class="rlRow" onclick="rlOpen('${r.key}')"><span class="rlThumb">${img||"<i></i>"}</span><span class="rlTxt"><b>${esc(r.e.e)}</b><small>${esc(r.t.short)} · ${esc(fmtRange(r.e))}</small><small>${r.was?"I was there":"Marked going"}${log[r.key]&&log[r.key].note?" · note":""}</small></span><i aria-hidden="true">&rsaquo;</i></button>`); }
-  el.innerHTML=html.join("");
+  el.innerHTML=html.join("")+add;
 }
 let rlCur=null, rlCurUrl=null;
 async function rlOpen(key){
@@ -97,3 +98,16 @@ async function rlCardBlob(r,photo){
   g.fillStyle=acc; g.font=`700 28px ${P.fontB}`; g.fillText(r.was?"MY RACE WEEKEND":"RACE WEEKEND",70,y);
   return await new Promise(ok=>cv.toBlob(ok,"image/png"));
 }
+
+/* "Add a race I went to": every weekend in the app that has started, newest first, with a search box; picking one puts it in the log as one you were at */
+function rlPicker(q){
+  q=(q||"").trim().toLowerCase(); const today=localToday(), have=new Set(rlEntries().map(x=>x.key)), all=[];
+  TRACKS.forEach(t=>(t.events||[]).forEach(e=>{ if(/test/i.test(e.s||"")||e.d>today||have.has(rlKey(t,e))) return; all.push({t,e}); }));
+  all.sort((a,b)=>b.e.d.localeCompare(a.e.d));
+  const hit=all.filter(x=>!q||(x.e.e+" "+x.t.short+" "+x.t.place).toLowerCase().includes(q)).slice(0,40);
+  const rows=hit.map(x=>`<button class="rlRow" onclick="rlAdd('${x.t.id}','${x.e.d}')"><span class="rlTxt"><b>${esc(x.e.e)}</b><small>${esc(x.t.short)} · ${esc(fmtRange(x.e))}</small></span><i aria-hidden="true">+</i></button>`).join("");
+    if(!document.getElementById("rlQ")){ setInfo(`<div class="mkick">Race Log</div><h3 id="infoTitle">Add a race I went to</h3><p class="plRules">Pick a weekend from the app's calendar. Only races already in the app can be added.</p><input id="rlQ" class="rlSearch" type="search" placeholder="Search a track or race" oninput="rlPicker(this.value)"><div id="rlList">${rows||'<p class="rlEmpty">Nothing matches.</p>'}</div><div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>`); }
+  else document.getElementById("rlList").innerHTML=rows||'<p class="rlEmpty">Nothing matches.</p>';
+}
+function rlAdd(tid,d){ const t=TRACKS.find(x=>x.id===tid); if(!t) return; const e=(t.events||[]).find(x=>x.d===d&&!/test/i.test(x.s||"")); if(!e) return;
+  const o=rlLoad(), k=rlKey(t,e); o[k]=Object.assign({},o[k],{added:true}); rlSave(o); rlRender(); rlOpen(k); }

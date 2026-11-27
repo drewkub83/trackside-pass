@@ -459,14 +459,14 @@ const ENTRIES = [
       ] }
     ],
     note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-22. Win chances are our own estimate, not betting odds. (automatic update)" },
-  { t:"valencia", d:"2026-11-27", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the the field of the latest Sunday race, the Grand Prix of Portugal (2026-11-20), until this weekend's practice is published, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
+  { t:"valencia", d:"2026-11-27", s:"motogp", lockRace:"^Race - MotoGP", oddsAsOf:"Before qualifying: recent form only (each rider's average finishing position over his last 6 Sunday races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Riders from the practice sessions of this weekend, with their official numbers (MotoGP results service). Late changes are possible. Picks lock when the Sunday Grand Prix starts, and the game scores that race (the Saturday Sprint is not part of it).",
     classes:[
       { h:"Race", cars:[
         ["72", "Marco Bezzecchi", "Aprilia Racing", "", 21.9, "averaged top 18% of the field over his last 6 Sunday races", 0.818],
         ["93", "Marc Marquez", "Ducati Lenovo Team", "", 14.9, "averaged top 23% of the field over his last 6 Sunday races", 0.77],
         ["89", "Jorge Martin", "Aprilia Racing", "", 14.8, "averaged top 23% of the field over his last 6 Sunday races", 0.77],
         ["79", "Ai Ogura", "SuperFile Trackhouse MotoGP Team", "", 11.7, "averaged top 26% of the field over his last 6 Sunday races", 0.74],
-        ["25", "Raul Fernandez", "SuperFile Trackhouse MotoGP Team", "", 9.9, "averaged top 28% of the field over his last 6 Sunday races", 0.72],
+        ["25", "Raul Fernandez", "SuperFile Trackhouse MotoGP Team", "", 10.0, "averaged top 28% of the field over his last 6 Sunday races", 0.72],
         ["37", "Pedro Acosta", "Red Bull KTM Factory Racing", "", 5.3, "averaged top 36% of the field over his last 6 Sunday races", 0.641],
         ["23", "Enea Bastianini", "Red Bull KTM Tech3", "", 4.6, "averaged top 38% of the field over his last 6 Sunday races", 0.622],
         ["49", "Fabio Di Giannantonio", "Pertamina Enduro VR46 Racing Team", "", 2.8, "averaged top 44% of the field over his last 6 Sunday races", 0.56],
@@ -478,12 +478,12 @@ const ENTRIES = [
         ["27", "Iker Lecuona", "Ducati Lenovo Team", "", 0.9, "averaged top 58% of the field over his last 5 Sunday races", 0.421],
         ["44", "Pol Espargaro", "Red Bull KTM Tech3", "", 0.8, "averaged top 60% of the field over his last 6 Sunday races", 0.401],
         ["21", "Franco Morbidelli", "Pertamina Enduro VR46 Racing Team", "", 0.7, "averaged top 62% of the field over his last 6 Sunday races", 0.383],
+        ["5", "Johann Zarco", "Castrol Honda LCR", "", 0.5, "averaged top 68% of the field over his last 6 Sunday races", 0.317],
         ["43", "Jack Miller", "Prima Pramac Yamaha MotoGP", "", 0.5, "averaged top 77% of the field over his last 6 Sunday races", 0.229],
-        ["42", "Alex Rins", "Monster Energy Yamaha MotoGP Team", "", 0.5, "averaged top 68% of the field over his last 6 Sunday races", 0.316],
-        ["96", "Jake Dixon", "Honda HRC Castrol", "", 0.5, "averaged top 66% of the field over his last 2 Sunday races", 0.343],
         ["47", "Augusto Fernandez", "Prima Pramac Yamaha MotoGP", "", 0.5, "averaged top 73% of the field over his last 6 Sunday races", 0.271],
         ["11", "Diogo Moreira", "Pro Honda LCR", "", 0.5, "averaged top 80% of the field over his last 6 Sunday races", 0.198],
-        ["5", "Johann Zarco", "Castrol Honda LCR", "", 0.5, "averaged top 68% of the field over his last 6 Sunday races", 0.317]
+        ["36", "Joan Mir", "Honda HRC Castrol", "", 0.5, "averaged top 82% of the field over his last 6 Sunday races", 0.185],
+        ["42", "Alex Rins", "Monster Energy Yamaha MotoGP Team", "", 0.5, "averaged top 68% of the field over his last 6 Sunday races", 0.316]
       ] }
     ],
     note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-27. Win chances are our own estimate, not betting odds. (automatic update)" },

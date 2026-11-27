@@ -2304,4 +2304,31 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries (motogp.com, crash.net and autosport.com were not reachable directly from this environment) of crash.net's 'Retiring Marc Marquez leads Valencia MotoGP Practice with new lap record', cross-checked across two separate searches that agreed on the headline facts: Marquez's new lap record of 1:28.483, Bezzecchi second on 1:28.730 (0.247s back), Ogura up to third late, Acosta fifth despite a fall, and Martin taking the last automatic Q2 spot. The exact full top-10 order beyond third was not used here, since the sources checked disagreed with each other on it (a live-blog list and a separate results table gave different orders) -- only the cross-confirmed facts above are included, per the accuracy rule. Pol Espargaro continuing to stand in for an unwell Maverick Vinales at Tech3 (Vinales out since July 2026 with a shoulder injury from his 2025 Sachsenring crash, Espargaro filling in through most of the back half of the season) from a web search summary of Crash.net's and Speedweek's Vinales/Espargaro coverage; no Valencia-specific confirmation was found, so this is stated as a continuation of that ongoing arrangement rather than a new fact for this weekend. Marquez's retirement announcement, his eighth premier-class/tenth overall title, and the Portimao date carried over unchanged from the prior entry for this event. Circuit character, length and finale history, and the 2025 Valencia result, carried over unchanged from the prior entry. Remaining session times from data/valencia.js." }
+  ,{ t:"lusail", d:"2026-11-27", s:"f2", from:"2026-11-27",
+    at:"2026-11-27T16:23:48Z",
+    asOf:"Current after Friday's Formula 2 qualifying at Lusail (Nov 27) -- two red flags cut the session short, and F2 debutant Ugo Ugochukwu grabbed a surprise maiden pole; the title fight itself is unchanged, since no race has run yet this weekend.",
+    groups:[
+      { h:"Qualifying: a shock pole on debut, then two red flags end it early", items:[
+        ["Ugo Ugochukwu (Van Amersfoort Racing)", "Took pole on his F2 debut with a 1:35.818 -- only the third driver ever to do that in F2 -- for VAR's first pole position since joining the series in 2022."],
+        ["Gabriele Mini (MP Motorsport)", "Second, a 1:35.862, about 0.04s back -- had briefly held provisional pole himself before Ugochukwu's final run."],
+        ["Alex Dunne (Rodin Motorsport)", "Third-fastest, the best of the four title contenders in this session."],
+        ["Two red flags", "Sebastian Montoya (DAMS Lucas Oil) stopped on track with a loose right-rear wheel with about 5.5 minutes left; then Rafael Villagomez's stoppage brought out a second, final red flag with the clock almost out, and the session was not resumed."]
+      ] },
+      { h:"Where the other title contenders ended up", items:[
+        ["Nikola Tsolov (Campos Racing)", "Seventh -- means an inside-top-10 reverse-grid Sprint start, ahead of Dunne."],
+        ["Martinius Stenshorne (Rodin Motorsport)", "Tenth, right on the edge of the reverse-grid top 10 -- Dunne's team-mate."],
+        ["Rafael Camara (Invicta Racing)", "The championship leader did not make the top 10 in this session; his exact position was not confirmed in sources checked today."]
+      ] },
+      { h:"The title fight: a 7-point lead with two rounds left", items:[
+        ["Rafael Camara (Invicta Racing)", "Leads on 207 points coming into this weekend, after winning Baku's second Feature Race."],
+        ["Nikola Tsolov (Campos Racing)", "Second on 200, 7 points back."],
+        ["Alex Dunne (Rodin Motorsport)", "Third on 189, 18 back, after winning Baku's first Feature Race from pole -- still mathematically in it."],
+        ["Gabriele Mini (MP Motorsport)", "Fourth on 163, 44 back -- a longer shot with two rounds (this one and Abu Dhabi) to go."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Saturday Nov 28", "Sprint Race, 7:40pm, under the lights -- the top 10 from today's qualifying start in reverse order, so Stenshorne (10th) lines up on pole and Ugochukwu (1st) starts 10th."],
+        ["Sunday Nov 29", "Feature Race, 3:00pm, the weekend's main race and the one that moves the title fight most -- grid set by today's qualifying order."]
+      ] }
+    ],
+    note:"Sources: web search summaries of Motorsport Week's 'Ugo Ugochukwu storms to pole on F2 debut in thrilling Qatar qualifying' and lap-time table, RacingNews365's 2026 Qatar F2 qualifying results page, GPblog's 'Ugo Ugochukwu secures debut Pole Position in remarkable Qatar F2 Qualifying' and Dive-Bomb's 'Ugochukwu snatches famous pole position on F2 debut in Qatar', which agree on the top 10 (Ugochukwu, Mini, Dunne, Oliver Goethe, Noel Leon, John Bennett, Tsolov, Joshua Durksen, Freddie Slater, Stenshorne), Ugochukwu's 1:35.818 pole time and roughly 0.04s margin over Mini, and the two red flags (Montoya's loose right-rear wheel, then Villagomez's late stoppage that ended the session without a restart); none of these sites were reachable directly from this environment, so these are as summarized by search results. Rafael Camara's exact qualifying position was not found in any source checked today, so only 'outside the top 10' is stated, per the accuracy rule. Championship points and the Sprint reverse-grid mechanic carried over unchanged from the prior entry for this event (sourced there to data/standings.js, read 2026-10-26); no points have changed, since no race has run yet this weekend. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
 ];

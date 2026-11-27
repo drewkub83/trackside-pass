@@ -12,7 +12,7 @@ function activeEvent(t){ const today=trackToday(t); return t.events.find(e=>!/te
 /* an IMSA Endurance Cup round: the WeatherTech Championship races of six hours or more (Rolex 24, Sebring 12, the Glen 6, Road America 6, Petit Le Mans 10) */
 const ppIsEndu=(e,min)=>{ const m=/IMSA WeatherTech, (\d+) hours/.exec(e.s||""); return !!m&&+m[1]>=(min||6); };
 /* the GT World Challenge series whose stamps an Intercontinental GT Challenge round also earns: add a new series' id here when it is added to the app (and its stamp's `test` is s.series.has(<id>)) */
-const PP_IGTC_SERIES=["gtwca","gtwce"];
+const PP_IGTC_SERIES=["gtwca","gtwce","gtwcau","gtwcasia"];
 function ppStats(p){
   const ids=new Set(TRACKS.map(t=>t.id)), by={}; p.stamps.forEach(s=>{ if(ids.has(s.t)) (by[s.t]=by[s.t]||[]).push(s); });
   const visits={}; let full=false;
@@ -51,7 +51,7 @@ const PP_GLOBAL=[
   {id:"endcup",name:"Endurance Cup",desc:"Check in at an IMSA Endurance Cup weekend: the Rolex 24, Sebring 12 Hours, Six Hours of the Glen, Road America six-hour or Petit Le Mans.",icon:"moon",tier:"s",sty:"endcup",test:s=>s.endu},
   {id:"tour",name:"IMSA Grand Tour",desc:"Visit every venue on the IMSA schedule.",icon:"cup",tier:"g",sty:"imsa",test:s=>s.imsaVisited>=s.imsaTotal},
   /* Formula 1 */
-  {id:"f1street",name:"Street Legal",desc:"Check in at a Formula 1 weekend on a street circuit: Monaco, Singapore, Las Vegas, Baku, Jeddah or Miami.",icon:"city",tier:"s",sty:"f1street",test:s=>["monaco","marina-bay","las-vegas","baku","jeddah","miami"].some(i=>s.f1v.has(i))},
+  {id:"f1street",name:"Street Legal",desc:"Check in at a Formula 1 weekend on a street circuit: Monaco, Singapore, Las Vegas, Baku, Jeddah, Miami or Madrid.",icon:"city",tier:"s",sty:"f1street",test:s=>["monaco","marina-bay","las-vegas","baku","jeddah","miami","madrid"].some(i=>s.f1v.has(i))},
   {id:"f1night",name:"Under the Lights",desc:"Check in at a Formula 1 night race: Singapore, Las Vegas, Bahrain, Abu Dhabi, Jeddah or Qatar.",icon:"moon",tier:"s",sty:"f1night",test:s=>["marina-bay","las-vegas","bahrain","yas-marina","jeddah","lusail"].some(i=>s.f1v.has(i))},
   {id:"f1sprint",name:"Sprint Weekend",desc:"Check in at a Formula 1 weekend that has a Sprint race.",icon:"flag",tier:"s",sty:"f1sprint",test:s=>s.sprint},
   {id:"f1classic",name:"The Classics",desc:"Check in at Formula 1 weekends at Silverstone, Monza, Monaco and Suzuka.",icon:"cup",tier:"g",sty:"f1classic",test:s=>["silverstone","monza","monaco","suzuka"].every(i=>s.f1v.has(i))},

@@ -45,8 +45,9 @@ async function rlOpen(key){
     <label class="f">Who went with you</label><div id="rlWith">${rlWithHtml(log.with||[])}</div>
     ${top.length?`<div class="rcpStory"><h5>${esc(watchSeriesName(it.r)||it.r.event)}</h5>${top.map((l,i)=>`<p>${esc(String(l).replace(/^Winner:\s*/,"Winner: "))}</p>`).join("")}${games.length?`<p class="rcpAsOf">Your picks scored ${pts} of ${mx}.</p>`:""}</div>`:""}
     <div class="rlSeg" id="rlSeg">${rlSegHtml()}</div>${vd?`<div class="rlSeg" id="rlLen">${rlLenHtml()}</div>`:""}
-    <div class="rcpBtns"><button class="btn ${vd?"quiet":"primary"}" onclick="rlShare()">${ph?"Share card":"Share recap card"}</button>${vd?`<button class="btn primary" onclick="rlMakeVideo()">Make video card</button>`:""}<button class="btn quiet" onclick="closeInfo()">Close</button></div>
+    <div class="rcpBtns"><button class="btn primary" onclick="${vd?"rlMakeVideo()":ph?"rlShare()":"toast('Add a photo or video first')"}">${vd?"Share video card":"Share photo card"}</button></div>
     <div class="rlProg" id="rlProg" hidden></div>
+    <div class="rcpBtns"><button class="btn quiet" onclick="closeInfo()">Close</button></div>
     <p class="fine">Your photos, videos and note stay on this phone. Nothing is uploaded. Friends you tag see the tag in their app.</p>`);
   rlTagState={}; rlRefreshTagState();
 }
@@ -94,14 +95,17 @@ function rlShape(){ return LSget(K.rlShape,"feed")==="story"?1920:1350; }
 async function rlOverlay(r,W,H){
   try{ await document.fonts.ready; }catch(x){}
   const story=H>1500, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const g=cv.getContext("2d"), P=recapPalette(g); g.textBaseline="alphabetic";
+  const earnedAll=rlEarned(r).slice(0,12), imgsAll=earnedAll.length?await rlStampImages(earnedAll):[], stamps=imgsAll.filter(Boolean), ns=stamps.length;
+  /* the stamps sit in one tidy row along the bottom (above Instagram's bottom 250 px at Story size); the text moves up to make room */
+  const ssize=ns?Math.min(150,Math.floor((W-140)/ns)):0, sBottom=story?H-270:H-36, sTop=sBottom-ssize;
   let textMaxX=70, firstTextY=H; { const ft=g.fillText.bind(g); g.fillText=(t,x,yy,mw)=>{ if(x>=60&&x<=200){ textMaxX=Math.max(textMaxX,x+g.measureText(String(t)).width+(x>70?30:0)); firstTextY=Math.min(firstTextY,yy); } return ft(t,x,yy,mw); }; }
   let gr=g.createLinearGradient(0,0,0,H*.22); gr.addColorStop(0,"rgba(10,10,12,.55)"); gr.addColorStop(1,"rgba(10,10,12,0)"); g.fillStyle=gr; g.fillRect(0,0,W,H*.22);
-  gr=g.createLinearGradient(0,H,0,H*(story?.5:.38)); gr.addColorStop(0,"rgba(10,10,12,.93)"); gr.addColorStop(.55,"rgba(10,10,12,.78)"); gr.addColorStop(1,"rgba(10,10,12,0)"); g.fillStyle=gr; g.fillRect(0,H*(story?.5:.38),W,H*(story?.5:.62));
+  const gt=(story?.5:.38)-(ns?.09:0); gr=g.createLinearGradient(0,H,0,H*gt); gr.addColorStop(0,"rgba(10,10,12,.93)"); gr.addColorStop(.55,"rgba(10,10,12,.78)"); gr.addColorStop(1,"rgba(10,10,12,0)"); g.fillStyle=gr; g.fillRect(0,H*gt,W,H*(1-gt));
   const acc="#F6A04D", light="#FFFFFF", fit=(t,wd)=>{ t=String(t); if(g.measureText(t).width<=wd) return t; while(g.measureText(t+"…").width>wd&&t.length>4) t=t.slice(0,-1); return t.trim()+"…"; };
   const sun=sunOf(eventEnd(r.e)), it=recapItems(sun,null).find(i=>i.t.id===r.t.id), log=rlLoad()[r.key]||{};
   if(r.was){ g.save(); g.translate(W-165,story?340:165); g.rotate(-8*Math.PI/180); g.fillStyle="rgba(10,10,12,.38)"; g.beginPath(); g.arc(0,0,98,0,7); g.fill(); g.strokeStyle=acc; g.lineWidth=8; g.stroke();
     g.fillStyle=acc; g.textAlign="center"; g.font=`800 33px ${P.fontD}`; g.fillText("I WAS",0,-10); g.fillText("THERE",0,28); g.font=`700 21px ${P.fontB}`; g.fillText(String(r.e.d).slice(0,4),0,62); g.restore(); g.textAlign="left"; }
-  let y=H-(story?270:70); g.fillStyle="rgba(255,255,255,.72)"; g.font=`600 26px ${P.fontB}`; g.fillText("TRACKSIDE PASS  ·  TRACKSIDEPASS.COM",70,y); y-=56;
+  let y=ns?sTop-44:H-(story?270:70); g.fillStyle="rgba(255,255,255,.72)"; g.font=`600 26px ${P.fontB}`; g.fillText("TRACKSIDE PASS  ·  TRACKSIDEPASS.COM",70,y); y-=56;
   if(log.note){ g.fillStyle="rgba(255,255,255,.9)"; g.font=`italic 400 32px ${P.fontB}`; const words=log.note.split(/\s+/); let line="", lines=[]; words.forEach(wd=>{ const t=line?line+" "+wd:wd; if(g.measureText(t).width>W-160){ lines.push(line); line=wd; } else line=t; }); if(line) lines.push(line);
     const cut=lines.length>2; lines=lines.slice(0,2); if(cut) lines[1]=fit(lines[1]+"…",W-160); lines[0]="“"+lines[0]; lines[lines.length-1]+="”";
     for(let i=lines.length-1;i>=0;i--){ g.fillText(lines[i],70,y); y-=44; } y-=10; }
@@ -119,27 +123,12 @@ async function rlOverlay(r,W,H){
     while((g.measureText(l1).width>W-140||g.measureText(l2).width>W-140)&&fs>56){ fs-=6; g.font=`800 ${fs}px ${P.fontD}`; }
     g.fillStyle=light; if(l2){ g.fillText(l2,70,y); y-=fs*1.02; } g.fillText(l1,70,y); y-=fs+26; }
   g.fillStyle=acc; g.font=`700 28px ${P.fontB}`; g.fillText(r.was?"MY RACE WEEKEND":"RACE WEEKEND",70,y);
-  /* every stamp earned that weekend, scattered like a passport page: random angles, around the top and the sides of the photo, a little over the edge, never over the text or the I WAS THERE stamp. The layout is seeded by the race, so the card and the video always match. */
-  const earned=rlEarned(r).slice(0,12);
-  if(earned.length){ const imgs=await rlStampImages(earned), limit=y-70, avoid=r.was?{x:W-165,y:story?340:165,r:118}:null;
-    let sd=0; String(r.key).split("").forEach(ch=>{ sd=(sd*31+ch.charCodeAt(0))>>>0; }); const rnd=()=>{ sd=(sd+0x6D2B79F5)>>>0; let t=sd; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; };
-    const placed=[], base=earned.length>8?118:earned.length>5?136:154, textTop=firstTextY-44, textBot=story?H-270+34:H, textRight=textMaxX+36;
-    /* a circle clear of the text block (a rectangle), the I WAS THERE stamp and the stamps already placed; only around the edges (top, sides, and the lower corners and bottom where there is room) */
-    const clearOfText=(cx,cy,sz)=>{ const nx=Math.max(30,Math.min(cx,textRight)), ny=Math.max(textTop,Math.min(cy,textBot)); return Math.hypot(cx-nx,cy-ny)-sz*.46; };
-    earned.forEach((e,i)=>{ const im=imgs[i]; if(!im) return; const size=Math.round(i===0?base*1.22:base*(0.9+rnd()*0.25)); let best=null;
-      const ymin=story?250+size*.42:size*.25, band=Math.min(250,W*.24);
-      for(let k=0;k<500;k++){ const cx=size*.3+rnd()*(W-size*.6), cy=ymin+rnd()*(H-ymin-size*.28);
-        const edge=Math.min(cx,W-cx)<band||cy<ymin+size*1.1||(story&&cy>H-250)||cy>H-size*.9;
-        if(!edge) continue; const tg=clearOfText(cx,cy,size); if(tg<0) continue;
-        let gap=tg+20; if(avoid) gap=Math.min(gap,Math.hypot(cx-avoid.x,cy-avoid.y)-(size/2+avoid.r)); if(gap<-10) continue;
-        let sep=1e9; placed.forEach(q=>{ sep=Math.min(sep,Math.hypot(cx-q.cx,cy-q.cy)-(size+q.size)*.34); });
-        const score=Math.min(sep,300)+Math.min(gap,120)*.2; if(!best||score>best.score) best={cx,cy,score}; }
-      if(!best) return; placed.push({cx:best.cx,cy:best.cy,size,rot:(rnd()-.5)*.9,im}); });
-    const L=rlStampLook;
-    placed.forEach(q=>{ g.save(); g.translate(q.cx,q.cy); g.rotate(q.rot);
-      if(L.paper>0){ if(L.shadow){ g.shadowColor=`rgba(0,0,0,${L.shadow})`; g.shadowBlur=14; g.shadowOffsetY=3; } g.fillStyle=`rgba(243,237,224,${L.paper})`; g.beginPath(); g.arc(0,0,q.size/2,0,7); g.fill(); g.shadowColor="transparent";
+  /* every stamp earned that weekend, in one row along the bottom (up to 12, shrunk to fit), left-aligned with the text */
+  if(ns){ const L=rlStampLook, gap=ns>1?Math.min(16,(W-140-ns*ssize)/(ns-1)):0;
+    stamps.forEach((im,i)=>{ const cx=70+ssize/2+i*(ssize+gap), cy=sBottom-ssize/2; g.save(); g.translate(cx,cy);
+      if(L.paper>0){ if(L.shadow){ g.shadowColor=`rgba(0,0,0,${L.shadow})`; g.shadowBlur=14; g.shadowOffsetY=3; } g.fillStyle=`rgba(243,237,224,${L.paper})`; g.beginPath(); g.arc(0,0,ssize/2,0,7); g.fill(); g.shadowColor="transparent";
         if(L.ring){ g.strokeStyle=`rgba(243,237,224,${L.ring})`; g.lineWidth=3; g.stroke(); } }
-      g.globalAlpha=L.ink; g.globalCompositeOperation=L.blend||"source-over"; g.drawImage(q.im,-q.size/2+q.size*.05,-q.size/2+q.size*.05,q.size*.9,q.size*.9); g.restore(); }); }
+      g.globalAlpha=L.ink; g.globalCompositeOperation=L.blend||"source-over"; g.drawImage(im,-ssize/2+ssize*.05,-ssize/2+ssize*.05,ssize*.9,ssize*.9); g.restore(); }); }
   return cv;
 }
 async function rlCardBlob(r,photo,H){
@@ -214,7 +203,7 @@ async function rlMakeVideo(){
   const blob=new Blob(chunks,{type:mime.split(";")[0]}); if(blob.size<20000){ say("The recording came out empty on this phone."); return; }
   const ext=blob.type==="video/mp4"?"mp4":"webm"; rlVid={blob,file:new File([blob],"trackside-pass-race."+ext,{type:blob.type}),title:r.e.e};
   if(rlVidUrl) URL.revokeObjectURL(rlVidUrl); rlVidUrl=URL.createObjectURL(blob);
-  if(prog){ prog.hidden=false; prog.innerHTML=`<video class="rlVidPrev" src="${rlVidUrl}" controls playsinline loop></video><div class="rcpBtns"><button class="btn primary" onclick="rlShareVideo()">Share</button><button class="btn quiet" onclick="rlSaveVideo()">Save to my phone</button></div><small>${(blob.size/1048576).toFixed(1)} MB · ${ext.toUpperCase()}. Play it to check it before you share.</small>`; const v=prog.querySelector("video"); if(v) v.scrollIntoView({block:"center"}); }
+  if(prog){ prog.hidden=false; prog.innerHTML=`<video class="rlVidPrev" src="${rlVidUrl}" controls playsinline loop autoplay muted></video><div class="rcpBtns"><button class="btn primary" onclick="rlShareVideo()">Share</button><button class="btn quiet" onclick="rlSaveVideo()">Save to my phone</button></div><small>${(blob.size/1048576).toFixed(1)} MB · ${ext.toUpperCase()}.</small>`; const v=prog.querySelector("video"); if(v) v.scrollIntoView({block:"center"}); }
 }
 let rlVid=null, rlVidUrl=null;
 async function rlShareVideo(){ if(!rlVid) return; const f=rlVid.file;
@@ -266,10 +255,13 @@ async function rlMakeNative(r,vid,P,say){
   let b64; try{ const ov=await rlOverlay(r,1080,1920); b64=await new Promise(ok=>ov.toBlob(b=>{ const fr=new FileReader(); fr.onload=()=>ok(String(fr.result).split(",")[1]); fr.readAsDataURL(b); },"image/png")); }catch(e){ say("Could not draw the card."); return; }
   let h=null; try{ h=await P.addListener("progress",e=>say(`Making your video card… ${Math.round(Math.min(1,e.p||0)*100)}%`)); }catch(e){}
   try{ const res=await P.makeVideoCard({id:vid.id,overlay:b64,seconds:len,width:1080,height:1920}); rlNativeOut=res.path;
-    const prog=document.getElementById("rlProg"); if(prog){ prog.hidden=false; prog.innerHTML=`<div class="rcpBtns"><button class="btn primary" onclick="rlNativeShare()">Share</button><button class="btn quiet" onclick="rlNativePlay()">Play it first</button></div><small>${(res.bytes/1048576).toFixed(1)} MB · MP4 · ${Math.round(res.seconds)} s, made in ${((Date.now()-t0)/1000).toFixed(1)} s.</small>`; } }
+    const prog=document.getElementById("rlProg"); if(prog){ prog.hidden=false; prog.innerHTML=rlNativeDemo(res)+`<small>${(res.bytes/1048576).toFixed(1)} MB · MP4 · ${Math.round(res.seconds)} s, made in ${((Date.now()-t0)/1000).toFixed(1)} s.</small>`; const v=prog.querySelector("video"); if(v) v.scrollIntoView({block:"nearest"}); } }
   catch(e){ say("Could not make the video: "+String((e&&e.message)||e).slice(0,120)); }
   finally{ try{ if(h&&h.remove) await h.remove(); }catch(e){} }
 }
+/* the finished card plays right here as a demo (no separate play step); if the page cannot load the file, a tap opens the phone's own player */
+function rlNativeDemo(res){ const c=window.Capacitor, src=c&&c.convertFileSrc?c.convertFileSrc(res.path):"";
+  return `<div class="rlDemoW"><video class="rlVidPrev" ${src?`src="${src}"`:""} controls playsinline loop autoplay muted onerror="this.hidden=true;this.nextElementSibling.hidden=false"></video><button class="btn quiet" hidden onclick="rlNativePlay()">Play the video</button></div><div class="rcpBtns"><button class="btn quiet" onclick="rlNativeShare()">Share</button></div>`; }
 function rlNativeShare(){ const P=rlNative(); if(P&&rlNativeOut) P.shareFile({path:rlNativeOut}).catch(()=>{}); }
 function rlNativePlay(){ const P=rlNative(); if(P&&rlNativeOut) P.previewVideo({path:rlNativeOut}).catch(()=>{}); }
 

@@ -166,7 +166,8 @@ function rlWithHtml(list){
   const fr=((typeof acct!=="undefined"&&acct&&acct.friends)||[]).filter(f=>rlSignedIn()||true), has=n=>list.some(x=>x.n.toLowerCase()===String(n).toLowerCase());
   const chips=list.map((x,i)=>{ const st=x.id&&rlTagState[x.id]; return `<button class="rlChip on" onclick="rlWithRemove(${i})" aria-label="Remove ${esc(x.n)}">${esc(x.n)}${st?` <em>${st==="joined"?"joined":"tag sent"}</em>`:""} <i>&times;</i></button>`; }).join("");
   const sug=fr.filter(f=>!has(f.display_name)).slice(0,12).map(f=>`<button class="rlChip" onclick="rlWithAddFriend('${esc(f.id)}','${esc(f.display_name).replace(/'/g,"&#39;")}')">+ ${esc(f.display_name)}</button>`).join("");
-  return `<div class="rlChips">${chips}${sug}</div><div class="rlWithAdd"><input id="rlWithIn" class="rlSearch" type="text" maxlength="24" placeholder="Add a name (a friend, family, anyone)" onkeydown="if(event.key==='Enter'){event.preventDefault();rlWithAdd()}"><button class="btn quiet" onclick="rlWithAdd()">Add</button></div>`;
+  const hint=!rlSignedIn()?`<p class="fine rlHint">Sign in (the account screen) to tag friends, so the race can show up in their log too. Typed names always work.</p>`:(fr.length?"":`<p class="fine rlHint">${rlFriendsLoaded?"No friends in the app yet. Add one in the account screen and they appear here to tag.":"Looking for your friends…"}</p>`);
+  return `<div class="rlChips">${chips}${sug}</div>${hint}<div class="rlWithAdd"><input id="rlWithIn" class="rlSearch" type="text" maxlength="24" placeholder="Add a name (a friend, family, anyone)" onkeydown="if(event.key==='Enter'){event.preventDefault();rlWithAdd()}"><button class="btn quiet" onclick="rlWithAdd()">Add</button></div>`;
 }
 function rlWithSet(list){ if(!rlCur) return; const o=rlLoad(); o[rlCur.key]=Object.assign({},o[rlCur.key],{with:list}); if(!list.length) delete o[rlCur.key].with; rlSave(o); const el=document.getElementById("rlWith"); if(el) el.innerHTML=rlWithHtml(list); }
 function rlWithGet(){ return ((rlLoad()[rlCur&&rlCur.key]||{}).with||[]).slice(); }
@@ -274,8 +275,10 @@ function rlNativePlay(){ const P=rlNative(); if(P&&rlNativeOut) P.previewVideo({
 /* ---- tagging friends ---- */
 function rlSignedIn(){ try{ return typeof sbOn==="function"&&sbOn()&&!!sbSession(); }catch(e){ return false; } }
 let rlTagState={}, rlPending=[];
+let rlFriendsLoaded=false;
 async function rlRefreshTagState(){
   if(!rlSignedIn()||!rlCur) return; const cur=rlCur;
+  if(typeof acct!=="undefined"&&!(acct.friends&&acct.friends.length)){ try{ acct.friends=await sbRpc("my_friends")||[]; }catch(e){} rlFriendsLoaded=true; const el0=document.getElementById("rlWith"); if(el0) el0.innerHTML=rlWithHtml(rlWithGet()); } else rlFriendsLoaded=true;
   try{ const rows=await sbRpc("race_with",{p_track:cur.t.id,p_ev:cur.e.d})||[]; if(rlCur!==cur) return; rlTagState={}; rows.forEach(x=>{ rlTagState[x.user_id]=x.state; });
     const l=rlWithGet(); let ch=false; rows.forEach(x=>{ if(x.state==="joined"&&!l.some(y=>y.id===x.user_id||y.n.toLowerCase()===String(x.display_name).toLowerCase())&&l.length<8){ l.push({id:x.user_id,n:x.display_name}); ch=true; } });
     if(ch) rlWithSet(l); else { const el=document.getElementById("rlWith"); if(el) el.innerHTML=rlWithHtml(l); } }catch(e){}

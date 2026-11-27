@@ -7,6 +7,8 @@ Entry format (newest first, under OPEN):
 
 ## OPEN
 
+- 2026-11-27T14:30Z | What to watch dispatcher | `node tools/due_updates.js` flags sebring 2026-12-02 s:"nascar" why:"preview" | not an error line -- the NASCAR Cup Series match regex `/NASCAR/i` in data/series.js (id:"nascar") matches the session name "Qualifying 1/2 - HSR NASCAR Classic" etc. at the HSR Sebring Classic 12 Hour (a vintage/historic HSR weekend, noWatch, data/sebring.js events d:"2026-12-02"), a class of classic stock cars inside an HSR meeting, not a real NASCAR Cup Series race. | Did not write a What to watch preview for it (there is no real Cup Series race to preview, and inventing one would be false); this will re-surface as "due" every hour until fixed. Likely fix: rename the HSR session(s) to avoid the literal word "NASCAR" (the same way the O'Reilly/Craftsman Trucks support series already do, per CLAUDE.md), or exclude HSR-prefixed session names from the nascar match in data/series.js/tools/due_updates.js.
+
 ## RESOLVED
 
 - 2026-11-27T12:23Z | What to watch dispatcher | `node tools/due_updates.js` | `TypeError: Cannot read properties of undefined (reading 'events')` | Fixed the same day: the new `data/news.js` was being read as a track file; `news.js` added to every tool's list of non-track files (commit dad947f).

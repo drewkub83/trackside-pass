@@ -4,7 +4,7 @@
   "indycar": "ok",
   "gtwca": "ok",
   "gtwce": "ok",
-  "f1": "ok",
+  "f1": "unreachable: HTTP Error 530: <none>",
   "nascar": "ok",
   "motogp": "ok"
  },

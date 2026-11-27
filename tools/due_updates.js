@@ -32,7 +32,7 @@ const NOW = new Date(arg("--now", new Date().toISOString())), HOURS = +arg("--ho
 const load = (f, name, pre = "") => new Function(pre + fs.readFileSync(path.join(ROOT, f), "utf8") + `;return ${name}`)();
 const SERIES = load("data/series.js", "SERIES"), WATCH = load("data/watch.js", "WATCH"), RESULTS = load("data/results.js", "RESULTS"), HEADLINES = load("data/results.js", "HEADLINES");
 const CHAMPS = load("data/champs.js", "CHAMPS"), MAIN = new Set(CHAMPS.filter(c => !c.viaSupport).map(c => c.guide || c.id));   // main series only get headlines (support series would cost usage for little)
-const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js"];
+const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js", "news.js"];
 const tracks = fs.readdirSync(path.join(ROOT, "data")).filter(f => f.endsWith(".js") && !NON.includes(f)).map(f => { const T = []; new Function("TRACKS", fs.readFileSync(path.join(ROOT, "data", f), "utf8"))(T); return T[0]; });
 const kindOf = n => /qualifying/i.test(n) ? "qualifying" : /practice/i.test(n) ? "practice" : "race";
 const seriesFor = n => { const s = SERIES.find(x => x.match.test(n)); return s && !s.noWatch ? s : null; };   // noWatch = guide-only series (data/series.js): never due

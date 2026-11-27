@@ -38,7 +38,7 @@ DISCOVER_SERIES = {"gtwce": (r"GT World Challenge Europe|24 Hours of Spa", r"End
 def create_entries():
     """Create entries/entries for GT World Europe Endurance weekends that start within 8 days, are in the app's track data and have an official entry list."""
     have = {(e["t"], e["d"]) for e in entries}; today = now.date(); made = []
-    events = node("""const fs=require('fs');const out=[];const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];
+    events = node("""const fs=require('fs');const out=[];const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js','news.js'];
 for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\.js$/.test(f)||skip.includes(f)) continue; const TRACKS=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(TRACKS); }catch(e){ continue; }
  const t=TRACKS[0]; if(!t||!t.events) continue; for(const e of t.events) out.push({t:t.id,d:e.d,n:e.t||1,e:e.e||'',s:e.s||''}); } console.log(JSON.stringify(out))""")
     for sid, (m_all, m_kind) in DISCOVER_SERIES.items():

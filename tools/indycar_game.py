@@ -135,7 +135,7 @@ def build(race, history, track):
 OVAL_TRACKS = {"indianapolis-oval", "phoenix", "wwt-raceway", "milwaukee-mile"}
 def app_events(today):
     """INDYCAR weekends in the app that start within 8 days or are under way: [{t, d, n, e}] (the app's calendar drives this, because INDYCAR's service has no race to read before its schedule is loaded)."""
-    js_txt = """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];const out=[];
+    js_txt = """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js','news.js'];const out=[];
 for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue } const t=T[0]; if(!t) continue;
  for(const e of t.events||[]) if(/INDYCAR/i.test(e.s||'')) out.push({t:t.id,d:e.d,n:e.t||1,e:e.e||''}); } console.log(JSON.stringify(out))"""
     import subprocess

@@ -13,7 +13,7 @@ const ROOT = path.join(__dirname, "..");
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : d; };
 const NOW = new Date(arg("--now", new Date().toISOString())), AHEAD = +arg("--ahead", 21);
 const CHAMPS = new Function(fs.readFileSync(path.join(ROOT, "data/champs.js"), "utf8") + ";return CHAMPS")();
-const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js"];
+const NON = ["champs.js", "series.js", "results.js", "standings.js", "watch.js", "entries.js", "news.js"];
 const tracks = fs.readdirSync(path.join(ROOT, "data")).filter(f => f.endsWith(".js") && !NON.includes(f)).map(f => { const T = []; new Function("TRACKS", fs.readFileSync(path.join(ROOT, "data", f), "utf8"))(T); return T[0]; });
 const addDays = (d, n) => { const x = new Date(d + "T12:00:00Z"); x.setUTCDate(x.getUTCDate() + n); return x.toISOString().slice(0, 10); };
 const inChamp = (c, e) => { const hay = c.viaSupport ? (e.support || []).join(" | ") : (e.s || ""); return c.match.test(hay) && !(c.skip && c.skip.test(hay)); };

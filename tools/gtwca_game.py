@@ -123,7 +123,7 @@ def main():
     cands = []
     if forced: cands = [(opt("--track"), forced)]
     else:
-        js_txt = """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];const out=[];
+        js_txt = """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js','news.js'];const out=[];
 for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue } const t=T[0]; if(!t) continue;
  for(const e of t.events||[]) if(/GT World Challenge America|Texas 8 Hour/i.test((e.s||'')+' '+(e.e||''))) out.push({t:t.id,d:e.d}); } console.log(JSON.stringify(out))"""
         import subprocess

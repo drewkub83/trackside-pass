@@ -11,7 +11,7 @@ def read(rel): return open(os.path.join(ROOT, rel), encoding="utf8").read()
 def write(rel, s): open(os.path.join(ROOT, rel), "w", encoding="utf8").write(s)
 
 def track_events():
-    js = """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];const out={};
+    js = """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js','news.js'];const out={};
 for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue }
  const t=T[0]; if(t) out[t.id]=(t.events||[]).map(e=>({d:e.d,t:e.t||1,e:e.e||''})); } console.log(JSON.stringify(out))"""
     return json.loads(subprocess.run(["node", "-e", js], capture_output=True, text=True, cwd=ROOT, check=True).stdout)

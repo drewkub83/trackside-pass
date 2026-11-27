@@ -77,7 +77,7 @@ def result_entry(track, day, event, tabs, src):
     note = f"{MARK} Source: fiawec.com race summary page ({src}), full classification of each class, read {now.date().isoformat()}."
     return f'  {{ t:{js(track)}, d:{js(day)}, s:"wec", event:{js(event)},\n    groups:[\n{body}\n    ],\n    note:{js(note)} }}'
 def do_results():
-    evs = json.loads(subprocess.run(["node", "-e", """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js'];const out=[];
+    evs = json.loads(subprocess.run(["node", "-e", """const fs=require('fs');const skip=['champs.js','series.js','results.js','entries.js','standings.js','watch.js','news.js'];const out=[];
 for(const f of fs.readdirSync('data')){ if(!/^[a-z0-9-]+\\.js$/.test(f)||skip.includes(f)) continue; const T=[]; try{ new Function('TRACKS',fs.readFileSync('data/'+f,'utf8'))(T); }catch(e){ continue } const t=T[0]; if(!t) continue;
  for(const e of t.events||[]) if(/FIA WEC|World Endurance/i.test(e.s||'')) out.push({t:t.id,d:e.d,n:e.t||1,e:e.e||''}); } console.log(JSON.stringify(out))"""], capture_output=True, text=True, cwd=D.ROOT).stdout or "[]")
     todo = []

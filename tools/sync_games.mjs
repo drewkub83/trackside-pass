@@ -17,7 +17,7 @@ const RESULTS = new Function(read("data/results.js") + ";return RESULTS")();
 const SERIES = new Function(read("data/series.js") + ";return SERIES")();
 const tracks = {};
 for (const f of fs.readdirSync(path.join(ROOT, "data"))) {
-  if (!/^[a-z0-9-]+\.js$/.test(f) || ["champs.js", "series.js", "results.js", "entries.js", "standings.js", "watch.js"].includes(f)) continue;
+  if (!/^[a-z0-9-]+\.js$/.test(f) || ["champs.js", "series.js", "results.js", "entries.js", "standings.js", "watch.js", "news.js"].includes(f)) continue;
   const T = []; try { new Function("TRACKS", read("data/" + f))(T); } catch (e) { continue; }
   if (T[0]) tracks[T[0].id] = T[0];
 }

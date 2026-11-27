@@ -27,6 +27,7 @@
 		BC903C3FEFB8CEAE899A4D79 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDEAB01369C465D266F6C8 /* Foundation.framework */; };
 		EEF3008548F034CBFE4E8C45 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 390CBA28BB17BC86AAE4F698 /* WidgetKit.framework */; };
 		F5057B292A7DD198889D0B57 /* LiveSessionPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CE031EA0BCB6E1D9879141 /* LiveSessionPlugin.swift */; };
+		B1C2D3E4F5061728394A5B6C /* VideoCardPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* VideoCardPlugin.swift */; };
 		FE16C351F5AF134E5B68AC3A /* LiveSessionAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022A5DA53093F5D249D0BCD5 /* LiveSessionAttributes.swift */; };
 /* End PBXBuildFile section */
 
@@ -56,6 +57,7 @@
 
 /* Begin PBXFileReference section */
 		01CE031EA0BCB6E1D9879141 /* LiveSessionPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveSessionPlugin.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5C /* VideoCardPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VideoCardPlugin.swift; sourceTree = "<group>"; };
 		022A5DA53093F5D249D0BCD5 /* LiveSessionAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveSessionAttributes.swift; sourceTree = "<group>"; };
 		1CE8891105A35E8C01302BE4 /* TracksideLive.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TracksideLive.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				50B271D01FEDC1A000F3C39B /* public */,
 				022A5DA53093F5D249D0BCD5 /* LiveSessionAttributes.swift */,
 				01CE031EA0BCB6E1D9879141 /* LiveSessionPlugin.swift */,
+				A1B2C3D4E5F60718293A4B5C /* VideoCardPlugin.swift */,
 				67D4C6E64F9485C6A5CD1626 /* MainViewController.swift */,
 			);
 			path = App;
@@ -297,6 +300,7 @@
 				9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */,
 				FE16C351F5AF134E5B68AC3A /* LiveSessionAttributes.swift in Sources */,
 				F5057B292A7DD198889D0B57 /* LiveSessionPlugin.swift in Sources */,
+				B1C2D3E4F5061728394A5B6C /* VideoCardPlugin.swift in Sources */,
 				A5A96C38B368344C88BA0CA0 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

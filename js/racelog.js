@@ -33,13 +33,13 @@ async function rlRender(){
 }
 let rlCur=null, rlCurUrl=null, rlCurVid=null;
 async function rlOpen(key){
-  const r=rlEntries().find(x=>x.key===key); if(!r) return; rlCur=r; const log=rlLoad()[key]||{}, ph=await rlGetPhoto(key), vd=await rlGetPhoto(key+"#v");
+  const r=rlEntries().find(x=>x.key===key); if(!r) return; rlCur=r; const log=rlLoad()[key]||{}, ph=await rlGetPhoto(key), vdWeb=await rlGetPhoto(key+"#v"), vid=log.vid||null, vd=vdWeb||(vid?{size:vid.bytes||0}:null);
   if(rlCurUrl){ URL.revokeObjectURL(rlCurUrl); rlCurUrl=null; } if(rlCurVid){ URL.revokeObjectURL(rlCurVid); rlCurVid=null; } if(ph) rlCurUrl=URL.createObjectURL(ph); if(vd) rlCurVid=URL.createObjectURL(vd);
   const sun=sunOf(eventEnd(r.e)), items=recapItems(sun,null).filter(i=>i.t.id===r.t.id), it=items[0], top=it?recapTop(it.r.groups[0],3):[];
   const games=it?recapGames(r.t,r.e,it.r.s):[], pts=games.reduce((n,x)=>n+x.sc.pts,0), mx=games.reduce((n,x)=>n+x.sc.max,0);
   setInfo(`<div class="mkick">${r.was?"I was there":"Marked going"}</div><h3 id="infoTitle">${esc(r.e.e)}</h3><p class="plRules">${esc(r.t.short)} · ${esc(fmtRange(r.e))}</p>
-    <div class="rlPhoto">${vd&&rlCurVid?`<video class="rlMedia" src="${rlCurVid}" controls playsinline muted preload="metadata"></video>`:rlCurUrl?`<img src="${rlCurUrl}" alt="Your photo">`:`<div class="rlNo">No photo or video yet</div>`}</div>
-    <div class="rcpBtns"><button class="btn quiet" onclick="document.getElementById('rlFile').click()">${ph||vd?"Change photo or video":"Add photo or video"}</button>${ph||vd?`<button class="btn quiet" onclick="rlRemoveMedia()">Remove</button>`:""}</div>
+    <div class="rlPhoto">${vdWeb&&rlCurVid?`<video class="rlMedia" src="${rlCurVid}" controls playsinline muted preload="metadata"></video>`:rlCurUrl?`<img src="${rlCurUrl}" alt="${vid?"First frame of your clip":"Your photo"}">${vid?`<div class="rlClipTag">Video clip${vid.dur?" · "+Math.round(vid.dur)+" s":""}</div>`:""}`:`<div class="rlNo">No photo or video yet</div>`}</div>
+    <div class="rcpBtns"><button class="btn quiet" onclick="rlAddMedia()">${ph||vd?"Change photo or video":"Add photo or video"}</button>${ph||vd?`<button class="btn quiet" onclick="rlRemoveMedia()">Remove</button>`:""}</div>
     <input type="file" id="rlFile" accept="image/*,video/*" hidden onchange="rlPickMedia(this)">
     <label class="f" for="rlNote">Your note</label><textarea id="rlNote" class="rlNote" rows="3" maxlength="500" placeholder="Where you sat, what you remember" onblur="rlSaveNote()">${esc(log.note||"")}</textarea>
     <label class="f">Who went with you</label><div id="rlWith">${rlWithHtml(log.with||[])}</div>
@@ -173,6 +173,7 @@ function rlSetShape(v){ LSset(K.rlShape,v); const el=document.getElementById("rl
 /* an optional video clip per race (IndexedDB key "<race>#v"), kept as picked; "Make video card" records it with the card's text over it, 1080x1920, at most 15 seconds, in real time */
 async function rlMakeVideo(){
   if(!rlCur) return; rlSaveNote(); const r=rlCur, vb=await rlGetPhoto(r.key+"#v"), prog=document.getElementById("rlProg"), say=t=>{ if(prog){ prog.hidden=false; prog.textContent=t; } };
+  { const nv=(rlLoad()[r.key]||{}).vid, NP=rlNative(); if(nv&&NP) return rlMakeNative(r,nv,NP,say); }
   if(!vb){ toast("Add a video clip first"); return; }
   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){ say("This phone cannot make a video card yet. The photo card still works."); return; }
   const mime=["video/mp4;codecs=avc1.42E01E,mp4a.40.2","video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"].find(m=>MediaRecorder.isTypeSupported(m));
@@ -205,6 +206,21 @@ async function rlShareVideo(){ if(!rlVid) return; const f=rlVid.file;
 function rlSaveVideo(){ if(!rlVid) return; const a=document.createElement("a"); a.href=rlVidUrl; a.download=rlVid.file.name; document.body.appendChild(a); a.click(); a.remove(); toast("Video saved"); }
 
 /* one button for both: a photo is shrunk and kept; a video clip is kept as picked (up to 300 MB) and its first frame is kept as the photo, so the list, the still card and the video card all work. The newest pick replaces the other kind. */
+/* inside the iPhone app the native plugin picks the media (PHPicker), keeps a clip as a real file and makes the video card in a second or two; anywhere else the web input and the recorder below do it */
+function rlNative(){ const c=window.Capacitor; return (c&&c.isNativePlatform&&c.isNativePlatform()&&c.Plugins&&c.Plugins.VideoCard)||null; }
+const rlB64Blob=(b64,type)=>fetch("data:"+type+";base64,"+b64).then(r=>r.blob());
+async function rlAddMedia(){
+  const P=rlNative(); if(!P||!rlCur){ const f=document.getElementById("rlFile"); if(f) f.click(); return; }
+  rlSaveNote(); const key=rlCur.key; let res; try{ res=await P.pickMedia(); }catch(e){ toast("Could not open your library"); return; }
+  if(!res||res.cancelled) return;
+  const o=rlLoad(), old=(o[key]||{}).vid; o[key]=Object.assign({},o[key]);
+  try{
+    if(res.kind==="video"){ await rlDelPhoto(key+"#v"); if(old&&old.id&&old.id!==res.id) P.deleteVideo({id:old.id}).catch(()=>{});
+      o[key].vid={id:res.id,dur:res.dur,w:res.w,h:res.h,bytes:res.bytes}; if(res.poster) await rlPutPhoto(key,await rlB64Blob(res.poster,"image/jpeg")); else await rlDelPhoto(key); toast("Clip saved on this phone"); }
+    else if(res.kind==="image"){ await rlPutPhoto(key,await rlB64Blob(res.image,"image/jpeg")); await rlDelPhoto(key+"#v"); if(old&&old.id) P.deleteVideo({id:old.id}).catch(()=>{}); delete o[key].vid; toast("Photo saved on this phone"); }
+  }catch(e){ toast("Could not save that (is the phone full?)"); return; }
+  rlSave(o); await rlOpen(key); rlRender();
+}
 async function rlPoster(file){
   const v=document.createElement("video"); v.muted=true; v.playsInline=true; v.preload="auto"; v.src=URL.createObjectURL(file);
   try{ await new Promise((ok,no)=>{ v.onloadeddata=ok; v.onerror=()=>no(new Error("v")); setTimeout(()=>no(new Error("t")),15000); }); v.currentTime=Math.min(0.2,(v.duration||1)/2); await new Promise(ok=>{ v.onseeked=ok; setTimeout(ok,2000); });
@@ -216,12 +232,26 @@ async function rlPickMedia(inp){
   try{
     if(isVid){ if(f.size>300*1048576){ toast("That clip is over 300 MB: pick a shorter one"); return; }
       toast("Saving your clip…"); await rlPutPhoto(key+"#v",f); const post=await rlPoster(f); if(post) await rlPutPhoto(key,post); else await rlDelPhoto(key); toast("Clip saved on this phone"); }
-    else { const b=await rlShrink(f); await rlPutPhoto(key,b); await rlDelPhoto(key+"#v"); toast("Photo saved on this phone"); }
+    else { const b=await rlShrink(f); await rlPutPhoto(key,b); await rlDelPhoto(key+"#v"); { const o=rlLoad(); if(o[key]&&o[key].vid){ delete o[key].vid; rlSave(o); } } toast("Photo saved on this phone"); }
   }catch(e){ toast("Could not save that (is the phone full?)"); return; }
   rlSaveNote(); await rlOpen(key); rlRender();
 }
-async function rlRemoveMedia(){ if(!rlCur) return; const key=rlCur.key; await rlDelPhoto(key); await rlDelPhoto(key+"#v"); await rlOpen(key); rlRender(); }
+async function rlRemoveMedia(){ if(!rlCur) return; const key=rlCur.key; await rlDelPhoto(key); await rlDelPhoto(key+"#v");
+  const o=rlLoad(), v=(o[key]||{}).vid, P=rlNative(); if(v){ if(P&&v.id) P.deleteVideo({id:v.id}).catch(()=>{}); delete o[key].vid; rlSave(o); } await rlOpen(key); rlRender(); }
 
 /* video card length: it records in real time, so 6 s takes about 6 s to make; 10 and 15 are longer */
 function rlLenHtml(){ const c=+LSget(K.rlLen,"6")||6; return `<span>Video length</span>`+[6,10,15].map(n=>`<button class="${c===n?"on":""}" onclick="rlSetLen(${n})">${n} s</button>`).join(""); }
 function rlSetLen(n){ LSset(K.rlLen,String(n)); const el=document.getElementById("rlLen"); if(el) el.innerHTML=rlLenHtml(); }
+
+let rlNativeOut=null;
+async function rlMakeNative(r,vid,P,say){
+  const len=+LSget(K.rlLen,"6")||6, t0=Date.now(); say("Getting ready…");
+  let b64; try{ const ov=await rlOverlay(r,1080,1920); b64=await new Promise(ok=>ov.toBlob(b=>{ const fr=new FileReader(); fr.onload=()=>ok(String(fr.result).split(",")[1]); fr.readAsDataURL(b); },"image/png")); }catch(e){ say("Could not draw the card."); return; }
+  let h=null; try{ h=await P.addListener("progress",e=>say(`Making your video card… ${Math.round(Math.min(1,e.p||0)*100)}%`)); }catch(e){}
+  try{ const res=await P.makeVideoCard({id:vid.id,overlay:b64,seconds:len,width:1080,height:1920}); rlNativeOut=res.path;
+    const prog=document.getElementById("rlProg"); if(prog){ prog.hidden=false; prog.innerHTML=`<div class="rcpBtns"><button class="btn primary" onclick="rlNativeShare()">Share</button><button class="btn quiet" onclick="rlNativePlay()">Play it first</button></div><small>${(res.bytes/1048576).toFixed(1)} MB · MP4 · ${Math.round(res.seconds)} s, made in ${((Date.now()-t0)/1000).toFixed(1)} s.</small>`; } }
+  catch(e){ say("Could not make the video: "+String((e&&e.message)||e).slice(0,120)); }
+  finally{ try{ if(h&&h.remove) await h.remove(); }catch(e){} }
+}
+function rlNativeShare(){ const P=rlNative(); if(P&&rlNativeOut) P.shareFile({path:rlNativeOut}).catch(()=>{}); }
+function rlNativePlay(){ const P=rlNative(); if(P&&rlNativeOut) P.previewVideo({path:rlNativeOut}).catch(()=>{}); }

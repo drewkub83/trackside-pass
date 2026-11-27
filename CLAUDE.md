@@ -1,5 +1,7 @@
 # Trackside Pass
 
+**Start of every session: read `ALERTS.md`** (errors the cloud routines could not handle; fix any OPEN entry, then move it to RESOLVED).
+
 A race-day companion web app (PWA): track maps and walking directions, schedules, weather, and a Race Day hub. Plain HTML/CSS/JS, no framework. The user is a fan who uses it in person at race weekends, mostly on a phone, so it has to work on a phone with poor signal.
 
 ## System map: what runs by itself (keep this list current; add a line here whenever something automatic is added or removed)
@@ -104,3 +106,6 @@ worker/index.js: /api/session and /api/gtwce are cached per Cloudflare data cent
 
 ## Breaking news pop-up (Nov 27 2026)
 `data/news.js` (`NEWS`, validated by `tools/validate.js`; cached in `sw.js` SHELL; listed in `NON_TRACK`): one row per big, certain story (title clinched, retirement or move, cancellation or postponement, major ruling): `{id, at, s: champ id, h: headline, b: facts, u: free-to-read https link, src}`. `maybeNews()` in `js/app.js` shows the newest unseen row once per phone (`K.newsSeen`), for 3 days, only to people who follow that series, as an info pop-up with a "Read the full story on <source>" link (`openLiveTiming`, the in-app browser on the phone apps) and "Got it". It never sends a notification and waits for the first-run tour and other pop-ups. Written by the hourly "What to watch dispatcher" routine from a published story (the series' own site first; reliable and NOT paywalled; never invent facts) or by hand. Origin: on Nov 27 2026 that routine pushed a phone notification about Marc Marquez's retirement on its own judgment; every routine prompt now says never to send notifications. The story also stays for 7 days as a "Breaking: <headline>" row at the bottom of the Race Day hub's What to watch card (`hubNewsRows`, `openHubNews`; series on that hub only), so someone who closed the pop-up can still read it over the weekend.
+
+## Routine alerts (Nov 27 2026)
+Routines may send ONE short phone notification only when they cannot do their job (a tool crashes, a push is rejected); never for news, results or anything routine. Each such failure is also appended to `ALERTS.md` (the only file a routine may edit besides its data files), and the next session fixes it. Cause: on Nov 27 2026 adding `data/news.js` made `tools/due_updates.js` crash on a file that was not a track; **when you add a new file under `data/`, add it to every NON_TRACK list**: `grep -rn "watch.js" tools` shows them all.

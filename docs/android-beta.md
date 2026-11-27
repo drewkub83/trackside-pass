@@ -26,7 +26,7 @@ Play Console > Create app: name "Trackside Pass", English (US), **App**, **Free*
 - A Play install is signed by Google's key, not the October APK's: friends who sideloaded `TracksidePass.apk` must uninstall it first, then install from Play.
 - Keep `downloads/TracksidePass.apk` only for people who cannot use Play; it will not update once they move to Play.
 - The first review of a new app can take a few days; internal testing is usually immediate.
-- After the link exists, add a "Join the Android beta" button to `welcome/index.html` next to the iPhone one (the opt-in link needs a Google account).
+- The landing page has "Join the Android beta" buttons (added Nov 26 2026) linking to the opt-in URL; the Android card keeps the mailto for people not yet on the tester list.
 
 ## 6. Status (Nov 19 2026)
 Build is ready (see above). Closed test live (Nov 21 2026): opt-in link https://play.google.com/apps/testing/com.tracksidepass.app works for accounts on the "Beta Testers" list; the landing page offers a mailto request for access.

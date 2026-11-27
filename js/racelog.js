@@ -41,7 +41,8 @@ async function rlOpen(key){
     <div class="rlPhoto">${rlCurUrl?`<img src="${rlCurUrl}" alt="Your photo">`:`<div class="rlNo">No photo yet</div>`}</div>
     <div class="rcpBtns"><button class="btn quiet" onclick="document.getElementById('rlFile').click()">${ph?"Change photo":"Add photo"}</button>${ph?`<button class="btn quiet" onclick="rlRemovePhoto()">Remove</button>`:""}</div>
     <input type="file" id="rlFile" accept="image/*" hidden onchange="rlPick(this)">
-    <label class="f" for="rlNote">Your note</label><textarea id="rlNote" class="rlNote" rows="3" maxlength="500" placeholder="Who you went with, where you sat, what you remember" onblur="rlSaveNote()">${esc(log.note||"")}</textarea>
+    <label class="f" for="rlNote">Your note</label><textarea id="rlNote" class="rlNote" rows="3" maxlength="500" placeholder="Where you sat, what you remember" onblur="rlSaveNote()">${esc(log.note||"")}</textarea>
+    <label class="f">Who went with you</label><div id="rlWith">${rlWithHtml(log.with||[])}</div>
     ${top.length?`<div class="rcpStory"><h5>${esc(watchSeriesName(it.r)||it.r.event)}</h5>${top.map((l,i)=>`<p>${esc(String(l).replace(/^Winner:\s*/,"Winner: "))}</p>`).join("")}${games.length?`<p class="rcpAsOf">Your picks scored ${pts} of ${mx}.</p>`:""}</div>`:""}
     <div class="rcpBtns"><button class="btn primary" onclick="rlShare()">${ph?"Share card":"Share recap card"}</button><button class="btn quiet" onclick="closeInfo()">Close</button></div>
     <p class="fine">Your photo and note stay on this phone. Nothing is uploaded.</p>`);
@@ -89,6 +90,7 @@ async function rlCardBlob(r,photo){
     const top=recapTop(it.r.groups[0],3).map((l,i)=>(i+1)+". "+clean(l)); g.font=`600 28px ${P.fontB}`; const rows=[[]]; let rw=0; const items=top.map(t=>{ const tx=fit(t,W-190), wd=g.measureText(tx).width+52; return {tx,wd}; });
     items.forEach(o=>{ if(rw+o.wd>W-140&&rows[rows.length-1].length){ rows.push([]); rw=0; } rows[rows.length-1].push(o); rw+=o.wd+16; });
     for(let ri=rows.length-1;ri>=0;ri--){ let x=70; rows[ri].forEach(o=>{ g.strokeStyle="rgba(255,255,255,.7)"; g.lineWidth=3; g.beginPath(); g.roundRect(x,y-38,o.wd,54,27); g.stroke(); g.fillStyle=light; g.fillText(o.tx,x+26,y); x+=o.wd+16; }); y-=70; } y-=26; }
+  if((log.with||[]).length){ g.fillStyle="rgba(255,255,255,.85)"; g.font=`500 30px ${P.fontB}`; g.fillText(fit("With "+log.with.map(x=>x.n).join(", "),W-140),70,y); y-=48; }
   g.fillStyle=light; g.font=`500 36px ${P.fontB}`; g.fillText(fit(`${r.t.short} · ${fmtRange(r.e)}`,W-140),70,y); y-=64;
   { const words=String(r.e.e).toUpperCase().split(" "); let fs=118, l1=words.join(" "), l2="";
     g.font=`800 ${fs}px ${P.fontD}`;
@@ -111,3 +113,16 @@ function rlPicker(q){
 }
 function rlAdd(tid,d){ const t=TRACKS.find(x=>x.id===tid); if(!t) return; const e=(t.events||[]).find(x=>x.d===d&&!/test/i.test(x.s||"")); if(!e) return;
   const o=rlLoad(), k=rlKey(t,e); o[k]=Object.assign({},o[k],{added:true}); rlSave(o); rlRender(); rlOpen(k); }
+
+/* "With": people who went with you. Friends from your account (tap to add) and any name you type; kept only on this phone, nobody is told */
+function rlWithHtml(list){
+  const fr=(typeof acct!=="undefined"&&acct&&acct.friends)||[], has=n=>list.some(x=>x.n.toLowerCase()===String(n).toLowerCase());
+  const chips=list.map((x,i)=>`<button class="rlChip on" onclick="rlWithRemove(${i})" aria-label="Remove ${esc(x.n)}">${esc(x.n)} <i>&times;</i></button>`).join("");
+  const sug=fr.filter(f=>!has(f.display_name)).slice(0,12).map(f=>`<button class="rlChip" onclick="rlWithAddFriend('${esc(f.id)}','${esc(f.display_name).replace(/'/g,"&#39;")}')">+ ${esc(f.display_name)}</button>`).join("");
+  return `<div class="rlChips">${chips}${sug}</div><div class="rlWithAdd"><input id="rlWithIn" class="rlSearch" type="text" maxlength="24" placeholder="Add a name (a friend, family, anyone)" onkeydown="if(event.key==='Enter'){event.preventDefault();rlWithAdd()}"><button class="btn quiet" onclick="rlWithAdd()">Add</button></div>`;
+}
+function rlWithSet(list){ if(!rlCur) return; const o=rlLoad(); o[rlCur.key]=Object.assign({},o[rlCur.key],{with:list}); if(!list.length) delete o[rlCur.key].with; rlSave(o); const el=document.getElementById("rlWith"); if(el) el.innerHTML=rlWithHtml(list); }
+function rlWithGet(){ return ((rlLoad()[rlCur&&rlCur.key]||{}).with||[]).slice(); }
+function rlWithAdd(){ const el=document.getElementById("rlWithIn"), v=el?el.value.trim():""; if(!v) return; const l=rlWithGet(); if(!l.some(x=>x.n.toLowerCase()===v.toLowerCase())&&l.length<8) l.push({n:v}); rlWithSet(l); }
+function rlWithAddFriend(id,name){ const l=rlWithGet(); name=String(name).replace(/&#39;/g,"'"); if(!l.some(x=>x.n.toLowerCase()===name.toLowerCase())&&l.length<8) l.push({id,n:name}); rlWithSet(l); }
+function rlWithRemove(i){ const l=rlWithGet(); l.splice(i,1); rlWithSet(l); }

@@ -910,6 +910,22 @@ const RESULTS = [
         gap:"Class win; SportsCar365 reports this also clinches the season Trophy-class title for Stokell." }
     ],
     note:"Sources: SportsCar365 (\"Heinrich, Shahin Win Opening Race in Adelaide\", read in full) and Speedcafe/GT REPORT race-report snippets, Nov 28 2026 (via web search; direct fetch of speedcafe.com, gt-report.com, gt-world-challenge-australia.com and velocitynews.co.nz was blocked in this environment). Heinrich took over the #92 Porsche during the pit-stop cycle and led to the flag; the race ended under a late safety car after the Trophy-class #62 Wallis Motorsport Porsche crashed. No finishers beyond 7th (all Pro-Am) could be confirmed from the sources found; the Am and Trophy class results above are the only sub-class placings the reports state." },
+  { t:"lusail", d:"2026-11-27", s:"f2", race:"Sprint Race - FIA Formula 2", event:"Qatar Grand Prix: F2 Sprint Race",
+    groups:[
+      { h:"Race", order:[
+        "1. #14 Martinius Stenshorne (Rodin Motorsport)",
+        "2. #2 Joshua Duerksen (Invicta Racing)",
+        "3. #5 Noel Leon (Campos Racing)",
+        "4. #6 Nikola Tsolov (Campos Racing)",
+        "5. #15 Alexander Dunne (Rodin Motorsport)",
+        "6. #10 Oliver Goethe (MP Motorsport)",
+        "7. #9 Gabriele Mini (MP Motorsport)",
+        "8. #23 Rafael Villagomez (Van Amersfoort Racing)",
+        "9. #8 Roman Bilinski (DAMS Lucas Oil)",
+        "10. #7 Dino Beganovic (DAMS Lucas Oil)"
+      ] }
+    ],
+    note:"Sources: formula1.com report \"Stenshorne dominates in Qatar to mark Formula 2's 250th race\" (positions 1-8, race detail); Motorsport Week's race report and results table, cross-checked against Pit Debrief's race report (positions 9-10, retirements), Nov 28 2026 (via web search; direct fetch of motorsportweek.com, pitdebrief.com, racingnews365.com and fiaformula2.com was blocked in this environment). Stenshorne started from reverse-grid pole and won by more than 10 seconds, managing the start and two Safety Car restarts. Freddie Slater (standing in for Rafael Camara, called up by Haas-Ferrari for F1's final two rounds) ran as high as 3rd on his F2 debut before retiring with a technical problem; Mari Boya's car brought an earlier Safety Car on lap 6 with a suspected technical issue. Only the top 10 could be confirmed from sources reachable in this environment; positions 11 onward are not listed here." },
 ];
 
 const HEADLINES = [

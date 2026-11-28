@@ -893,6 +893,23 @@ const RESULTS = [
       ] }
     ],
     note:"Sources: motorsport.com full F1 Academy Las Vegas 2026 Feature Race (RACE2) classification, cross-checked against autosport.com's identical RACE2 classification; Pit Debrief race report \"F1 Academy 2026 Las Vegas GP Feature Race Report\" (confirms Palmowski/Larsen/Gademan podium, retirements and the Ferreira/Countryman 5-second penalties)." },
+  { t:"adelaide-parklands", d:"2026-11-26", s:"gtwcau", race:"Race 1 - GT World Challenge Australia", event:"bp Adelaide Grand Final: GT World Challenge Australia Race 1",
+    groups:[
+      { h:"Pro-Am", order:[
+        "1. #92 Earl Bamber Motorsport Porsche 992 GT3R EVO — Laurin Heinrich, Yasser Shahin",
+        "2. #268 Team BRM Audi R8 LMS EVO II — Alex Peroni, Mark Rosser",
+        "3. #181 OnlyFans Racing Ferrari 296 GT3 — William Davison, Renee Gracie",
+        "4. #23 Zagame Autosport Ferrari 296 GT3 — Josh Buchan, Cameron Campbell",
+        "5. #26 Arise Racing GT Ferrari 296 GT3 — Jaxon Evans, Elliott Schutte",
+        "6. #1 Melbourne Performance Centre Audi R8 LMS EVO II — Frederic Vervisch, Brad Schumacher",
+        "7. #66 Tigani Motorsport Mercedes-AMG GT3 EVO — Scott Andrews, Paul Lucchitti"
+      ] },
+      { h:"Am", winner:"#45 RAM Motorsport / GWR Australia Mercedes-AMG GT3 EVO — Michael Sheargold, Brett Hobson",
+        gap:"Class win (one of two Am entries)." },
+      { h:"Trophy", winner:"#24 Melbourne Performance Centre Audi R8 LMS EVO II — Hamish Fitzsimmons, Paul Stokell",
+        gap:"Class win; SportsCar365 reports this also clinches the season Trophy-class title for Stokell." }
+    ],
+    note:"Sources: SportsCar365 (\"Heinrich, Shahin Win Opening Race in Adelaide\", read in full) and Speedcafe/GT REPORT race-report snippets, Nov 28 2026 (via web search; direct fetch of speedcafe.com, gt-report.com, gt-world-challenge-australia.com and velocitynews.co.nz was blocked in this environment). Heinrich took over the #92 Porsche during the pit-stop cycle and led to the flag; the race ended under a late safety car after the Trophy-class #62 Wallis Motorsport Porsche crashed. No finishers beyond 7th (all Pro-Am) could be confirmed from the sources found; the Am and Trophy class results above are the only sub-class placings the reports state." },
 ];
 
 const HEADLINES = [

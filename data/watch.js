@@ -2472,4 +2472,44 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries (motogp.com, crash.net, autosport.com, gpblog.com, corsedimoto.com and motogpnews.com were not reachable directly from this environment) that agree across multiple independent outlets (Yahoo Sports/Reuters, France24, grandepremio.com, autosport.com, gpblog.com, corsedimoto.com, 365scores.com) on: Bezzecchi winning the Sprint from pole, Martin second about 3 seconds back, Bastianini third after climbing from seventh on the grid, Marquez's bike catching fire on the grid before the original start (prompting a restart over a shortened distance), his double long-lap penalty served on laps 6 and 7, and his 13th-place finish. The new standings (Bezzecchi 406, Martin 405) are corroborated by corsedimoto.com's and 365scores.com's reported post-sprint totals and are internally consistent with the pre-sprint 394/396 gap carried in the prior entry for this event plus a 12-point sprint win and a 9-point second place. Fourth and fifth place in the Sprint were reported by only one source checked today (motogpnews.com) and are left out here per the accuracy rule, since no second source was found to cross-check them. Marquez's title, clinched at Portimao, and the circuit facts are carried over unchanged from the prior entry for this event. Remaining session times from data/valencia.js." }
+ ,{ t:"lusail", d:"2026-11-27", s:"f1", from:"2026-11-28",
+    at:"2026-11-28T16:23:54Z",
+    asOf:"Current after Practice 3 at the Qatar Grand Prix (Lusail, Nov 28, 2026) -- Mercedes swept all three practice sessions, Kimi Antonelli fastest every time.",
+    groups:[
+      { h:"Both titles are already settled", items:[
+        ["Kimi Antonelli (Mercedes)", "Clinched the 2026 Drivers' title at the Mexico City Grand Prix (Nov 1), F1's youngest-ever world champion. He leads on 402 points with this Qatar round and Abu Dhabi left -- nothing left for him to decide."],
+        ["Mercedes", "Clinched the Constructors' title at the Brazilian Grand Prix, the team's ninth, its first since 2021."]
+      ] },
+      { h:"FP3: a clean Mercedes sweep of all three practice sessions", items:[
+        ["Kimi Antonelli (Mercedes)", "Fastest again, 1:22.400 -- his third practice-topping time of the weekend."],
+        ["George Russell (Mercedes)", "Second, +0.249s -- another Mercedes 1-2. He ran wide at Turn 5 and asked his team to check the floor for damage, then had an oversteer moment at Turn 6, but neither cost him the session's second-best time."],
+        ["Max Verstappen (Red Bull Racing)", "Third, +0.510s -- moved ahead of both McLarens later in the session after Oscar Piastri had been best of the rest early on."],
+        ["Isack Hadjar (Red Bull Racing)", "Fourth, +0.687s."],
+        ["Charles Leclerc (Ferrari)", "Fifth, +0.808s."],
+        ["Lando Norris and Oscar Piastri (McLaren)", "Sixth and seventh, +0.868s and +0.889s -- Norris also ended up in the run-off area at Turn 14 during the session."],
+        ["Pierre Gasly (Alpine)", "The only driver out at the very start of the session, after ending FP2 early with a high-speed spin into the gravel."]
+      ] },
+      { h:"What's still live: the runner-up fight, reshuffled by Vegas", items:[
+        ["Max Verstappen (Red Bull Racing)", "304 points, 37 clear of third -- the best of this group's results, and the closest anyone has come to pulling away from the pack in the runner-up fight. Saturday practice pace doesn't change that."],
+        ["Lewis Hamilton (Ferrari)", "Third on 267, ahead of both Mercedes drivers in the standings despite Mercedes sweeping every practice session here."],
+        ["George Russell (Mercedes)", "Fourth on 264, but topped FP3's second-best time."],
+        ["Lando Norris (McLaren)", "Fifth, also on 264 -- sixth-fastest in FP3."],
+        ["Charles Leclerc (Ferrari)", "Sixth on 250, 14 back, and fifth in FP3."]
+      ] },
+      { h:"Constructors: Ferrari's grip on second, but McLaren is closing on third", items:[
+        ["Ferrari", "517 points, second, 77 clear of Red Bull with two rounds left to hand out points."],
+        ["Red Bull Racing", "440, third after Verstappen's Las Vegas win."],
+        ["McLaren", "431, fourth -- just 9 points behind Red Bull for third, the tightest fight left on the grid outside the very front."]
+      ] },
+      { h:"The circuit: Lusail under the floodlights", items:[
+        ["A night race on a 5.419 km layout", "57 laps, roughly 309 km, run after dark under the circuit's floodlights -- one of the more visually distinctive rounds on the calendar."],
+        ["Where the passing happens", "Turn 1, at the end of the long pit straight, is the circuit's main overtaking point."],
+        ["Penultimate round", "The second-to-last weekend of the season before the finale at Abu Dhabi."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Saturday Nov 28", "Qualifying, 9:00pm-10:00pm."],
+        ["Sunday Nov 29", "Race, 7:00pm-9:00pm."]
+      ] }
+    ],
+    note:"Sources: formula1.com's own Practice 3 results page for the 2026 Qatar Grand Prix (fetched directly): Antonelli 1:22.400 fastest, Russell +0.249s, Verstappen +0.510s, Hadjar +0.687s, Leclerc +0.808s, Norris +0.868s, Piastri +0.889s, with the rest of the order behind them. Cross-checked against formula1.com's own FP3 report article 'FP3: Antonelli and Mercedes sweep fastest practice times in Qatar' (also fetched directly), which agrees on the same top-five times/order and adds that Mercedes swept all three practice sessions, that Russell ran wide at Turn 5 and asked his team to check the floor before an oversteer moment at Turn 6, that Norris ended up in the run-off area at Turn 14, that Piastri led the early running before Verstappen moved ahead, and that Gasly was the only driver out at the very start after ending FP2 early with a high-speed spin into the gravel; neither source mentioned any red flags, penalties or weather issues in the session. Championship points, both titles' clinching rounds and circuit facts carried over unchanged from the prior entry for this event (sourced there to data/results.js and data/standings.js, both read 2026-11-22); no points changed in FP3. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
 ];

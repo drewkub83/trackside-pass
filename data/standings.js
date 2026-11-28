@@ -75,22 +75,22 @@ const STANDINGS = [
       ] }
     ],
     note:"(automatic update) Source: www.fiaformula3.com drivers' standings, top ten, read 2026-10-26. The page lists no team per driver. Check the site for the current round count." },
-  { s:"f2", asOf:"Current as of 2026-11-22, from www.fiaformula2.com (the series' own standings page).",
+  { s:"f2", asOf:"Current as of 2026-11-28, from www.fiaformula2.com (the series' own standings page).",
     classes:[
       { h:"Drivers", rows:[
         { pos:1, who:"Rafael Camara", pts:207 },
-        { pos:2, who:"Nikola Tsolov", pts:200 },
-        { pos:3, who:"Alexander Dunne", pts:189 },
-        { pos:4, who:"Gabriele Mini", pts:163 },
-        { pos:5, who:"Dino Beganovic", pts:137 },
-        { pos:6, who:"Noel Leon", pts:133 },
-        { pos:7, who:"Martinius Stenshorne", pts:107 },
-        { pos:8, who:"Joshua Dürksen", pts:90 },
+        { pos:2, who:"Nikola Tsolov", pts:205 },
+        { pos:3, who:"Alexander Dunne", pts:193 },
+        { pos:4, who:"Gabriele Mini", pts:165 },
+        { pos:5, who:"Noel Leon", pts:139 },
+        { pos:6, who:"Dino Beganovic", pts:137 },
+        { pos:7, who:"Martinius Stenshorne", pts:118 },
+        { pos:8, who:"Joshua Dürksen", pts:98 },
         { pos:9, who:"Kush Maini", pts:90 },
         { pos:10, who:"Laurens van Hoepen", pts:90 }
       ] }
     ],
-    note:"(automatic update) Source: www.fiaformula2.com drivers' standings, top ten, read 2026-11-22. The page lists no team per driver. Check the site for the current round count." },
+    note:"(automatic update) Source: www.fiaformula2.com drivers' standings, top ten, read 2026-11-28. The page lists no team per driver. Check the site for the current round count." },
   { s:"weathertech", asOf:"Final 2026 standings after Motul Petit Le Mans (Oct 3); the season is complete.",
     classes:[
       { h:"GTP", rows:[

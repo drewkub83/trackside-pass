@@ -2330,6 +2330,36 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries (motogp.com, crash.net, gpone.com and motomatters.com were not reachable directly from this environment) of Crash.net's 2026 Valencia MotoGP Saturday Practice Results page, cross-checked across two separate searches that agreed on Bezzecchi's FP2-topping 1:29.596, Acosta second (+0.136s) and Aldeguer third (+0.191s), Alex Marquez/Pol Espargaro/Raul Fernandez fourth to sixth, Marc Marquez seventh (+0.462s) in this session (his Friday lap record of 1:28.483 is still the weekend's best time, per the prior entry), Ogura/Di Giannantonio/Bastianini completing the top ten, and Jorge Martin dropping to 14th in FP2 and needing to start from Qualifying 1 on combined times. Qualifying itself was already underway by the time this entry was written, so no qualifying result is included here, per the accuracy rule. Championship points, Marquez's retirement and title, and the Martin/Bezzecchi fight for second are carried over unchanged from the prior entry for this event (no race has run since, so the points are unchanged). Remaining session times from data/valencia.js." }
+  ,{ t:"valencia", d:"2026-11-27", s:"motogp", from:"2026-11-27",
+    at:"2026-11-28T11:22:46Z",
+    asOf:"Current after Qualifying at the Valencia finale (Nov 28, 2026): Marco Bezzecchi took pole with a new lap record, and a retiring Marc Marquez -- racing his final qualifying session -- recovered from a tough Q1 for Jorge Martin's title rival to end up only fifth.",
+    groups:[
+      { h:"Qualifying 2: Bezzecchi takes pole, Marquez second in his farewell session", items:[
+        ["Marco Bezzecchi (Aprilia Racing)", "Pole, a new Valencia lap record of 1:27.844."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Second, 0.463s back -- his final qualifying session in MotoGP, a day after announcing his retirement. He said he gave up chasing the lap once he saw Bezzecchi's time, but enjoyed the session itself."],
+        ["Raul Fernandez (Trackhouse MotoGP Team)", "Third."],
+        ["Alex Marquez (Gresini Racing)", "Fourth."],
+        ["Jorge Martin (Aprilia Racing)", "Fifth -- a recovery from Saturday morning's FP2, where he'd dropped to 14th and had to go through Qualifying 1 instead of a clean run to Q2."],
+        ["Fabio Di Giannantonio (VR46 Racing Team)", "Sixth."]
+      ] },
+      { h:"Marquez's year ends with the qualifying crown too", items:[
+        ["Marc Marquez (Ducati Lenovo Team)", "Missed pole here, but still wrapped up the season's qualifying title (the BMW M Award for the best average grid position across 2026) -- on top of the riders' championship he clinched at Portimao."]
+      ] },
+      { h:"The title picture: second place still up for grabs", items:[
+        ["Marc Marquez (Ducati Lenovo Team) -- CHAMPION", "439 points, title already won at Portimao; this is his last MotoGP weekend."],
+        ["Jorge Martin (Aprilia Racing)", "396, second -- 2 points ahead of team-mate Bezzecchi, and now starting from a stronger fifth on the grid than Saturday morning's practice suggested."],
+        ["Marco Bezzecchi (Aprilia Racing)", "394, third -- pole position gives him the best track position to try to close that 2-point gap in the Sprint and the Grand Prix."]
+      ] },
+      { h:"The circuit: Circuit Ricardo Tormo, MotoGP's long-time finale", items:[
+        ["A tight, technical 4.005 km layout", "Near Cheste, outside Valencia -- a low-grip, stop-and-go track that rewards precise braking over outright power, and has hosted the season's final round in most years since the early 2000s."],
+        ["Last year here", "Marco Bezzecchi won the 2025 Valencia GP from the front, the circuit's first MotoGP race since 2023 after the 2024 finale was moved elsewhere because of flooding."]
+      ] },
+      { h:"Up next (Circuit Ricardo Tormo, local time CET)", items:[
+        ["Saturday Nov 28", "The Sprint, 3:00pm."],
+        ["Sunday Nov 29", "Warm-Up, 9:40am; the Grand Prix, 2:00pm (27 laps, about 108 km) -- the season's last race, and Marc Marquez's last in MotoGP."]
+      ] }
+    ],
+    note:"Sources: web search summaries (motogp.com, crash.net, the-race.com, gpone.com, corsedimoto.com and autosport.com were not reachable directly from this environment) of Crash.net's 'Marco Bezzecchi beats Marc Marquez to Valencia MotoGP pole with new lap record' and The Race's 'Bezzecchi on pole, Marquez claims MotoGP qualifying title', both agreeing on Bezzecchi's pole lap (1:27.844, a new lap record), Marquez second (+0.463s) in his final MotoGP qualifying session, that he said he gave up chasing the lap once he saw Bezzecchi's time, and the Q2 order behind them: Raul Fernandez third, Alex Marquez fourth, Jorge Martin fifth, Fabio Di Giannantonio sixth. Both sources also agree Marquez secured the season's qualifying title (the BMW M Award for best average qualifying position) on top of the riders' title. Martin's FP2 session (14th, needing Q1) is carried over from the prior entry for this event; no further Q1 details beyond his making it through to fifth in Q2 were confirmed in sources checked today. Whether Pecco Bagnaia, returning from foot surgery, took part was not confirmed in any source checked today, so it is left out per the accuracy rule. Championship points, Marquez's retirement and title, and circuit facts carried over unchanged from the prior entry for this event; no points have changed, since no race has run yet this weekend. Remaining session times from data/valencia.js." }
   ,{ t:"lusail", d:"2026-11-27", s:"f2", from:"2026-11-27",
     at:"2026-11-27T16:23:48Z",
     asOf:"Current after Friday's Formula 2 qualifying at Lusail (Nov 27) -- two red flags cut the session short, and F2 debutant Ugo Ugochukwu grabbed a surprise maiden pole; the title fight itself is unchanged, since no race has run yet this weekend.",

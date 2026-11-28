@@ -486,7 +486,7 @@ const ENTRIES = [
         ["42", "Alex Rins", "Monster Energy Yamaha MotoGP Team", "", 0.5, "averaged top 68% of the field over his last 6 Sunday races", 0.316]
       ] }
     ],
-    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-27. Win chances are our own estimate, not betting odds. (automatic update)" },
+    note:"Source: the MotoGP results service (api.pulselive.motogp.com, the data motogp.com uses), read 2026-11-28. Win chances are our own estimate, not betting odds. (automatic update)" },
   { t:"lusail", d:"2026-11-27", s:"f1", lockRace:"^Race - Formula 1", oddsAsOf:"Before qualifying: recent form only (average points over each driver's last 6 races). The chances are rebuilt from the grid once qualifying is published.", asOf:"Drivers who started the Las Vegas Grand Prix, with their official race numbers (Jolpica F1 API, a mirror of the FIA classification). Late changes are possible.",
     classes:[
       { h:"Race", cars:[
@@ -514,5 +514,5 @@ const ENTRIES = [
         ["23", "Alexander Albon", "Williams", "", 0.5, "averaged 0.0 points a race over the last 6 Grands Prix", 0.0]
       ] }
     ],
-    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-27. Win chances are our own estimate, not betting odds. (automatic update)" }
+    note:"Source: api.jolpi.ca (Ergast-compatible mirror of the official FIA results), read 2026-11-28. Win chances are our own estimate, not betting odds. (automatic update)" }
 ];

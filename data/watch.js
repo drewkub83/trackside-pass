@@ -2539,4 +2539,46 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries of Motorsport Week's 'Martinius Stenshorne roars to dominant F2 Sprint victory at Qatar' and 'F2 Qatar Grand Prix - Sprint Race Results', Formula Scout's 'Stenshorne produces dominant display to win F2 Qatar sprint', RacingNews365's '2026 Qatar Grand Prix - F2 Lusail Sprint results' and pitdebrief.com's 2026 F2 Qatar GP Sprint race report, which agree on Stenshorne's win from reverse-grid pole, Durksen second (10.7-10.9s back, sources differ slightly), Leon third (about 14.2s back, roughly four tenths ahead of Tsolov), Tsolov fourth, Dunne fifth, Mari Boya's lap-6 stoppage and the resulting Safety Car(s), Freddie Slater's retirement from podium contention on his debut, and Ugochukwu's late spin (which does not affect Sunday's grid, set by Friday's qualifying); motorsportweek.com, fiaformula2.com and racingnews365.com all failed to resolve directly from this environment, so these are as summarized by search results, not fetched pages. The 'about 2 points' gap for Tsolov is as reported in Formula Scout's summary; data/standings.js (automatic update from fiaformula2.com, read 2026-11-28) still carries the pre-Sprint 207-200 totals, since it has not yet been refreshed to include today's Sprint Race. Camara's and Mini's exact finishing positions were not found in any source checked today, so they are left out per the accuracy rule. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
+ ,{ t:"lusail", d:"2026-11-27", s:"f1", from:"2026-11-28",
+    at:"2026-11-28T19:24:53Z",
+    asOf:"Current after Qualifying at the Qatar Grand Prix (Lusail, Nov 28, 2026) -- George Russell took pole for Mercedes, his teammate Kimi Antonelli alongside him on the front row.",
+    groups:[
+      { h:"Both titles are already settled", items:[
+        ["Kimi Antonelli (Mercedes)", "Clinched the 2026 Drivers' title at the Mexico City Grand Prix (Nov 1), F1's youngest-ever world champion. He leads on 402 points with this Qatar round and Abu Dhabi left -- nothing left for him to decide."],
+        ["Mercedes", "Clinched the Constructors' title at the Brazilian Grand Prix, the team's ninth, its first since 2021."]
+      ] },
+      { h:"Qualifying: Russell denies his own teammate pole", items:[
+        ["George Russell (Mercedes)", "Pole, 1:21.695 -- his lap stood up through the whole session; he didn't need to improve on his final Q3 run."],
+        ["Kimi Antonelli (Mercedes)", "Second, +0.128s -- another Mercedes front-row lockout, a day after topping all three practice sessions."],
+        ["Lando Norris (McLaren)", "Third, +0.480s."],
+        ["Oscar Piastri (McLaren)", "Fourth, +0.550s."],
+        ["Isack Hadjar (Red Bull Racing)", "Fifth, +0.596s -- ahead of teammate Max Verstappen."],
+        ["Max Verstappen (Red Bull Racing)", "Sixth, +0.637s."],
+        ["Charles Leclerc (Ferrari)", "Seventh, +1.260s."],
+        ["Arvid Lindblad (Racing Bulls)", "Eighth, +1.337s, splitting Leclerc from his own teammate Hamilton."],
+        ["Lewis Hamilton (Ferrari)", "Ninth, +1.413s."],
+        ["Liam Lawson (Racing Bulls)", "Tenth, +1.439s, completing the Q3 group."]
+      ] },
+      { h:"What's still live: the runner-up fight, reshuffled by Vegas", items:[
+        ["Max Verstappen (Red Bull Racing)", "304 points, 37 clear of third -- the best of this group's results, and the closest anyone has come to pulling away from the pack in the runner-up fight. Qualifying pace doesn't change that; he starts sixth."],
+        ["Lewis Hamilton (Ferrari)", "Third on 267, ahead of both Mercedes drivers in the standings despite Mercedes locking out tomorrow's front row; starts ninth."],
+        ["George Russell (Mercedes)", "Fourth on 264, but takes pole."],
+        ["Lando Norris (McLaren)", "Fifth, also on 264 -- starts third."],
+        ["Charles Leclerc (Ferrari)", "Sixth on 250, 14 back, and starts seventh."]
+      ] },
+      { h:"Constructors: Ferrari's grip on second, but McLaren is closing on third", items:[
+        ["Ferrari", "517 points, second, 77 clear of Red Bull with two rounds left to hand out points."],
+        ["Red Bull Racing", "440, third after Verstappen's Las Vegas win."],
+        ["McLaren", "431, fourth -- just 9 points behind Red Bull for third, the tightest fight left on the grid outside the very front."]
+      ] },
+      { h:"The circuit: Lusail under the floodlights", items:[
+        ["A night race on a 5.419 km layout", "57 laps, roughly 309 km, run after dark under the circuit's floodlights -- one of the more visually distinctive rounds on the calendar."],
+        ["Where the passing happens", "Turn 1, at the end of the long pit straight, is the circuit's main overtaking point."],
+        ["Penultimate round", "The second-to-last weekend of the season before the finale at Abu Dhabi."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Sunday Nov 29", "Race, 7:00pm-9:00pm -- Russell goes for his sixth pole of the season to turn into a win, with his own teammate alongside him on the front row."]
+      ] }
+    ],
+    note:"Sources: formula1.com's own qualifying results page for the 2026 Qatar Grand Prix (fetched directly): Russell 1:21.695 (pole), Antonelli +0.128s, Norris +0.480s, Piastri +0.550s, Hadjar +0.596s, Verstappen +0.637s, Leclerc +1.260s, Lindblad +1.337s, Hamilton +1.413s, Lawson +1.439s. Cross-checked against formula1.com's own report article 'Russell seizes pole position for Qatar Grand Prix ahead of Antonelli and Norris' (also fetched directly), which agrees on the same top-ten order and times, and against a web search summary of planetf1.com's qualifying report ('George Russell beats irritated Antonelli to pole'), which independently agrees on the pole time, the 0.128s gap, and Norris/Piastri/Leclerc/Hamilton's positions. No incidents, red flags or weather issues were reported for the top-ten runners by either fetched source. Grid positions below tenth are left out: the only source found for them gave a car-to-team pairing (a Haas entry) that contradicts Haas's confirmed 2026 lineup of Ocon and Bearman per a web search on Haas's driver line-up, so it is not trusted here. Championship points, both titles' clinching rounds and circuit facts carried over unchanged from the prior entry for this event (sourced there to data/results.js and data/standings.js, both read 2026-11-22); no points change between a practice session and qualifying. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
 ];

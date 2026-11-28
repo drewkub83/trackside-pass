@@ -2512,4 +2512,31 @@ const WATCH = [
       ] }
     ],
     note:"Sources: formula1.com's own Practice 3 results page for the 2026 Qatar Grand Prix (fetched directly): Antonelli 1:22.400 fastest, Russell +0.249s, Verstappen +0.510s, Hadjar +0.687s, Leclerc +0.808s, Norris +0.868s, Piastri +0.889s, with the rest of the order behind them. Cross-checked against formula1.com's own FP3 report article 'FP3: Antonelli and Mercedes sweep fastest practice times in Qatar' (also fetched directly), which agrees on the same top-five times/order and adds that Mercedes swept all three practice sessions, that Russell ran wide at Turn 5 and asked his team to check the floor before an oversteer moment at Turn 6, that Norris ended up in the run-off area at Turn 14, that Piastri led the early running before Verstappen moved ahead, and that Gasly was the only driver out at the very start after ending FP2 early with a high-speed spin into the gravel; neither source mentioned any red flags, penalties or weather issues in the session. Championship points, both titles' clinching rounds and circuit facts carried over unchanged from the prior entry for this event (sourced there to data/results.js and data/standings.js, both read 2026-11-22); no points changed in FP3. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
+  ,{ t:"lusail", d:"2026-11-27", s:"f2", from:"2026-11-28",
+    at:"2026-11-28T18:23:37Z",
+    asOf:"Current after Saturday's Formula 2 Sprint Race at Lusail (Nov 28) -- Martinius Stenshorne's dominant win from reverse-grid pole, plus Nikola Tsolov's fourth place, are reported to have cut Rafael Camara's title lead from 7 points to about 2; the Feature Race, and the title fight, are still to come on Sunday.",
+    groups:[
+      { h:"Sprint Race: Stenshorne dominates from reverse-grid pole", items:[
+        ["Martinius Stenshorne (Rodin Motorsport)", "Started on reverse-grid pole (he had qualified 10th on Friday) and led throughout, winning by roughly 10.7-10.9 seconds over Durksen -- sources differ slightly on the exact margin."],
+        ["Joshua Durksen (Invicta Racing)", "Second -- Camara's own team-mate, so these are points that went to a title rival rather than to Camara."],
+        ["Noel Leon (Campos Racing)", "Third, about four tenths ahead of his Campos team-mate Tsolov and roughly 14 seconds behind Stenshorne at the flag."],
+        ["Nikola Tsolov (Campos Racing)", "Fourth -- enough, by the reports checked today, to cut deep into Camara's championship lead (see below)."],
+        ["Alex Dunne (Rodin Motorsport)", "Fifth, Stenshorne's team-mate -- still mathematically alive with the Feature Race here and one more round (Abu Dhabi) left."]
+      ] },
+      { h:"Incidents: an early Safety Car, a late spin, a lost podium shot", items:[
+        ["Mari Boya (Prema Racing)", "Stopped on track around lap 6 with a technical issue, triggering the race's first Safety Car; reports describe more than one Safety Car period before the finish."],
+        ["Freddie Slater (F2 debut)", "Was running in podium contention on his debut weekend before a problem forced him to retire partway through."],
+        ["Ugo Ugochukwu (Van Amersfoort Racing)", "Had been inside the top five before a late spin dropped him down the order -- but Friday's qualifying, not today's Sprint, sets Sunday's Feature Race grid, so he keeps his maiden pole for the main race."]
+      ] },
+      { h:"The title fight: a 7-point lead down to about 2", items:[
+        ["Rafael Camara (Invicta Racing)", "Led 207 points to 200 coming into today. He was not among the names reported in the Sprint's results, so his exact finish could not be confirmed from sources checked today."],
+        ["Nikola Tsolov (Campos Racing)", "Today's fourth place is reported to have closed his gap to Camara to about 2 points; the official standings page (read today, but before the Sprint) still shows the earlier 207-200 split and has not yet been updated for this race."],
+        ["Alex Dunne (Rodin Motorsport)", "Was third on 189 (18 back) before today; fifth place keeps him mathematically alive with two races of this round plus Abu Dhabi still to run."],
+        ["Gabriele Mini (MP Motorsport)", "Was fourth on 163 (44 back) before today; not among the Sprint's reported finishers, so his result is unconfirmed."]
+      ] },
+      { h:"Up next (Lusail, local time AST, UTC+3)", items:[
+        ["Sunday Nov 29", "Feature Race, 3:00pm -- the weekend's main race and the one that moves the title fight most, grid set by Friday's qualifying (Ugochukwu on pole)."]
+      ] }
+    ],
+    note:"Sources: web search summaries of Motorsport Week's 'Martinius Stenshorne roars to dominant F2 Sprint victory at Qatar' and 'F2 Qatar Grand Prix - Sprint Race Results', Formula Scout's 'Stenshorne produces dominant display to win F2 Qatar sprint', RacingNews365's '2026 Qatar Grand Prix - F2 Lusail Sprint results' and pitdebrief.com's 2026 F2 Qatar GP Sprint race report, which agree on Stenshorne's win from reverse-grid pole, Durksen second (10.7-10.9s back, sources differ slightly), Leon third (about 14.2s back, roughly four tenths ahead of Tsolov), Tsolov fourth, Dunne fifth, Mari Boya's lap-6 stoppage and the resulting Safety Car(s), Freddie Slater's retirement from podium contention on his debut, and Ugochukwu's late spin (which does not affect Sunday's grid, set by Friday's qualifying); motorsportweek.com, fiaformula2.com and racingnews365.com all failed to resolve directly from this environment, so these are as summarized by search results, not fetched pages. The 'about 2 points' gap for Tsolov is as reported in Formula Scout's summary; data/standings.js (automatic update from fiaformula2.com, read 2026-11-28) still carries the pre-Sprint 207-200 totals, since it has not yet been refreshed to include today's Sprint Race. Camara's and Mini's exact finishing positions were not found in any source checked today, so they are left out per the accuracy rule. Session times from data/lusail.js, read as Lusail/Doha local time (AST, UTC+3)." }
 ];

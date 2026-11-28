@@ -2304,6 +2304,32 @@ const WATCH = [
       ] }
     ],
     note:"Sources: web search summaries (motogp.com, crash.net and autosport.com were not reachable directly from this environment) of crash.net's 'Retiring Marc Marquez leads Valencia MotoGP Practice with new lap record', cross-checked across two separate searches that agreed on the headline facts: Marquez's new lap record of 1:28.483, Bezzecchi second on 1:28.730 (0.247s back), Ogura up to third late, Acosta fifth despite a fall, and Martin taking the last automatic Q2 spot. The exact full top-10 order beyond third was not used here, since the sources checked disagreed with each other on it (a live-blog list and a separate results table gave different orders) -- only the cross-confirmed facts above are included, per the accuracy rule. Pol Espargaro continuing to stand in for an unwell Maverick Vinales at Tech3 (Vinales out since July 2026 with a shoulder injury from his 2025 Sachsenring crash, Espargaro filling in through most of the back half of the season) from a web search summary of Crash.net's and Speedweek's Vinales/Espargaro coverage; no Valencia-specific confirmation was found, so this is stated as a continuation of that ongoing arrangement rather than a new fact for this weekend. Marquez's retirement announcement, his eighth premier-class/tenth overall title, and the Portimao date carried over unchanged from the prior entry for this event. Circuit character, length and finale history, and the 2025 Valencia result, carried over unchanged from the prior entry. Remaining session times from data/valencia.js." }
+  ,{ t:"valencia", d:"2026-11-27", s:"motogp", from:"2026-11-27",
+    at:"2026-11-28T10:23:25Z",
+    asOf:"Current after Saturday morning's Free Practice 2 at the Valencia finale (Nov 28, 2026): Marco Bezzecchi went fastest, and Jorge Martin -- fighting for second in the championship -- had a rough session and drops into Q1.",
+    groups:[
+      { h:"FP2: Bezzecchi tops a cooler morning session", items:[
+        ["Marco Bezzecchi (Aprilia Racing)", "Fastest in Saturday's Free Practice 2 with a 1:29.596 -- slower than Marquez's Friday lap record, as is typical of the cooler morning session."],
+        ["Pedro Acosta (Red Bull KTM)", "Second, 0.136s back."],
+        ["Fermin Aldeguer (Gresini Racing)", "Third, 0.191s back."],
+        ["Alex Marquez, Pol Espargaro and Raul Fernandez", "Fourth through sixth."],
+        ["Marc Marquez (Ducati Lenovo Team)", "Seventh in this session (+0.462s), but his Friday lap record still stands as the weekend's fastest time."],
+        ["Ai Ogura, Fabio Di Giannantonio and Enea Bastianini", "Rounded out the top ten."]
+      ] },
+      { h:"Jorge Martin's weekend gets harder", items:[
+        ["Jorge Martin (Aprilia Racing)", "Only 14th in FP2 after scraping into the top 10 on Friday -- on today's combined times he drops out of the automatic Q2 group and has to go through Qualifying 1, a tougher path for a rider who needs a big result to hold off his own team-mate Bezzecchi for second in the championship."]
+      ] },
+      { h:"The title picture: second place is still open", items:[
+        ["Marc Marquez (Ducati Lenovo Team) -- CHAMPION", "439 points, title already won at Portimao; this is his last MotoGP weekend."],
+        ["Jorge Martin (Aprilia Racing)", "396, second -- now facing Q1 rather than a clean run to Q2."],
+        ["Marco Bezzecchi (Aprilia Racing)", "394, third, 2 points behind his team-mate Martin and fastest of anyone on track so far this weekend."]
+      ] },
+      { h:"Up next (Circuit Ricardo Tormo, local time CET)", items:[
+        ["Saturday Nov 28", "Qualifying 1, 10:50am; Qualifying 2, 11:15am; the Sprint, 3:00pm."],
+        ["Sunday Nov 29", "Warm-Up, 9:40am; the Grand Prix, 2:00pm (27 laps, about 108 km) -- the season's last race, and Marc Marquez's last in MotoGP."]
+      ] }
+    ],
+    note:"Sources: web search summaries (motogp.com, crash.net, gpone.com and motomatters.com were not reachable directly from this environment) of Crash.net's 2026 Valencia MotoGP Saturday Practice Results page, cross-checked across two separate searches that agreed on Bezzecchi's FP2-topping 1:29.596, Acosta second (+0.136s) and Aldeguer third (+0.191s), Alex Marquez/Pol Espargaro/Raul Fernandez fourth to sixth, Marc Marquez seventh (+0.462s) in this session (his Friday lap record of 1:28.483 is still the weekend's best time, per the prior entry), Ogura/Di Giannantonio/Bastianini completing the top ten, and Jorge Martin dropping to 14th in FP2 and needing to start from Qualifying 1 on combined times. Qualifying itself was already underway by the time this entry was written, so no qualifying result is included here, per the accuracy rule. Championship points, Marquez's retirement and title, and the Martin/Bezzecchi fight for second are carried over unchanged from the prior entry for this event (no race has run since, so the points are unchanged). Remaining session times from data/valencia.js." }
   ,{ t:"lusail", d:"2026-11-27", s:"f2", from:"2026-11-27",
     at:"2026-11-27T16:23:48Z",
     asOf:"Current after Friday's Formula 2 qualifying at Lusail (Nov 27) -- two red flags cut the session short, and F2 debutant Ugo Ugochukwu grabbed a surprise maiden pole; the title fight itself is unchanged, since no race has run yet this weekend.",

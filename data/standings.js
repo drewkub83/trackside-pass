@@ -79,13 +79,13 @@ const STANDINGS = [
     classes:[
       { h:"Drivers", rows:[
         { pos:1, who:"Rafael Camara", pts:207 },
-        { pos:2, who:"Nikola Tsolov", pts:200 },
-        { pos:3, who:"Alexander Dunne", pts:189 },
-        { pos:4, who:"Gabriele Mini", pts:163 },
-        { pos:5, who:"Dino Beganovic", pts:137 },
-        { pos:6, who:"Noel Leon", pts:133 },
-        { pos:7, who:"Martinius Stenshorne", pts:107 },
-        { pos:8, who:"Joshua Dürksen", pts:90 },
+        { pos:2, who:"Nikola Tsolov", pts:205 },
+        { pos:3, who:"Alexander Dunne", pts:193 },
+        { pos:4, who:"Gabriele Mini", pts:165 },
+        { pos:5, who:"Noel Leon", pts:139 },
+        { pos:6, who:"Dino Beganovic", pts:137 },
+        { pos:7, who:"Martinius Stenshorne", pts:118 },
+        { pos:8, who:"Joshua Dürksen", pts:98 },
         { pos:9, who:"Kush Maini", pts:90 },
         { pos:10, who:"Laurens van Hoepen", pts:90 }
       ] }
